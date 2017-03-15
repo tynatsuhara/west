@@ -1,0 +1,17 @@
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Assembly-CSharp-firstpass.dll.mdb
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Assembly-CSharp-firstpass.dll
+/Users/Tyler/Documents/Unity/Heist/obj/Debug/Assembly-CSharp-firstpass.dll
+/Users/Tyler/Documents/Unity/Heist/obj/Debug/Assembly-CSharp-firstpass.dll.mdb
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/UnityEngine.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/UnityEditor.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/UnityEngine.UI.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/UnityEngine.Networking.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Mono.Cecil.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Unity.SerializationLogic.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Unity.DataContract.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/ICSharpCode.NRefactory.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Unity.UNetWeaver.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Unity.UNetWeaver.dll.mdb
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Unity.CecilTools.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Mono.Cecil.Pdb.dll
+/Users/Tyler/Documents/Unity/Heist/Temp/bin/Debug/Mono.Cecil.Mdb.dll
