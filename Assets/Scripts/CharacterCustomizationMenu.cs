@@ -60,13 +60,13 @@ public class CharacterCustomizationMenu : MonoBehaviour {
 				players[playerId - 1].transform.RotateAround(players[playerId - 1].transform.position, Vector3.up, dir * -rotationSpeed);
 			}
 		}
-		for (int id = 2; id <= 4; id++) {
-			if (!playingPlayers.Contains(id) && Input.GetKeyDown("joystick " + id + " button 1")) {
-				LobbyJoin(id);
-			} else if (playingPlayers.Contains(id) && Input.GetKeyDown("joystick " + id + " button 2")) {
-				LobbyLeave(id);
-			}
-		}
+		// for (int id = 2; id <= 4; id++) {
+		// 	if (!playingPlayers.Contains(id) && Input.GetKeyDown("joystick " + id + " button 1")) {
+		// 		LobbyJoin(id);
+		// 	} else if (playingPlayers.Contains(id) && Input.GetKeyDown("joystick " + id + " button 2")) {
+		// 		LobbyLeave(id);
+		// 	}
+		// }
 		if (!readyPlayers[0] && Input.GetKeyDown("joystick 1 button 2")) {
 			// TODO: close lobby
 		}
