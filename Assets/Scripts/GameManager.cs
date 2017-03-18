@@ -50,30 +50,10 @@ public class GameManager : MonoBehaviour {
 	void Update () {
 		// WIN!
 		if (players.All(x => !x.isAlive)) {
-			GameOver(false);
+			// end game
 		} else {
 			CheckPause();
 			CheckSceneReload();
-		}
-	}
-
-	public void GameOver(bool success) {
-		if (gameOver)
-			return;
-		
-		gameOver = true;
-		Debug.Log("game over! you " + (success ? "win!" : "lose!"));
-		GameUI.instance.objectivesText.gameObject.SetActive(false);
-		foreach (PlayerControls pc in players) {
-			pc.playerUI.gameObject.SetActive(false);
-		}
-
-		if (success) {
-			Statistics();
-			GameUI.instance.ShowWinScreen(lootAmounts);
-		} else {
-			// SetTimeScale(.2f);
-			
 		}
 	}
 
@@ -191,21 +171,6 @@ public class GameManager : MonoBehaviour {
 
 	private bool CheckObjectivesComplete() {
 		return objectives.All(x => !x.isRequired || x.isCompleted);
-	}
-
-	private void Statistics() {
-		List<NPC> dead = characters.Where(x => !x.isAlive).ToList();
-		List<NPC> enemies = characters.Where(x => x is Enemy).ToList();
-		if (enemies.Count > 0 && enemies.All(x => !x.isAlive)) {
-			AddLoot("bloodbath", 10000);
-		}
-		if (!alarmsRaised) {
-			AddLoot("no alarms", 10000);
-		} else if (dead.Count == 0) {
-			AddLoot("peaceful", 10000);
-		} else if (dead.All(x => x.lastDamageNonlethal)) {
-			AddLoot("Non-lethal", 10000);
-		}
 	}
 
 	private Dictionary<string, List<int>> lootAmounts = new Dictionary<string, List<int>>();

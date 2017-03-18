@@ -128,6 +128,7 @@
      <Compile Include="Assets\Scripts\PossibleObjective.cs" />
      <Compile Include="Assets\Scripts\Powerable.cs" />
      <Compile Include="Assets\Scripts\Recolor.cs" />
+     <Compile Include="Assets\Scripts\SaveGame.cs" />
      <Compile Include="Assets\Scripts\SpawnPoint.cs" />
      <Compile Include="Assets\Scripts\Speech.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
