@@ -8,7 +8,6 @@ public class Bag : PossibleObjective, Interactable {
 	public Collider collider;
 	public string lootCategory;
 	public int dollarAmount;
-	private bool putInGetaway;
 	private Character holder;
 
 	void Start() {
@@ -42,20 +41,7 @@ public class Bag : PossibleObjective, Interactable {
 		this.onGround = onGround;
 	}
 
-	void OnCollisionEnter(Collision collision) {
-		if (!onGround)
-			return;
-
-		if (collision.collider.GetComponentInParent<Car>() == GameManager.instance.getaway) {
-			SaveLoot();
-		}
-	}
-
 	public void SaveLoot() {
-		if (putInGetaway)
-			return;
-		
-		putInGetaway = true;
 		GameManager.instance.AddLoot(lootCategory, dollarAmount);
 		gameObject.SetActive(false);
 	}

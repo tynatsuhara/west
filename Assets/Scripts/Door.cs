@@ -10,9 +10,6 @@ public class Door : MonoBehaviour, Interactable, Powerable {
 	public GameObject[] doorStates;
 	private TextObject text;
 
-	public Teleporter openRightTeleporter;
-	public Teleporter openLeftTeleporter;
-
 
 	public void Start() {
 		text = GetComponentInChildren<TextObject>();

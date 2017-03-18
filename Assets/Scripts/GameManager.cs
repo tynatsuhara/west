@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour {
 	public GameObject playerCamPrefab;
 	public GameObject playerUIPrefab;
 	
-	public Car getaway;
 	public bool objectivesComplete;
 
 	private List<PossibleObjective> objectives;
@@ -49,13 +48,9 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void Update () {
-		getaway.locked = !objectivesComplete;
-
 		// WIN!
 		if (players.All(x => !x.isAlive)) {
 			GameOver(false);
-		} else if (getaway.ContainsAllLivingPlayers()) {
-			GameOver(true);
 		} else {
 			CheckPause();
 			CheckSceneReload();
@@ -74,7 +69,6 @@ public class GameManager : MonoBehaviour {
 		}
 
 		if (success) {
-			getaway.destination = GameObject.Find("EscapePoint").transform;
 			Statistics();
 			GameUI.instance.ShowWinScreen(lootAmounts);
 		} else {

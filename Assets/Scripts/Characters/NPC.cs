@@ -172,10 +172,9 @@ public class NPC : Character, Interactable {
 	public Vector3? evidencePoint;
 	public IEnumerator UpdateEvidenceInSight(float timeStep) {
 		while (isAlive) {
-			Computer cameraScreen = CheckForCameraComputer();		
-			evidencePoint = AddEquippedPlayersInSight(cameraScreen);
+			evidencePoint = AddEquippedPlayersInSight();
 			if (evidencePoint == null) {
-				evidencePoint = CorpsesInSight(cameraScreen);
+				evidencePoint = CorpsesInSight();
 			}
 			seesEvidence = evidencePoint != null;
 			yield return new WaitForSeconds(timeStep);			
@@ -184,9 +183,9 @@ public class NPC : Character, Interactable {
 
 	// Returns the point of the closest enemy in sight
 	private Dictionary<PlayerControls, float> enemyPlayersInSight = new Dictionary<PlayerControls, float>();	
-	private Vector3? AddEquippedPlayersInSight(Computer cameraScreen) {
+	private Vector3? AddEquippedPlayersInSight() {
 		List<PlayerControls> seenPlayers = GameManager.players
-				.Where(x => x.IsEquipped() && (CanSee(x.gameObject) || (cameraScreen != null && cameraScreen.InSight(x.gameObject))))
+				.Where(x => x.IsEquipped() && (CanSee(x.gameObject)))
 				.OrderBy(x => (x.transform.position - transform.position).magnitude)
 				.ToList();
 		foreach (PlayerControls pc in seenPlayers) {
@@ -197,14 +196,13 @@ public class NPC : Character, Interactable {
 			return seenPlayers[0].transform.position;
 		return null;
 	}
-	private Vector3? CorpsesInSight(Computer cameraScreen) {
+	private Vector3? CorpsesInSight() {
 		foreach (NPC c in GameManager.characters) {
 			bool isEvidence = !c.isAlive;
 			isEvidence |= c.currentState == Civilian.NPCState.ALERTING;
 			isEvidence |= c.currentState == Civilian.NPCState.HELD_HOSTAGE_TIED;
 			isEvidence |= c.currentState == Civilian.NPCState.HELD_HOSTAGE_UNTIED;
-			if ((isEvidence && CanSee(c.gameObject)) || 
-			    (isEvidence && cameraScreen != null && cameraScreen.InSight(c.gameObject))) {
+			if (isEvidence && CanSee(c.gameObject)) {
 				return c.transform.position;
 			}
 		}
@@ -229,14 +227,6 @@ public class NPC : Character, Interactable {
 			}
 			yield return new WaitForSeconds(timeStep);
 		}
-	}
-
-	private Computer CheckForCameraComputer() {
-		RaycastHit hit;
-		if (Physics.Raycast(transform.position, transform.forward, out hit, 2f)) {
-			return hit.collider.GetComponentInParent<Computer>();
-		}
-		return null;
 	}
 
 	public PlayerControls ClosestEnemyPlayerInSight() {

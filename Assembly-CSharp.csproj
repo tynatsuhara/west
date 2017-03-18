@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{85CAAFAE-AE57-F188-3D61-C1C067CA069D}</ProjectGuid>
+    <ProjectGuid>{19A5C10A-9411-74C5-4BCF-0CA79CC252FF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -91,7 +91,6 @@
      <Compile Include="Assets\Scripts\Bag.cs" />
      <Compile Include="Assets\Scripts\BasicDrop.cs" />
      <Compile Include="Assets\Scripts\C4.cs" />
-     <Compile Include="Assets\Scripts\Car.cs" />
      <Compile Include="Assets\Scripts\CharacterCustomization.cs" />
      <Compile Include="Assets\Scripts\CharacterCustomizationMenu.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
@@ -100,7 +99,6 @@
      <Compile Include="Assets\Scripts\Characters\NPC.cs" />
      <Compile Include="Assets\Scripts\Characters\PlayerControls.cs" />
      <Compile Include="Assets\Scripts\Cheats.cs" />
-     <Compile Include="Assets\Scripts\Computer.cs" />
      <Compile Include="Assets\Scripts\Damageable.cs" />
      <Compile Include="Assets\Scripts\Door.cs" />
      <Compile Include="Assets\Scripts\DualPistol.cs" />
@@ -114,8 +112,6 @@
      <Compile Include="Assets\Scripts\Interactable.cs" />
      <Compile Include="Assets\Scripts\Inventory.cs" />
      <Compile Include="Assets\Scripts\Level Editor\LevelBuilder.cs" />
-     <Compile Include="Assets\Scripts\Level Editor\LevelEditor.cs" />
-     <Compile Include="Assets\Scripts\Level Editor\Room.cs" />
      <Compile Include="Assets\Scripts\LightPulse.cs" />
      <Compile Include="Assets\Scripts\MeleeWeapon.cs" />
      <Compile Include="Assets\Scripts\Menus\MainMenu.cs" />
@@ -132,11 +128,8 @@
      <Compile Include="Assets\Scripts\PossibleObjective.cs" />
      <Compile Include="Assets\Scripts\Powerable.cs" />
      <Compile Include="Assets\Scripts\Recolor.cs" />
-     <Compile Include="Assets\Scripts\SecurityCamera.cs" />
      <Compile Include="Assets\Scripts\SpawnPoint.cs" />
      <Compile Include="Assets\Scripts\Speech.cs" />
-     <Compile Include="Assets\Scripts\Teleporter.cs" />
-     <Compile Include="Assets\Scripts\Teller.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
      <Compile Include="Assets\Scripts\VaultDoor.cs" />
      <Compile Include="Assets\Scripts\WalkCycle.cs" />
@@ -230,7 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{DC7B3E80-BC0A-26A4-F3AB-30FF7B61F8F5}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{0367E952-31DA-3F81-2C09-E53D0F0B04A2}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

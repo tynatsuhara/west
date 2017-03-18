@@ -12,8 +12,6 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;
 
-	public GameObject[] roomPrefabs;
-	public int[] roomSpawnAmount;
 	private PicaVoxel.Volume[,] floorTiles;
 
 	public const int CHUNK_SIZE = 120;
@@ -39,19 +37,6 @@ public class LevelBuilder : MonoBehaviour {
 				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
 			}
 		}
-
-
-		// List<Room> rooms = spawnRoomsFromArrayCounts();
-
-		/*
-		 * Steps:
-		 * 1. Spawn rooms in grid, 1x1 size
-		 * 2. Put rooms in area grid
-		 * 3. Stretch/shrink and verify all rooms are within valid size limits
-		 * 4. Maybe make rooms encroach on each other
-		 */
-
-//		rooms.ForEach(x => x.Build());
 	}
 
 	public PicaVoxel.Volume FloorTileAt(Vector3 pos) {
@@ -65,18 +50,5 @@ public class LevelBuilder : MonoBehaviour {
 	public Floor FloorAt(Vector3 pos) {
 		PicaVoxel.Volume f = FloorTileAt(pos);
 		return f == null ? null : f.GetComponent<Floor>();
-	}
-
-	private List<Room> spawnRoomsFromArrayCounts() {
-		List<Room> rooms = new List<Room>();
-		for (int i = 0; i < roomSpawnAmount.Length; i++) {
-			for (int j = 0; j < roomSpawnAmount[i]; j++) {
-				if (roomPrefabs[i] != null) {
-					// spawn the room?
-//					rooms.Add(Instantiate(roomPrefabs[i]).GetComponent<Room>();
-				}
-			}
-		}
-		return rooms.OrderBy(x => x.spawnPriority).ToList();
 	}
 }

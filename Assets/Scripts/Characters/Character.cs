@@ -30,9 +30,6 @@ public abstract class Character : PossibleObjective, Damageable {
 	public bool hasBag {
 		get { return bag != null; }
 	}
-	public bool isHacking {
-		get { return currentInteractScript is Computer; }
-	}
 
 	public PicaVoxel.Volume head;
 	public PicaVoxel.Volume body;
@@ -365,7 +362,7 @@ public abstract class Character : PossibleObjective, Damageable {
 	}
 
 	public virtual void Shoot() {
-		if (weaponDrawn_ && currentGun != null && !isDragging && !isHacking) {
+		if (weaponDrawn_ && currentGun != null && !isDragging) {
 			currentGun.Shoot();
 		} 
 	}
@@ -383,7 +380,7 @@ public abstract class Character : PossibleObjective, Damageable {
 	}
 
 	public void Explosive() {
-		if (weaponDrawn_ && currentGun != null && !isDragging && !isHacking && explosive != null) {		
+		if (weaponDrawn_ && currentGun != null && !isDragging && explosive != null) {		
 			explosive.Trigger();
 		}
 	}
@@ -473,7 +470,7 @@ public abstract class Character : PossibleObjective, Damageable {
 	public bool IsEquipped() {
 		Floor f = LevelBuilder.instance.FloorAt(transform.position);
 		bool inRestrictedArea = f != null && f.restricted;
-		return weaponDrawn || hasBag || isHacking || inRestrictedArea;
+		return weaponDrawn || hasBag || inRestrictedArea;
 	}
 
 	public bool CanSee(GameObject target, float fov = 130f, float viewDist = 20f) {
@@ -559,7 +556,7 @@ public abstract class Character : PossibleObjective, Damageable {
 	public void DropBag(bool launch = true) {
 		if (!hasBag) return;
 		GameObject facingObject = FacingObstruction();
-		if (facingObject != null && facingObject.GetComponentInParent<Car>() != GameManager.instance.getaway) {
+		if (facingObject != null) {
 			return;
 		}
 
