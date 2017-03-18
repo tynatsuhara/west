@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 [System.Serializable]
 public class SaveGame {
 
-	public GameObject[] characterPrefabs;
+	public GameObject[] generatedCharacters;
 
 	public static void Save() {
 		Debug.Log(Application.persistentDataPath);

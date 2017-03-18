@@ -48,6 +48,10 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (Input.GetKeyDown(KeyCode.Alpha0)) {
+			SaveGame.Save();
+		}
+
 		// WIN!
 		if (players.All(x => !x.isAlive)) {
 			// end game
