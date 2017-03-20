@@ -213,7 +213,7 @@ public class PlayerControls : Character {
 		public Inventory inv = new Inventory();
 		public int weaponId = -1;
 		public int sidearmId = 0;  // start with pistol
-		public int equippedWeapon = 1;  // start wielding pistol
+		public int equippedWeapon = 1;  // start wielding sidearm
 		public bool isWeaponDrawn;
 		public string outfit = "default";
 		public int skinColor;
