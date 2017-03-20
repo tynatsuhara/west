@@ -39,6 +39,8 @@ public class MeleeWeapon : Gun {
 	public override void Reload() {}
 	public override void CancelReload() {}
 	public override bool NeedsToReload() { return false; }
+	public override System.Object SaveData() { return null; }
+	public override void ApplySaveData(System.Object saveData) {}
 	
 	public override void UpdateUI() {
 		player.playerUI.UpdateAmmo(name);

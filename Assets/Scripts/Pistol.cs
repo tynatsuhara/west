@@ -6,16 +6,17 @@ public class Pistol : Gun {
 
 	public float knockback;
 	public float shootSpeed;
-	private bool shooting;
-	private bool reloading;
 	public bool silenced;
 	public int clipSize = 15;
-	private int bulletsFired = 0;
 	public float reloadSpeed = 1f;
 	public float shakePower = .3f;
 	public float shakeLength = .3f;
 	public bool shellDropOnFire;
 	public bool shellDropOnReload;
+
+	private bool shooting;
+	private bool reloading;
+	private int bulletsFired = 0;	
 
 	public override void Awake() {
 		base.Awake();
@@ -118,4 +119,20 @@ public class Pistol : Gun {
 	}
 
 	public override void Release() {}
+
+
+	public override System.Object SaveData() { 
+		PistolSaveData psd = new PistolSaveData();
+		psd.bulletsFired = bulletsFired;
+		return psd;
+	}
+	public override void ApplySaveData(System.Object saveData) {
+		PistolSaveData psd = (PistolSaveData) saveData;
+		bulletsFired = psd.bulletsFired;
+	}
+
+	[System.Serializable]
+	private class PistolSaveData {
+		public int bulletsFired = 0;
+	}
 }
