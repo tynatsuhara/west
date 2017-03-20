@@ -12,13 +12,11 @@ public class WeaponSelection : Menu {
 
 	public MenuNode sidearm;
 	public MenuNode weapon;
-	private CharacterCustomizationMenu ccm;
+	private CharacterOptionsManager ccm;
 	private List<string> outfitNames;
 
 	void Start() {
-		ccm = CharacterCustomizationMenu.instance;
-		sidearm.SetText(ccm.sidearms[PlayerPrefs.GetInt("p" + playerId + "_sidearm", 0)].name.ToUpper());		
-		weapon.SetText(ccm.weapons[PlayerPrefs.GetInt("p" + playerId + "_weapon", 0)].name.ToUpper());	
+		ccm = CharacterOptionsManager.instance;
 		outfitNames = Outfits.fits.Keys.OrderBy(x => x.ToString()).ToList();
 	}
 
@@ -39,6 +37,7 @@ public class WeaponSelection : Menu {
 		} else if (node.name == "Accessory") {
 			ccm.SetAccessory(playerId, ccm.LoadAccessory(playerId) + dir);
 		}
+		ccm.CustomizeFromSave(ccm.players[playerId - 1]);
 	}
 
 	private string LoadWeapon(GameObject[] arr, int currentIndex, int dir, string prefString) {

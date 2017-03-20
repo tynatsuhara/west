@@ -34,8 +34,8 @@ public class CharacterCustomization : MonoBehaviour {
 		}
 
 		if (randomize) {
-			Color32[] skinColors = CharacterCustomizationMenu.instance.skinColors;
-			Color32[] hairColors = CharacterCustomizationMenu.instance.skinColors;
+			Color32[] skinColors = CharacterOptionsManager.instance.skinColors;
+			Color32[] hairColors = CharacterOptionsManager.instance.skinColors;
 			hairColor = hairColors[Random.Range(0, hairColors.Length)];
 			skinColor = skinColors[Random.Range(0, skinColors.Length)];
 			accessories = new Accessory[] {

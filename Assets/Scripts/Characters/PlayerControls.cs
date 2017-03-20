@@ -10,17 +10,15 @@ public class PlayerControls : Character {
 	public PlayerUI playerUI;
 
 	public override void Start() {
-		CharacterCustomizationMenu.instance.LoadWeaponsFromPrefs(this);
-		base.Start();
-		CharacterCustomizationMenu.instance.ColorizeFromPrefs(this);
 		name = "Player " + id;
 
 		// hide accessories from first person camera
 		foreach (Accessory a in GetComponentsInChildren<Accessory>())
 			foreach (Transform t in a.GetComponentsInChildren<Transform>())
 				t.gameObject.layer = LayerMask.NameToLayer("accessory" + id);
-			
-		explosive = GetComponent<Explosive>();	
+		
+		base.Start();
+		CharacterOptionsManager.instance.CustomizeFromSave(this);		
 	}
 
 	void Update() {
@@ -38,9 +36,11 @@ public class PlayerControls : Character {
 
 		if ((p1 && Input.GetKeyDown(KeyCode.F)) || Input.GetKeyDown("joystick " + id + " button 3")) {
 			if (weaponDrawn) {
-				Shout();
+				HideWeapon();
+				// Shout();
+			} else {
+				DrawWeapon();				
 			}
-			DrawWeapon();
 		}
 
 		if ((p1 && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown("joystick " + id + " button 1")) {
@@ -174,4 +174,51 @@ public class PlayerControls : Character {
 	}
 
 	public override void Alert(Reaction importance, Vector3 position) {}
+
+
+
+	public PlayerSaveData SaveData() {
+		PlayerSaveData psd = SaveGame.currentGame.savedPlayers[id - 1];
+		psd.position = new SerializableVector3(transform.position);
+		psd.inv = inventory;
+		psd.weaponId = weaponId;
+		psd.sidearmId = sidearmId;
+		psd.equippedWeapon = gunIndex;
+		psd.isWeaponDrawn = weaponDrawn;
+		return psd;
+	}
+
+	public void LoadFromSave(PlayerSaveData psd) {
+		guid = psd.guid;
+		if (psd.position != null)
+			transform.position = psd.position.val;
+		inventory = psd.inv;
+		weaponId = psd.weaponId;
+		sidearmId = psd.sidearmId;
+		gunIndex = psd.equippedWeapon;
+		SpawnGun();
+		if (psd.isWeaponDrawn)
+			DrawWeapon();
+		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
+		CharacterOptionsManager.instance.SetSkinColor(id, psd.skinColor);
+		CharacterOptionsManager.instance.SetHairColor(id, psd.hairColor);
+		CharacterOptionsManager.instance.SetHairstyle(id, psd.hairStyle);
+		CharacterOptionsManager.instance.SetAccessory(id, psd.accessory);		
+	}
+
+	[System.Serializable]
+	public class PlayerSaveData {
+		public System.Guid guid = System.Guid.NewGuid();
+		public SerializableVector3 position;
+		public Inventory inv = new Inventory();
+		public int weaponId = -1;
+		public int sidearmId = 0;  // start with pistol
+		public int equippedWeapon = 1;  // start wielding pistol
+		public bool isWeaponDrawn;
+		public string outfit = "default";
+		public int skinColor;
+		public int hairColor;
+		public int hairStyle;
+		public int accessory;
+	}
 }

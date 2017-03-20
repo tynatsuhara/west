@@ -17,11 +17,11 @@ public class Enemy : NPC {
 				knowledge.Add(pc, new PlayerKnowledge());
 		}
 
-		if (GameManager.instance.alarmsRaised) {
-			currentState = NPCState.SEARCHING;
-		} else {
+		// if (GameManager.instance.alarmsRaised) {
+			// currentState = NPCState.SEARCHING;
+		// } else {
 			currentState = NPCState.PASSIVE;			
-		}
+		// }
 	}
 
 	//=================== STATE FUNCTIONS ===================//
@@ -84,7 +84,7 @@ public class Enemy : NPC {
 	// EnemyState.ATTACKING
 	private PlayerControls targetPlayer;
 	protected override void StateAttacking() {
-		GameManager.instance.WereGoingLoudBoys();		
+		// GameManager.instance.WereGoingLoudBoys();		
 		if (targetPlayer == null || !targetPlayer.isAlive || knowledge[targetPlayer].unknownLocation) {
 			targetPlayer = ClosestEnemyPlayerInSight();
 			if (targetPlayer != null) {
@@ -135,7 +135,8 @@ public class Enemy : NPC {
 	void OnCollisionEnter(Collision collision) {
 		PlayerControls pc = collision.collider.GetComponentInParent<PlayerControls>();
 		if (pc != null)
-			Alert(GameManager.instance.alarmsRaised ? Reaction.AGGRO : Reaction.SUSPICIOUS, pc.transform.position);
+			// Alert(GameManager.instance.alarmsRaised ? Reaction.AGGRO : Reaction.SUSPICIOUS, pc.transform.position);
+			Alert(Reaction.SUSPICIOUS, pc.transform.position);
     }
 
 	private class PlayerKnowledge {

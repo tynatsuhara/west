@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Inventory : MonoBehaviour {
+[System.Serializable]
+public class Inventory {
 
 	public int capacity = int.MaxValue;
 	public bool showOnUI = false;
@@ -43,9 +44,8 @@ public class Inventory : MonoBehaviour {
 		if (!amounts.ContainsKey(label))
 			amounts.Add(label, 0);
 		amounts[label] += amount;
-		PlayerControls pc = GetComponentInParent<PlayerControls>();
-		if (pc != null)
-			pc.playerUI.UpdateInventory(amounts);
+
+		// TODO: update UI
 	}
 	public void Add(Item item, int amount = 1, string label = "mysterious item") {
 		Add((int)item, amount, label);
@@ -63,9 +63,8 @@ public class Inventory : MonoBehaviour {
 		amounts[label] -= amount;
 		if (amounts[label] <= 0)
 			amounts.Remove(label);
-		PlayerControls pc = GetComponentInParent<PlayerControls>();
-		if (pc != null)
-			pc.playerUI.UpdateInventory(amounts);
+		
+		// TODO: update UI
 	}
 	public void Remove(Item item, int amount = 1) {
 		Remove((int)item, amount);

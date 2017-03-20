@@ -92,7 +92,7 @@
      <Compile Include="Assets\Scripts\BasicDrop.cs" />
      <Compile Include="Assets\Scripts\C4.cs" />
      <Compile Include="Assets\Scripts\CharacterCustomization.cs" />
-     <Compile Include="Assets\Scripts\CharacterCustomizationMenu.cs" />
+     <Compile Include="Assets\Scripts\CharacterOptionsManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\Characters\Civilian.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemy.cs" />
@@ -127,8 +127,10 @@
      <Compile Include="Assets\Scripts\PlayerUI.cs" />
      <Compile Include="Assets\Scripts\PossibleObjective.cs" />
      <Compile Include="Assets\Scripts\Powerable.cs" />
+     <Compile Include="Assets\Scripts\Quests\Quest.cs" />
+     <Compile Include="Assets\Scripts\Quests\QuestManager.cs" />
      <Compile Include="Assets\Scripts\Recolor.cs" />
-     <Compile Include="Assets\Scripts\SaveGame.cs" />
+     <Compile Include="Assets\Scripts\SerializableVector3.cs" />
      <Compile Include="Assets\Scripts\SpawnPoint.cs" />
      <Compile Include="Assets\Scripts\Speech.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
@@ -136,6 +138,7 @@
      <Compile Include="Assets\Scripts\WalkCycle.cs" />
      <Compile Include="Assets\Scripts\Wall.cs" />
      <Compile Include="Assets\Scripts\Window.cs" />
+     <Compile Include="Assets\Scripts\World\SaveGame.cs" />
      <Compile Include="Assets\Scripts\WorldBlood.cs" />
      <Compile Include="Assets\Scripts\WorldPoint.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />

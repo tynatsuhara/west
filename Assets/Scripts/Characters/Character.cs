@@ -15,6 +15,10 @@ public abstract class Character : PossibleObjective, Damageable {
 	public Accessory[] accessories;
 	
 	protected Rigidbody rb;
+	protected System.Guid guid;  // null the first time a unique character is spawned
+	protected bool firstSetup {
+		get { return guid == System.Guid.Empty; }
+	}
 	public WalkCycle walk;
 
 	// each inheriting class should define walking
@@ -41,7 +45,9 @@ public abstract class Character : PossibleObjective, Damageable {
 
 	public GameObject[] guns;
 	protected Gun currentGun;
-	private int gunIndex = 0;
+	public int sidearmId;
+	public int weaponId;
+	protected int gunIndex = 0;
 	public PicaVoxel.Exploder exploder;
 	public Explosive explosive;
 	public int zipties;
@@ -66,7 +72,6 @@ public abstract class Character : PossibleObjective, Damageable {
 	public virtual void Start() {
 		rb = GetComponent<Rigidbody>();
 		separateBodyParts.Add(rb);
-		SpawnGun();
 		speech = GetComponentInChildren<TextObject>();
 	}
 
@@ -416,36 +421,45 @@ public abstract class Character : PossibleObjective, Damageable {
 	}
 
 	public void SpawnGun() {
-		if (guns == null || guns.Length == 0)
+		if (weaponId == -1 && sidearmId == -1)
 			return;
+
+		if (guns == null || guns.Length == 0) {
+			guns = new GameObject[] {
+				weaponId >= 0 ? CharacterOptionsManager.instance.weapons[weaponId] : null,
+				sidearmId >= 0 ? CharacterOptionsManager.instance.sidearms[sidearmId] : null,
+			};
+		}
 		
+		List<PicaVoxel.Volume> gunVolumes = new List<PicaVoxel.Volume>();
+
 		for (int i = guns.Length - 1; i >= 0; i--) {
 			if (guns[i] == null)
 				continue;
 			guns[i].SetActive(false);
 			GameObject gun = guns[i] = Instantiate(guns[i]) as GameObject;
 			gun.name = gun.name.Replace("(Clone)", "");
-			List<PicaVoxel.Volume> gunVolumes = new List<PicaVoxel.Volume>();
-			foreach (GameObject g in guns)
-				gunVolumes.AddRange(g.GetComponentsInChildren<PicaVoxel.Volume>());
-			GetComponent<CharacterCustomization>().gunz = gunVolumes.ToArray();
+			gunVolumes.AddRange(guns[i].GetComponentsInChildren<PicaVoxel.Volume>());
 			currentGun = gun.GetComponent<Gun>();
-			currentGun.isPlayer = this is PlayerControls;			
+			currentGun.isPlayer = this is PlayerControls;
 			gun.transform.parent = transform;
 			gun.transform.localPosition = currentGun.inPlayerPos;
 			gun.transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
 			if (currentGun.isPlayer)
 				currentGun.player = (PlayerControls) this;
 		}
+		GetComponent<CharacterCustomization>().gunz = gunVolumes.ToArray();		
 		currentGun = null;
-		SelectGun(guns.Length > 1 ? 1 : 0);
+		SelectGun(gunIndex);
 	}
 
 	public void SelectGun(int index) {
 		index = Mathf.Clamp(index, 0, guns.Length);
+		if (guns[index] == null)
+			return;
 		if (this is PlayerControls)
 			guns[index].GetComponent<Gun>().UpdateUI();
-		if (gunIndex == index || guns[gunIndex].GetComponent<Gun>().meleeing) {
+		if (gunIndex == index || (guns[gunIndex] != null && guns[gunIndex].GetComponent<Gun>().meleeing)) {
 			return;
 		} else if (!weaponDrawn) {
 			gunIndex = index;

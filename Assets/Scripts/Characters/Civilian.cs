@@ -4,13 +4,12 @@ using System.Collections;
 public class Civilian : NPC {
 
 	public bool braveCitizen;  // can enter attacking states
-	public bool teller;
 
 	public override void Start() {
 		base.Start();
 		GetComponent<CharacterCustomization>().ColorCharacter(Outfits.fits["default"], true, accessories);
 		currentState = NPCState.PASSIVE;
-		braveCitizen = !teller && Random.Range(0, 10) == 0;
+		braveCitizen = sidearmId != -1;
 	}
 
 	//=================== STATE FUNCTIONS ===================//

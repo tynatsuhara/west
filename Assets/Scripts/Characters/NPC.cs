@@ -24,15 +24,15 @@ public class NPC : Character, Interactable {
 	protected NavMeshAgent agent;
 
 	public override void Start() {
+		StartCoroutine(UpdateEvidenceInSight(.5f));
+		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
+
 		base.Start();
 		CharacterCustomization cc = GetComponent<CharacterCustomization>();
 		string outfitName = cc.outfitNames[Random.Range(0, cc.outfitNames.Length)];
 		GetComponent<CharacterCustomization>().ColorCharacter(Outfits.fits[outfitName], true);
 		transform.RotateAround(transform.position, transform.up, Random.Range(0, 360));
 		agent = GetComponent<NavMeshAgent>();
-
-		StartCoroutine(UpdateEvidenceInSight(.5f));
-		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
 	}
 
 	void Update() {

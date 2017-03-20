@@ -8,16 +8,22 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance;
 	public static bool paused = false;
 	public static int[] playersToSpawn;
+	public static bool newGame;
 
 	public GameObject playerPrefab;
 	public GameObject playerCamPrefab;
 	public GameObject playerUIPrefab;
+
+	// FOR TESTING
+	public GameObject civPrefab;
 	
 	public bool objectivesComplete;
 
 	private List<PossibleObjective> objectives;
-	public static List<NPC> characters;  // NPCs
-	public static List<PlayerControls> players;	
+	public static List<NPC> characters {
+		get { return new List<NPC>(); }	
+	}
+	public static List<PlayerControls> players;
 	public static List<Character> allCharacters {
 		get {
 			List<Character> lst = characters.Select(x => (Character) x).ToList();
@@ -26,20 +32,17 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public bool alarmsRaised = false;
-	public bool gameOver = false;
 	public bool friendlyFireEnabled;
 
 	void Awake() {
 		instance = this;
 		players = SpawnPlayers(playersToSpawn);
-		characters = Object.FindObjectsOfType<NPC>().ToList();			
 	}
 
 	void Start () {
 
-		// generate level
 		GetComponent<LevelBuilder>().BuildLevel();
+		// TODO: build current map location from SaveGame
 
 		// get objectives
 		objectives = Object.FindObjectsOfType<PossibleObjective>().Where(x => x.isObjective && !x.isCompleted).ToList();
@@ -54,7 +57,8 @@ public class GameManager : MonoBehaviour {
 
 		// WIN!
 		if (players.All(x => !x.isAlive)) {
-			// end game
+			SaveGame.currentGame.gameOver = true;
+			SaveGame.DeleteSave();
 		} else {
 			CheckPause();
 			CheckSceneReload();
@@ -85,7 +89,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void CheckSceneReload() {
-		if ((gameOver || paused) && (Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown("joystick button 8"))) {
+		if ((SaveGame.currentGame.gameOver || paused) && (Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown("joystick button 8"))) {
 			SetPaused(false);
 			Application.LoadLevel(Application.loadedLevel);
 		}
@@ -117,15 +121,15 @@ public class GameManager : MonoBehaviour {
 
 	// Call this to indicate it is no longer a stealth-possible mission,
 	// ALARMS HAVE BEEN RAISED -- START SPAWNING ENEMIES
-	public void WereGoingLoudBoys() {
-		if (alarmsRaised)
-			return;
+	// public void WereGoingLoudBoys() {
+	// 	if (alarmsRaised)
+	// 		return;
 
-		alarmsRaised = true;
-		foreach (PlayerControls pc in players)
-			pc.DrawWeapon();
-		GetComponent<EnemySpawner>().StartSpawning();
-	}
+	// 	alarmsRaised = true;
+	// 	foreach (PlayerControls pc in players)
+	// 		pc.DrawWeapon();
+	// 	GetComponent<EnemySpawner>().StartSpawning();
+	// }
 
 	private List<PlayerControls> SpawnPlayers(int[] playersToSpawn) {
 		playersToSpawn = playersToSpawn == null || playersToSpawn.Length == 0 ? new int[] { 1 } : playersToSpawn;
@@ -146,6 +150,8 @@ public class GameManager : MonoBehaviour {
 			pc.playerUI.GetComponent<Canvas>().planeDistance = 0;
 			pc.playerUI.player = pc;
 			pc.playerUI.transform.SetParent(pc.playerCamera.transform, false);
+
+			pc.LoadFromSave(SaveGame.currentGame.savedPlayers[pc.id - 1]);			
 		}
 
 		// split screen dimensions
