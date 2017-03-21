@@ -185,6 +185,10 @@ public class PlayerControls : Character {
 		psd.sidearmId = sidearmId;
 		psd.equippedWeapon = gunIndex;
 		psd.isWeaponDrawn = weaponDrawn;
+		psd.gunSaves = new System.Object[] {
+			guns[0] == null ? null : guns[0].GetComponent<Gun>().SaveData(),
+			guns[1] == null ? null : guns[1].GetComponent<Gun>().SaveData(),
+		};
 		return psd;
 	}
 
@@ -197,6 +201,13 @@ public class PlayerControls : Character {
 		sidearmId = psd.sidearmId;
 		gunIndex = psd.equippedWeapon;
 		SpawnGun();
+		if (psd.gunSaves != null) {
+			for (int i = 0; i < guns.Length; i++) {
+				if (guns[i] != null && psd.gunSaves[i] != null) {
+					guns[i].GetComponent<Gun>().ApplySaveData(psd.gunSaves[i]);
+				}
+			}
+		}
 		if (psd.isWeaponDrawn)
 			DrawWeapon();
 		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
@@ -214,6 +225,7 @@ public class PlayerControls : Character {
 		public int weaponId = -1;
 		public int sidearmId = 0;  // start with pistol
 		public int equippedWeapon = 1;  // start wielding sidearm
+		public System.Object[] gunSaves;		
 		public bool isWeaponDrawn;
 		public string outfit = "default";
 		public int skinColor;
