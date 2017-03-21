@@ -46,7 +46,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 						if (palette.ContainsKey(vox.Value)) {
 							Color32 c = palette[vox.Value];
-							int r = 8;
+							int r = 4;
 							vox.Color = new Color32(CharacterCustomization.JiggleByte(c.r, r), 
 													CharacterCustomization.JiggleByte(c.g, r), 
 													CharacterCustomization.JiggleByte(c.b, r), 0);
