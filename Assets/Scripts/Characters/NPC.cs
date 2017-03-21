@@ -39,6 +39,7 @@ public class NPC : Character, Interactable {
 		if (!isAlive || GameManager.paused)
 			return;
 
+		// Deal with race conditions with resetting timers
 		if (resetTimeFlag) {
 			resetTimeFlag = false;
 			timeInCurrentState = 0;
