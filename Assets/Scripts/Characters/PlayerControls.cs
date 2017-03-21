@@ -4,21 +4,23 @@ using System.Collections.Generic;
 
 public class PlayerControls : Character {
 
+	// fields assigned by GameManager when spawned
 	public int id;
 	public PlayerCamera playerCamera;
 	public Camera firstPersonCam;
 	public PlayerUI playerUI;
 
+
 	public override void Start() {
 		name = "Player " + id;
+		
+		base.Start();
+		CharacterOptionsManager.instance.CustomizeFromSave(this);
 
 		// hide accessories from first person camera
 		foreach (Accessory a in GetComponentsInChildren<Accessory>())
 			foreach (Transform t in a.GetComponentsInChildren<Transform>())
-				t.gameObject.layer = LayerMask.NameToLayer("accessory" + id);
-		
-		base.Start();
-		CharacterOptionsManager.instance.CustomizeFromSave(this);		
+				t.gameObject.layer = LayerMask.NameToLayer("accessory" + id);	
 	}
 
 	void Update() {
