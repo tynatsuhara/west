@@ -15,6 +15,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 			data.health = healthMax;
 			data.bodyColor = Random.Range(0, bodyColor.Length);
 			data.maneColor = Random.Range(0, maneColor.Length);
+			data.speckled = Random.Range(0, 5) == 0;
 		}
 		Color();		
 	}
@@ -46,6 +47,12 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 						if (palette.ContainsKey(vox.Value)) {
 							Color32 c = palette[vox.Value];
+							if (data.speckled && Random.Range(0, 10) == 0) {
+								int lightness = 20;
+								c.r = (byte) Mathf.Clamp(c.r + lightness, 0, 255);
+								c.g = (byte) Mathf.Clamp(c.g + lightness, 0, 255);
+								c.b = (byte) Mathf.Clamp(c.b + lightness, 0, 255);
+							}
 							int r = 4;
 							vox.Color = new Color32(CharacterCustomization.JiggleByte(c.r, r), 
 													CharacterCustomization.JiggleByte(c.g, r), 
@@ -77,5 +84,6 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 		public float health;
 		public int bodyColor;
 		public int maneColor;
+		public bool speckled;
 	}
 }
