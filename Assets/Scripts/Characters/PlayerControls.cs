@@ -23,7 +23,7 @@ public class PlayerControls : Character {
 
 	void Update() {
 		GetInput();
-		playerUI.UpdateHealth(health, healthMax, armor, armorMax);
+		playerUI.UpdateHealth(health, healthMax);
 		if (currentGun != null)
 			currentGun.UpdateUI();
 	}

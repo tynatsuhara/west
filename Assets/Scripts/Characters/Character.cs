@@ -26,8 +26,6 @@ public abstract class Character : PossibleObjective, Damageable {
 
 	public float healthMax;
 	public float health;
-	public float armorMax;
-	public float armor;
 
 	public Inventory inventory;
 	public Bag bag;
@@ -125,17 +123,6 @@ public abstract class Character : PossibleObjective, Damageable {
 
 		if (isPlayer && playerAttacker && !GameManager.instance.friendlyFireEnabled)
 			damage = 0f;
-
-		if (armor > 0) {
-			armor -= damage;
-			if (armor >= 0) {
-				if (!isPlayer)
-					rb.AddForce(300 * angle.normalized, ForceMode.Impulse);
-				return false;
-			}
-			damage = -armor;  // for applying leftover damage later
-			armor = Mathf.Max(0, armor);
-		}
 
 		if (isAlive && !isPlayer)
 			Alert(Reaction.AGGRO, location - angle.normalized);

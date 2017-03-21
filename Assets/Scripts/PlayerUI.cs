@@ -10,7 +10,6 @@ public class PlayerUI : MonoBehaviour {
 	public Text invText;
 	public Text ammoText;
 	public Text healthText;
-	public Text armorText;
 
 	public Transform cursor;
 	private Vector3 lastMousePos;
@@ -87,9 +86,8 @@ public class PlayerUI : MonoBehaviour {
 		ammoText.text = weaponName.ToUpper() + "\nRELOADING...";
 	}
 
-	public void UpdateHealth(float health, float healthMax, float armor, float armorMax) {
+	public void UpdateHealth(float health, float healthMax) {
 		healthText.text = health > 0 ? new string('*', Mathf.CeilToInt(health)) : "";
-		armorText.text = armor > 0 ? new string('*', Mathf.CeilToInt(armor)) : "";
 	}
 
 	public void HitMarker() {
