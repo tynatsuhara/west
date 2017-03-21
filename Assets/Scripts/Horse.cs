@@ -3,21 +3,26 @@ using System.Collections.Generic;
 
 public class Horse : MonoBehaviour, Interactable, Damageable {
 
-	public float health;
 	public float healthMax;
+	private HorseSaveData data;
 
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
 
 	void Start () {
-		Color();
-	}
-	
-	void Update () {
-	
+		if (data == null) {  // hasn't been spawned before, no data saved
+			data = new HorseSaveData();
+			data.health = healthMax;
+			data.bodyColor = Random.Range(0, bodyColor.Length);
+			data.maneColor = Random.Range(0, maneColor.Length);
+		}
+		Color();		
 	}
 
-	public void Interact(Character character) {}
+	// Ride
+	public void Interact(Character character) {
+		character.transform.parent = transform;
+	}
 	public void Uninteract(Character character) {}
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
@@ -26,8 +31,8 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 	private void Color() {
 		Dictionary<byte, Color32> palette = new Dictionary<byte, Color32>();
-		palette.Add(0, bodyColor[Random.Range(0, bodyColor.Length)]);
-		palette.Add(10, maneColor[Random.Range(0, maneColor.Length)]);
+		palette.Add(0, bodyColor[data.bodyColor]);
+		palette.Add(10, bodyColor[data.maneColor]);
 
 		PicaVoxel.Volume volume = GetComponent<PicaVoxel.Volume>();
 		foreach (PicaVoxel.Frame frame in volume.Frames) {
@@ -55,5 +60,22 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 			}
 			frame.UpdateChunks(true);
 		}
+	}
+
+
+	public HorseSaveData SaveData() {
+		return data;
+	}
+
+	public void LoadSaveData(HorseSaveData hsd) {
+		data = hsd;
+	}
+
+	[System.Serializable]
+	public class HorseSaveData {
+		public System.Guid guid = System.Guid.NewGuid();
+		public float health;
+		public int bodyColor;
+		public int maneColor;
 	}
 }
