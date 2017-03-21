@@ -3,15 +3,16 @@ using System.Collections.Generic;
 
 public class Horse : MonoBehaviour, Interactable, Damageable {
 
+	public float health;
+	public float healthMax;
+
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
 
-	// Use this for initialization
 	void Start () {
-	
+		Color();
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
 	}
@@ -25,6 +26,8 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 	private void Color() {
 		Dictionary<byte, Color32> palette = new Dictionary<byte, Color32>();
+		palette.Add(0, bodyColor[Random.Range(0, bodyColor.Length)]);
+		palette.Add(10, maneColor[Random.Range(0, maneColor.Length)]);
 
 		PicaVoxel.Volume volume = GetComponent<PicaVoxel.Volume>();
 		foreach (PicaVoxel.Frame frame in volume.Frames) {
