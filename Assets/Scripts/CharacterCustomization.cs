@@ -84,7 +84,7 @@ public class CharacterCustomization : MonoBehaviour {
 							}
 							if ((vox.Value == 37 || vox.Value == 40) && 
 									(!palette.ContainsKey(vox.Value) || palette[vox.Value].Equals(skinColor))) {
-								vox.Color = Outfits.HexParse("1F1F1F00");
+								vox.Color = Outfits.HexParse("1F1F1F00");  // eyes
 							}
 							frame.SetVoxelAtArrayPosition(new PicaVoxel.PicaVoxelPoint(new Vector3(x, y, z)), vox);
 						}
@@ -114,7 +114,7 @@ public class CharacterCustomization : MonoBehaviour {
 	}
 
 	// Randomizes a byte and clamps it between 0 and 255
-	private byte JiggleByte(byte b, int jiggleFactor) {
+	public static byte JiggleByte(byte b, int jiggleFactor) {
 		return (byte)Mathf.Clamp(b + Random.Range(0, jiggleFactor + 1), 0, 255);
 	}
 
