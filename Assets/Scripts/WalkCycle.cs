@@ -72,12 +72,16 @@ public class WalkCycle : MonoBehaviour {
 		}
 
 		Floor f = LevelBuilder.instance.FloorAt(transform.position);
-		if (f != null && f.kickUpDirt) {		
-			for (int i = 0; i < 2; i++) {
+		if (f != null && f.kickUpDirt) {	
+			int dirts = Random.Range(1, 4);	
+			for (int i = 0; i < dirts; i++) {
 				Vector3 pos = transform.root.position;
-				pos.y = transform.position.y - .9f;
-				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos + transform.forward * .1f + Random.insideUnitSphere * .45f, 
-						dirtVoxel.Value, .1f, transform.up * .25f + Random.insideUnitSphere * .5f, .55f);
+				pos.y = 0;
+				pos += transform.forward * .1f + Random.insideUnitSphere * .45f;
+				pos.y = Mathf.Max(pos.y, .04f);
+
+				Vector3 dir = transform.up * .25f + Random.insideUnitSphere * .5f;
+				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos, dirtVoxel.Value, .1f, dir, Random.Range(.3f, .6f));
 			}
 		}
 	}
