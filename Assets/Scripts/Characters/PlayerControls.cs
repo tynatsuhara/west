@@ -195,7 +195,7 @@ public class PlayerControls : Character {
 		return psd;
 	}
 
-	public void LoadFromSave(PlayerSaveData psd) {
+	public void LoadSaveData(PlayerSaveData psd) {
 		guid = psd.guid;
 		if (psd.position != null)
 			transform.position = psd.position.val;
@@ -207,7 +207,7 @@ public class PlayerControls : Character {
 		if (psd.gunSaves != null) {
 			for (int i = 0; i < guns.Length; i++) {
 				if (guns[i] != null && psd.gunSaves[i] != null) {
-					guns[i].GetComponent<Gun>().ApplySaveData(psd.gunSaves[i]);
+					guns[i].GetComponent<Gun>().LoadSaveData(psd.gunSaves[i]);
 				}
 			}
 		}

@@ -126,7 +126,7 @@ public class Pistol : Gun {
 		psd.bulletsFired = bulletsFired;
 		return psd;
 	}
-	public override void ApplySaveData(System.Object saveData) {
+	public override void LoadSaveData(System.Object saveData) {
 		PistolSaveData psd = (PistolSaveData) saveData;
 		bulletsFired = psd.bulletsFired;
 	}

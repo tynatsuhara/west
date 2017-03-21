@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviour {
 			pc.playerUI.player = pc;
 			pc.playerUI.transform.SetParent(pc.playerCamera.transform, false);
 
-			pc.LoadFromSave(SaveGame.currentGame.savedPlayers[pc.id - 1]);			
+			pc.LoadSaveData(SaveGame.currentGame.savedPlayers[pc.id - 1]);			
 		}
 
 		// split screen dimensions

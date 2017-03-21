@@ -40,7 +40,7 @@ public abstract class Gun : MonoBehaviour {
 
 	// Used for saving/loading game
 	abstract public System.Object SaveData();
-	abstract public void ApplySaveData(System.Object saveData);
+	abstract public void LoadSaveData(System.Object saveData);
 
 	public void RaycastShoot(Vector3 source, Vector3 direction) {
 		RaycastHit[] hits = Physics.RaycastAll(source, direction, range)
