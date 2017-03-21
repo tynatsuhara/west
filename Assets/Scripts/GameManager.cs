@@ -48,6 +48,8 @@ public class GameManager : MonoBehaviour {
 		objectives = Object.FindObjectsOfType<PossibleObjective>().Where(x => x.isObjective && !x.isCompleted).ToList();
 		objectivesComplete = CheckObjectivesComplete();
 		GameUI.instance.UpdateObjectives(objectives.ToArray());
+
+		StartCoroutine(CheckQuests());
 	}
 	
 	void Update () {
@@ -92,6 +94,13 @@ public class GameManager : MonoBehaviour {
 		if ((SaveGame.currentGame.gameOver || paused) && (Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown("joystick button 8"))) {
 			SetPaused(false);
 			Application.LoadLevel(Application.loadedLevel);
+		}
+	}
+
+	private IEnumerator CheckQuests() {
+		while (true) {
+			SaveGame.currentGame.quests.UpdateQuests();
+			yield return new WaitForSeconds(.3f);
 		}
 	}
 

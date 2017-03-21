@@ -12,12 +12,14 @@ public class SaveGame {
 	public bool gameOver;
 	public Dictionary<System.Guid, int> savedCharacters;
 	public PlayerControls.PlayerSaveData[] savedPlayers;
+	public QuestManager quests;
 
 	public static void NewGame() {
 		currentGame = new SaveGame();
 		currentGame.savedPlayers = new PlayerControls.PlayerSaveData[4];
 		for (int i = 0; i < 4; i++)
 			currentGame.savedPlayers[i] = new PlayerControls.PlayerSaveData();
+		currentGame.quests = new QuestManager();
 	}
 
 	// Static functions
