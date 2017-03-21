@@ -36,6 +36,9 @@ public class GameManager : MonoBehaviour {
 
 	void Awake() {
 		instance = this;
+		if (!newGame) {
+			SaveGame.Load();
+		}
 		players = SpawnPlayers(playersToSpawn);
 	}
 
