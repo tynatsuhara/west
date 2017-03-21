@@ -26,7 +26,7 @@ public class Pistol : Gun {
 		if (delayed || shooting || reloading || bulletsFired == clipSize || owner == null)
 			return false;
 		
-		RaycastShoot(transform.root.position, -transform.forward);
+		RaycastShoot(transform.parent.position, -transform.forward);
 		// SetFrame before Play to avoid delay
 		volume.SetFrame(ANIM_START_FRAME);
 		anim.Shoot();
@@ -42,7 +42,7 @@ public class Pistol : Gun {
 
 		if (!silenced && isPlayer) {
 			GameManager.instance.AlertInRange(Character.Reaction.AGGRO, 
-				transform.position, 15f, visual: (silenced ? transform.root.gameObject : null));
+				transform.position, 15f, visual: (silenced ? transform.parent.gameObject : null));
 		}
 		return true;
 	}
@@ -51,7 +51,7 @@ public class Pistol : Gun {
 		byte[] bytes = new byte[6];
 		bytes[0] = (byte)PicaVoxel.VoxelState.Active;
 		PicaVoxel.Voxel vox = new PicaVoxel.Voxel(bytes);
-		PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(transform.root.position + transform.root.forward * .45f,
+		PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(transform.parent.position + transform.parent.forward * .45f,
 			vox, .05f, (transform.up - transform.right) * 2.5f + Random.insideUnitSphere * .5f);
 	}
 
@@ -80,8 +80,8 @@ public class Pistol : Gun {
 					byte[] bytes = new byte[6];
 					bytes[0] = (byte)PicaVoxel.VoxelState.Active;
 					PicaVoxel.Voxel vox = new PicaVoxel.Voxel(bytes);
-					PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(transform.root.position + 
-							transform.root.forward * .45f + Vector3.down * .2f,
+					PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(transform.parent.position + 
+							transform.parent.forward * .45f + Vector3.down * .2f,
 							vox, .05f, Random.insideUnitSphere * .5f);
 				}
 			}

@@ -245,7 +245,7 @@ public class NPC : Character, Interactable {
 	public bool ClearShot(GameObject target, float dist = 20f) {
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, target.transform.position - transform.position, out hit, dist, sightLayers))
-			return hit.collider.transform.root.gameObject == target;
+			return hit.collider.transform.root.gameObject == target.transform.root.gameObject;
 
 		return false;
 	}

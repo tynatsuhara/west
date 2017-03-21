@@ -8,7 +8,7 @@ public class DualPistol : Pistol {
 	public Collider droppedCollider2;
 
 	public override void Awake() {
-		owner = transform.root.GetComponent<Character>();
+		owner = GetComponentInParent<Character>();
 		if (Random.Range(0, 2) == 0)
 			SwapArms();
 	}

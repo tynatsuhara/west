@@ -25,7 +25,7 @@ public abstract class Gun : MonoBehaviour {
 	public PlayerControls player;
 
 	public virtual void Awake() {
-		owner = transform.root.GetComponent<Character>();
+		owner = GetComponentInParent<Character>();
 		volume = GetComponent<PicaVoxel.Volume>();
 		anim = GetComponent<GunAnimation>();
 	}
@@ -115,14 +115,14 @@ public abstract class Gun : MonoBehaviour {
 		transform.localEulerAngles = Vector3.up * 180;
 		Quaternion initialRotation = transform.localRotation;
 		Vector3 initialPosition = transform.localPosition;
-		transform.RotateAround(transform.root.position, Vector3.up, angle * meleeDirection);
+		transform.RotateAround(transform.parent.position, Vector3.up, angle * meleeDirection);
 		Quaternion end = transform.localRotation;
-		transform.RotateAround(transform.root.position, Vector3.up, -2.4f * angle * meleeDirection);
+		transform.RotateAround(transform.parent.position, Vector3.up, -2.4f * angle * meleeDirection);
 		float diff = 100f;			
 		while (diff > .03f) {
 			Vector3 nextRot = Quaternion.Lerp(transform.localRotation, end, .3f).eulerAngles;
 			diff = Mathf.Abs(nextRot.y - transform.localRotation.eulerAngles.y);
-			transform.RotateAround(transform.root.position, Vector3.up, diff * meleeDirection);
+			transform.RotateAround(transform.parent.position, Vector3.up, diff * meleeDirection);
 			yield return new WaitForSeconds(.01f);
 		}
 		diff = 100f;
@@ -130,7 +130,7 @@ public abstract class Gun : MonoBehaviour {
 		while (diff > .05f) {
 			Vector3 nextRot = Quaternion.Lerp(transform.localRotation, end, .4f).eulerAngles;
 			diff = Mathf.Abs(transform.localRotation.eulerAngles.y - nextRot.y);
-			transform.RotateAround(transform.root.position, Vector3.up, -diff * meleeDirection);
+			transform.RotateAround(transform.parent.position, Vector3.up, -diff * meleeDirection);
 			yield return new WaitForSeconds(.01f);
 		}
 		transform.localRotation = initialRotation;
@@ -162,7 +162,7 @@ public abstract class Gun : MonoBehaviour {
 
 	public void PlayerEffects(float power, float duration) {
 		if (isPlayer) {
-			transform.root.GetComponent<PlayerControls>().playerCamera.Shake(power, duration);
+			GetComponentInParent<PlayerControls>().playerCamera.Shake(power, duration);
 		}
 	}
 }
