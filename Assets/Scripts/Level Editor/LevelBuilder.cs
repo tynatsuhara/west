@@ -14,8 +14,6 @@ public class LevelBuilder : MonoBehaviour {
 
 	private PicaVoxel.Volume[,] floorTiles;
 
-	public const int CHUNK_SIZE = 120;
-	public const int CHUNK_PADDING = 50;
 	public const int TILE_GRID_LENGTH = 10;
 	public const int TILE_SIZE = 2;  // in-game units
 

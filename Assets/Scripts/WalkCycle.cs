@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WalkCycle : MonoBehaviour {
 
@@ -7,6 +8,7 @@ public class WalkCycle : MonoBehaviour {
 	private float timeElapsed = .1f;
 	private int startFrame;
 	private int endFrame;
+	private Character walker;
 
 	public float interval;
 	public int standingFirstFrame;
@@ -20,6 +22,7 @@ public class WalkCycle : MonoBehaviour {
 
 	void Awake () {
 		volume = GetComponent<PicaVoxel.Volume>();
+		walker = GetComponentInParent<Character>();
 		StopWalk();
 	}
 
@@ -52,6 +55,30 @@ public class WalkCycle : MonoBehaviour {
 				newFrame += startFrame;
 			}
 			volume.SetFrame(newFrame);
+			KickUpDirt();
+		}
+	}
+
+	private static PicaVoxel.Voxel? dirtVoxel;
+	protected void KickUpDirt() {
+		if (!walker.walking)
+			return;
+		
+		if (dirtVoxel == null) {
+			List<byte> bytes = new List<byte>(new byte[2]);
+			bytes[0] = (byte)PicaVoxel.VoxelState.Active;
+			bytes.AddRange(new byte[] { 157, 140, 94, 0 });
+			dirtVoxel = new PicaVoxel.Voxel(bytes.ToArray());
+		}
+
+		Floor f = LevelBuilder.instance.FloorAt(transform.position);
+		if (f != null && f.kickUpDirt) {		
+			for (int i = 0; i < 3; i++) {
+				Vector3 pos = transform.root.position;
+				pos.y = transform.position.y - .9f;
+				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos + transform.forward * .3f + Random.insideUnitSphere * .45f, 
+						dirtVoxel.Value, .1f, transform.up * .25f + Random.insideUnitSphere * .5f, .55f);
+			}
 		}
 	}
 }
