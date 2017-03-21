@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class EnemySpawner : MonoBehaviour {
+public class Spawner : MonoBehaviour {
 
 	public GameObject[] enemyPrefabs;
 	public GameObject[] enemyVehiclePrefabs;

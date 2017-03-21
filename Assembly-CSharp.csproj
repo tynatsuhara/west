@@ -102,7 +102,6 @@
      <Compile Include="Assets\Scripts\Damageable.cs" />
      <Compile Include="Assets\Scripts\Door.cs" />
      <Compile Include="Assets\Scripts\DualPistol.cs" />
-     <Compile Include="Assets\Scripts\EnemySpawner.cs" />
      <Compile Include="Assets\Scripts\Explosive.cs" />
      <Compile Include="Assets\Scripts\Floor.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
@@ -129,9 +128,11 @@
      <Compile Include="Assets\Scripts\Powerable.cs" />
      <Compile Include="Assets\Scripts\Quests\Quest.cs" />
      <Compile Include="Assets\Scripts\Quests\QuestManager.cs" />
+     <Compile Include="Assets\Scripts\Quests\Task.cs" />
      <Compile Include="Assets\Scripts\Recolor.cs" />
      <Compile Include="Assets\Scripts\SerializableVector3.cs" />
      <Compile Include="Assets\Scripts\SpawnPoint.cs" />
+     <Compile Include="Assets\Scripts\Spawner.cs" />
      <Compile Include="Assets\Scripts\Speech.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
      <Compile Include="Assets\Scripts\VaultDoor.cs" />
