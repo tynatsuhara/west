@@ -189,6 +189,7 @@ public class PlayerControls : Character {
 			guns[0] == null ? null : guns[0].GetComponent<Gun>().SaveData(),
 			guns[1] == null ? null : guns[1].GetComponent<Gun>().SaveData(),
 		};
+		psd.health = health;
 		return psd;
 	}
 
@@ -210,6 +211,8 @@ public class PlayerControls : Character {
 		}
 		if (psd.isWeaponDrawn)
 			DrawWeapon();
+		if (psd.health >= 0)
+			health = psd.health;
 		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
 		CharacterOptionsManager.instance.SetSkinColor(id, psd.skinColor);
 		CharacterOptionsManager.instance.SetHairColor(id, psd.hairColor);
@@ -222,6 +225,7 @@ public class PlayerControls : Character {
 		public System.Guid guid = System.Guid.NewGuid();
 		public SerializableVector3 position;
 		public Inventory inv = new Inventory();
+		public float health = -1;
 		public int weaponId = -1;
 		public int sidearmId = 0;  // start with pistol
 		public int equippedWeapon = 1;  // start wielding sidearm
