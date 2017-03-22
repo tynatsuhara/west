@@ -107,7 +107,7 @@ public abstract class Character : PossibleObjective, Damageable {
 			if (vec == Vector3.zero)
 				return;
 			Quaternion targetRotation = Quaternion.LookRotation(vec);
-			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed);
+			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 		}
 	}
 
@@ -230,6 +230,15 @@ public abstract class Character : PossibleObjective, Damageable {
 
 	public void RemoveBody() {
 		Destroy(gameObject);
+	}
+
+	protected float CalculateSpeed() {
+		float speed = moveSpeed * Time.deltaTime;
+		if (draggedBody != null)
+			speed *= .5f;
+		if (hasBag)
+			speed *= bag.speedMultiplier;
+		return speed;
 	}
 
 
@@ -407,6 +416,32 @@ public abstract class Character : PossibleObjective, Damageable {
 		}
 	}
 
+	private bool ridingHorse;
+	private Horse mount;
+	public void MountHorse(Horse h) {
+		if (ridingHorse)
+			return;
+		
+		mount = h;
+		transform.parent = h.transform;
+		SetMount(h, true);
+		transform.localPosition = new Vector3(0, .8f, .2f);  // horseback position
+	}
+	public void Dismount() {
+		transform.parent = null;
+		SetMount(mount, true);
+		// transform.Translate(mount.transform.)
+	}
+	private void SetMount(Horse h, bool isMounted) {
+		Collider[] hc = h.GetComponentsInChildren<Collider>();
+		Collider[] pc = GetComponentsInChildren<Collider>();
+		foreach (Collider horseCollider in hc)
+			foreach (Collider myCollider in pc)
+				Physics.IgnoreCollision(horseCollider, myCollider, isMounted);
+		rb.isKinematic = isMounted;
+		ridingHorse = isMounted;
+	}
+
 	public void SpawnGun() {
 		if (weaponId == -1 && sidearmId == -1)
 			return;
@@ -435,6 +470,10 @@ public abstract class Character : PossibleObjective, Damageable {
 			if (currentGun.isPlayer)
 				currentGun.player = (PlayerControls) this;
 		}
+		GetComponent<CharacterCustomization>().head = head;
+		GetComponent<CharacterCustomization>().body = body;
+		GetComponent<CharacterCustomization>().legs = walk.GetComponent<PicaVoxel.Volume>();
+		GetComponent<CharacterCustomization>().arms = arms;
 		GetComponent<CharacterCustomization>().gunz = gunVolumes.ToArray();		
 		currentGun = null;
 		SelectGun(gunIndex);

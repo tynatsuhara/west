@@ -28,6 +28,7 @@ public class NPC : Character, Interactable {
 		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
 
 		base.Start();
+		SpawnGun();
 		CharacterCustomization cc = GetComponent<CharacterCustomization>();
 		string outfitName = cc.outfitNames[Random.Range(0, cc.outfitNames.Length)];
 		GetComponent<CharacterCustomization>().ColorCharacter(Outfits.fits[outfitName], true);
@@ -38,6 +39,11 @@ public class NPC : Character, Interactable {
 	void Update() {
 		if (!isAlive || GameManager.paused)
 			return;
+
+		LegAnimation();
+		walking = agent.enabled && agent.velocity != Vector3.zero;
+		Rotate();
+		agent.speed = CalculateSpeed();
 
 		// Deal with race conditions with resetting timers
 		if (resetTimeFlag) {
@@ -73,15 +79,6 @@ public class NPC : Character, Interactable {
 		}
 
 		timeInCurrentState += Time.deltaTime;
-	}
-
-	void FixedUpdate () {
-		if (!isAlive || GameManager.paused)
-			return;
-
-		LegAnimation();
-		walking = agent.enabled && agent.velocity != Vector3.zero;
-		Rotate();
 	}
 
 	protected virtual void StatePassive() {}

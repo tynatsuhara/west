@@ -11,6 +11,8 @@ public class WalkCycle : MonoBehaviour {
 	private Character walker;
 
 	public float interval;
+	public int sittingFrame;
+	public int ridingFrame;
 	public int standingFirstFrame;
 	public int standingLastFrame;
 	public int walkingFirstFrame;
@@ -23,7 +25,7 @@ public class WalkCycle : MonoBehaviour {
 	void Awake () {
 		volume = GetComponent<PicaVoxel.Volume>();
 		walker = GetComponentInParent<Character>();
-		StopWalk();
+		StopWalk(true);
 	}
 
 	public void StartWalk() {
@@ -40,9 +42,17 @@ public class WalkCycle : MonoBehaviour {
 		if (immediate)
 			volume.SetFrame(standingFirstFrame);
 	}
+
+	public void Sit() {
+		volume.SetFrame(sittingFrame);
+	}
+
+	public void Ride() {
+		volume.SetFrame(ridingFrame);
+	}
 	
 	void Update () {
-		if (GameManager.paused) {
+		if (GameManager.paused || volume.CurrentFrame == sittingFrame || volume.CurrentFrame == ridingFrame) {
 			return;
 		}
 

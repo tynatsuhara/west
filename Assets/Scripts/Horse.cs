@@ -22,7 +22,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 	// Ride
 	public void Interact(Character character) {
-		character.transform.parent = transform;
+		character.MountHorse(this);
 	}
 	public void Uninteract(Character character) {}
 

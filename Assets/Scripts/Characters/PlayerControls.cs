@@ -24,16 +24,20 @@ public class PlayerControls : Character {
 	}
 
 	void Update() {
-		GetInput();
 		playerUI.UpdateHealth(health, healthMax);
-		if (currentGun != null)
-			currentGun.UpdateUI();
-	}
-
-	void GetInput() {
+		
 		if (!isAlive || GameManager.paused)
 			return;
 
+		GetInput();
+		if (currentGun != null)
+			currentGun.UpdateUI();
+		LookAtMouse();
+		Walk();
+		Rotate();
+	}
+
+	void GetInput() {
 		bool p1 = id == 1;
 
 		if ((p1 && Input.GetKeyDown(KeyCode.F)) || Input.GetKeyDown("joystick " + id + " button 3")) {
@@ -90,10 +94,7 @@ public class PlayerControls : Character {
 		if (!isAlive || GameManager.paused)
 			return;
 		
-    	LookAtMouse();
-		Walk();
 		Drag();
-		Rotate();
     }
 
 	public void SwitchCamera(bool firstPerson) {
@@ -123,13 +124,9 @@ public class PlayerControls : Character {
 	private void Move(float x, float z) {
 		float cameraRotation = playerCamera.transform.eulerAngles.y;
 
-		float speed = moveSpeed;
-		if (draggedBody != null)
-			speed *= .5f;
+		float speed = CalculateSpeed();
 		if (Cheats.instance.IsCheatEnabled("konami"))
 			speed *= 3f;
-		if (hasBag)
-			speed *= bag.speedMultiplier;
 
 		if (firstPersonCam.enabled) {
 			rb.MovePosition(transform.position + transform.right * speed * x + transform.forward * speed * z);
@@ -155,7 +152,7 @@ public class PlayerControls : Character {
 	void LookAtMouse() {
 		if (firstPersonCam.enabled) {
 			LoseLookTarget();
-			transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X") * 5f);
+			transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X") * 5f * Time.deltaTime);
 		} else {
 			// Generate a plane that intersects the transform's position with an upwards normal.
 			Plane playerPlane = new Plane(Vector3.up, transform.position);

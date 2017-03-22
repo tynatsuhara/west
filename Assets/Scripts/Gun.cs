@@ -43,6 +43,7 @@ public abstract class Gun : MonoBehaviour {
 	abstract public void LoadSaveData(System.Object saveData);
 
 	public void RaycastShoot(Vector3 source, Vector3 direction) {
+		source.y = Mathf.Min(source.y, 1.2f);
 		RaycastHit[] hits = Physics.RaycastAll(source, direction, range)
 			.Where(h => h.transform.root != transform.root)
 			.OrderBy(h => h.distance)
