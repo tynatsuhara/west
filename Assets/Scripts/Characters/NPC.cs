@@ -101,7 +101,7 @@ public class NPC : Character, Interactable {
 		velocity.y = 0f;
 		if (velocity == Vector3.zero) {
 			if (walk.isWalking) {
-				walk.StopWalk();
+				walk.StandStill();
 			}
 		} else if (velocity.magnitude > 0f) {
 			if (!walk.isWalking) {

@@ -25,7 +25,7 @@ public class WalkCycle : MonoBehaviour {
 	void Awake () {
 		volume = GetComponent<PicaVoxel.Volume>();
 		walker = GetComponentInParent<Character>();
-		StopWalk(true);
+		StandStill(true);
 	}
 
 	public void StartWalk() {
@@ -35,7 +35,7 @@ public class WalkCycle : MonoBehaviour {
 		volume.SetFrame(walkingFirstFrame);
 	}
 
-	public void StopWalk(bool immediate = false) {
+	public void StandStill(bool immediate = false) {
 		startFrame = standingFirstFrame;
 		endFrame = standingLastFrame;
 		timeElapsed = 0f;
@@ -52,6 +52,9 @@ public class WalkCycle : MonoBehaviour {
 	}
 	
 	void Update () {
+		transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, 
+				volume.CurrentFrame == sittingFrame ? .1f : 0f);
+
 		if (GameManager.paused || volume.CurrentFrame == sittingFrame || volume.CurrentFrame == ridingFrame) {
 			return;
 		}

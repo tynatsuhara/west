@@ -27,6 +27,10 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	public void Uninteract(Character character) {}
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
+		data.health -= damage;
+		if (data.health <= 0) {
+			GetComponentInChildren<Character>().Dismount();
+		}
 		return false;
 	}
 

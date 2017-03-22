@@ -169,7 +169,7 @@ public abstract class Character : PossibleObjective, Damageable {
 		if (obstacle != null)
 			obstacle.enabled = true;
 
-		walk.StopWalk();
+		walk.StandStill();
 		rb.constraints = RigidbodyConstraints.None;
 
 		if (weaponDrawn) {
@@ -233,7 +233,9 @@ public abstract class Character : PossibleObjective, Damageable {
 	}
 
 	protected float CalculateSpeed() {
-		float speed = moveSpeed * Time.deltaTime;
+		float speed = moveSpeed;
+		if (ridingHorse)
+			return speed * 1.7f;
 		if (draggedBody != null)
 			speed *= .5f;
 		if (hasBag)
@@ -416,21 +418,22 @@ public abstract class Character : PossibleObjective, Damageable {
 		}
 	}
 
-	private bool ridingHorse;
-	private Horse mount;
+	protected bool ridingHorse;
+	protected Horse mount;
 	public void MountHorse(Horse h) {
 		if (ridingHorse)
 			return;
 		
 		mount = h;
-		transform.parent = h.transform;
 		SetMount(h, true);
-		transform.localPosition = new Vector3(0, .8f, .2f);  // horseback position
+		transform.parent = h.transform;		
+		transform.localPosition = new Vector3(0f, .82f, .2f);  // horseback position
+		walk.Sit();
 	}
 	public void Dismount() {
-		transform.parent = null;
 		SetMount(mount, true);
-		// transform.Translate(mount.transform.)
+		transform.parent = null;		
+		walk.StandStill();
 	}
 	private void SetMount(Horse h, bool isMounted) {
 		Collider[] hc = h.GetComponentsInChildren<Collider>();

@@ -124,25 +124,40 @@ public class PlayerControls : Character {
 	private void Move(float x, float z) {
 		float cameraRotation = playerCamera.transform.eulerAngles.y;
 
-		float speed = CalculateSpeed();
+		float speed = CalculateSpeed() * Time.deltaTime;
 		if (Cheats.instance.IsCheatEnabled("konami"))
 			speed *= 3f;
 
+		GameObject mover = ridingHorse ? mount.gameObject : gameObject;
+
+		Vector3 mountFaceDir = Vector3.zero;
 		if (firstPersonCam.enabled) {
-			rb.MovePosition(transform.position + transform.right * speed * x + transform.forward * speed * z);
+			mover.GetComponent<Rigidbody>().MovePosition(mover.transform.position + 
+					transform.right * speed * x + transform.forward * speed * z);
+			mountFaceDir = mover.transform.position + new Vector3(x, 0, z);
 		} else {
-			Vector3 pos = transform.position;
+			Vector3 pos = mover.transform.position;
 			pos.x += speed * (z * Mathf.Sin(cameraRotation * Mathf.Deg2Rad) + 
 				x * Mathf.Sin((cameraRotation + 90) * Mathf.Deg2Rad));
 			pos.z += speed * (z * Mathf.Cos(cameraRotation * Mathf.Deg2Rad) + 
 				x * Mathf.Cos((cameraRotation + 90) * Mathf.Deg2Rad));
-			rb.MovePosition(pos);
+			mountFaceDir = pos;
+			mover.GetComponent<Rigidbody>().MovePosition(pos);
 		}
 
-		if ((x != 0 || z != 0) && !walk.isWalking) {
+		if (ridingHorse) {
+			bool facingForward = Mathf.Abs((mount.transform.eulerAngles.y % 180) - (walk.transform.eulerAngles.y % 180) + 90) % 180 < 45;
+			if (!facingForward)
+				walk.Ride();
+			else walk.Sit();
+			if (x != 0 || z != 0) {
+				Quaternion q = Quaternion.LookRotation(mount.transform.position - mountFaceDir);
+				mount.transform.rotation = Quaternion.Lerp(mount.transform.rotation, q, .1f);
+			}
+		} else if ((x != 0 || z != 0) && !walk.isWalking) {
 			walk.StartWalk();
 		} else if (x == 0 && z == 0 && walk.isWalking) {
-			walk.StopWalk(true);
+			walk.StandStill(true);
 		}
 		if (x != 0 || z != 0) {
 			lastMoveDirection = new Vector3(x, 0, z).normalized;
@@ -152,7 +167,7 @@ public class PlayerControls : Character {
 	void LookAtMouse() {
 		if (firstPersonCam.enabled) {
 			LoseLookTarget();
-			transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X") * 5f * Time.deltaTime);
+			transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X") * 150f * Time.deltaTime);
 		} else {
 			// Generate a plane that intersects the transform's position with an upwards normal.
 			Plane playerPlane = new Plane(Vector3.up, transform.position);
