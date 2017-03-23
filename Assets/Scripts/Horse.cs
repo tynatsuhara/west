@@ -5,6 +5,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 	public float healthMax;
 	private HorseSaveData data;
+	private Character rider;
 
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
@@ -23,13 +24,20 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	// Ride
 	public void Interact(Character character) {
 		character.MountHorse(this);
+		rider = character;
+
 	}
 	public void Uninteract(Character character) {}
+
+	public void Dismount() {
+		rider = null;
+	}
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
 		data.health -= damage;
 		if (data.health <= 0) {
-			GetComponentInChildren<Character>().Dismount();
+			if (rider != null)
+				rider.Dismount();
 		}
 		return false;
 	}

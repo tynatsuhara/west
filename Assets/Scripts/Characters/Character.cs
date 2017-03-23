@@ -431,9 +431,10 @@ public abstract class Character : PossibleObjective, Damageable {
 		walk.Sit();
 	}
 	public void Dismount() {
-		SetMount(mount, true);
-		transform.parent = null;		
-		walk.StandStill();
+		SetMount(mount, false);
+		mount.Dismount();
+		transform.parent = null;
+		walk.StandStill(true);
 	}
 	private void SetMount(Horse h, bool isMounted) {
 		Collider[] hc = h.GetComponentsInChildren<Collider>();

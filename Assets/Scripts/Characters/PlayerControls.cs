@@ -50,7 +50,11 @@ public class PlayerControls : Character {
 		}
 
 		if ((p1 && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown("joystick " + id + " button 1")) {
-			Interact();
+			if (ridingHorse) {
+				Dismount();
+			} else {
+				Interact();
+			}
 		} else if ((p1 && Input.GetKeyUp(KeyCode.E)) || Input.GetKeyUp("joystick " + id + " button 1")) {
 			InteractCancel();
 		}
