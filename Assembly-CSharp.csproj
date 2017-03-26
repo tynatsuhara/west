@@ -144,6 +144,7 @@
      <Compile Include="Assets\Scripts\Window.cs" />
      <Compile Include="Assets\Scripts\World\Location.cs" />
      <Compile Include="Assets\Scripts\World\Map.cs" />
+     <Compile Include="Assets\Scripts\World\NameGen.cs" />
      <Compile Include="Assets\Scripts\World\SaveGame.cs" />
      <Compile Include="Assets\Scripts\WorldBlood.cs" />
      <Compile Include="Assets\Scripts\WorldPoint.cs" />

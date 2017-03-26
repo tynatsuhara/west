@@ -3,17 +3,15 @@ using System.Linq;
 
 [System.Serializable]
 public class Location {
-	public System.Guid guid;
-	public string name;
+	public System.Guid guid = System.Guid.NewGuid();
+	public string name = NameGen.TownName();
 	public SerializableVector3 worldLocation;
-	public System.Guid[] connections;
+	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public System.Guid[] horses;
 
 	public Location(float x, float y) {
-		this.guid = System.Guid.NewGuid();
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
-		connections = new System.Guid[Random.Range(1, 6)];
-
+		Debug.Log(name);
 		
 		// TEMP spawning
 		horses = new System.Guid[Random.Range(1, 5)];
