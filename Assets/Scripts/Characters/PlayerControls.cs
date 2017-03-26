@@ -150,10 +150,7 @@ public class PlayerControls : Character {
 		}
 
 		if (ridingHorse) {
-			bool facingForward = Mathf.Abs((mount.transform.eulerAngles.y % 180) - (walk.transform.eulerAngles.y % 180) + 90) % 180 < 45;
-			if (!facingForward)
-				walk.Ride();
-			else walk.Sit();
+			walk.Ride();
 			if (x != 0 || z != 0) {
 				Quaternion q = Quaternion.LookRotation(mount.transform.position - mountFaceDir);
 				mount.transform.rotation = Quaternion.Lerp(mount.transform.rotation, q, .1f);
