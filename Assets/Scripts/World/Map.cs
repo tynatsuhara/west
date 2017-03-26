@@ -67,4 +67,45 @@ public class Map {
 			DFS(locations[l2], outGraph);
 		}
 	}
+
+	public List<System.Guid> BestPathFrom(System.Guid start, System.Guid destination) {
+		Location src = locations[start];
+		Location dst = locations[destination];
+
+		Dictionary<Location, int> dist = new Dictionary<Location, int>();
+		foreach (Location l in locations.Values)
+			dist.Add(l, int.MaxValue);
+		dist[src] = 0;
+
+		Dictionary<Location, Location> prev = new Dictionary<Location, Location>();
+		foreach (Location l in locations.Values)
+			prev.Add(l, null);
+		
+		List<Location> q = locations.Values.ToList();
+
+		while (q.Count > 0) {
+			Location u = dist.OrderBy(x => x.Value).First().Key;
+			if (u == dst) {
+				List<Location> path = new List<Location>();
+				path.Add(u);
+				while (prev[path[0]] != src) {
+					path.Insert(0, prev[path[0]]);
+				}
+				return path.Select(x => x.guid).ToList();
+			}
+			q.Remove(u);
+
+			foreach (System.Guid vg in u.connections) {
+				Location v = locations[vg];
+				int alt = dist[u] + 1;
+				if (alt < dist[v]) {
+					dist[v] = alt;
+					prev[v] = u;
+				}
+			}
+		}
+
+		return null;
+	}
+
  }
