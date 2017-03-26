@@ -54,6 +54,8 @@ public class Map {
 		foreach (Location l in graph)
 			locations.Add(l.guid, l);
 
+		currentLocation = graph[0];
+
 		Debug.Log("generated " + ls.Count + " towns");
 	}
 

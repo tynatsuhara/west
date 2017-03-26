@@ -31,20 +31,28 @@ public class GameManager : MonoBehaviour {
 			return lst;
 		}
 	}
+	public static List<Horse> localHorses {
+		get {
+			return Object.FindObjectsOfType<Horse>().ToList();
+		}
+	}
 
 	public bool friendlyFireEnabled;
 
 	void Awake() {
 		instance = this;
-		if (!newGame) {
-			SaveGame.Load();
-		}
-		players = SpawnPlayers(playersToSpawn);
 	}
 
 	void Start () {
+		if (newGame) {
+			SaveGame.GenerateWorld();
+		} else {
+			SaveGame.Load();
+		}
 
 		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);
+
+		players = SpawnPlayers(playersToSpawn);		
 
 		// get objectives
 		objectives = Object.FindObjectsOfType<PossibleObjective>().Where(x => x.isObjective && !x.isCompleted).ToList();

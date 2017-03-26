@@ -208,6 +208,8 @@ public class PlayerControls : Character {
 			guns[1] == null ? null : guns[1].GetComponent<Gun>().SaveData(),
 		};
 		psd.health = health;
+		psd.ridingHorse = ridingHorse;
+		psd.mountGuid = ridingHorse ? mount.GetComponent<Horse>().SaveData().guid : System.Guid.Empty;
 		return psd;
 	}
 
@@ -254,5 +256,8 @@ public class PlayerControls : Character {
 		public int hairColor;
 		public int hairStyle;
 		public int accessory;
+
+		public bool ridingHorse;
+		public System.Guid mountGuid;
 	}
 }

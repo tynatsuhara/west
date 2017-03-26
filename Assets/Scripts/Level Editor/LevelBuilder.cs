@@ -11,6 +11,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject wallPrefab;
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;
+	public GameObject horsePrefab;
 
 	private PicaVoxel.Volume[,] floorTiles;
 
@@ -23,6 +24,8 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void LoadLocation(Location l) {
+
+		SpawnHorses(l);
 
 		// TEMP
 		GameObject floorHolder = new GameObject();
@@ -48,5 +51,13 @@ public class LevelBuilder : MonoBehaviour {
 	public Floor FloorAt(Vector3 pos) {
 		PicaVoxel.Volume f = FloorTileAt(pos);
 		return f == null ? null : f.GetComponent<Floor>();
+	}
+
+	private void SpawnHorses(Location l) {
+		foreach (System.Guid id in l.horses) {
+			Horse.HorseSaveData hsd = SaveGame.currentGame.horses[id];
+			Horse h = Instantiate(horsePrefab).GetComponent<Horse>();
+			h.LoadSaveData(hsd);
+		}
 	}
 }

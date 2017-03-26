@@ -11,23 +11,36 @@ public class SaveGame {
 
 	public bool gameOver;
 	public Dictionary<System.Guid, int> savedCharacters;
+	public Dictionary<System.Guid, Horse.HorseSaveData> horses;
 	public PlayerControls.PlayerSaveData[] savedPlayers;
 	public Map map;
 	public QuestManager quests;
 
+	// Establishes a new game with data for the player(s)
 	public static void NewGame() {
+		// savedCharacters = something
 		currentGame = new SaveGame();
-		currentGame.map = new Map();
+		currentGame.horses = new Dictionary<System.Guid, Horse.HorseSaveData>();
 		currentGame.savedPlayers = new PlayerControls.PlayerSaveData[4];
 		for (int i = 0; i < 4; i++)
 			currentGame.savedPlayers[i] = new PlayerControls.PlayerSaveData();
-		currentGame.quests = new QuestManager();
 	}
 
-	// Static functions
+	// Called once character creation has been done
+	public static void GenerateWorld() {
+		currentGame.map = new Map();
+		currentGame.quests = new QuestManager();		
+	}
 
 	public static void Save() {
+		// save players in scene
 		currentGame.savedPlayers = GameManager.players.Select(x => x.SaveData()).ToArray();
+
+		// update local wildlife
+		foreach (Horse h in GameManager.localHorses) {
+			Horse.HorseSaveData hsd = h.SaveData();
+			currentGame.horses[hsd.guid] = hsd;
+		}
 
 		if (!Directory.Exists(DirPath()))
 			Directory.CreateDirectory(DirPath());

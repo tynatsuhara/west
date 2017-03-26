@@ -10,17 +10,6 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
 
-	void Start () {
-		if (data == null) {  // hasn't been spawned before, no data saved
-			data = new HorseSaveData();
-			data.health = healthMax;
-			data.bodyColor = Random.Range(0, bodyColor.Length);
-			data.maneColor = Random.Range(0, maneColor.Length);
-			data.speckled = Random.Range(0, 5) == 0;
-		}
-		Color();		
-	}
-
 	// Ride
 	public void Interact(Character character) {
 		character.MountHorse(this);
@@ -92,16 +81,25 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 		data = hsd;
 		transform.position = data.location.val;
 		transform.eulerAngles = data.eulerAngles.val;
+		Color();		
 	}
 
 	[System.Serializable]
 	public class HorseSaveData {
+		public HorseSaveData(GameObject horsePrefab) {
+			Horse h = horsePrefab.GetComponent<Horse>();
+			health = h.healthMax;
+			bodyColor = Random.Range(0, h.bodyColor.Length);
+			maneColor = Random.Range(0, h.maneColor.Length);
+			speckled = Random.Range(0, 5) == 0;
+		}
+
 		public System.Guid guid = System.Guid.NewGuid();
 		public float health;
 		public int bodyColor;
 		public int maneColor;
 		public bool speckled;
-		public SerializableVector3 location;
-		public SerializableVector3 eulerAngles;
+		public SerializableVector3 location = new SerializableVector3(Vector3.zero);
+		public SerializableVector3 eulerAngles = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 	}
 }
