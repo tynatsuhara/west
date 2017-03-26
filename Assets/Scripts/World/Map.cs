@@ -49,7 +49,7 @@ public class Map {
 
 		// BFS to find connected map
 		List<Location> graph = new List<Location>();
-		BFS(ls[0], graph);
+		DFS(ls[0], graph);
 		locations.Clear();
 		foreach (Location l in graph)
 			locations.Add(l.guid, l);
@@ -59,12 +59,12 @@ public class Map {
 		Debug.Log("generated " + ls.Count + " towns");
 	}
 
-	private void BFS(Location l, List<Location> outGraph) {
+	private void DFS(Location l, List<Location> outGraph) {
 		outGraph.Add(l);
 		foreach (System.Guid l2 in l.connections) {
 			if (outGraph.Contains(locations[l2]))
 				continue;
-			BFS(locations[l2], outGraph);
+			DFS(locations[l2], outGraph);
 		}
 	}
  }
