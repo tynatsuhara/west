@@ -12,4 +12,16 @@ public class SerializableVector3 {
 		y = v.y;
 		z = v.z;
 	}
+
+	public override bool Equals(System.Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj is SerializableVector3))
+			return false;
+		return val == ((SerializableVector3)obj).val;
+	}
+
+	public override int GetHashCode() {
+		return val.GetHashCode();
+	}
 }
