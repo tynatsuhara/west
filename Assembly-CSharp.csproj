@@ -140,6 +140,7 @@
      <Compile Include="Assets\Scripts\WalkCycle.cs" />
      <Compile Include="Assets\Scripts\Wall.cs" />
      <Compile Include="Assets\Scripts\Window.cs" />
+     <Compile Include="Assets\Scripts\World\Location.cs" />
      <Compile Include="Assets\Scripts\World\Map.cs" />
      <Compile Include="Assets\Scripts\World\SaveGame.cs" />
      <Compile Include="Assets\Scripts\WorldBlood.cs" />

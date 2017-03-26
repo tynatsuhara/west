@@ -44,8 +44,7 @@ public class GameManager : MonoBehaviour {
 
 	void Start () {
 
-		GetComponent<LevelBuilder>().BuildLevel();
-		// TODO: build current map location from SaveGame
+		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);
 
 		// get objectives
 		objectives = Object.FindObjectsOfType<PossibleObjective>().Where(x => x.isObjective && !x.isCompleted).ToList();

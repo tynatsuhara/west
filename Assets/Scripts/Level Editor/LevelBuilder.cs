@@ -22,7 +22,7 @@ public class LevelBuilder : MonoBehaviour {
 		floorTiles = new PicaVoxel.Volume[TILE_GRID_LENGTH, TILE_GRID_LENGTH];
 	}
 
-	public void BuildLevel() {
+	public void LoadLocation(Location l) {
 
 		// TEMP
 		GameObject floorHolder = new GameObject();
