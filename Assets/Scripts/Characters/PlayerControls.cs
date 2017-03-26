@@ -233,6 +233,8 @@ public class PlayerControls : Character {
 			DrawWeapon();
 		if (psd.health >= 0)
 			health = psd.health;
+		if (psd.ridingHorse)
+			MountHorse(GameManager.localHorses.Where(x => x.SaveData().guid == psd.mountGuid).First());
 		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
 		CharacterOptionsManager.instance.SetSkinColor(id, psd.skinColor);
 		CharacterOptionsManager.instance.SetHairColor(id, psd.hairColor);

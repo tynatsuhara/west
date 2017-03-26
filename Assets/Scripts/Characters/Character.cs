@@ -442,7 +442,7 @@ public abstract class Character : PossibleObjective, Damageable {
 		foreach (Collider horseCollider in hc)
 			foreach (Collider myCollider in pc)
 				Physics.IgnoreCollision(horseCollider, myCollider, isMounted);
-		rb.isKinematic = isMounted;
+		GetComponent<Rigidbody>().isKinematic = isMounted;
 		ridingHorse = isMounted;
 	}
 
