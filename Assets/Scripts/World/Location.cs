@@ -4,6 +4,7 @@ using System.Linq;
 [System.Serializable]
 public class Location {
 	public System.Guid guid;
+	public string name;
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections;
 	public System.Guid[] horses;
