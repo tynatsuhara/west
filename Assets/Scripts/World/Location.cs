@@ -11,7 +11,7 @@ public class Location {
 
 	public Location(float x, float y) {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
-		Debug.Log(name);
+		// Debug.Log(name);
 		
 		// TEMP spawning
 		horses = new System.Guid[Random.Range(1, 5)];

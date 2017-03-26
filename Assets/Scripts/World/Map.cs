@@ -47,7 +47,7 @@ public class Map {
 		foreach (Location l in ls)
 			locations.Add(l.guid, l);
 
-		// BFS to find connected map
+		// Find connected map
 		List<Location> graph = new List<Location>();
 		DFS(ls[0], graph);
 		locations.Clear();
@@ -56,7 +56,7 @@ public class Map {
 
 		currentLocation = graph[0];
 
-		Debug.Log("generated " + ls.Count + " towns");
+		// Debug.Log("generated " + ls.Count + " towns");
 	}
 
 	private void DFS(Location l, List<Location> outGraph) {
