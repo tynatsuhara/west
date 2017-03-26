@@ -61,11 +61,11 @@ public class SaveGame {
 		Debug.Log("game loaded from " + SavePath());	
 	}
 
-	public static string DirPath() {
+	private static string DirPath() {
 		return Application.persistentDataPath + "/saves";
 	}
 
-	public static string SavePath() {
+	private static string SavePath() {
 		return Application.persistentDataPath + "/saves/save0.wst";
 	}
 

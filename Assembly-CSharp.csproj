@@ -137,6 +137,7 @@
      <Compile Include="Assets\Scripts\SpawnPoint.cs" />
      <Compile Include="Assets\Scripts\Spawner.cs" />
      <Compile Include="Assets\Scripts\Speech.cs" />
+     <Compile Include="Assets\Scripts\Teleporter.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
      <Compile Include="Assets\Scripts\VaultDoor.cs" />
      <Compile Include="Assets\Scripts\WalkCycle.cs" />
