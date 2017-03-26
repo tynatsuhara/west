@@ -4,34 +4,29 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Map {
 
-	public const int CHUNK_SIZE = 100;
-	public const int MAX_LOCATIONS_PER_CHUNK = 30;
+	public const int WORLD_COORD_SIZE = 100;
+	public const int LOCATION_AMOUNT = 30;
+	public const int MIN_DISTANCE_BETWEEN_LOCATIONS = 7;
 
-	public static Dictionary<SerializableVector3, Chunk> chunks;
+	// Chunk coordinates increase up and to the right
+	public Dictionary<System.Guid, Location> locations;
 
 	public Map() {
-		chunks = new Dictionary<SerializableVector3, Chunk>();
-		GenerateChunk(Vector3.zero);
-	}
-
-	private static void GenerateChunk(Vector3 v) {
-		Chunk c = new Chunk(v);
-
-		for (int i = 0; i < MAX_LOCATIONS_PER_CHUNK; i++) {
-			float x = Random.Range(0, 1f * CHUNK_SIZE);
-			float y = Random.Range(0, 1f * CHUNK_SIZE);
-			Location l = new Location(c, new Vector3(x, y, 0f));
+		locations = new Dictionary<System.Guid, Location>();
+		
+		List<Location> ls = new List<Location>();
+		for (int i = 0; i < LOCATION_AMOUNT; i++) {
+			Location l = new Location(Random.Range(0, WORLD_COORD_SIZE), Random.Range(0, WORLD_COORD_SIZE));
+			ls.Add(l);
 		}
-	}
 
-
-	[System.Serializable]
-	public class Chunk {
-		public SerializableVector3 gridLocation;
-		public static Dictionary<SerializableVector3, Chunk> chunks;
-
-		public Chunk(Vector3 gridLocation) {
-			this.gridLocation = new SerializableVector3(gridLocation);
+		for (int i = ls.Count - 1; i > 0; i++) {
+			for (int j = i - 1; j >= 0; j++) {
+				if (ls[i].DistanceFrom(ls[j]) < MIN_DISTANCE_BETWEEN_LOCATIONS) {
+					ls.RemoveAt(i);
+					break;
+				}
+			}
 		}
 	}
 
@@ -39,20 +34,15 @@ public class Map {
 	[System.Serializable]
 	public class Location {
 		public System.Guid guid;
-		public Chunk chunk;
-		private SerializableVector3 chunkCoordinates;
-		public Vector3 worldCoord {
-			get {
-				float chunkX = chunk.gridLocation.val.x;
-				float chunkY = chunk.gridLocation.val.y;
-				return new Vector3(chunkX * CHUNK_SIZE + chunkCoordinates.val.x, 
-								   chunkY * CHUNK_SIZE + chunkCoordinates.val.y, 0f);
-			}
+		private SerializableVector3 worldLocation;
+
+		public Location(float x, float y) {
+			this.guid = System.Guid.NewGuid();
+			this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 		}
 
-		public Location(Chunk chunk, Vector3 chunkCoordinates) {
-			this.chunk = chunk;
-			this.chunkCoordinates = new SerializableVector3(chunkCoordinates);
+		public float DistanceFrom(Location l) {
+			return (l.worldLocation.val - worldLocation.val).magnitude;
 		}
 	}
  }
