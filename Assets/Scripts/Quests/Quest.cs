@@ -8,12 +8,4 @@ public abstract class Quest {
 	public bool complete {
 		get { return tasks.All(x => x.complete || x.optional); }	
 	}
-
-	public void StartQuest(List<Task> tasks) {
-		
-	}
-
-	public void StartQuest(Task[] tasks) {
-		StartQuest(new List<Task>(tasks));
-	}
 }
