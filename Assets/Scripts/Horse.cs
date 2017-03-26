@@ -83,11 +83,15 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 
 	public HorseSaveData SaveData() {
+		data.location = new SerializableVector3(transform.position);
+		data.eulerAngles = new SerializableVector3(transform.eulerAngles);
 		return data;
 	}
 
 	public void LoadSaveData(HorseSaveData hsd) {
 		data = hsd;
+		transform.position = data.location.val;
+		transform.eulerAngles = data.eulerAngles.val;
 	}
 
 	[System.Serializable]
@@ -97,5 +101,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 		public int bodyColor;
 		public int maneColor;
 		public bool speckled;
+		public SerializableVector3 location;
+		public SerializableVector3 eulerAngles;
 	}
 }
