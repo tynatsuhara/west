@@ -13,7 +13,6 @@ public class Location {
 
 	public Location(float x, float y) {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
-		Debug.Log(name);
 
 		// TEMP spawning
 		horses = new System.Guid[Random.Range(1, 5)];
@@ -34,11 +33,12 @@ public class Location {
 
 	public void Connect(Location l) {
 		int index = System.Array.IndexOf(connections, System.Guid.Empty);
-		int indexL = System.Array.IndexOf(l.connections, System.Guid.Empty);
 		connections[index] = l.guid;
+		int indexL = System.Array.IndexOf(l.connections, System.Guid.Empty);
 		l.connections[indexL] = guid;
 
-		teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index * 4, 1, 1)));
+		teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index * 4, 1, -5)));
+		l.teleporters.Add(new Teleporter.TeleporterData(guid, new Vector3(indexL * 4, 1, -5)));
 	}
 
 	public float DistanceFrom(Location l) {

@@ -24,6 +24,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void LoadLocation(Location l) {
+		Debug.Log("Welcome to " + l.name + "!");
 
 		SpawnHorses(l);
 		SpawnTeleporters(l);
@@ -69,11 +70,11 @@ public class LevelBuilder : MonoBehaviour {
 		foreach (Teleporter.TeleporterData td in l.teleporters) {
 			GameObject porter = new GameObject();
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
-			porter.transform.parent = porterParent.transform;
-			porter.AddComponent<Teleporter>().LoadSaveData(td);
 			SphereCollider sc = porter.AddComponent<SphereCollider>();
 			sc.isTrigger = true;
 			sc.radius = 1.5f;
+			porter.transform.parent = porterParent.transform;
+			porter.AddComponent<Teleporter>().LoadSaveData(td);
 		}
 	}
 }

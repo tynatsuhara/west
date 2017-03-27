@@ -107,6 +107,13 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	public void LoadLocation(System.Guid guid) {
+		SaveGame.Save();
+		SaveGame.currentGame.map.currentLocation = SaveGame.currentGame.map.locations[guid];
+		SetPaused(false);
+		Application.LoadLevel(Application.loadedLevel);
+	}
+
 	private IEnumerator CheckQuests() {
 		while (true) {
 			SaveGame.currentGame.quests.UpdateQuests();

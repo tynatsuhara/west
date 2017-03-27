@@ -36,6 +36,8 @@ public class Map {
 		foreach (Location l in ls) {
 			var others = ls.OrderBy(x => (l.worldLocation.val - x.worldLocation.val).magnitude).ToList();
 			foreach (Location o in ls) {
+				if (l == o)
+					continue;
 				if (l.CanConnectTo(o) && o.CanConnectTo(l))
 					l.Connect(o);
 				if (l.DoneConnecting())
@@ -55,8 +57,6 @@ public class Map {
 			locations.Add(l.guid, l);
 
 		currentLocation = graph[0];
-
-		// Debug.Log("generated " + ls.Count + " towns");
 	}
 
 	private void DFS(Location l, List<Location> outGraph) {
