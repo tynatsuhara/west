@@ -62,7 +62,7 @@ public class Map {
 	private void DFS(Location l, List<Location> outGraph) {
 		outGraph.Add(l);
 		foreach (System.Guid l2 in l.connections) {
-			if (outGraph.Contains(locations[l2]))
+			if (l2 == System.Guid.Empty || outGraph.Contains(locations[l2]))
 				continue;
 			DFS(locations[l2], outGraph);
 		}

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Linq;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Location {
@@ -8,9 +9,11 @@ public class Location {
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public System.Guid[] horses;
+	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 
 	public Location(float x, float y) {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
+		Debug.Log(name);
 		
 		// TEMP spawning
 		horses = new System.Guid[Random.Range(1, 5)];
@@ -34,6 +37,8 @@ public class Location {
 		int indexL = System.Array.IndexOf(l.connections, System.Guid.Empty);
 		connections[index] = l.guid;
 		l.connections[indexL] = guid;
+
+		teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index, 1, 1)));
 	}
 
 	public float DistanceFrom(Location l) {

@@ -7,23 +7,23 @@ public class Teleporter : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.GetComponentInParent<PlayerControls>()) {
-			SaveGame.Save();
+			Debug.Log("teleported to " + toId);
 		}
-	}
-
-	public TeleporterData SaveData() {
-		TeleporterData td = new TeleporterData();
-		td.toId = toId;
-		td.position = new SerializableVector3(transform.position);
-		return td;
 	}
 
 	public void LoadSaveData(TeleporterData td) {
 		toId = td.toId;
+		transform.position = td.position.val;
 	}
 
+	[System.Serializable]
 	public class TeleporterData {
 		public System.Guid toId;
 		public SerializableVector3 position;
+
+		public TeleporterData(System.Guid toId, Vector3 position) {
+			this.toId = toId;
+			this.position = new SerializableVector3(position);
+		}
 	}
 }

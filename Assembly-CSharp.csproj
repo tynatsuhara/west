@@ -134,8 +134,6 @@
      <Compile Include="Assets\Scripts\Quests\Task.cs" />
      <Compile Include="Assets\Scripts\Recolor.cs" />
      <Compile Include="Assets\Scripts\SerializableVector3.cs" />
-     <Compile Include="Assets\Scripts\SpawnPoint.cs" />
-     <Compile Include="Assets\Scripts\Spawner.cs" />
      <Compile Include="Assets\Scripts\Speech.cs" />
      <Compile Include="Assets\Scripts\Teleporter.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
