@@ -71,6 +71,9 @@ public class LevelBuilder : MonoBehaviour {
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;
 			porter.AddComponent<Teleporter>().LoadSaveData(td);
+			SphereCollider sc = porter.AddComponent<SphereCollider>();
+			sc.isTrigger = true;
+			sc.radius = 1.5f;
 		}
 	}
 }
