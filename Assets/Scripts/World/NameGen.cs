@@ -37,7 +37,7 @@ public class NameGen {
 
 	private static NameGen townNameGen = new NameGen(new string[] {
 		"<name>:<prefix><suffix>|<firstword> <lastword>",
-		"<prefix>:Plain|Stag|High|Dirt|Dread|Stark|Yellow|Red|Dead|Long|Dark|Black|Deer|Maple|Steel|Dry|Glum|Grim|Crook|Ragged|White|Cattle|Low|Squirrel",
+		"<prefix>:Plain|Stag|High|Dirt|Dread|Stark|Yellow|Red|Dead|Long|Dark|Black|Deer|Maple|Steel|Dry|Glum|Grim|Crook|Ragged|White|Cattle|Low|Squirrel|Mud",
 		"<suffix>:brook|vale|cliff|ridge|canyon|port|crag|worth|reach|range|stone|water|river|bend|hollow|hill",
 		"<firstword>:Old|Windy|Silent|Lawless|Death's|Hangman's|Wolf's|Grizzly|Scorpion's|Yellow|Red|Black|Dead|Glum|Depressing|Grim|Desert|Dead Man's|Meme",
 		"<lastword>:Landing|Canyon|Ridge|Ranch|Hollow|Stead|Stream|Spring|Gorge|Gulch|Post|Outpost|Corral"
