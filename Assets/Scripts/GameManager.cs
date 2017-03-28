@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		if (newGame) {
 			SaveGame.GenerateWorld();
+			newGame = false;
 		} else {
 			SaveGame.Load();
 		}
@@ -108,8 +109,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void LoadLocation(System.Guid guid) {
+		SaveGame.currentGame.map.currentLocation = guid;
 		SaveGame.Save();
-		SaveGame.currentGame.map.currentLocation = SaveGame.currentGame.map.locations[guid];
 		SetPaused(false);
 		Application.LoadLevel(Application.loadedLevel);
 	}

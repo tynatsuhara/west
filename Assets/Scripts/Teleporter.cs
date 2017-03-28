@@ -5,15 +5,19 @@ using System.Collections;
 public class Teleporter : MonoBehaviour {
 
 	public System.Guid toId;
+	public string destination;
+	private bool ignore = true;
+	private TeleporterData otherSide;
 
 	void Awake() {
 		StartCoroutine(Delay());
 	}
 
 	void OnTriggerEnter(Collider other) {
+		if (ignore)
+			return;
 		if (other.GetComponentInParent<PlayerControls>()) {
-			TeleporterData otherSide = SaveGame.currentGame.map.locations[toId].teleporters
-				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation.guid).First();
+			ignore = true;
 			other.transform.root.position = otherSide.position.val;
 			GameManager.instance.LoadLocation(toId);
 		}
@@ -22,12 +26,15 @@ public class Teleporter : MonoBehaviour {
 	public void LoadSaveData(TeleporterData td) {
 		toId = td.toId;
 		transform.position = td.position.val;
+		destination = SaveGame.currentGame.map.locations[toId].name;
+		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
+				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation).First();
 	}
 
 	private IEnumerator Delay() {
-		GetComponent<Collider>().enabled = false;
+		ignore = true;
 		yield return new WaitForSeconds(1f);
-		GetComponent<Collider>().enabled = true;
+		ignore = false;
 	}
 
 	[System.Serializable]

@@ -23,9 +23,8 @@ public class LevelBuilder : MonoBehaviour {
 		floorTiles = new PicaVoxel.Volume[TILE_GRID_LENGTH, TILE_GRID_LENGTH];
 	}
 
-	public void LoadLocation(Location l) {
-		Debug.Log("Welcome to " + l.name + "!");
-
+	public void LoadLocation(System.Guid guid) {
+		Location l = SaveGame.currentGame.map.locations[guid];
 		SpawnHorses(l);
 		SpawnTeleporters(l);
 
@@ -65,16 +64,20 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnTeleporters(Location l) {
+		string s = "Welcome to " + l.name + "! Connections to: ";
+
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
 		foreach (Teleporter.TeleporterData td in l.teleporters) {
 			GameObject porter = new GameObject();
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
+			s += SaveGame.currentGame.map.locations[td.toId].name + ", ";
 			SphereCollider sc = porter.AddComponent<SphereCollider>();
 			sc.isTrigger = true;
 			sc.radius = 1.5f;
 			porter.transform.parent = porterParent.transform;
 			porter.AddComponent<Teleporter>().LoadSaveData(td);
 		}
+		Debug.Log(s.Substring(0, s.Length - 2));
 	}
 }

@@ -11,7 +11,7 @@ public class Map {
 
 	// coordinates increase up and to the right
 	public Dictionary<System.Guid, Location> locations;
-	public Location currentLocation;
+	public System.Guid currentLocation;
 
 	public Map() {
 
@@ -56,7 +56,7 @@ public class Map {
 		foreach (Location l in graph)
 			locations.Add(l.guid, l);
 
-		currentLocation = graph[0];
+		currentLocation = graph[0].guid;
 	}
 
 	private void DFS(Location l, List<Location> outGraph) {
