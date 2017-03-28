@@ -16,9 +16,15 @@ public class Teleporter : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (ignore)
 			return;
-		if (other.GetComponentInParent<PlayerControls>()) {
+		PlayerControls pc = other.GetComponentInParent<PlayerControls>();
+		if (pc) {
 			ignore = true;
 			other.transform.root.position = otherSide.position.val;
+			if (pc.ridingHorse) {
+				Horse.HorseSaveData hsd = pc.mount.SaveData();
+				Map.CurrentLocation().horses.Remove(hsd.guid);
+				Map.Location(toId).horses.Add(hsd.guid);
+			}
 			GameManager.instance.LoadLocation(toId);
 		}
 	}

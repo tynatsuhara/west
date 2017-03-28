@@ -418,8 +418,8 @@ public abstract class Character : PossibleObjective, Damageable {
 		}
 	}
 
-	protected bool ridingHorse;
-	protected Horse mount;
+	public bool ridingHorse;
+	public Horse mount;
 	public void MountHorse(Horse h) {
 		if (ridingHorse)
 			return;

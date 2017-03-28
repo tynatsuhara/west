@@ -108,4 +108,11 @@ public class Map {
 		return null;
 	}
 
+	public static Location Location(System.Guid id) {
+		return SaveGame.currentGame.map.locations[id];
+	}
+
+	public static Location CurrentLocation() {
+		return Location(SaveGame.currentGame.map.currentLocation);
+	}
  }

@@ -8,18 +8,18 @@ public class Location {
 	public string name = NameGen.TownName();
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
-	public System.Guid[] horses;
+	public List<System.Guid> horses = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 
 	public Location(float x, float y) {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 
 		// TEMP spawning
-		horses = new System.Guid[Random.Range(1, 5)];
-		for (int i = 0; i < horses.Length; i++) {
+		int horseAmount = Random.Range(1, 5);
+		for (int i = 0; i < horseAmount; i++) {
 			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
 			SaveGame.currentGame.horses.Add(hsd.guid, hsd);
-			horses[i] = hsd.guid;
+			horses.Add(hsd.guid);
 		}
 	}
 
