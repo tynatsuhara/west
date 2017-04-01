@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Bag : PossibleObjective, Interactable {
+public class Bag : MonoBehaviour, Interactable {
 
 	private bool onGround;
 	public float speedMultiplier = .75f;
@@ -23,7 +23,6 @@ public class Bag : PossibleObjective, Interactable {
 			holder.DropBag(false);
 		holder = character;
 		SetOnGround(false);
-		MarkCompleted();
 		character.AddBag(this);
 	}
 

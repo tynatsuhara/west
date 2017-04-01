@@ -28,21 +28,6 @@ public class GameUI : MonoBehaviour {
 		pauseMenu.SetActive(GameManager.paused);
 	}
 
-	public void UpdateObjectives(PossibleObjective[] array) {
-		string res = "";
-		bool hasObjectivesLeft = false;
-		foreach (PossibleObjective po in array) {
-			if (po.isObjective && !po.isCompleted && !po.isLocked) {
-				if (!hasObjectivesLeft) {
-					hasObjectivesLeft = true;
-					res += "objectives:\n";
-				}
-				res += po.message + (!po.isRequired ? "*" : "") + "\n";
-			}
-		}
-		objectivesText.Say(res, permanent: true);
-	}
-
 	public void ShowWinScreen(Dictionary<string, List<int>> loot) {
 		winScreen.SetActive(true);
 		string left = "";

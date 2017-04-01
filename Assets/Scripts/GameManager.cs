@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour {
 	
 	public bool objectivesComplete;
 
-	private List<PossibleObjective> objectives;
 	public static List<NPC> characters {
 		get { return new List<NPC>(); }	
 	}
@@ -54,11 +53,6 @@ public class GameManager : MonoBehaviour {
 		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);
 
 		players = SpawnPlayers(playersToSpawn);		
-
-		// get objectives
-		objectives = Object.FindObjectsOfType<PossibleObjective>().Where(x => x.isObjective && !x.isCompleted).ToList();
-		objectivesComplete = CheckObjectivesComplete();
-		GameUI.instance.UpdateObjectives(objectives.ToArray());
 
 		StartCoroutine(CheckQuests());
 	}
@@ -198,16 +192,6 @@ public class GameManager : MonoBehaviour {
 		foreach (PlayerControls pc in result)
 			pc.firstPersonCam.rect = pc.playerCamera.cam.rect;
 		return result;
-	}
-
-	public void MarkObjectiveComplete(PossibleObjective po) {
-		po.isCompleted = true;
-		objectivesComplete = CheckObjectivesComplete();
-		GameUI.instance.UpdateObjectives(objectives.ToArray());
-	}
-
-	private bool CheckObjectivesComplete() {
-		return objectives.All(x => !x.isRequired || x.isCompleted);
 	}
 
 	private Dictionary<string, List<int>> lootAmounts = new Dictionary<string, List<int>>();

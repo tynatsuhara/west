@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class VaultDoor : PossibleObjective, Interactable, Powerable {
+public class VaultDoor : MonoBehaviour, Interactable, Powerable {
 
 	public Transform axis;
 	public Transform door;
@@ -36,9 +36,6 @@ public class VaultDoor : PossibleObjective, Interactable, Powerable {
 	public void Open() {
 		if (opening)
 			return;
-		
-		if (isObjective)
-			MarkCompleted();
 		
 		opening = true;
 	}

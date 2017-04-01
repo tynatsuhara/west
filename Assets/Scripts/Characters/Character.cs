@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Character : PossibleObjective, Damageable {
+public abstract class Character : MonoBehaviour, Damageable {
 
 	// Ranked in order of ascending priority
 	public enum Reaction : int {
@@ -188,10 +188,6 @@ public abstract class Character : PossibleObjective, Damageable {
 			PuddleBlood();
 		} else {
 			BleedEverywhere();
-		}
-
-		if (isObjective && !isCompleted) {
-			MarkCompleted();
 		}
 
 		if (Random.Range(0, 2) == 0) {
