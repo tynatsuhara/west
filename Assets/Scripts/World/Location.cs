@@ -5,7 +5,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Location {
 	public System.Guid guid = System.Guid.NewGuid();
-	public string name = NameGen.TownName();
+	public string name = NameGen.townName.Generate("<name>");
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public List<System.Guid> horses = new List<System.Guid>();
