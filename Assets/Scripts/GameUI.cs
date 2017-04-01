@@ -15,7 +15,6 @@ public class GameUI : MonoBehaviour {
 	public Material textYellow;
 	public Material textOrange;
 
-	public TextObject objectivesText;
 	public TextObject topCenterText;
 	public GameObject pauseMenu;
 	public GameObject winScreen;
