@@ -32,7 +32,7 @@ public class LevelBuilder : MonoBehaviour {
 
 		// TEMP
 		GameObject floorHolder = new GameObject();
-		floorHolder.name = "Floor";
+		floorHolder.name = "Ground";
 		for (int i = 0; i < l.width; i++) {
 			for (var j = 0; j < l.height; j++) {
 				GameObject tile = Instantiate(l.TileAt(i, j), new Vector3(i * TILE_SIZE, -.2f, j * TILE_SIZE), 
