@@ -48,6 +48,7 @@ public class Location {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
 	}
 
+	// Build the street layout for a town
 	public void GenerateLayout() {
 		for (int i = 0; i < 30; i++) {
 			int val = Val(Random.Range(0, width), Random.Range(0, height));
