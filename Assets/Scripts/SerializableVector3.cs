@@ -2,7 +2,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class SerializableVector3 {
-	private float x, y, z;
+	public float x, y, z;
 	public Vector3 val {
 		get { return new Vector3(x, y, z); }
 	}
