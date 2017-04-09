@@ -10,6 +10,9 @@ public class Location {
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
+	public int width = 20;
+	public int height = 10;
+	private List<int> trails = new List<int>();
 
 	public Location(float x, float y) {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
@@ -43,5 +46,19 @@ public class Location {
 
 	public float DistanceFrom(Location l) {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
+	}
+
+	public void GenerateLayout() {
+
+	}
+
+	public GameObject TileAt(int x, int y) {
+		int val = x * width + y;
+		if (trails.Contains(val)) {
+			return LevelBuilder.instance.trailPrefab;
+		} else {
+			Debug.Log("floor");
+			return LevelBuilder.instance.floorPrefab;
+		}
 	}
 }
