@@ -49,15 +49,24 @@ public class Location {
 	}
 
 	public void GenerateLayout() {
-
+		for (int i = 0; i < 30; i++) {
+			int val = Val(Random.Range(0, width), Random.Range(0, height));
+			if (!trails.Contains(val)) {
+				trails.Add(val);
+			}
+		}
 	}
 
 	public GameObject TileAt(int x, int y) {
-		int val = x * width + y;
+		int val = Val(x, y);
 		if (trails.Contains(val)) {
 			return LevelBuilder.instance.trailPrefab;
 		} else {
 			return LevelBuilder.instance.floorPrefab;
 		}
+	}
+
+	private int Val(int x, int y) {
+		return x * width + y;
 	}
 }

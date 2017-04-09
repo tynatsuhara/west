@@ -53,8 +53,10 @@ public class Map {
 		List<Location> graph = new List<Location>();
 		DFS(ls[0], graph);
 		locations.Clear();
-		foreach (Location l in graph)
+		foreach (Location l in graph) {
 			locations.Add(l.guid, l);
+			l.GenerateLayout();
+		}
 
 		currentLocation = graph[0].guid;
 	}
