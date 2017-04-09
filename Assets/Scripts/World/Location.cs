@@ -57,7 +57,6 @@ public class Location {
 		if (trails.Contains(val)) {
 			return LevelBuilder.instance.trailPrefab;
 		} else {
-			Debug.Log("floor");
 			return LevelBuilder.instance.floorPrefab;
 		}
 	}
