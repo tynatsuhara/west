@@ -34,7 +34,7 @@ public class Teleporter : MonoBehaviour {
 		transform.position = td.position.val;
 		destination = SaveGame.currentGame.map.locations[toId].name;
 		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
-				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation).First();
+				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation && x.tag == td.tag).First();
 	}
 
 	private IEnumerator Delay() {
@@ -47,10 +47,12 @@ public class Teleporter : MonoBehaviour {
 	public class TeleporterData {
 		public System.Guid toId;
 		public SerializableVector3 position;
+		public string tag;
 
-		public TeleporterData(System.Guid toId, Vector3 position) {
+		public TeleporterData(System.Guid toId, Vector3 position, string tag = "") {
 			this.toId = toId;
 			this.position = new SerializableVector3(position);
+			this.tag = tag;
 		}
 	}
 }
