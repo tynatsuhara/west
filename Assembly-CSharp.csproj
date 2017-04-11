@@ -111,7 +111,6 @@
      <Compile Include="Assets\Scripts\Horse.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
      <Compile Include="Assets\Scripts\Inventory.cs" />
-     <Compile Include="Assets\Scripts\Level Editor\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\LightPulse.cs" />
      <Compile Include="Assets\Scripts\MeleeWeapon.cs" />
      <Compile Include="Assets\Scripts\Menus\MainMenu.cs" />
@@ -140,6 +139,7 @@
      <Compile Include="Assets\Scripts\WalkCycle.cs" />
      <Compile Include="Assets\Scripts\Wall.cs" />
      <Compile Include="Assets\Scripts\Window.cs" />
+     <Compile Include="Assets\Scripts\World\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Location.cs" />
      <Compile Include="Assets\Scripts\World\Map.cs" />
      <Compile Include="Assets\Scripts\World\NameGen.cs" />

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 [System.Serializable]
 public class Location {
+	public Map parent;
 	public System.Guid guid = System.Guid.NewGuid();
 	public string name = NameGen.townName.Generate("<name>");
 	public SerializableVector3 worldLocation;
@@ -14,7 +15,8 @@ public class Location {
 	public int height = 10;
 	private List<int> trails = new List<int>();
 
-	public Location(float x, float y) {
+	public Location(Map parent, float x, float y) {
+		this.parent = parent;
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 
 		// TEMP spawning
@@ -37,11 +39,8 @@ public class Location {
 	public void Connect(Location l) {
 		int index = System.Array.IndexOf(connections, System.Guid.Empty);
 		connections[index] = l.guid;
-		int indexL = System.Array.IndexOf(l.connections, System.Guid.Empty);
-		l.connections[indexL] = guid;
 
 		teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index * 4, 1, -5)));
-		l.teleporters.Add(new Teleporter.TeleporterData(guid, new Vector3(indexL * 4, 1, -5)));
 	}
 
 	public float DistanceFrom(Location l) {
@@ -50,12 +49,15 @@ public class Location {
 
 	// Build the street layout for a town
 	public void GenerateLayout() {
-		for (int i = 0; i < 30; i++) {
-			int val = Val(Random.Range(0, width), Random.Range(0, height));
-			if (!trails.Contains(val)) {
-				trails.Add(val);
-			}
-		}
+		List<Location> links = connections.Where(x => x != System.Guid.Empty).Select(x => parent.locations[x]).ToList();
+		List<Location> nLinks = links.Where(l => l.worldLocation.y > worldLocation.y && 
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).x) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).y))).ToList();
+		List<Location> sLinks = links.Where(l => l.worldLocation.y < worldLocation.y && 
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).x) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).y))).ToList();
+		List<Location> eLinks = links.Where(l => l.worldLocation.x > worldLocation.x && 
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x))).ToList();
+		List<Location> wLinks = links.Where(l => l.worldLocation.x < worldLocation.x && 
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x))).ToList();
 	}
 
 	public GameObject TileAt(int x, int y) {
