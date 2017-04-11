@@ -49,7 +49,9 @@ public class Location {
 
 	// Build the street layout for a town
 	public void GenerateLayout() {
-		List<Location> links = connections.Where(x => x != System.Guid.Empty).Select(x => parent.locations[x]).ToList();
+		connections = connections.Where(x => x != System.Guid.Empty).ToArray();
+		List<Location> links = connections.Select(x => parent.locations[x]).ToList();
+		
 		List<Location> nLinks = links.Where(l => l.worldLocation.y > worldLocation.y && 
 			Mathf.Abs((l.worldLocation.val - worldLocation.val).x) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).y))).ToList();
 		List<Location> sLinks = links.Where(l => l.worldLocation.y < worldLocation.y && 
