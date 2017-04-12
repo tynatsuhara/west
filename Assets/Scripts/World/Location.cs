@@ -63,6 +63,34 @@ public class Location {
 
 		int minRoadsNS = Mathf.Max(nLinks.Count, sLinks.Count);
 		int minRoadsEW = Mathf.Max(eLinks.Count, wLinks.Count);
+		int minRoadDist = 3;
+		int maxRoadDist = 8;
+
+		var nsRoadCoords = new List<int>();
+		int p = Random.Range(minRoadDist, maxRoadDist);
+		for (int i = 0; i < minRoadsNS; i++) {
+			nsRoadCoords.Add(p);
+			p += Random.Range(minRoadDist, maxRoadDist);
+		}
+		width = Mathf.Max(p, width);
+		foreach (int coord in nsRoadCoords) {
+			for (int i = 0; i < height; i++) {
+				trails.Add(Val(coord, i));
+			}
+		}
+
+		var ewRoadCoords = new List<int>();
+		p = Random.Range(minRoadDist, maxRoadDist);
+		for (int i = 0; i < minRoadsEW; i++) {
+			ewRoadCoords.Add(p);
+			p += Random.Range(minRoadDist, maxRoadDist);
+		}
+		height = Mathf.Max(p, height);
+		foreach (int coord in ewRoadCoords) {
+			for (int i = 0; i < width; i++) {
+				trails.Add(Val(i, coord));
+			}
+		}
 	}
 
 	public GameObject TileAt(int x, int y) {
