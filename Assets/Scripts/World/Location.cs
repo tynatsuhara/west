@@ -60,6 +60,9 @@ public class Location {
 			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x))).ToList();
 		List<Location> wLinks = links.Where(l => l.worldLocation.x < worldLocation.x && 
 			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x))).ToList();
+
+		int minRoadsNS = Mathf.Max(nLinks.Count, sLinks.Count);
+		int minRoadsEW = Mathf.Max(eLinks.Count, wLinks.Count);
 	}
 
 	public GameObject TileAt(int x, int y) {
