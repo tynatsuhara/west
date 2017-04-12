@@ -66,6 +66,7 @@ public class Location {
 		int minRoadDist = 3;
 		int maxRoadDist = 8;
 
+		// place N/S roads and grow the width if necessary
 		var nsRoadCoords = new List<int>();
 		int p = Random.Range(minRoadDist, maxRoadDist);
 		for (int i = 0; i < minRoadsNS; i++) {
@@ -74,6 +75,7 @@ public class Location {
 		}
 		width = Mathf.Max(p, width);
 
+		// place E/W roads and grow the height if necessary
 		var ewRoadCoords = new List<int>();
 		p = Random.Range(minRoadDist, maxRoadDist);
 		for (int i = 0; i < minRoadsEW; i++) {
@@ -82,6 +84,7 @@ public class Location {
 		}
 		height = Mathf.Max(p, height);
 
+		// actually place the road tile locations
 		foreach (int coord in ewRoadCoords) {
 			for (int i = 0; i < width; i++) {
 				trails.Add(Val(i, coord));
