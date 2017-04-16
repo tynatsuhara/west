@@ -40,7 +40,7 @@ public class Location {
 		int index = System.Array.IndexOf(connections, System.Guid.Empty);
 		connections[index] = l.guid;
 
-		teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index * 4, 1, -5)));
+		// teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index * 4, 1, -5)));
 	}
 
 	public float DistanceFrom(Location l) {
@@ -53,13 +53,17 @@ public class Location {
 		List<Location> links = connections.Select(x => parent.locations[x]).ToList();
 		
 		List<Location> nLinks = links.Where(l => l.worldLocation.y > worldLocation.y && 
-			Mathf.Abs((l.worldLocation.val - worldLocation.val).x) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).y))).ToList();
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).x) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).y)))
+			.OrderBy(x => x.worldLocation.val.x).ToList();
 		List<Location> sLinks = links.Where(l => l.worldLocation.y < worldLocation.y && 
-			Mathf.Abs((l.worldLocation.val - worldLocation.val).x) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).y))).ToList();
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).x) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).y)))
+			.OrderBy(x => x.worldLocation.val.x).ToList();
 		List<Location> eLinks = links.Where(l => l.worldLocation.x > worldLocation.x && 
-			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x))).ToList();
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x)))
+			.OrderBy(x => x.worldLocation.val.y).ToList();
 		List<Location> wLinks = links.Where(l => l.worldLocation.x < worldLocation.x && 
-			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x))).ToList();
+			Mathf.Abs((l.worldLocation.val - worldLocation.val).y) < (Mathf.Abs((l.worldLocation.val - worldLocation.val).x)))
+			.OrderBy(x => x.worldLocation.val.y).ToList();
 
 		int minRoadsNS = Mathf.Max(nLinks.Count, sLinks.Count);
 		int minRoadsEW = Mathf.Max(eLinks.Count, wLinks.Count);
@@ -84,6 +88,24 @@ public class Location {
 		}
 		height = Mathf.Max(p, height);
 
+		// Place teleporters
+		List<int> nPlaces = Subset(nsRoadCoords, nLinks.Count);
+		for (int i = 0; i < nPlaces.Count; i++) {
+			teleporters.Add(new Teleporter.TeleporterData(nLinks[i].guid, new Vector3(nPlaces[i], 1, height - 1) * LevelBuilder.TILE_SIZE));
+		}
+		List<int> sPlaces = Subset(nsRoadCoords, sLinks.Count);
+		for (int i = 0; i < sPlaces.Count; i++) {
+			teleporters.Add(new Teleporter.TeleporterData(sLinks[i].guid, new Vector3(sPlaces[i], 1, 0) * LevelBuilder.TILE_SIZE));
+		}
+		List<int> ePlaces = Subset(ewRoadCoords, eLinks.Count);
+		for (int i = 0; i < ePlaces.Count; i++) {
+			teleporters.Add(new Teleporter.TeleporterData(eLinks[i].guid, new Vector3(width - 1, 1, ePlaces[i]) * LevelBuilder.TILE_SIZE));
+		}
+		List<int> wPlaces = Subset(ewRoadCoords, wLinks.Count);
+		for (int i = 0; i < wPlaces.Count; i++) {
+			teleporters.Add(new Teleporter.TeleporterData(wLinks[i].guid, new Vector3(0, 1, wPlaces[i]) * LevelBuilder.TILE_SIZE));
+		}
+
 		// actually place the road tile locations
 		foreach (int coord in ewRoadCoords) {
 			for (int i = 0; i < width; i++) {
@@ -95,6 +117,14 @@ public class Location {
 				trails.Add(Val(coord, i));
 			}
 		}
+	}
+
+	private List<int> Subset(List<int> lst, int size) {
+		List<int> newList = lst.ToList();
+		while (newList.Count > size) {
+			newList.RemoveAt(Random.Range(0, newList.Count));
+		}
+		return newList;
 	}
 
 	public GameObject TileAt(int x, int y) {

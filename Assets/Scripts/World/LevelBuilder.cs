@@ -17,7 +17,7 @@ public class LevelBuilder : MonoBehaviour {
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
 
-	public const int TILE_SIZE = 2;  // in-game units
+	public static int TILE_SIZE = 2;  // in-game units
 
 	public void Awake() {
 		instance = this;
