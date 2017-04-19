@@ -25,11 +25,12 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void LoadLocation(System.Guid guid) {
-		Location l = SaveGame.currentGame.map.locations[guid];
+		Location l = Map.Location(guid);
 		loadedLocation = l;
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];		
 		SpawnHorses(l);
 		SpawnTeleporters(l);
+		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "red");		
 
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";

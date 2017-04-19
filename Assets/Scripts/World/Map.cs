@@ -135,4 +135,13 @@ public class Map {
 	public static Location CurrentLocation() {
 		return Location(SaveGame.currentGame.map.currentLocation);
 	}
+
+	public static Location LocationOfCharacter(System.Guid guid) {
+		foreach (var item in SaveGame.currentGame.map.locations) {
+			if (item.Value.characters.Contains(guid)) {
+				return item.Value;
+			}
+		}
+		return null;
+	}
  }

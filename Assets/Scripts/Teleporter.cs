@@ -13,15 +13,20 @@ public class Teleporter : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
+		Character character = other.GetComponentInParent<Character>();		
 		PlayerControls pc = other.GetComponentInParent<PlayerControls>();
-		if (pc) {
+		if (character || pc) {
 			other.transform.root.position = otherSide.position.val;
-			if (pc.ridingHorse) {
-				Horse.HorseSaveData hsd = pc.mount.SaveData();
+			if (character.ridingHorse) {
+				Horse.HorseSaveData hsd = character.mount.SaveData();
 				Map.CurrentLocation().horses.Remove(hsd.guid);
 				Map.Location(toId).horses.Add(hsd.guid);
 			}
-			GameManager.instance.LoadLocation(toId);
+			if (pc) {
+				GameManager.instance.LoadLocation(toId);
+			} else {
+				// TODO: save character to the other location
+			}
 		}
 	}
 

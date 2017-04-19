@@ -10,6 +10,7 @@ public class Location {
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public List<System.Guid> horses = new List<System.Guid>();
+	public List<System.Guid> characters = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 	public int width = 20;
 	public int height = 10;
