@@ -30,7 +30,7 @@ public class LevelBuilder : MonoBehaviour {
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];		
 		SpawnHorses(l);
 		SpawnTeleporters(l);
-		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "red");		
+		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "grey");		
 
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";

@@ -157,6 +157,8 @@ public class TextObject : MonoBehaviour {
 			m = GameUI.instance.textOrange;
 		} else if (color == "yellow") {
 			m = GameUI.instance.textYellow;
+		} else if (color == "grey") {
+			m = GameUI.instance.textGrey;
 		} else {
 			m = GameUI.instance.textWhite;
 		}
