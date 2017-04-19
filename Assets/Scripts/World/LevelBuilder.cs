@@ -30,7 +30,6 @@ public class LevelBuilder : MonoBehaviour {
 		SpawnHorses(l);
 		SpawnTeleporters(l);
 
-		// TEMP
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";
 		for (int i = 0; i < l.width; i++) {
