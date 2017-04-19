@@ -7,12 +7,15 @@ public class Teleporter : MonoBehaviour {
 	public System.Guid toId;
 	public string destination;
 	private TeleporterData otherSide;
+	private bool ignore = true;
 
 	void Awake() {
 		StartCoroutine(Delay());
 	}
 
 	void OnTriggerEnter(Collider other) {
+		if (ignore)
+			return;
 		Character character = other.GetComponentInParent<Character>();		
 		PlayerControls pc = other.GetComponentInParent<PlayerControls>();
 		if (character || pc) {
@@ -42,6 +45,8 @@ public class Teleporter : MonoBehaviour {
 	private IEnumerator Delay() {
 		yield return new WaitForSeconds(1f);
 		GetComponent<SphereCollider>().enabled = true;
+		yield return new WaitForSeconds(.2f);
+		ignore = false;
 	}
 
 	[System.Serializable]

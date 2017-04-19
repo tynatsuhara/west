@@ -67,17 +67,13 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnTeleporters(Location l) {
-		string s = "Welcome to " + l.name + "! Connections to: ";
-
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
 		foreach (Teleporter.TeleporterData td in l.teleporters) {
 			GameObject porter = Instantiate(teleporterPrefab);
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
-			s += SaveGame.currentGame.map.locations[td.toId].name + ", ";
 			porter.transform.parent = porterParent.transform;
 			porter.GetComponent<Teleporter>().LoadSaveData(td);
 		}
-		Debug.Log(s.Substring(0, s.Length - 2));
 	}
 }
