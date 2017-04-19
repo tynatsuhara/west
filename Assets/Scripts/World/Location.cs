@@ -44,6 +44,14 @@ public class Location {
 		// teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index * 4, 1, -5)));
 	}
 
+	public bool CanAddTrainNE() {
+		return true;
+	}
+
+	public void AddTrainNE() {
+
+	}
+
 	public float DistanceFrom(Location l) {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
 	}

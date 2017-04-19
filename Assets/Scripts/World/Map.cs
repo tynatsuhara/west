@@ -13,6 +13,7 @@ public class Map {
 
 	// coordinates increase up and to the right
 	public Dictionary<System.Guid, Location> locations;
+	public List<System.Guid[]> railroads = new List<System.Guid[]>();	
 	public System.Guid currentLocation;
 
 	public Map() {
@@ -58,6 +59,18 @@ public class Map {
 			foreach (Location l in graph) {
 				locations.Add(l.guid, l);
 			}
+		}
+
+		// generate train paths
+		int trainAmount = Random.Range(1, 4);
+		for (int i = 0; i < trainAmount; i++) {
+			// Random start location
+			System.Guid start = locations[locations.Keys.ToArray()[Random.Range(0, locations.Count)]].guid;
+			List<System.Guid[]> destinations = locations.Where(x => x.Key != start)
+													    .Select(x => BestPathFrom(start, x.Key).ToArray())
+													    .OrderBy(x => x.Length)
+													    .ToList();
+			railroads.Add(destinations[Random.Range(destinations.Count / 2, destinations.Count)]);
 		}
 
 		foreach (System.Guid g in locations.Keys) {
