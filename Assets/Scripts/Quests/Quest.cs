@@ -4,8 +4,8 @@ using System.Linq;
 
 [System.Serializable]
 public abstract class Quest {
-	private List<Task> tasks;	
-	public bool complete {
-		get { return tasks.All(x => x.complete || x.optional); }	
+	private List<Task> completedTasks;
+	public abstract bool complete {
+		get;
 	}
 }

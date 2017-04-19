@@ -17,6 +17,6 @@ public class GoToTask : Task {
 	}
 
 	public override TaskDestination[] GetLocations() {
-		return new TaskDestination[] { new TaskDestination(location, position) };
+		return new TaskDestination[] { new TaskDestination(location, position.val) };
 	}
 }

@@ -127,6 +127,7 @@
      <Compile Include="Assets\Scripts\Powerable.cs" />
      <Compile Include="Assets\Scripts\Quests\DuelQuest.cs" />
      <Compile Include="Assets\Scripts\Quests\GoToTask.cs" />
+     <Compile Include="Assets\Scripts\Quests\ParallelTasksTask.cs" />
      <Compile Include="Assets\Scripts\Quests\Quest.cs" />
      <Compile Include="Assets\Scripts\Quests\QuestManager.cs" />
      <Compile Include="Assets\Scripts\Quests\Task.cs" />

@@ -18,5 +18,6 @@ public class ParallelTasksTask : Task {
 		foreach (Task t in tasks) {
 			all.AddRange(t.GetLocations());
 		}
+		return all.ToArray();
 	}
 }
