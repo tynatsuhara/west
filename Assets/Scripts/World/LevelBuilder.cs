@@ -13,6 +13,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;
 	public GameObject horsePrefab;
+	public GameObject teleporterPrefab;
 
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
@@ -70,14 +71,12 @@ public class LevelBuilder : MonoBehaviour {
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
 		foreach (Teleporter.TeleporterData td in l.teleporters) {
-			GameObject porter = new GameObject();
+			GameObject porter = Instantiate(teleporterPrefab);
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			s += SaveGame.currentGame.map.locations[td.toId].name + ", ";
-			SphereCollider sc = porter.AddComponent<SphereCollider>();
-			sc.isTrigger = true;
-			sc.radius = 1.5f;
 			porter.transform.parent = porterParent.transform;
-			porter.AddComponent<Teleporter>().LoadSaveData(td);
+			porter.GetComponent<Teleporter>().LoadSaveData(td);
+			porter.GetComponentInChildren<TextObject>().Say("memes", permanent: true);
 		}
 		Debug.Log(s.Substring(0, s.Length - 2));
 	}
