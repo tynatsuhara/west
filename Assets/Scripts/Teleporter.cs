@@ -35,12 +35,12 @@ public class Teleporter : MonoBehaviour {
 		destination = SaveGame.currentGame.map.locations[toId].name;
 		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
 				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation && x.tag == td.tag).First();
+		GetComponentInChildren<TextObject>().Say(destination, permanent: true);			
 	}
 
 	private IEnumerator Delay() {
-		ignore = true;
 		yield return new WaitForSeconds(1f);
-		ignore = false;
+		GetComponent<SphereCollider>().enabled = true;
 	}
 
 	[System.Serializable]

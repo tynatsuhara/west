@@ -4,12 +4,13 @@ using System.Linq;
 
 [System.Serializable]
 public class QuestManager {
-	private List<Quest> quests;
-	private List<Quest> completedQuests;
+	public List<Quest> quests = new List<Quest>();
+	public List<Quest> completedQuests = new List<Quest>();
+	public List<Quest> markedQuests {
+		get { return quests; }	
+	}
 
 	public QuestManager() {
-		quests = new List<Quest>();
-		completedQuests = new List<Quest>();
 	}
 
 	public void UpdateQuests() {

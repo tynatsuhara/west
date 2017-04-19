@@ -76,7 +76,6 @@ public class LevelBuilder : MonoBehaviour {
 			s += SaveGame.currentGame.map.locations[td.toId].name + ", ";
 			porter.transform.parent = porterParent.transform;
 			porter.GetComponent<Teleporter>().LoadSaveData(td);
-			porter.GetComponentInChildren<TextObject>().Say("memes", permanent: true);
 		}
 		Debug.Log(s.Substring(0, s.Length - 2));
 	}
