@@ -6,7 +6,6 @@ public class Teleporter : MonoBehaviour {
 
 	public System.Guid toId;
 	public string destination;
-	private bool ignore = true;
 	private TeleporterData otherSide;
 
 	void Awake() {
@@ -14,11 +13,8 @@ public class Teleporter : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (ignore)
-			return;
 		PlayerControls pc = other.GetComponentInParent<PlayerControls>();
 		if (pc) {
-			ignore = true;
 			other.transform.root.position = otherSide.position.val;
 			if (pc.ridingHorse) {
 				Horse.HorseSaveData hsd = pc.mount.SaveData();
