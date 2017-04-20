@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class VaultDoor : MonoBehaviour, Interactable, Powerable {
 

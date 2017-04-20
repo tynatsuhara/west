@@ -1,6 +1,4 @@
-﻿using System;
-
-public class Speech {
+﻿public class Speech {
 	public static readonly string[] DEATH_QUOTES = {
 		"aaahhhh",
 		"tell my wife i love her",
