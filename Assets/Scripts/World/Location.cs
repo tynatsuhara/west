@@ -100,19 +100,19 @@ public class Location {
 		// Place teleporters
 		List<int> nPlaces = Subset(nsRoadCoords, nLinks.Count);
 		for (int i = 0; i < nPlaces.Count; i++) {
-			teleporters.Add(new Teleporter.TeleporterData(nLinks[i].guid, new Vector3(nPlaces[i], 0, height - 1) * LevelBuilder.TILE_SIZE));
+			teleporters.Add(new Teleporter.TeleporterData(nLinks[i].guid, new Vector3(nPlaces[i] + LevelBuilder.TILE_SIZE/4f, 1, height) * LevelBuilder.TILE_SIZE));
 		}
 		List<int> sPlaces = Subset(nsRoadCoords, sLinks.Count);
 		for (int i = 0; i < sPlaces.Count; i++) {
-			teleporters.Add(new Teleporter.TeleporterData(sLinks[i].guid, new Vector3(sPlaces[i], 0, 0) * LevelBuilder.TILE_SIZE));
+			teleporters.Add(new Teleporter.TeleporterData(sLinks[i].guid, new Vector3(sPlaces[i] + LevelBuilder.TILE_SIZE/4f, 1, 0) * LevelBuilder.TILE_SIZE));
 		}
 		List<int> ePlaces = Subset(ewRoadCoords, eLinks.Count);
 		for (int i = 0; i < ePlaces.Count; i++) {
-			teleporters.Add(new Teleporter.TeleporterData(eLinks[i].guid, new Vector3(width - 1, 0, ePlaces[i]) * LevelBuilder.TILE_SIZE));
+			teleporters.Add(new Teleporter.TeleporterData(eLinks[i].guid, new Vector3(width, 1, ePlaces[i] + LevelBuilder.TILE_SIZE/4f) * LevelBuilder.TILE_SIZE));
 		}
 		List<int> wPlaces = Subset(ewRoadCoords, wLinks.Count);
 		for (int i = 0; i < wPlaces.Count; i++) {
-			teleporters.Add(new Teleporter.TeleporterData(wLinks[i].guid, new Vector3(0, 0, wPlaces[i]) * LevelBuilder.TILE_SIZE));
+			teleporters.Add(new Teleporter.TeleporterData(wLinks[i].guid, new Vector3(0, 1, wPlaces[i] + LevelBuilder.TILE_SIZE/4f) * LevelBuilder.TILE_SIZE));
 		}
 
 		// actually place the road tile locations

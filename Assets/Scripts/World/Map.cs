@@ -62,16 +62,18 @@ public class Map {
 		}
 
 		// generate train paths
-		int trainAmount = Random.Range(1, 4);
-		for (int i = 0; i < trainAmount; i++) {
-			// Random start location
-			System.Guid start = locations[locations.Keys.ToArray()[Random.Range(0, locations.Count)]].guid;
-			List<System.Guid[]> destinations = locations.Where(x => x.Key != start)
-													    .Select(x => BestPathFrom(start, x.Key).ToArray())
-													    .OrderBy(x => x.Length)
-													    .ToList();
-			railroads.Add(destinations[Random.Range(destinations.Count / 2, destinations.Count)]);
-		}
+		// int trainAmount = Random.Range(1, 4);
+		// for (int i = 0; i < trainAmount; i++) {
+		// 	// Random start location
+		// 	Debug.Log("starting to generate train");
+		// 	System.Guid start = locations[locations.Keys.ToArray()[Random.Range(0, locations.Count)]].guid;
+		// 	List<System.Guid[]> destinations = locations.Where(x => x.Key != start)
+		// 											    .Select(x => BestPathFrom(start, x.Key).ToArray())
+		// 											    .OrderBy(x => x.Length)
+		// 											    .ToList();
+		// 	railroads.Add(destinations[Random.Range(destinations.Count / 2, destinations.Count)]);
+		// 	Debug.Log("finished generating train");			
+		// }
 
 		foreach (System.Guid g in locations.Keys) {
 			locations[g].GenerateLayout();

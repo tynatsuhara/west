@@ -35,7 +35,7 @@ public class Teleporter : MonoBehaviour {
 
 	public void LoadSaveData(TeleporterData td) {
 		toId = td.toId;
-		transform.position = td.position.val + new Vector3(LevelBuilder.TILE_SIZE / 2f, 0, LevelBuilder.TILE_SIZE / 2f);
+		transform.position = td.position.val;
 		destination = SaveGame.currentGame.map.locations[toId].name;
 		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
 				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation && x.tag == td.tag).First();
