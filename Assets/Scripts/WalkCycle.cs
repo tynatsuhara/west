@@ -52,9 +52,6 @@ public class WalkCycle : MonoBehaviour {
 	}
 	
 	void Update () {
-		transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, 
-				volume.CurrentFrame == sittingFrame ? .1f : 0f);
-
 		if (GameManager.paused || volume.CurrentFrame == sittingFrame || volume.CurrentFrame == ridingFrame) {
 			return;
 		}
