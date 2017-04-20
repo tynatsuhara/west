@@ -30,6 +30,7 @@ public class LevelBuilder : MonoBehaviour {
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];		
 		SpawnHorses(l);
 		SpawnTeleporters(l);
+		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters		
 		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "grey");		
 
 		GameObject floorHolder = new GameObject();
@@ -42,6 +43,7 @@ public class LevelBuilder : MonoBehaviour {
 				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
 			}
 		}
+		PositionWalls(l);
 	}
 
 	public PicaVoxel.Volume FloorTileAt(Vector3 pos) {
@@ -75,5 +77,21 @@ public class LevelBuilder : MonoBehaviour {
 			porter.transform.parent = porterParent.transform;
 			porter.GetComponent<Teleporter>().LoadSaveData(td);
 		}
+	}
+
+	private void PositionWalls(Location l) {
+		Transform walls = GameObject.Find("Walls").transform;
+		// bottom
+		walls.GetChild(0).localScale = new Vector3(l.width * TILE_SIZE + 2, 10, 1);
+		walls.GetChild(0).position = new Vector3(l.width * TILE_SIZE/2f, 1, -.5f);
+		// top
+		walls.GetChild(1).localScale = new Vector3(l.width * TILE_SIZE + 2, 10, 1);
+		walls.GetChild(1).position = new Vector3(l.width * TILE_SIZE/2f, 1, l.height * TILE_SIZE + .5f);
+		// right
+		walls.GetChild(2).localScale = new Vector3(1, 10, l.height * TILE_SIZE + 2);
+		walls.GetChild(2).position = new Vector3(l.width * TILE_SIZE + .5f, 1, l.height * TILE_SIZE/2f);
+		// left
+		walls.GetChild(3).localScale = new Vector3(1, 10, l.height * TILE_SIZE + 2);
+		walls.GetChild(3).position = new Vector3(-.5f, 1, l.height * TILE_SIZE/2f);
 	}
 }
