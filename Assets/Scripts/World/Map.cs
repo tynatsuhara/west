@@ -76,7 +76,7 @@ public class Map {
 		// }
 
 		foreach (System.Guid g in locations.Keys) {
-			locations[g].GenerateLayout();
+			locations[g].Generate();
 			currentLocation = g;			
 		}
 		Debug.Log("Generated " + locations.Count + " towns");

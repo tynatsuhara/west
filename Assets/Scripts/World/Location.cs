@@ -20,14 +20,6 @@ public class Location {
 	public Location(Map parent, float x, float y) {
 		this.parent = parent;
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
-
-		// TEMP spawning
-		int horseAmount = Random.Range(1, 5);
-		for (int i = 0; i < horseAmount; i++) {
-			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
-			SaveGame.currentGame.horses.Add(hsd.guid, hsd);
-			horses.Add(hsd.guid);
-		}
 	}
 
 	public bool DoneConnecting() {
@@ -58,7 +50,7 @@ public class Location {
 	}
 
 	// Build the street layout for a town
-	public void GenerateLayout() {
+	public void Generate() {
 		connections = connections.Where(x => x != System.Guid.Empty).ToArray();
 		List<Location> links = connections.Select(x => parent.locations[x]).ToList();
 		
@@ -125,6 +117,16 @@ public class Location {
 		foreach (int coord in nsRoadCoords) {
 			for (int i = 0; i < height; i++) {
 				trails.Add(Val(coord, i));
+			}
+		}
+
+		// temp horse spawning
+		int horseAmount = Random.Range(1, 5);
+		for (int i = 0; i < horseAmount; i++) {
+			if (LevelBuilder.instance != null) {
+				Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
+				SaveGame.currentGame.horses.Add(hsd.guid, hsd);
+				horses.Add(hsd.guid);
 			}
 		}
 	}
