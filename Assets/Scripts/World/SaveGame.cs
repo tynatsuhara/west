@@ -49,7 +49,7 @@ public class SaveGame {
 		formatter.Serialize(saveFile, currentGame);
 		saveFile.Close();
 
-		Debug.Log("game saved at " + SavePath());		
+		// Debug.Log("game saved at " + SavePath());		
 	}
 
 	public static void Load() {
@@ -58,7 +58,7 @@ public class SaveGame {
 		currentGame = (SaveGame)formatter.Deserialize(saveFile);
 		saveFile.Close();
 
-		Debug.Log("game loaded from " + SavePath());	
+		// Debug.Log("game loaded from " + SavePath());	
 	}
 
 	private static string DirPath() {

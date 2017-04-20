@@ -7,6 +7,7 @@ public class Location {
 	public Map parent;
 	public System.Guid guid = System.Guid.NewGuid();
 	public string name = NameGen.townName.Generate("<name>");
+	public string icon = "}";  // bull head in pixel western font
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public List<System.Guid> horses = new List<System.Guid>();
