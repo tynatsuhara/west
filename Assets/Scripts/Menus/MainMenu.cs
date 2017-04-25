@@ -12,6 +12,7 @@ public class MainMenu : Menu {
 	}
 
 	public override void Enter(MenuNode node) {
+		GameManager.spawnPlayers = true;
 		if (node == newGame) {
 			SaveGame.NewGame();
 			GameManager.newGame = true;

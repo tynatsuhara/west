@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
 	public static bool paused = false;
 	public static int[] playersToSpawn;
 	public static bool newGame;
+	public static bool spawnPlayers = true;
 
 	public GameObject playerPrefab;
 	public GameObject playerCamPrefab;
@@ -51,9 +52,10 @@ public class GameManager : MonoBehaviour {
 		}
 
 		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);
-
-		players = SpawnPlayers(playersToSpawn);		
-
+		if (spawnPlayers) {
+			players = SpawnPlayers(playersToSpawn);
+			spawnPlayers = false;
+		}
 		StartCoroutine(CheckQuests());
 	}
 	
@@ -189,8 +191,10 @@ public class GameManager : MonoBehaviour {
 			cams[2].rect = new Rect(0, 0, .5f, .5f);
 			cams[3].rect = new Rect(.5f, 0f, .5f, .5f);
 		}
-		foreach (PlayerControls pc in result)
+		foreach (PlayerControls pc in result) {
 			pc.firstPersonCam.rect = pc.playerCamera.cam.rect;
+			DontDestroyOnLoad(pc.playerCamera.transform.root.gameObject);
+		}
 		return result;
 	}
 
