@@ -430,6 +430,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 		SetMount(mount, false);
 		mount.Dismount();
 		transform.parent = null;
+		transform.Translate((Random.Range(0, 2) == 0 ? 1 : -1) * transform.right * .5f);
 		walk.StandStill(true);
 	}
 	private void SetMount(Horse h, bool isMounted) {
