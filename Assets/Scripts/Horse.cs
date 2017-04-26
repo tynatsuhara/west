@@ -9,6 +9,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
+	public bool tamed;
 
 	// Ride
 	public void Interact(Character character) {
@@ -91,6 +92,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 			bodyColor = Random.Range(0, h.bodyColor.Length);
 			maneColor = Random.Range(0, h.maneColor.Length);
 			speckled = Random.Range(0, 5) == 0;
+			tamed = h.tamed;
 		}
 
 		public System.Guid guid = System.Guid.NewGuid();
@@ -98,6 +100,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 		public int bodyColor;
 		public int maneColor;
 		public bool speckled;
+		public bool tamed;
 		public SerializableVector3 location = new SerializableVector3(Vector3.zero);
 		public SerializableVector3 eulerAngles = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 	}
