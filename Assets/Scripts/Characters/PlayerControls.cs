@@ -126,6 +126,12 @@ public class PlayerControls : Character {
 	}
 
 	private void Move(float x, float z) {
+		if (ridingHorse) {
+			walk.Ride();
+			if (!mount.SaveData().tamed)
+				return;
+		}
+
 		float cameraRotation = playerCamera.transform.eulerAngles.y;
 
 		float speed = CalculateSpeed() * Time.deltaTime;
@@ -150,7 +156,6 @@ public class PlayerControls : Character {
 		}
 
 		if (ridingHorse) {
-			walk.Ride();
 			if (x != 0 || z != 0) {
 				Quaternion q = Quaternion.LookRotation(mount.transform.position - mountFaceDir);
 				mount.transform.rotation = Quaternion.Lerp(mount.transform.rotation, q, .1f);
