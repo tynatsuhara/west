@@ -7,7 +7,7 @@ public class Location {
 	public Map parent;
 	public System.Guid guid = System.Guid.NewGuid();
 	public string name = NameGen.townName.Generate("<name>");
-	public string icon = "}";  // bull head in pixel western font
+	public string icon;  // bull head in pixel western font
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public List<System.Guid> horses = new List<System.Guid>();
@@ -18,6 +18,8 @@ public class Location {
 	private List<int> trails = new List<int>();
 
 	public Location(Map parent, float x, float y) {
+		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@"};
+		icon = icons[Random.Range(0, icons.Length)];
 		this.parent = parent;
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 	}
