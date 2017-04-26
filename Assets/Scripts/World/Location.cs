@@ -18,7 +18,7 @@ public class Location {
 	private List<int> trails = new List<int>();
 
 	public Location(Map parent, float x, float y) {
-		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@"};
+		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};
 		icon = icons[Random.Range(0, icons.Length)];
 		this.parent = parent;
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
