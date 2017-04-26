@@ -424,13 +424,11 @@ public abstract class Character : MonoBehaviour, Damageable {
 		SetMount(h, true);
 		transform.parent = h.transform;		
 		transform.localPosition = new Vector3(0f, .82f, .2f);  // horseback position
-		Map.CurrentLocation().horses.Remove(h.SaveData().guid);
 		walk.Sit();
 	}
 	public void Dismount() {
 		SetMount(mount, false);
 		mount.Dismount();
-		Map.CurrentLocation().horses.Add(mount.SaveData().guid);
 		transform.parent = null;
 		walk.StandStill(true);
 	}

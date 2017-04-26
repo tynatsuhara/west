@@ -20,7 +20,11 @@ public class Teleporter : MonoBehaviour {
 		PlayerControls pc = other.GetComponentInParent<PlayerControls>();
 		if (character || pc) {
 			other.transform.root.position = otherSide.position.val;
-			DontDestroyOnLoad(character.transform.root.gameObject);			
+			if (character.ridingHorse) {
+				Horse.HorseSaveData hsd = character.mount.SaveData();
+				Map.CurrentLocation().horses.Remove(hsd.guid);
+				Map.Location(toId).horses.Add(hsd.guid);
+			}
 			if (pc) {
 				GameManager.instance.LoadLocation(toId);
 			} else {
