@@ -6,7 +6,7 @@ public class VisualMap : MonoBehaviour {
 
 	public Text txt;
 
-	void Start () {
+	public void Draw() {
 		Map m = SaveGame.currentGame.map;
 		float scale = 1f/Map.WORLD_COORD_SIZE;
 		Vector3 offset = new Vector3(transform.localScale.x, 0, transform.localScale.z) * txt.transform.parent.localScale.x / 2f;	
@@ -18,9 +18,5 @@ public class VisualMap : MonoBehaviour {
 			newtxt.transform.position -= offset;
 		}
 		Destroy(txt.gameObject);
-	}
-	
-	void Update () {
-	
 	}
 }

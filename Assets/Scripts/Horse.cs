@@ -14,7 +14,6 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	public void Interact(Character character) {
 		character.MountHorse(this);
 		rider = character;
-
 	}
 	public void Uninteract(Character character) {}
 

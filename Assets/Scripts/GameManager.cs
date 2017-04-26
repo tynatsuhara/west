@@ -40,17 +40,19 @@ public class GameManager : MonoBehaviour {
 
 	void Awake() {
 		instance = this;
+	}
+
+	void Start () {
+		// needs to happen in start so that instances are set up
 		if (newGame) {
 			SaveGame.GenerateWorld();
 			newGame = false;
 		} else {
 			SaveGame.Load();
 		}
-	}
 
-	void Start () {
 		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);
-		GameObject.Find("Map").GetComponent<VisualMap>().enabled = true;
+		GameObject.Find("Map").GetComponent<VisualMap>().Draw();
 		players = SpawnPlayers(playersToSpawn);		
 
 		StartCoroutine(CheckQuests());
