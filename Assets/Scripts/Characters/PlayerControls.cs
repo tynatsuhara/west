@@ -259,7 +259,7 @@ public class PlayerControls : Character {
 		if (psd.health >= 0)
 			health = psd.health;
 		if (psd.ridingHorse)
-			MountHorse(GameManager.localHorses.Where(x => x.SaveData().guid == psd.mountGuid).First());
+			GameManager.localHorses.Where(x => x.SaveData().guid == psd.mountGuid).First().Interact(this);
 		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
 		CharacterOptionsManager.instance.SetSkinColor(id, psd.skinColor);
 		CharacterOptionsManager.instance.SetHairColor(id, psd.hairColor);

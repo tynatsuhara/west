@@ -14,6 +14,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject doorPrefab;
 	public GameObject horsePrefab;
 	public GameObject teleporterPrefab;
+	public List<GameObject> recycle;  // everything that is spawned in the world
 
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
@@ -25,10 +26,23 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void LoadLocation(System.Guid guid) {
+		bool firstLoad = GameManager.instance.loadReposition == Vector3.zero;
+
+		if (!firstLoad) {
+			foreach (GameObject go in recycle) {
+				if (go != null) {
+					Destroy(go);
+				}
+			}
+			foreach (PlayerControls pc in GameManager.players) {
+				pc.transform.root.position = GameManager.instance.loadReposition;
+			}
+		}
+
 		Location l = Map.Location(guid);
 		loadedLocation = l;
-		floorTiles = new PicaVoxel.Volume[l.width, l.height];		
-		SpawnHorses(l);
+		floorTiles = new PicaVoxel.Volume[l.width, l.height];
+		SpawnHorses(l, firstLoad);
 		SpawnTeleporters(l);
 		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters		
 		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "grey");		
@@ -43,6 +57,7 @@ public class LevelBuilder : MonoBehaviour {
 				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
 			}
 		}
+		recycle.Add(floorHolder);
 		PositionWalls(l);
 	}
 
@@ -60,11 +75,18 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 
-	private void SpawnHorses(Location l) {
+	private void SpawnHorses(Location l, bool spawnRiddenByPlayers) {
+		Debug.Log("should spawn player's horses? " + spawnRiddenByPlayers);
+		List<System.Guid> spawnExceptions = spawnRiddenByPlayers
+				? new List<System.Guid>()
+				: SaveGame.currentGame.savedPlayers.Select(x => x.mountGuid).Where(x => x != System.Guid.Empty).ToList();
 		foreach (System.Guid id in l.horses) {
-			Horse.HorseSaveData hsd = SaveGame.currentGame.horses[id];
-			Horse h = Instantiate(horsePrefab).GetComponent<Horse>();
-			h.LoadSaveData(hsd);
+			if (!spawnExceptions.Contains(id)) {
+				Horse.HorseSaveData hsd = SaveGame.currentGame.horses[id];
+				Horse h = Instantiate(horsePrefab).GetComponent<Horse>();
+				h.LoadSaveData(hsd);
+				recycle.Add(h.gameObject);
+			}
 		}
 	}
 
@@ -76,6 +98,7 @@ public class LevelBuilder : MonoBehaviour {
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;
 			porter.GetComponent<Teleporter>().LoadSaveData(td);
+			recycle.Add(porter);			
 		}
 	}
 

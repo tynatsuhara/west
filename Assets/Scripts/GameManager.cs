@@ -51,9 +51,10 @@ public class GameManager : MonoBehaviour {
 			SaveGame.Load();
 		}
 
-		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);
-		GameObject.Find("Map").GetComponent<VisualMap>().Draw();
+		LoadLocation(SaveGame.currentGame.map.currentLocation);
 		players = SpawnPlayers(playersToSpawn);		
+		GameObject.Find("Map").GetComponent<VisualMap>().Draw();
+		SetTimeScale(1f);
 
 		StartCoroutine(CheckQuests());
 	}
@@ -105,10 +106,11 @@ public class GameManager : MonoBehaviour {
 
 	public void LoadLocation(System.Guid guid) {
 		SaveGame.currentGame.map.currentLocation = guid;
-		SaveGame.Save();
 		SetPaused(false);
-		Application.LoadLevel(Application.loadedLevel);
+		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);
 	}
+
+	public Vector3 loadReposition;
 
 	private IEnumerator CheckQuests() {
 		while (true) {
@@ -173,7 +175,7 @@ public class GameManager : MonoBehaviour {
 			pc.playerUI.player = pc;
 			pc.playerUI.transform.SetParent(pc.playerCamera.transform, false);
 
-			pc.LoadSaveData(SaveGame.currentGame.savedPlayers[pc.id - 1]);			
+			pc.LoadSaveData(SaveGame.currentGame.savedPlayers[pc.id - 1]);		
 		}
 
 		// split screen dimensions
@@ -192,8 +194,6 @@ public class GameManager : MonoBehaviour {
 		}
 		foreach (PlayerControls pc in result) {
 			pc.firstPersonCam.rect = pc.playerCamera.cam.rect;
-			// DontDestroyOnLoad(pc.gameObject);
-			// DontDestroyOnLoad(pc.playerCamera.transform.root.gameObject);
 		}
 		return result;
 	}

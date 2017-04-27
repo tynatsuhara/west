@@ -311,6 +311,7 @@ public abstract class Character : LivingThing, Damageable {
 		
 		mount = h;
 		SetMount(h, true);
+		LevelBuilder.instance.recycle.Remove(h.gameObject);
 		transform.parent = h.transform;		
 		transform.localPosition = new Vector3(0f, .82f, .2f);  // horseback position
 		walk.Sit();
@@ -319,6 +320,7 @@ public abstract class Character : LivingThing, Damageable {
 		SetMount(mount, false);
 		mount.Dismount();
 		transform.parent = null;
+		LevelBuilder.instance.recycle.Add(mount.gameObject);		
 		transform.Translate((Random.Range(0, 2) == 0 ? 1 : -1) * transform.right * .5f);
 		walk.StandStill(true);
 	}
