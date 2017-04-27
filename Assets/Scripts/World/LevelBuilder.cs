@@ -29,6 +29,7 @@ public class LevelBuilder : MonoBehaviour {
 		bool firstLoad = GameManager.instance.loadReposition == Vector3.zero;
 
 		if (!firstLoad) {
+			SaveGame.Save();
 			foreach (GameObject go in recycle) {
 				if (go != null) {
 					Destroy(go);
