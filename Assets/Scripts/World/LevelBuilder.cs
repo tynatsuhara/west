@@ -77,7 +77,6 @@ public class LevelBuilder : MonoBehaviour {
 
 
 	private void SpawnHorses(Location l, bool spawnRiddenByPlayers) {
-		Debug.Log("should spawn player's horses? " + spawnRiddenByPlayers);
 		List<System.Guid> spawnExceptions = spawnRiddenByPlayers
 				? new List<System.Guid>()
 				: SaveGame.currentGame.savedPlayers.Select(x => x.mountGuid).Where(x => x != System.Guid.Empty).ToList();
