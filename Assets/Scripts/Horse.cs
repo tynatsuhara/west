@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class Horse : MonoBehaviour, Interactable, Damageable {
 
@@ -10,11 +11,14 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
 	public bool tamed;
+	public float jumpForce;
 
 	// Ride
 	public void Interact(Character character) {
 		character.MountHorse(this);
 		rider = character;
+		if (!tamed)
+			StartCoroutine(Tame());
 	}
 	public void Uninteract(Character character) {}
 
@@ -29,6 +33,28 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 				rider.Dismount();
 		}
 		return false;
+	}
+
+	public IEnumerator Tame() {
+		int jumpsNeeded = Random.Range(4, 8);
+		for (int i = 0; i < jumpsNeeded; i++) {
+			yield return new WaitForSeconds(Random.Range(.2f, .7f));
+			Jump();
+			yield return new WaitForSeconds(.1f);			
+			if (rider != null && Random.Range(0, 4) == 0) {
+				rider.Dismount();
+			}
+			if (rider == null) {
+				break;
+			}
+			if (i == jumpsNeeded - 1) {
+				tamed = true;
+			}
+		}
+	}
+
+	public void Jump() {
+		GetComponent<Rigidbody>().AddForce(transform.up * jumpForce, ForceMode.Impulse);
 	}
 
 	private void Color() {
@@ -74,6 +100,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	public HorseSaveData SaveData() {
 		data.location = new SerializableVector3(transform.position);
 		data.eulerAngles = new SerializableVector3(transform.eulerAngles);
+		data.tamed = tamed;
 		return data;
 	}
 
@@ -81,6 +108,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 		data = hsd;
 		transform.position = data.location.val;
 		transform.eulerAngles = data.eulerAngles.val;
+		tamed = hsd.tamed;
 		Color();		
 	}
 
