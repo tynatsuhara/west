@@ -17,10 +17,7 @@ public class PlayerControls : Character {
 		base.Start();
 		CharacterOptionsManager.instance.CustomizeFromSave(this);
 
-		// hide accessories from first person camera
-		foreach (Accessory a in GetComponentsInChildren<Accessory>())
-			foreach (Transform t in a.GetComponentsInChildren<Transform>())
-				t.gameObject.layer = LayerMask.NameToLayer("accessory" + id);	
+		InitFirstPersonCamera();
 	}
 
 	void Update() {
@@ -107,6 +104,16 @@ public class PlayerControls : Character {
 		Drag();
     }
 
+	private void InitFirstPersonCamera() {
+		List<Transform> transforms = new List<Transform>();
+		foreach (Accessory a in GetComponentsInChildren<Accessory>())
+			transforms.AddRange(a.GetComponentsInChildren<Transform>());
+		transforms.AddRange(head.GetComponentsInChildren<Transform>());
+
+		foreach (Transform t in transforms)
+			t.gameObject.layer = LayerMask.NameToLayer("accessory" + id);
+	}
+
 	public void SwitchCamera(bool firstPerson) {
 		firstPersonCam.enabled = firstPerson;
 		playerCamera.cam.enabled = !firstPerson;		
@@ -184,6 +191,7 @@ public class PlayerControls : Character {
 		if (firstPersonCam.enabled) {
 			LoseLookTarget();
 			transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X") * 150f * Time.deltaTime);
+			firstPersonCam.transform.RotateAround(firstPersonCam.transform.position, transform.right, Input.GetAxis("Mouse Y") * -150f * Time.deltaTime);
 		} else {
 			// Generate a plane that intersects the transform's position with an upwards normal.
 			Plane playerPlane = new Plane(Vector3.up, transform.position);

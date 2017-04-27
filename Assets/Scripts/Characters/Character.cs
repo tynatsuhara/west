@@ -36,6 +36,7 @@ public abstract class Character : LivingThing, Damageable {
 	public PicaVoxel.Volume head;
 	public PicaVoxel.Volume body;
 	public PicaVoxel.Volume arms;
+	public PicaVoxel.Volume legs;
 
 	public float moveSpeed;
 	public float rotationSpeed;
