@@ -93,7 +93,7 @@ public class PlayerControls : Character {
 			SelectGun(1);
 		}
 
-		if (Input.GetKeyDown(KeyCode.P)) {
+		if ((p1 && Input.GetKeyDown(KeyCode.P)) || Input.GetKeyDown("joystick " + id + " button 5")) {
 			SwitchCamera(!firstPersonCam.enabled);
 		}
 
