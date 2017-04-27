@@ -109,10 +109,10 @@ public class PlayerControls : Character {
 
 	public void SwitchCamera(bool firstPerson) {
 		firstPersonCam.enabled = firstPerson;
+		playerCamera.cam.enabled = !firstPerson;		
 		firstPersonCam.GetComponent<BoxCollider>().enabled = firstPerson;  // so you won't push into walls and clip
-		playerUI.GetComponent<Canvas>().worldCamera = firstPerson ? firstPersonCam : playerCamera.cam;
+		playerUI.GetComponent<Canvas>().worldCamera = firstPerson ? firstPersonCam : playerCamera.cam;  // put the UI on the right camera
 		playerUI.GetComponent<Canvas>().planeDistance = 20f;
-		playerCamera.cam.enabled = !firstPerson;
 	}
 
 	private void Walk() {
