@@ -37,44 +37,50 @@ public class PlayerControls : Character {
 		Rotate();
 	}
 
+	private float interactHoldTime;
 	void GetInput() {
 		bool p1 = id == 1;
 
-		if ((p1 && Input.GetKeyDown(KeyCode.F)) || Input.GetKeyDown("joystick " + id + " button 3")) {
+		// F - Draw/hide weapon
+		if ((p1 && Input.GetKey(KeyCode.F)) || Input.GetKey("joystick " + id + " button 3")) {
+			interactHoldTime += Time.deltaTime;
+			if (interactHoldTime >= 1f) {
+				Shout();				
+			}
+		} else if ((p1 && Input.GetKeyUp(KeyCode.F)) || Input.GetKeyUp("joystick " + id + " button 3")) {
 			if (weaponDrawn) {
 				HideWeapon();
-				// Shout();
 			} else {
 				DrawWeapon();				
 			}
 		}
 
+		// E - Interact
 		if ((p1 && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown("joystick " + id + " button 1")) {
 			if (ridingHorse) {
 				Dismount();
 			} else {
-				Interact();
+				bool drag = draggedBody || DragBody();
+				if (!drag) {
+					Interact();
+				}
 			}
 		} else if ((p1 && Input.GetKeyUp(KeyCode.E)) || Input.GetKeyUp("joystick " + id + " button 1")) {
+			ReleaseBody();
 			InteractCancel();
 		}
 
-		if ((p1 && Input.GetKeyDown(KeyCode.G)) || Input.GetKeyDown("joystick " + id + " button 2")) {
+		// Q - Drop bag
+		if ((p1 && Input.GetKeyDown(KeyCode.Q)) || Input.GetKeyDown("joystick " + id + " button 2")) {
 			DropBag();
-		}
-
-		if ((p1 && Input.GetKeyDown(KeyCode.Space)) || Input.GetKeyDown("joystick " + id + " button 5")) {
-			DragBody();
-		} else if ((p1 && Input.GetKeyUp(KeyCode.Space)) || Input.GetKeyUp("joystick " + id + " button 5")) {
-			ReleaseBody();
 		}
 
 		if ((p1 && Input.GetMouseButton(0)) || Input.GetKey("joystick " + id + " button 7")) {
 			Shoot();
 		} else if ((p1 && Input.GetMouseButtonDown(1)) || Input.GetKeyDown("joystick " + id + " button 6")) {
 			Melee();
-		} else if (Input.GetKeyDown(KeyCode.Alpha3)) {
-			Explosive();
+		// } else if (Input.GetKeyDown(KeyCode.Alpha3)) {      // TODO: ¿improve explosions?
+			// TriggerExplosive();
 		}
 
 		if ((p1 && Input.GetKeyDown(KeyCode.R)) || Input.GetKeyDown("joystick " + id + " button 0")) {

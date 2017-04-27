@@ -3,10 +3,10 @@ A voxel-based destruction gorefest where you have one objective - cold, hard cas
 
 ## Controls
 Keyboard/PS4
-* E/X - Interact
-* F/Triangle - Draw Weapon, Shout
-* G/Circle - Throw bag
-* SPACE/RB - Drag body
+* E/X - Drag Body/Interact
+* F/Triangle release - Draw/Hide Weapon
+* F/Triangle hold - Shout
+* Q/Circle - Throw bag
 * R/Square - Reload
 * Mouse0/R2 - Shoot
 * Mouse1/L2 - Melee
@@ -14,4 +14,3 @@ Keyboard/PS4
 * MouseWheel/D-Pad Up+Down - Zoom
 * Z+C/D-Pad Left+Right - Rotate Camera
 * ESC/Options - Pause
-* N/Share on pause menu or game over screen - Restart level
