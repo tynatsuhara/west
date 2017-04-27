@@ -35,17 +35,22 @@ public class PlayerControls : Character {
 	}
 
 	private float interactHoldTime;
+	private bool interactWasHeld;
 	void GetInput() {
 		bool p1 = id == 1;
 
 		// F - Draw/hide weapon
 		if ((p1 && Input.GetKey(KeyCode.F)) || Input.GetKey("joystick " + id + " button 3")) {
 			interactHoldTime += Time.deltaTime;
-			if (interactHoldTime >= 1f) {
-				Shout();				
+			if (interactHoldTime >= .7f) {
+				Shout();
+				interactWasHeld = true;		
 			}
 		} else if ((p1 && Input.GetKeyUp(KeyCode.F)) || Input.GetKeyUp("joystick " + id + " button 3")) {
-			if (weaponDrawn) {
+			interactHoldTime = 0;
+			if (interactWasHeld) {
+				interactWasHeld = false;
+			} else if (weaponDrawn) {
 				HideWeapon();
 			} else {
 				DrawWeapon();				
