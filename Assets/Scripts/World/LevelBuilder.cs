@@ -94,6 +94,14 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnTeleporters(Location l) {
+		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
+		foreach (var q in SaveGame.currentGame.quests.markedQuests)
+			destinations.AddRange(q.GetLocations());
+		List<System.Guid> questTeleportDestinations = destinations
+				.Where(x => l.guid != x.location)
+				.Select(x => SaveGame.currentGame.map.BestPathFrom(l.guid, x.location)[0])
+				.ToList();
+
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
 		foreach (Teleporter.TeleporterData td in l.teleporters) {
