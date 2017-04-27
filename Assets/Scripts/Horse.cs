@@ -35,10 +35,11 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
 		bool wasAlive = isAlive;
-		health -= damage;
-		Bleed(location, Random.Range(0, 10), angle);
+		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) - Vector3.up * Random.Range(.2f, .6f);
+		if (isAlive)
+			Bleed(exploder.transform.position, Random.Range(1, 10), angle);
+		health -= damage;		
 		float forceVal = Random.Range(500, 900);
-		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) + new Vector3(0, Random.Range(-.7f, .3f), 0);		
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
 		if (wasAlive && !isAlive) {
 			if (rider != null) {

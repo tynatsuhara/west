@@ -61,20 +61,20 @@ public abstract class LivingThing : MonoBehaviour {
 	}
 
 	protected void Bleed(Vector3 position, int amount, Vector3 velocity) {
-		foreach (PicaVoxel.Volume volume in bodyParts) {
-			Vector3 spawnPos = volume.transform.position + Random.insideUnitSphere * .2f;
-			PicaVoxel.PicaVoxelPoint pos = volume.GetVoxelArrayPosition(spawnPos);
-			PicaVoxel.Voxel? hit = volume.GetVoxelAtArrayPosition(pos.X, pos.Y, pos.Z);
-			if (hit != null && hit.HasValue && hit.Value.Active) {
-				PicaVoxel.Voxel voxel = new PicaVoxel.Voxel();
-				voxel.Value = hit.Value.Value;
-				volume.SetVoxelAtArrayPosition(pos, voxel);
-				for (int i = 0; i < amount; i++) {
+		for (int i = 0; i < amount; i++) {
+			Vector3 spawnPos = position + Random.insideUnitSphere * .1f;
+			foreach (PicaVoxel.Volume volume in bodyParts) {			
+				PicaVoxel.PicaVoxelPoint pos = volume.GetVoxelArrayPosition(spawnPos);
+				PicaVoxel.Voxel? hit = volume.GetVoxelAtArrayPosition(pos.X, pos.Y, pos.Z);
+				if (hit != null && hit.HasValue && hit.Value.Active) {
+					PicaVoxel.Voxel voxel = new PicaVoxel.Voxel();
+					voxel.Value = hit.Value.Value;
 					voxel.Color = WorldBlood.instance.BloodColor();
 					voxel.State = PicaVoxel.VoxelState.Active;
+					volume.SetVoxelAtArrayPosition(pos, voxel);
 					PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(spawnPos, 
 						voxel, .1f, 4 * velocity + 3 * Random.insideUnitSphere + Vector3.up * 0f);
-					return;
+					break;
 				}
 			}
 		}

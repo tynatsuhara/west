@@ -123,7 +123,7 @@ public abstract class Character : LivingThing, Damageable {
 			Alert(Reaction.AGGRO, location - angle.normalized);
 
 		if (isAlive)
-			Bleed(location, Random.Range(0, 10), angle);
+			Bleed(location - Vector3.up * (Random.Range(0, 3) == 1 ? .5f : 0f), Random.Range(1, 10), angle);
 
 		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) + new Vector3(0, Random.Range(-.7f, .3f), 0);			
 		bool wasAlive = isAlive;  // save it beforehand
