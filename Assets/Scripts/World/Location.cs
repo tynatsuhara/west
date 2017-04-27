@@ -13,7 +13,7 @@ public class Location {
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<System.Guid> characters = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
-	public int biomeColor;
+	public int biomeColor = Random.Range(0, LevelBuilder.instance.biomeColors.Length);
 	public int width = 20;
 	public int height = 10;
 	private List<int> trails = new List<int>();

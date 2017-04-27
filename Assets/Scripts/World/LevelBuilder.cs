@@ -14,7 +14,9 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject doorPrefab;
 	public GameObject horsePrefab;
 	public GameObject teleporterPrefab;
-	public List<GameObject> recycle;  // everything that is spawned in the world
+	public Material mat;
+	public Color32[] biomeColors;
+	public List<GameObject> recycle;  // everything that is spawned in the world that should be deleted later
 
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
@@ -42,11 +44,12 @@ public class LevelBuilder : MonoBehaviour {
 
 		Location l = Map.Location(guid);
 		loadedLocation = l;
+		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
 		SpawnHorses(l, firstLoad);
 		SpawnTeleporters(l);
 		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters		
-		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "grey");		
+		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "grey");
 
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";
