@@ -8,7 +8,6 @@ public abstract class Task {
 
 	public abstract TaskDestination[] GetLocations();
 
-
 	public class TaskDestination {
 		public System.Guid location;
 		public Vector3 position;
