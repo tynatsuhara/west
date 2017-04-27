@@ -142,9 +142,9 @@ public class PlayerControls : Character {
 
 		Vector3 mountFaceDir = Vector3.zero;
 		if (firstPersonCam.enabled) {
-			mover.GetComponent<Rigidbody>().MovePosition(mover.transform.position + 
-					transform.right * speed * x + transform.forward * speed * z);
-			mountFaceDir = mover.transform.position + new Vector3(x, 0, z);
+			Vector3 dir = transform.right * speed * x + transform.forward * speed * z;
+			mover.GetComponent<Rigidbody>().MovePosition(mover.transform.position + dir);
+			mountFaceDir = mover.transform.position + dir;
 		} else {
 			Vector3 pos = mover.transform.position;
 			pos.x += speed * (z * Mathf.Sin(cameraRotation * Mathf.Deg2Rad) + 
@@ -157,8 +157,12 @@ public class PlayerControls : Character {
 
 		if (ridingHorse) {
 			if (x != 0 || z != 0) {
+				Quaternion rider = transform.rotation;
 				Quaternion q = Quaternion.LookRotation(mount.transform.position - mountFaceDir);
 				mount.transform.rotation = Quaternion.Lerp(mount.transform.rotation, q, .1f);
+				if (firstPersonCam.enabled) {
+					transform.rotation = rider;
+				}
 			}
 		} else if ((x != 0 || z != 0) && !walk.isWalking) {
 			walk.StartWalk();
