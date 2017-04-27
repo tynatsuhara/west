@@ -13,6 +13,7 @@ public class Location {
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<System.Guid> characters = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
+	public int biomeColor;
 	public int width = 20;
 	public int height = 10;
 	private List<int> trails = new List<int>();
@@ -125,11 +126,9 @@ public class Location {
 		// temp horse spawning
 		int horseAmount = Random.Range(1, 5);
 		for (int i = 0; i < horseAmount; i++) {
-			if (LevelBuilder.instance != null) {
-				Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
-				SaveGame.currentGame.horses.Add(hsd.guid, hsd);
-				horses.Add(hsd.guid);
-			}
+			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
+			SaveGame.currentGame.horses.Add(hsd.guid, hsd);
+			horses.Add(hsd.guid);
 		}
 	}
 
