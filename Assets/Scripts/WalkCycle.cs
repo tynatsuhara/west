@@ -81,7 +81,9 @@ public class WalkCycle : MonoBehaviour {
 		}
 
 		Floor f = LevelBuilder.instance.FloorAt(transform.position);
-		if (f != null && f.kickUpDirt) {	
+		if (f != null && f.kickUpDirt) {
+			PicaVoxel.Voxel v = dirtVoxel.Value;
+			v.Color = f.dirtColor == Color.white ? (Color32)LevelBuilder.instance.mat.GetColor("_Tint") : f.dirtColor;
 			int dirts = Random.Range(1, 4);	
 			for (int i = 0; i < dirts; i++) {
 				Vector3 pos = transform.root.position;
@@ -90,7 +92,7 @@ public class WalkCycle : MonoBehaviour {
 				pos.y = Mathf.Max(pos.y, .04f);
 
 				Vector3 dir = transform.up * .25f + Random.insideUnitSphere * .5f;
-				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos, dirtVoxel.Value, .1f, dir, Random.Range(.3f, .6f));
+				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos, v, .1f, dir, Random.Range(.3f, .6f));
 			}
 		}
 	}
