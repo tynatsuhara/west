@@ -24,9 +24,6 @@ public abstract class Character : LivingThing, Damageable {
 	// each inheriting class should define walking
 	public bool walking;
 
-	public float healthMax;
-	public float health;
-
 	public Inventory inventory;
 	public Bag bag;
 	public bool hasBag {
@@ -59,10 +56,6 @@ public abstract class Character : LivingThing, Damageable {
 	public Transform lookTarget;
 	public Vector3 lookPosition;
 
-	public bool isAlive {
-		get { return health > 0; }
-	}
-
 	public Rigidbody draggedBody;
 	public bool isDragging {
 		get { return draggedBody != null; }
@@ -70,7 +63,9 @@ public abstract class Character : LivingThing, Damageable {
 
 	public virtual void Start() {
 		rb = GetComponent<Rigidbody>();
-		separateBodyParts.Add(rb);
+		separateBodyParts.Add(body);
+		bodyParts.Add(body);
+		bodyParts.Add(head);
 		speech = GetComponentInChildren<TextObject>();
 	}
 
@@ -127,9 +122,10 @@ public abstract class Character : LivingThing, Damageable {
 		if (isAlive && !isPlayer)
 			Alert(Reaction.AGGRO, location - angle.normalized);
 
-		// if (isAlive)
-			// Bleed(Random.Range(0, 10), location, angle);
+		if (isAlive)
+			Bleed(location, Random.Range(0, 10), angle);
 
+		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) + new Vector3(0, Random.Range(-.7f, .3f), 0);			
 		bool wasAlive = isAlive;  // save it beforehand
 
 		health = Mathf.Max(0, health - damage);
@@ -144,9 +140,10 @@ public abstract class Character : LivingThing, Damageable {
 			if ((wasAlive && !isAlive) || type == DamageType.MELEE || type == DamageType.SLICE) {
 				forceVal *= 1.5f;
 			}
-			foreach (Rigidbody body in separateBodyParts) {
+			foreach (PicaVoxel.Volume vol in separateBodyParts) {
+				Rigidbody body = vol.GetComponentInParent<Rigidbody>();
 				body.AddForceAtPosition(forceVal * angle.normalized, type == DamageType.MELEE 
-									? transform.position + Vector3.up * Random.Range(-.4f, .3f) 
+									? transform.position + Vector3.up * Random.Range(-.4f, .3f)  // make the head fly
 									: exploder.transform.position, ForceMode.Impulse);
 			}
 		}
@@ -159,6 +156,9 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	public virtual void Die(Vector3 location, Vector3 angle, DamageType type = DamageType.MELEE) {
+		if (ridingHorse) {
+			Dismount();
+		}
 		GameManager.instance.AlertInRange(Reaction.AGGRO, transform.position, 2f);
 		InteractCancel();
 		NavMeshAgent agent = GetComponent<NavMeshAgent>();
@@ -179,7 +179,6 @@ public abstract class Character : LivingThing, Damageable {
 			if (Random.Range(0, 2) == 0)
 				Decapitate();
 		} else if (type != DamageType.MELEE && type != DamageType.NONLETHAL) {
-			exploder.transform.position = location + angle * Random.Range(-.1f, .15f) + new Vector3(0, Random.Range(-.7f, .3f), 0);			
 			exploder.Explode(angle * 3);
 			// BloodSplatter(location);
 		}
@@ -202,7 +201,7 @@ public abstract class Character : LivingThing, Damageable {
 		head.transform.parent = null;
 		Rigidbody b = head.gameObject.AddComponent<Rigidbody>() as Rigidbody;
 		b.mass = rb.mass;
-		separateBodyParts.Add(b);
+		separateBodyParts.Add(head);
 	}
 
 	public void RemoveBody() {
@@ -445,7 +444,7 @@ public abstract class Character : LivingThing, Damageable {
 
 		List<Rigidbody> rbs = new List<Rigidbody>();
 		foreach (Character c in draggableChars) {
-			rbs.AddRange(c.separateBodyParts);
+			rbs.AddRange(separateBodyParts.Select(x => x.GetComponentInParent<Rigidbody>()));
 		}
 
 		float grabRange = 1.5f;

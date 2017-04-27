@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Collections;
 
-public class Horse : MonoBehaviour, Interactable, Damageable {
+public class Horse : LivingThing, Interactable, Damageable {
 
-	public float healthMax;
 	private HorseSaveData data;
 	private Character rider;
 
@@ -12,9 +11,17 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	public Color32[] maneColor;
 	public bool tamed;
 	public float jumpForce;
+	public PicaVoxel.Exploder exploder;
+
+	public void Start() {
+		bodyParts.Add(GetComponent<PicaVoxel.Volume>());
+		separateBodyParts.AddRange(bodyParts);
+	}
 
 	// Ride
 	public void Interact(Character character) {
+		if (!isAlive)
+			return;
 		character.MountHorse(this);
 		rider = character;
 		if (!tamed)
@@ -27,10 +34,20 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 	}
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
-		data.health -= damage;
-		if (data.health <= 0) {
-			if (rider != null)
-				rider.Dismount();
+		bool wasAlive = isAlive;
+		health -= damage;
+		Bleed(location, Random.Range(0, 10), angle);
+		float forceVal = Random.Range(500, 900);
+		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) + new Vector3(0, Random.Range(-.7f, .3f), 0);		
+		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
+		if (wasAlive && !isAlive) {
+			if (rider != null) {
+				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder
+			}
+			if (type != DamageType.MELEE && type != DamageType.NONLETHAL) {
+				exploder.Explode(angle * 3);
+			}
+			StartCoroutine(FallOver());
 		}
 		return false;
 	}
@@ -101,6 +118,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 		data.location = new SerializableVector3(transform.position);
 		data.eulerAngles = new SerializableVector3(transform.eulerAngles);
 		data.tamed = tamed;
+		data.health = health;
 		return data;
 	}
 
@@ -109,6 +127,7 @@ public class Horse : MonoBehaviour, Interactable, Damageable {
 		transform.position = data.location.val;
 		transform.eulerAngles = data.eulerAngles.val;
 		tamed = hsd.tamed;
+		health = hsd.health;
 		Color();		
 	}
 
