@@ -25,6 +25,7 @@ public class QuestManager {
 		if (anyComplete) {
 			completedQuests.AddRange(quests.Where(x => x.complete));
 			quests = quests.Where(x => !x.complete).ToList();
+			LevelBuilder.instance.MarkQuestDestinations();
 		}
 	}
 
