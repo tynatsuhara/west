@@ -119,11 +119,11 @@ public class Map {
 		List<Location> q = locations.Values.ToList();
 
 		while (q.Count > 0) {
-			Location u = dist.OrderBy(x => x.Value).First().Key;
+			Location u = q.OrderBy(x => dist[x]).First();
 			if (u == dst) {
 				List<Location> path = new List<Location>();
 				path.Add(u);
-				while (prev[path[0]] != src) {
+				while (prev[path[0]] != src) {  // backtrack
 					path.Insert(0, prev[path[0]]);
 				}
 				return path.Select(x => x.guid).ToList();
@@ -132,7 +132,7 @@ public class Map {
 
 			foreach (System.Guid vg in u.connections) {
 				Location v = locations[vg];
-				int alt = dist[u] + 1;
+				int alt = dist[u] + (int)(u.worldLocation.val - v.worldLocation.val).magnitude;
 				if (alt < dist[v]) {
 					dist[v] = alt;
 					prev[v] = u;
