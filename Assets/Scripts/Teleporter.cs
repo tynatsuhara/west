@@ -35,7 +35,7 @@ public class Teleporter : MonoBehaviour {
 
 	// Mark if the player should go this way for a quest
 	public void MarkQuest(bool hasQuest) {
-		GetComponentInChildren<TextObject>().Say(destination, color: hasQuest ? "red" : "white", permanent: true);
+		GetComponentInChildren<TextObject>().Say(destination, color: hasQuest ? "green" : "white", permanent: true);
 	}
 
 	public void LoadSaveData(TeleporterData td) {

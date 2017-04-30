@@ -14,6 +14,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject doorPrefab;
 	public GameObject horsePrefab;
 	public GameObject teleporterPrefab;
+	public GameObject destinationMarkerPrefab;
 	public Material mat;
 	public Color32[] biomeColors;
 	public List<GameObject> recycle;  // everything that is spawned in the world that should be deleted later
@@ -121,6 +122,13 @@ public class LevelBuilder : MonoBehaviour {
 				.ToList();
 		foreach (Teleporter t in teleporters) {
 			t.MarkQuest(questTeleportDestinations.Contains(t.toId));
+		}
+		List<Vector3> destinationMarkers = destinations
+				.Where(x => loadedLocation.guid == x.location)
+				.Select(x => x.position)
+				.ToList();
+		foreach (Vector3 v in destinationMarkers) {
+			recycle.Add(Instantiate(destinationMarkerPrefab, v, Quaternion.identity));
 		}
 	}
 
