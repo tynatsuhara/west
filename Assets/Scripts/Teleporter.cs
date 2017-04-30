@@ -33,13 +33,17 @@ public class Teleporter : MonoBehaviour {
 		}
 	}
 
+	// Mark if the player should go this way for a quest
+	public void MarkQuest(bool hasQuest) {
+		GetComponentInChildren<TextObject>().Say(destination, color: hasQuest ? "red" : "white", permanent: true);
+	}
+
 	public void LoadSaveData(TeleporterData td) {
 		toId = td.toId;
 		transform.position = td.position.val;
 		destination = SaveGame.currentGame.map.locations[toId].name;
 		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
 				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation && x.tag == td.tag).First();
-		GetComponentInChildren<TextObject>().Say(destination, permanent: true);			
 	}
 
 	private IEnumerator Delay() {

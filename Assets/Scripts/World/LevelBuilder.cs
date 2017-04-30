@@ -18,6 +18,7 @@ public class LevelBuilder : MonoBehaviour {
 	public Color32[] biomeColors;
 	public List<GameObject> recycle;  // everything that is spawned in the world that should be deleted later
 
+	private Teleporter[] teleporters;
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
 
@@ -94,6 +95,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnTeleporters() {
+		teleporters = new Teleporter[loadedLocation.teleporters.Count];
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
 		foreach (Teleporter.TeleporterData td in loadedLocation.teleporters) {
@@ -109,12 +111,15 @@ public class LevelBuilder : MonoBehaviour {
 	public void MarkDestinationTeleporters() {
 		// Quest destinations		
 		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
-		foreach (var q in SaveGame.currentGame.quests.markedQuests)
+		foreach (Quest q in SaveGame.currentGame.quests.markedQuests)
 			destinations.AddRange(q.GetLocations());
 		List<System.Guid> questTeleportDestinations = destinations
 				.Where(x => loadedLocation.guid != x.location)
 				.Select(x => SaveGame.currentGame.map.BestPathFrom(loadedLocation.guid, x.location)[0])
 				.ToList();
+		foreach (Teleporter t in teleporters) {
+			t.MarkQuest(questTeleportDestinations.Contains(t.toId));
+		}
 	}
 
 	private void PositionWalls() {
