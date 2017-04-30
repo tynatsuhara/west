@@ -161,10 +161,10 @@ public abstract class Character : LivingThing, Damageable {
 		}
 		GameManager.instance.AlertInRange(Reaction.AGGRO, transform.position, 2f);
 		InteractCancel();
-		NavMeshAgent agent = GetComponent<NavMeshAgent>();
+		UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 		if (agent != null)
 			agent.enabled = false;
-		NavMeshObstacle obstacle = GetComponent<NavMeshObstacle>();
+		UnityEngine.AI.NavMeshObstacle obstacle = GetComponent<UnityEngine.AI.NavMeshObstacle>();
 		if (obstacle != null)
 			obstacle.enabled = true;
 

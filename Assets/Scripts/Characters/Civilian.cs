@@ -63,7 +63,7 @@ public class Civilian : NPC {
 		if (rb.constraints == RigidbodyConstraints.None) {
 			rb.rotation = Quaternion.Euler(new Vector3(0, rb.rotation.y, 0));
 			rb.position = new Vector3(rb.position.x, 1.1f, rb.position.z);
-			GetComponent<NavMeshAgent>().enabled = true;			
+			GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;			
 			arms.SetFrame(0);
 			rb.constraints = RigidbodyConstraints.FreezeRotation;
 		}
@@ -80,7 +80,7 @@ public class Civilian : NPC {
 		if (firstStateIteration) {
 			ResetRB();
 			arms.SetFrame(1);
-			NavMeshAgent agent = GetComponent<NavMeshAgent>();
+			UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 			Vector3 destPos = Random.insideUnitCircle * 30;				
 			destPos.z = destPos.y;
 			destPos.y = transform.position.y;
@@ -108,7 +108,7 @@ public class Civilian : NPC {
 		if (firstStateIteration) {
 			arms.SetFrame(1);  // hands up
 			rb.constraints = RigidbodyConstraints.None;
-			GetComponent<NavMeshAgent>().enabled = false;
+			GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
 			Vector3 rot = rb.rotation.eulerAngles;
 			rot.x += 32f;
 			rb.MoveRotation(Quaternion.Euler(rot));

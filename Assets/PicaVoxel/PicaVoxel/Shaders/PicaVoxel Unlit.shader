@@ -1,4 +1,6 @@
-﻿Shader "PicaVoxel/PicaVoxel Unlit" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "PicaVoxel/PicaVoxel Unlit" {
 	Properties{
 		_Tint("Tint", Color) = (1,1,1,1)
 	}
@@ -34,7 +36,7 @@
 
 				v2f vert(appdata v) {
 					v2f o;
-					o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+					o.vertex = UnityObjectToClipPos(v.vertex);
 					o.color = v.color;
 					return o;
 				}

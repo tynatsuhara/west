@@ -54,3 +54,16 @@
 /Users/Tyler/Documents/Unity/west/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/Tyler/Documents/Unity/west/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /Users/Tyler/Documents/Unity/west/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/Unity.PackageManager.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.TestRunner.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.TestRunner.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.Analytics.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.Analytics.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.HoloLens.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.HoloLens.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.Purchasing.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.VR.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.VR.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.Android.Extensions.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.iOS.Extensions.Xcode.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEditor.iOS.Extensions.Xcode.xml

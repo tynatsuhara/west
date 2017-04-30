@@ -32,3 +32,8 @@
 /Users/Tyler/Documents/Unity/west/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/Tyler/Documents/Unity/west/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /Users/Tyler/Documents/Unity/west/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.TestRunner.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/nunit.framework.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.Analytics.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.HoloLens.dll
+/Users/Tyler/Documents/Unity/west/Temp/bin/Debug/UnityEngine.VR.dll

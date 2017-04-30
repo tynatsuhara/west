@@ -1,12 +1,12 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{DA4F0053-A5C1-3882-2688-52AE2DA2E466}") = "west", "Assembly-CSharp-firstpass.csproj", "{0367E952-31DA-3F81-2C09-E53D0F0B04A2}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "west", "Assembly-CSharp-firstpass.csproj", "{0367E952-31DA-3F81-2C09-E53D0F0B04A2}"
 EndProject
-Project("{DA4F0053-A5C1-3882-2688-52AE2DA2E466}") = "west", "Assembly-CSharp.csproj", "{19A5C10A-9411-74C5-4BCF-0CA79CC252FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "west", "Assembly-CSharp.csproj", "{19A5C10A-9411-74C5-4BCF-0CA79CC252FF}"
 EndProject
-Project("{DA4F0053-A5C1-3882-2688-52AE2DA2E466}") = "west", "Assembly-CSharp-Editor-firstpass.csproj", "{C59D47F8-40CE-645A-614E-26D3A905CF73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "west", "Assembly-CSharp-Editor-firstpass.csproj", "{C59D47F8-40CE-645A-614E-26D3A905CF73}"
 EndProject
-Project("{DA4F0053-A5C1-3882-2688-52AE2DA2E466}") = "west", "Assembly-CSharp-Editor.csproj", "{4FA8250F-6270-EA9A-6C6C-E55C0E59BD7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "west", "Assembly-CSharp-Editor.csproj", "{4FA8250F-6270-EA9A-6C6C-E55C0E59BD7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
