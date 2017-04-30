@@ -46,8 +46,8 @@ public class LevelBuilder : MonoBehaviour {
 		loadedLocation = l;
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
-		SpawnHorses(l, firstLoad);
-		SpawnTeleporters(l);
+		SpawnHorses(firstLoad);
+		SpawnTeleporters();
 		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters		
 		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "grey");
 
@@ -62,7 +62,7 @@ public class LevelBuilder : MonoBehaviour {
 			}
 		}
 		recycle.Add(floorHolder);
-		PositionWalls(l);
+		PositionWalls();
 	}
 
 	public PicaVoxel.Volume FloorTileAt(Vector3 pos) {
@@ -79,11 +79,11 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 
-	private void SpawnHorses(Location l, bool spawnRiddenByPlayers) {
+	private void SpawnHorses(bool spawnRiddenByPlayers) {
 		List<System.Guid> spawnExceptions = spawnRiddenByPlayers
 				? new List<System.Guid>()
 				: SaveGame.currentGame.savedPlayers.Select(x => x.mountGuid).Where(x => x != System.Guid.Empty).ToList();
-		foreach (System.Guid id in l.horses) {
+		foreach (System.Guid id in loadedLocation.horses) {
 			if (!spawnExceptions.Contains(id)) {
 				Horse.HorseSaveData hsd = SaveGame.currentGame.horses[id];
 				Horse h = Instantiate(horsePrefab).GetComponent<Horse>();
@@ -93,39 +93,43 @@ public class LevelBuilder : MonoBehaviour {
 		}
 	}
 
-	private void SpawnTeleporters(Location l) {
-		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
-		foreach (var q in SaveGame.currentGame.quests.markedQuests)
-			destinations.AddRange(q.GetLocations());
-		List<System.Guid> questTeleportDestinations = destinations
-				.Where(x => l.guid != x.location)
-				.Select(x => SaveGame.currentGame.map.BestPathFrom(l.guid, x.location)[0])
-				.ToList();
-
+	private void SpawnTeleporters() {
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
-		foreach (Teleporter.TeleporterData td in l.teleporters) {
+		foreach (Teleporter.TeleporterData td in loadedLocation.teleporters) {
 			GameObject porter = Instantiate(teleporterPrefab);
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;
 			porter.GetComponent<Teleporter>().LoadSaveData(td);
 			recycle.Add(porter);			
 		}
+		MarkDestinationTeleporters();
 	}
 
-	private void PositionWalls(Location l) {
+	public void MarkDestinationTeleporters() {
+		// Quest destinations		
+		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
+		foreach (var q in SaveGame.currentGame.quests.markedQuests)
+			destinations.AddRange(q.GetLocations());
+		List<System.Guid> questTeleportDestinations = destinations
+				.Where(x => loadedLocation.guid != x.location)
+				.Select(x => SaveGame.currentGame.map.BestPathFrom(loadedLocation.guid, x.location)[0])
+				.ToList();
+	}
+
+	private void PositionWalls() {
 		Transform walls = GameObject.Find("Walls").transform;
 		// bottom
-		walls.GetChild(0).localScale = new Vector3(l.width * TILE_SIZE + 2, 10, 1);
-		walls.GetChild(0).position = new Vector3(l.width * TILE_SIZE/2f, 1, -.5f);
+		walls.GetChild(0).localScale = new Vector3(loadedLocation.width * TILE_SIZE + 2, 10, 1);
+		walls.GetChild(0).position = new Vector3(loadedLocation.width * TILE_SIZE/2f, 1, -.5f);
 		// top
-		walls.GetChild(1).localScale = new Vector3(l.width * TILE_SIZE + 2, 10, 1);
-		walls.GetChild(1).position = new Vector3(l.width * TILE_SIZE/2f, 1, l.height * TILE_SIZE + .5f);
+		walls.GetChild(1).localScale = new Vector3(loadedLocation.width * TILE_SIZE + 2, 10, 1);
+		walls.GetChild(1).position = new Vector3(loadedLocation.width * TILE_SIZE/2f, 1, loadedLocation.height * TILE_SIZE + .5f);
 		// right
-		walls.GetChild(2).localScale = new Vector3(1, 10, l.height * TILE_SIZE + 2);
-		walls.GetChild(2).position = new Vector3(l.width * TILE_SIZE + .5f, 1, l.height * TILE_SIZE/2f);
+		walls.GetChild(2).localScale = new Vector3(1, 10, loadedLocation.height * TILE_SIZE + 2);
+		walls.GetChild(2).position = new Vector3(loadedLocation.width * TILE_SIZE + .5f, 1, loadedLocation.height * TILE_SIZE/2f);
 		// left
-		walls.GetChild(3).localScale = new Vector3(1, 10, l.height * TILE_SIZE + 2);
-		walls.GetChild(3).position = new Vector3(-.5f, 1, l.height * TILE_SIZE/2f);
+		walls.GetChild(3).localScale = new Vector3(1, 10, loadedLocation.height * TILE_SIZE + 2);
+		walls.GetChild(3).position = new Vector3(-.5f, 1, loadedLocation.height * TILE_SIZE/2f);
 	}
 }
