@@ -95,7 +95,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnTeleporters() {
-		teleporters = new Teleporter[loadedLocation.teleporters.Count];
+		var teleporterList = new List<Teleporter>();
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
 		foreach (Teleporter.TeleporterData td in loadedLocation.teleporters) {
@@ -103,12 +103,14 @@ public class LevelBuilder : MonoBehaviour {
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;
 			porter.GetComponent<Teleporter>().LoadSaveData(td);
-			recycle.Add(porter);			
+			recycle.Add(porter);
+			teleporterList.Add(porter.GetComponent<Teleporter>());
 		}
-		MarkDestinationTeleporters();
+		teleporters = teleporterList.ToArray();
+		MarkQuestDestinations();
 	}
 
-	public void MarkDestinationTeleporters() {
+	public void MarkQuestDestinations() {
 		// Quest destinations		
 		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
 		foreach (Quest q in SaveGame.currentGame.quests.markedQuests)
