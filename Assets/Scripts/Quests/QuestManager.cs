@@ -11,6 +11,7 @@ public class QuestManager {
 	}
 
 	public QuestManager() {
+		quests.Add(new DuelQuest());  // TEMP
 	}
 
 	public void UpdateQuests() {
