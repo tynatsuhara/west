@@ -112,7 +112,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void MarkQuestDestinations() {
-		// Quest destinations		
+		// Quest teleporter destinations		
 		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
 		foreach (Quest q in SaveGame.currentGame.quests.markedQuests)
 			destinations.AddRange(q.GetLocations());
@@ -123,12 +123,23 @@ public class LevelBuilder : MonoBehaviour {
 		foreach (Teleporter t in teleporters) {
 			t.MarkQuest(questTeleportDestinations.Contains(t.toId));
 		}
+
+		// Quests in this location, spawn markers at spots
 		List<Vector3> destinationMarkers = destinations
 				.Where(x => loadedLocation.guid == x.location)
 				.Select(x => x.position)
 				.ToList();
-		foreach (Vector3 v in destinationMarkers) {
-			recycle.Add(Instantiate(destinationMarkerPrefab, v, Quaternion.identity));
+		GameObject spotParent = GameObject.Find("QuestPositionParent");
+		if (spotParent != null) {
+			Destroy(spotParent);
+		}
+		if (destinationMarkers.Count > 0) {
+			spotParent = new GameObject();
+			spotParent.name = "QuestPositionParent";
+			foreach (Vector3 v in destinationMarkers) {
+				GameObject spot = Instantiate(destinationMarkerPrefab, v, Quaternion.identity);
+				spot.transform.parent = spotParent.transform;
+			}
 		}
 	}
 
