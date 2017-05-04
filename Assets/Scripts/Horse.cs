@@ -72,7 +72,9 @@ public class Horse : LivingThing, Interactable, Damageable {
 	}
 
 	public void Jump() {
-		GetComponent<Rigidbody>().AddForce(transform.up * jumpForce * Random.Range(.8f, 1.3f), ForceMode.Impulse);
+		Vector3 force = Random.insideUnitSphere * jumpForce * .2f;
+		force.y = jumpForce * Random.Range(.8f, 1.3f);
+		GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
 	}
 
 	private void Color() {
