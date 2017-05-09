@@ -59,7 +59,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 			yield return new WaitForSeconds(Random.Range(.2f, .7f));
 			Jump();
 			yield return new WaitForSeconds(.1f);			
-			if (rider != null && Random.Range(0, 4) == 0) {
+			if (rider != null && Random.Range(0, 6) == 0) {
 				rider.Dismount();
 			}
 			if (rider == null) {
