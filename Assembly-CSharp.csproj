@@ -136,6 +136,7 @@
      <Compile Include="Assets\Scripts\Recolor.cs" />
      <Compile Include="Assets\Scripts\SerializableVector3.cs" />
      <Compile Include="Assets\Scripts\Speech.cs" />
+     <Compile Include="Assets\Scripts\Statistics.cs" />
      <Compile Include="Assets\Scripts\Teleporter.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
      <Compile Include="Assets\Scripts\VaultDoor.cs" />
