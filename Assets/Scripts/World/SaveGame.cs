@@ -16,6 +16,7 @@ public class SaveGame {
 	public Map map;
 	public QuestManager quests;
 	public WorldTime time;
+	public Statistics stats;
 
 	// Establishes a new game with data for the player(s)
 	public static void NewGame() {
@@ -31,7 +32,8 @@ public class SaveGame {
 	public static void GenerateWorld() {
 		currentGame.map = new Map();
 		currentGame.quests = new QuestManager();	
-		currentGame.time = new WorldTime();	
+		currentGame.time = new WorldTime();
+		currentGame.stats = new Statistics();
 	}
 
 	public static void Save() {
