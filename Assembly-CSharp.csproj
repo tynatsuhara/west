@@ -148,6 +148,7 @@
      <Compile Include="Assets\Scripts\World\NameGen.cs" />
      <Compile Include="Assets\Scripts\World\SaveGame.cs" />
      <Compile Include="Assets\Scripts\World\VisualMap.cs" />
+     <Compile Include="Assets\Scripts\World\WorldTime.cs" />
      <Compile Include="Assets\Scripts\WorldBlood.cs" />
      <Compile Include="Assets\Scripts\WorldPoint.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />

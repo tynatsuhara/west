@@ -15,6 +15,7 @@ public class SaveGame {
 	public PlayerControls.PlayerSaveData[] savedPlayers;
 	public Map map;
 	public QuestManager quests;
+	public WorldTime time;
 
 	// Establishes a new game with data for the player(s)
 	public static void NewGame() {
@@ -29,7 +30,8 @@ public class SaveGame {
 	// Called once character creation has been done
 	public static void GenerateWorld() {
 		currentGame.map = new Map();
-		currentGame.quests = new QuestManager();		
+		currentGame.quests = new QuestManager();	
+		currentGame.time = new WorldTime();	
 	}
 
 	public static void Save() {

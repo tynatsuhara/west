@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Alpha0)) {
 			SaveGame.Save();
 		}
+		SaveGame.currentGame.time.worldTime += Time.deltaTime;
 
 		// WIN!
 		if (players.All(x => !x.isAlive)) {
