@@ -24,26 +24,29 @@ public class WorldTime {
             worldTime_ = value;
             int afterTime = (int)(worldTime_/MINUTE);
             if (afterTime > beforeTime) {
-                int year = (int)(worldTime/YEAR) + startYear;
-                int day = (int)(worldTime_ % YEAR/DAY);
-                int hour = (int)(worldTime_ % DAY/HOUR);
-                int minute = (int)(worldTime_ % HOUR/MINUTE);
-
-                var months = new string[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-                var dayAmounts = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-                int daysSoFar = 0;
-                int month = 0;
-                for (;month < 12; month++) {
-                    if (day < daysSoFar + dayAmounts[month]) {
-                        day %= daysSoFar;
-                        month--;
-                        break;
-                    }
-                    daysSoFar += dayAmounts[month];
-                }
-                string date = string.Format("{0} {1}, {2} {3}:{4}", months[month], day, year, hour, (minute < 10 ? "0" : "") + minute);
-                Debug.Log(date);
+                Debug.Log(DateString());
             }
         }
+    }
+
+    public string DateString() {
+        int year = (int)(worldTime/YEAR) + startYear;
+        int day = (int)(worldTime_ % YEAR/DAY);
+        int hour = (int)(worldTime_ % DAY/HOUR);
+        int minute = (int)(worldTime_ % HOUR/MINUTE);
+
+        var months = new string[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        var dayAmounts = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int daysSoFar = 0;
+        int month = 0;
+        for (;month < 12; month++) {
+            if (day < daysSoFar + dayAmounts[month]) {
+                day %= daysSoFar;
+                month--;
+                break;
+            }
+            daysSoFar += dayAmounts[month];
+        }
+        return string.Format("{0} {1}, {2} {3}:{4}", months[month], day, year, hour, (minute < 10 ? "0" : "") + minute);
     }
 }
