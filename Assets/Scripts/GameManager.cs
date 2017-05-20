@@ -106,7 +106,8 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public void LoadLocation(System.Guid guid) {
+	public void LoadLocation(System.Guid guid, float timeChange = 0f) {
+		SaveGame.currentGame.time.worldTime += timeChange;
 		SaveGame.currentGame.map.currentLocation = guid;
 		SetPaused(false);
 		GetComponent<LevelBuilder>().LoadLocation(SaveGame.currentGame.map.currentLocation);

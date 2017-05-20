@@ -26,7 +26,8 @@ public class Teleporter : MonoBehaviour {
 			}
 			if (pc) {
 				GameManager.instance.loadReposition = otherSide.position.val;
-				GameManager.instance.LoadLocation(toId);
+				float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
+				GameManager.instance.LoadLocation(toId, 4 /* minutes per distance unit */ * dist * pc.moveSpeed / pc.CalculateSpeed());
 			} else {
 				// TODO: save character to the other location
 			}

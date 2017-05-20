@@ -208,7 +208,7 @@ public abstract class Character : LivingThing, Damageable {
 		Destroy(gameObject);
 	}
 
-	protected float CalculateSpeed() {
+	public float CalculateSpeed() {
 		float speed = moveSpeed;
 		if (ridingHorse)
 			return speed * 1.7f;
