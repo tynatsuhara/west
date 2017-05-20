@@ -24,7 +24,7 @@ public class WorldTime {
             worldTime_ = value;
             int afterTime = (int)(worldTime_/MINUTE);
             if (afterTime > beforeTime) {
-                Debug.Log(DateString());
+                // Debug.Log(DateString());
             }
         }
     }
