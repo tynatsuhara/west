@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour {
 		if (paused && !GameManager.paused)
 			currentTimeScale = Time.timeScale;
 		GameManager.paused = paused;
+		GameUI.instance.ShowPauseScreen(paused);
 		Time.timeScale = paused ? 0 : currentTimeScale;
 	}
 
