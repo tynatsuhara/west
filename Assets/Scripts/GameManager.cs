@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,8 +68,13 @@ public class GameManager : MonoBehaviour {
 
 		// WIN!
 		if (players.All(x => !x.isAlive)) {
-			SaveGame.currentGame.gameOver = true;
-			SaveGame.DeleteSave();
+			if (!SaveGame.currentGame.gameOver) {
+				SaveGame.currentGame.gameOver = true;
+				SaveGame.DeleteSave();
+				GameUI.instance.ShowEndScreen();
+			} else if (Input.anyKeyDown) {
+				SceneManager.LoadScene("main menu");
+			}
 		} else {
 			CheckPause();
 			CheckSceneReload();
@@ -102,7 +108,7 @@ public class GameManager : MonoBehaviour {
 	private void CheckSceneReload() {
 		if ((SaveGame.currentGame.gameOver || paused) && (Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown("joystick button 8"))) {
 			SetPaused(false);
-			Application.LoadLevel(Application.loadedLevel);
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 	}
 

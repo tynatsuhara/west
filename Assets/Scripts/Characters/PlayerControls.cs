@@ -99,7 +99,11 @@ public class PlayerControls : Character {
 			SwitchCamera(!firstPersonCam.enabled);
 		}
 
-		playerUI.JoystickCursorMove(Input.GetAxis("RSX" + id), Input.GetAxis("RSY" + id));		
+		playerUI.JoystickCursorMove(Input.GetAxis("RSX" + id), Input.GetAxis("RSY" + id));
+
+		if (Input.GetKeyDown(KeyCode.Alpha0)) {
+			Damage(transform.position, Random.insideUnitCircle, 1);
+		}
 	}
  
 	void FixedUpdate () {
