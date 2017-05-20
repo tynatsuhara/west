@@ -47,6 +47,7 @@ public class WorldTime {
             }
             daysSoFar += dayAmounts[month];
         }
-        return string.Format("{0} {1}, {2} {3}:{4}", months[month], day, year, hour, (minute < 10 ? "0" : "") + minute);
+        return string.Format("{0} {1}, {2}, {3}:{4} {5}", months[month], day, year, 
+                (hour > 12 ? hour - 12 : hour), (minute < 10 ? "0" : "") + minute, (hour > 12 ? "PM" : "AM"));
     }
 }
