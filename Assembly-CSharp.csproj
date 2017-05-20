@@ -118,11 +118,11 @@
      <Compile Include="Assets\Scripts\Menus\MainMenu.cs" />
      <Compile Include="Assets\Scripts\Menus\Menu.cs" />
      <Compile Include="Assets\Scripts\Menus\MenuNode.cs" />
+     <Compile Include="Assets\Scripts\Menus\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\Menus\WeaponSelection.cs" />
      <Compile Include="Assets\Scripts\OutfitModel.cs" />
      <Compile Include="Assets\Scripts\Outfits.cs" />
      <Compile Include="Assets\Scripts\Painting.cs" />
-     <Compile Include="Assets\Scripts\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\Pistol.cs" />
      <Compile Include="Assets\Scripts\PlayerCamera.cs" />
      <Compile Include="Assets\Scripts\PlayerUI.cs" />
