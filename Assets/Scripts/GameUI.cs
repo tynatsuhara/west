@@ -25,8 +25,8 @@ public class GameUI : MonoBehaviour {
 	}
 
 	public void ShowPauseScreen(bool paused) {
+		pauseMenu.GetComponent<PauseMenu>().Awaken();
 		pauseMenu.SetActive(GameManager.paused);
-		pauseMenu.GetComponentInChildren<Text>().text = "PAUSED\n" + SaveGame.currentGame.time.DateString();
 	}
 
 	public void ShowWinScreen(Dictionary<string, List<int>> loot) {

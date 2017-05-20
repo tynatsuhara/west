@@ -34,14 +34,7 @@ public class LevelBuilder : MonoBehaviour {
 
 		if (!firstLoad) {
 			SaveGame.Save();
-			foreach (GameObject go in recycle) {
-				if (go != null) {
-					Destroy(go);
-				}
-			}
-			foreach (PlayerControls pc in GameManager.players) {
-				pc.transform.root.position = GameManager.instance.loadReposition;
-			}
+			Clean();
 		}
 
 		Location l = Map.Location(guid);
@@ -65,6 +58,21 @@ public class LevelBuilder : MonoBehaviour {
 		}
 		recycle.Add(floorHolder);
 		PositionWalls();
+	}
+
+	public void Clean(bool removePlayers=false) {
+		foreach (GameObject go in recycle) {
+			if (go != null) {
+				Destroy(go);
+			}
+		}
+		foreach (PlayerControls pc in GameManager.players) {
+			if (removePlayers) {
+				Destroy(pc.gameObject);
+			} else {
+				pc.transform.root.position = GameManager.instance.loadReposition;
+			}
+		}
 	}
 
 	public PicaVoxel.Volume FloorTileAt(Vector3 pos) {

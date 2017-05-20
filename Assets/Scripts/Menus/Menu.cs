@@ -51,6 +51,14 @@ public class Menu : MonoBehaviour {
 		}
 	}
 
+	protected void NewSelect(MenuNode node) {
+		if (selectedNode != null) {
+			selectedNode.Deselect();
+		}
+		node.Select();
+		selectedNode = node;
+	}
+
 	private Vector2 lastDPad;
 	private void SaveDPad() {
 		if (perPerson) {

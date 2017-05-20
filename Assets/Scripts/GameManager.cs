@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private float currentTimeScale;
-	private void SetPaused(bool paused) {
+	public void SetPaused(bool paused) {
 		if (GameManager.paused == paused)
 			return;
 

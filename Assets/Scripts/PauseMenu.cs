@@ -1,9 +1,31 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Collections;
 
-public class PauseMenu : MonoBehaviour {
+public class PauseMenu : Menu {
 
-	void Start() {
-		
+	public Text time;
+
+	public MenuNode resume;
+	public MenuNode save;
+	public MenuNode quit;
+
+	// called right before the pause menu is displayed
+	public void Awaken() {
+		time.text = SaveGame.currentGame.time.DateString();
+		NewSelect(resume);
+	}
+
+	public override void Enter(MenuNode node) {
+		if (node == resume) {
+			GameManager.instance.SetPaused(false);
+		} else if (node == save) {
+			GameUI.instance.topCenterText.Say("GAME SAVED", showFlash: true);
+			SaveGame.Save();
+		} else if (node == quit) {
+			LevelBuilder.instance.Clean(removePlayers: true);
+			SceneManager.LoadScene("main menu");
+		}
 	}
 }
