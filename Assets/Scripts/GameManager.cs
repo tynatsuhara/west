@@ -60,10 +60,6 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Alpha0)) {
-			SaveGame.Save();
-		}
-		
 		if (!paused) {
 			SaveGame.currentGame.time.worldTime += Time.deltaTime;
 			SaveGame.currentGame.stats.timePlayed += Time.deltaTime;
