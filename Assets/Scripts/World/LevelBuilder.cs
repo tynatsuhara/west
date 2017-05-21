@@ -44,7 +44,7 @@ public class LevelBuilder : MonoBehaviour {
 		SpawnHorses(firstLoad);
 		SpawnTeleporters();
 		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters		
-		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count, color: "grey");
+		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count);
 
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";
