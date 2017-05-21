@@ -14,6 +14,7 @@ public class MenuNode : MonoBehaviour {
 	public Text text;
 
 	public void Start() {
+		ColorAll();
 		if (down != null)
 			down.up = this;
 		if (right != null)
@@ -38,7 +39,11 @@ public class MenuNode : MonoBehaviour {
 		if (selected == newSelectedState)
 			return;
 		selected = newSelectedState;
-		Text[] t = GetComponentsInChildren<Text>();
+		ColorAll();
+	}
+
+	private void ColorAll() {
+		Text[] t = GetComponentsInChildren<Text>();		
 		foreach (Text txt in t)
 			txt.material = selected ? selectedMaterial : defaultMaterial;
 	}

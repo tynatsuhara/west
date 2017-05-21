@@ -6,6 +6,7 @@ public class MainMenu : Menu {
 
 	public MenuNode newGame;
 	public MenuNode loadGame;
+	public MenuNode quitGame;
 
 	void Start() {
 
@@ -18,6 +19,8 @@ public class MainMenu : Menu {
 			SceneManager.LoadScene("customization");
 		} else if (node == loadGame) {
 			SceneManager.LoadScene("game");
+		} else if (node == quitGame) {
+			
 		}
 	}
 
