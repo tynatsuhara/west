@@ -9,7 +9,6 @@ public class MainMenu : Menu {
 	public MenuNode quitGame;
 
 	void Start() {
-
 	}
 
 	public override void Enter(MenuNode node) {

@@ -3,8 +3,10 @@ using UnityEngine.UI;
 
 public class MenuNode : MonoBehaviour {
 
+	[HideInInspector]
 	public MenuNode up;
 	public MenuNode down;
+	[HideInInspector]
 	public MenuNode left;
 	public MenuNode right;
 
