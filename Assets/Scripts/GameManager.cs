@@ -72,7 +72,8 @@ public class GameManager : MonoBehaviour {
 				SaveGame.currentGame.gameOver = true;
 				SaveGame.DeleteSave();
 				GameUI.instance.ShowEndScreen();
-			} else if (Input.anyKeyDown) {
+				gameEndTime = Time.time;
+			} else if (Input.anyKeyDown && Time.time - gameEndTime >= 2.5f) {
 				SceneManager.LoadScene("main menu");
 			}
 		} else {
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviour {
 			CheckSceneReload();
 		}
 	}
+	private float gameEndTime;
 
 	private void CheckPause() {
 		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9")) {
