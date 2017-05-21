@@ -37,15 +37,14 @@ public class WorldTime {
 
         var months = new string[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         var dayAmounts = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        int daysSoFar = 0;
+        int daysPrior = 0;
         int month = 0;
         for (;month < 12; month++) {
-            if (day < daysSoFar + dayAmounts[month]) {
-                day %= daysSoFar;
-                month--;
+            if (day < daysPrior + dayAmounts[month]) {
+                day -= daysPrior;
                 break;
             }
-            daysSoFar += dayAmounts[month];
+            daysPrior += dayAmounts[month];
         }
         return string.Format("{0} {1}, {2}, {3}:{4} {5}", months[month], day, year, 
                 (hour > 12 ? hour - 12 : hour), (minute < 10 ? "0" : "") + minute, (hour > 12 ? "PM" : "AM"));
