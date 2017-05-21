@@ -13,6 +13,7 @@ public class VisualMap : MonoBehaviour {
 		foreach (var kv in m.locations) {
 			GameObject newtxt = Instantiate(txt.gameObject, transform.position, txt.transform.rotation) as GameObject;
 			newtxt.transform.SetParent(txt.transform.parent);
+			newtxt.name = kv.Value.name;
 			newtxt.GetComponent<Text>().text = (kv.Value.icon.Length > 0 ? kv.Value.icon + "\n" : "") + kv.Value.name;
 			newtxt.transform.localPosition = kv.Value.worldLocation.val * scale;
 			newtxt.transform.position -= offset;
