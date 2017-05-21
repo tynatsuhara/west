@@ -20,7 +20,7 @@ public class MainMenu : Menu {
 		} else if (node == loadGame) {
 			SceneManager.LoadScene("game");
 		} else if (node == quitGame) {
-			
+			Application.Quit();			
 		}
 	}
 
