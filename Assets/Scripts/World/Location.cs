@@ -155,4 +155,52 @@ public class Location {
 	private int Val(int x, int y) {
 		return x + y * width;
 	}
+
+	public List<int> BestPathFrom(int start, int end) {
+		Dictionary<int, int> dist = new Dictionary<int, int>();
+		for (int i = 0; i < width * height; i++)
+			dist.Add(i, int.MaxValue);
+		dist[start] = 0;
+
+		Dictionary<int, int> prev = new Dictionary<int, int>();
+		for (int i = 0; i < width * height; i++)
+			prev.Add(i, -1);
+		
+		List<int> q = Enumerable.Range(0, height * width).ToList();
+
+		while (q.Count > 0) {
+			int u = q.OrderBy(x => dist[x]).First();
+			if (u == end) {
+				List<int> path = new List<int>();
+				path.Add(u);
+				while (prev[path[0]] != -1) {  // backtrack
+					path.Insert(0, prev[path[0]]);
+				}
+				return path;
+			}
+			q.Remove(u);
+
+			foreach (int v in TileNeighbors(u)) {
+				int alt = dist[u] + 1;
+				if (alt < dist[v]) {
+					dist[v] = alt;
+					prev[v] = u;
+				}
+			}
+		}
+		return null;
+	}
+
+	private List<int> TileNeighbors(int tile) {
+		List<int> lst = new List<int>();
+		if (tile >= width)               // not on the bottom row, so add tile below
+			lst.Add(tile - width);
+		if (tile < width * (height - 1)) // not on top row, so add tile above
+			lst.Add(tile + width);
+		if (tile % width != 0)           // not on left column, so add tile to the left
+			lst.Add(tile - 1);
+		if (tile % width != width - 1)           // not on right column, so add tile to the right
+			lst.Add(tile + 1);
+		return lst;
+	}
 }
