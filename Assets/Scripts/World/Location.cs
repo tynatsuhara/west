@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 [System.Serializable]
 public class Location {
@@ -14,9 +15,9 @@ public class Location {
 	public List<System.Guid> characters = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 	public int biomeColor = Random.Range(0, LevelBuilder.instance.biomeColors.Length);
-	public int width = 20;
+	public int width = 20;  // w and h might be changed later by Generate()!
 	public int height = 10;
-	private List<int> trails = new List<int>();
+	private BitArray trails;
 
 	public Location(Map parent, float x, float y) {
 		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};
@@ -111,15 +112,17 @@ public class Location {
 			teleporters.Add(new Teleporter.TeleporterData(wLinks[i].guid, new Vector3(0, 1, wPlaces[i] + LevelBuilder.TILE_SIZE/4f) * LevelBuilder.TILE_SIZE));
 		}
 
+		trails = new BitArray(width * height);
+
 		// actually place the road tile locations
 		foreach (int coord in ewRoadCoords) {
 			for (int i = 0; i < width; i++) {
-				trails.Add(Val(i, coord));
+				trails.Set(Val(i, coord), true);
 			}
 		}
 		foreach (int coord in nsRoadCoords) {
 			for (int i = 0; i < height; i++) {
-				trails.Add(Val(coord, i));
+				trails.Set(Val(coord, i), true);
 			}
 		}
 
@@ -142,7 +145,7 @@ public class Location {
 
 	public GameObject TileAt(int x, int y) {
 		int val = Val(x, y);
-		if (trails.Contains(val)) {
+		if (trails.Get(val)) {
 			return LevelBuilder.instance.trailPrefab;
 		} else {
 			return LevelBuilder.instance.floorPrefab;
@@ -150,6 +153,6 @@ public class Location {
 	}
 
 	private int Val(int x, int y) {
-		return x * width + y;
+		return x + y * width;
 	}
 }
