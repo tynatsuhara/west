@@ -35,7 +35,7 @@ public class Map {
 
 			// connect locations together
 			foreach (Location l in ls) {
-				var others = ls.OrderBy(x => (l.worldLocation.val - x.worldLocation.val).magnitude).ToList();
+				var others = ls.OrderBy(x => (l.worldLocation.val - x.worldLocation.val).magnitude).ToList().Take(10);
 				foreach (Location o in others) {
 					if (l == o)
 						continue;
