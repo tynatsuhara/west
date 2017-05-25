@@ -123,26 +123,14 @@ public class Location {
 
 		trails = new BitArray(width * height);
 
-		// actually place the road tile locations
-		// foreach (int coord in ewRoadCoords) {
-		// 	for (int i = 0; i < width; i++) {
-		// 		trails.Set(Val(i, coord), true);
-		// 	}
-		// }
-		// foreach (int coord in nsRoadCoords) {
-		// 	for (int i = 0; i < height; i++) {
-		// 		trails.Set(Val(coord, i), true);
-		// 	}
-		// }
-
 		// Place roads from all teleporters to first building
 		int firstDestination = Val(width/2, height/2);
 		foreach (int exit in exits) {
 			foreach (int path in BestPathFrom(exit, firstDestination)) {
 				trails.Set(path, true);
 			}
+			// TODO: make roads form loops
 		}
-
 
 		// temp horse spawning
 		int horseAmount = Random.Range(1, 5);
