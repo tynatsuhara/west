@@ -95,36 +95,54 @@ public class Location {
 		height = Mathf.Max(p, height);
 
 		// Place teleporters
+		List<int> exits = new List<int>();
+
 		List<int> nPlaces = Subset(nsRoadCoords, nLinks.Count);
 		for (int i = 0; i < nPlaces.Count; i++) {
+			exits.Add(Val(nPlaces[i], height - 1));
 			teleporters.Add(new Teleporter.TeleporterData(nLinks[i].guid, new Vector3(nPlaces[i] + LevelBuilder.TILE_SIZE/4f, 1, height) * LevelBuilder.TILE_SIZE));
 		}
+
 		List<int> sPlaces = Subset(nsRoadCoords, sLinks.Count);
 		for (int i = 0; i < sPlaces.Count; i++) {
+			exits.Add(Val(sPlaces[i], 0));
 			teleporters.Add(new Teleporter.TeleporterData(sLinks[i].guid, new Vector3(sPlaces[i] + LevelBuilder.TILE_SIZE/4f, 1, 0) * LevelBuilder.TILE_SIZE));
 		}
+
 		List<int> ePlaces = Subset(ewRoadCoords, eLinks.Count);
 		for (int i = 0; i < ePlaces.Count; i++) {
+			exits.Add(Val(width - 1, ePlaces[i]));
 			teleporters.Add(new Teleporter.TeleporterData(eLinks[i].guid, new Vector3(width, 1, ePlaces[i] + LevelBuilder.TILE_SIZE/4f) * LevelBuilder.TILE_SIZE));
 		}
+
 		List<int> wPlaces = Subset(ewRoadCoords, wLinks.Count);
 		for (int i = 0; i < wPlaces.Count; i++) {
+			exits.Add(Val(0, wPlaces[i]));
 			teleporters.Add(new Teleporter.TeleporterData(wLinks[i].guid, new Vector3(0, 1, wPlaces[i] + LevelBuilder.TILE_SIZE/4f) * LevelBuilder.TILE_SIZE));
 		}
 
 		trails = new BitArray(width * height);
 
 		// actually place the road tile locations
-		foreach (int coord in ewRoadCoords) {
-			for (int i = 0; i < width; i++) {
-				trails.Set(Val(i, coord), true);
+		// foreach (int coord in ewRoadCoords) {
+		// 	for (int i = 0; i < width; i++) {
+		// 		trails.Set(Val(i, coord), true);
+		// 	}
+		// }
+		// foreach (int coord in nsRoadCoords) {
+		// 	for (int i = 0; i < height; i++) {
+		// 		trails.Set(Val(coord, i), true);
+		// 	}
+		// }
+
+		// Place roads from all teleporters to first building
+		int firstDestination = Val(width/2, height/2);
+		foreach (int exit in exits) {
+			foreach (int path in BestPathFrom(exit, firstDestination)) {
+				trails.Set(path, true);
 			}
 		}
-		foreach (int coord in nsRoadCoords) {
-			for (int i = 0; i < height; i++) {
-				trails.Set(Val(coord, i), true);
-			}
-		}
+
 
 		// temp horse spawning
 		int horseAmount = Random.Range(1, 5);
@@ -157,9 +175,9 @@ public class Location {
 	}
 
 	public List<int> BestPathFrom(int start, int end) {
-		Dictionary<int, int> dist = new Dictionary<int, int>();
+		Dictionary<int, float> dist = new Dictionary<int, float>();
 		for (int i = 0; i < width * height; i++)
-			dist.Add(i, int.MaxValue);
+			dist.Add(i, float.MaxValue);
 		dist[start] = 0;
 
 		Dictionary<int, int> prev = new Dictionary<int, int>();
@@ -181,7 +199,7 @@ public class Location {
 			q.Remove(u);
 
 			foreach (int v in TileNeighbors(u)) {
-				int alt = dist[u] + 1;
+				float alt = dist[u] + (trails.Get(v) ? .1f : 1);  // cheaper to travel on existing roads
 				if (alt < dist[v]) {
 					dist[v] = alt;
 					prev[v] = u;
