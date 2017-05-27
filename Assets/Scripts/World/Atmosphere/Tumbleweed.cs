@@ -5,10 +5,11 @@ public class Tumbleweed : MonoBehaviour {
     private Vector3 wind;
     private Vector3 nextWind;
     public float windForce;
+    public SphereCollider sc;
 
     public void Start() {
-       wind = NewDirection();
-       StartCoroutine(UpdateWind());
+        wind = NewDirection();
+        StartCoroutine(UpdateWind());
     }
 
     public void Update() {
