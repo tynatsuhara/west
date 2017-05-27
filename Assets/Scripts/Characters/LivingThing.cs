@@ -73,7 +73,7 @@ public abstract class LivingThing : MonoBehaviour {
 					voxel.State = PicaVoxel.VoxelState.Active;
 					volume.SetVoxelAtArrayPosition(pos, voxel);
 					PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(spawnPos, 
-						voxel, .1f, 4 * velocity + 3 * Random.insideUnitSphere + Vector3.up * 0f);
+						voxel, .1f, 2.5f * velocity + 2 * Random.insideUnitSphere + Vector3.up * 3f);
 					break;
 				}
 			}
