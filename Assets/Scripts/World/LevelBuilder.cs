@@ -9,6 +9,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public GameObject floorPrefab;
 	public GameObject trailPrefab;
+	public GameObject buildingPrefabPlaceholder;
 	public GameObject wallPrefab;
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;

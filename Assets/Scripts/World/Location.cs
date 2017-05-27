@@ -142,7 +142,9 @@ public class Location {
 
 	public GameObject TileAt(int x, int y) {
 		int val = Val(x, y);
-		if (trails.Get(val)) {
+		if (buildings.Get(val)) {
+			return LevelBuilder.instance.buildingPrefabPlaceholder;
+		} else if (trails.Get(val)) {
 			return LevelBuilder.instance.trailPrefab;
 		} else {
 			return LevelBuilder.instance.floorPrefab;
