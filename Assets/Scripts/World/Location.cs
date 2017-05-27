@@ -37,10 +37,8 @@ public class Location {
 	public void Connect(Location l) {
 		int index = System.Array.IndexOf(connections, System.Guid.Empty);
 		connections[index] = l.guid;
-
-		// teleporters.Add(new Teleporter.TeleporterData(l.guid, new Vector3(index * 4, 1, -5)));
 	}
-	
+
 	public float DistanceFrom(Location l) {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
 	}
