@@ -27,6 +27,10 @@ public class Location {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 	}
 
+	public void Save() {
+		
+	}
+
 	public bool DoneConnecting() {
 		return !connections.Contains(System.Guid.Empty);
 	}
@@ -226,7 +230,7 @@ public class Location {
 		return lst;
 	}
 
-	// ================= BUILDING STUFF ================= //
+	// ================= BUILDING STUFF =============g==== //
 
 	// returns Val(x, y) where (x, y) is the bottom left corner
 	// if a spot cannot easily be found, returns -1

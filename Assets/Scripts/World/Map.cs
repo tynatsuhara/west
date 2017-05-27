@@ -159,4 +159,10 @@ public class Map {
 		}
 		return null;
 	}
+
+	public void Save() {
+		foreach (Location l in locations.Values) {
+			l.Save();
+		}
+	}
  }

@@ -40,11 +40,14 @@ public class SaveGame {
 		// save players in scene
 		currentGame.savedPlayers = GameManager.players.Select(x => x.SaveData()).ToArray();
 
-		// update local wildlife
+		// save local wildlife
 		foreach (Horse h in GameManager.localHorses) {
 			Horse.HorseSaveData hsd = h.SaveData();
 			currentGame.horses[hsd.guid] = hsd;
 		}
+
+		// save any necessary things in the locations
+		currentGame.map.Save();
 
 		if (!Directory.Exists(DirPath()))
 			Directory.CreateDirectory(DirPath());
