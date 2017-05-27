@@ -159,6 +159,12 @@ public class Location {
 	private int Val(int x, int y) {
 		return x + y * width;
 	}
+	private int X(int val) {
+		return val % width;
+	}
+	private int Y(int val) {
+		return val / width;
+	}
 
 	public List<int> BestPathFrom(int start, int end) {
 		Dictionary<int, float> dist = new Dictionary<int, float>();
