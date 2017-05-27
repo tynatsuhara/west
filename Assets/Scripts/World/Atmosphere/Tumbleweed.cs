@@ -5,6 +5,7 @@ public class Tumbleweed : MonoBehaviour {
     private Vector3 wind;
     private Vector3 nextWind;
     public float windForce;
+    public float windTorque;
     public float density;
     public SphereCollider sc;
     public Color32[] colors;
@@ -31,6 +32,7 @@ public class Tumbleweed : MonoBehaviour {
 
     public void FixedUpdate() {
         GetComponent<Rigidbody>().AddForce(wind * windForce, ForceMode.Force);
+        GetComponent<Rigidbody>().AddTorque(wind * windTorque, ForceMode.Force);
     }
 
     private IEnumerator UpdateWind() {
