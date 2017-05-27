@@ -13,6 +13,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject wallPrefab;
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;
+	public GameObject cactusPrefab;
 	public GameObject horsePrefab;
 	public GameObject teleporterPrefab;
 	public GameObject destinationMarkerPrefab;
@@ -43,6 +44,7 @@ public class LevelBuilder : MonoBehaviour {
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
 		SpawnHorses(firstLoad);
+		SpawnFoliage();
 		SpawnTeleporters();
 		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters		
 		GameUI.instance.topCenterText.Say(l.name + ", population " + l.characters.Count);
@@ -102,6 +104,14 @@ public class LevelBuilder : MonoBehaviour {
 				h.LoadSaveData(hsd);
 				recycle.Add(h.gameObject);
 			}
+		}
+	}
+
+	private void SpawnFoliage() {
+		foreach (int tile in loadedLocation.cacti.Keys) {
+			GameObject c = Instantiate(cactusPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
+			c.GetComponent<Cactus>().LoadSaveData(loadedLocation.cacti[tile]);
+			recycle.Add(c);
 		}
 	}
 

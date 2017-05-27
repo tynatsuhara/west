@@ -13,6 +13,7 @@ public class Location {
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<System.Guid> characters = new List<System.Guid>();
+	public Dictionary<int, Cactus.CactusSaveData> cacti = new Dictionary<int, Cactus.CactusSaveData>();  // maps tile to cactus
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 	public int biomeColor = Random.Range(0, LevelBuilder.instance.biomeColors.Length);
 	public int width = 20;  // w and h might be changed later by Generate()!
@@ -130,6 +131,12 @@ public class Location {
 			// TODO: make roads form loops
 		}
 
+		// add foliage
+		int cactiAmount = Random.Range(2, 8);
+		for (int i = 0; i < cactiAmount; i++) {
+			cacti[RandomUnoccupiedTile()] = new Cactus.CactusSaveData();
+		}
+
 		// temp horse spawning
 		int horseAmount = Random.Range(1, 5);
 		for (int i = 0; i < horseAmount; i++) {
@@ -171,7 +178,7 @@ public class Location {
 	}
 
 	private bool TileOccupied(int val) {
-		return buildings.Get(val) || trails.Get(val);
+		return buildings.Get(val) || trails.Get(val) || cacti.ContainsKey(val);
 	}
 
 	private int Val(int x, int y) {
@@ -209,7 +216,16 @@ public class Location {
 			q.Remove(u);
 
 			foreach (int v in TileNeighbors(u)) {
-				float alt = dist[u] + (trails.Get(v) ? .1f : 1);  // cheaper to travel on existing roads
+				float alt = dist[u];
+				int valX = X(v);
+				int valY = Y(v);
+				if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1) {  // don't travel right on edges
+					alt += 2;
+				} else if (trails.Get(v)) {
+					alt += .1f;
+				} else {
+					alt += 1;
+				}
 				if (alt < dist[v]) {
 					dist[v] = alt;
 					prev[v] = u;
