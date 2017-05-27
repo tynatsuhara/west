@@ -47,7 +47,7 @@ public class Cactus : MonoBehaviour {
                 if (Random.Range(0, 3) == 1) {  // put an arm on this side
                     arms.Set(i + (Random.Range(0, 2) == 1 ? 4 : 0), true);  // randomly choose between big and small
                 }
-                offsets[i] = Random.Range(0, 5) * .1f;
+                offsets[i] = Random.Range(2, 6) * .1f;
             }
             overallOffset = Random.Range(3, 11) * .1f;
             rotation = Random.Range(0, 360);
