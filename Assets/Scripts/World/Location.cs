@@ -224,7 +224,7 @@ public class Location {
 				} else if (trails.Get(v)) {
 					alt += .1f;
 				} else {
-					alt += 1;
+					alt += Random.Range(.5f, 1f);
 				}
 				if (alt < dist[v]) {
 					dist[v] = alt;
