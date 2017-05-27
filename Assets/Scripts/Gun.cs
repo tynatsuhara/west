@@ -49,18 +49,18 @@ public abstract class Gun : MonoBehaviour {
 			.OrderBy(h => h.distance)
 			.ToArray();
 		bool keepGoing = true;
-		bool hitEnemy = false;
+		bool hitMarker = false;
 		for (int i = 0; i < hits.Length && keepGoing; i++) {
 			Damageable damageScript = hits[i].transform.GetComponentInParent<Damageable>();
 			if (damageScript == null)
 				break;
-			if (!hitEnemy) {
-				Character c = hits[i].transform.GetComponentInParent<Character>();
-				hitEnemy = c != null && c.isAlive && !(c is PlayerControls);
+			if (!hitMarker) {
+				LivingThing c = hits[i].transform.GetComponentInParent<LivingThing>();
+				hitMarker = c != null && c.isAlive && !(c is PlayerControls);
 			}
 			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, isPlayer);
 		}
-		if (hitEnemy && isPlayer) {
+		if (hitMarker && isPlayer) {
 			player.playerUI.HitMarker();
 		}
 	}
