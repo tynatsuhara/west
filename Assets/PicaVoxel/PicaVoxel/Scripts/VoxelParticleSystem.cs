@@ -102,14 +102,15 @@ namespace PicaVoxel
 
         }
 
-        public void SpawnSingle(Vector3 worldPos, Voxel voxel, float voxelSize, Vector3 velocity)
+        public void SpawnSingle(Vector3 worldPos, Voxel voxel, float voxelSize, Vector3 velocity, float lifetime = -1)
         {
+            lifetime = lifetime == -1 ? ParticleLifetime : lifetime;
             System.Emit(new ParticleSystem.EmitParams()
             {
                 position = worldPos,
                 velocity = velocity,
                 startSize = voxelSize,
-                startLifetime = ParticleLifetime,
+                startLifetime = lifetime,
                 startColor = voxel.Color
             }, 1);
             //worldPos, velocity, voxelSize, ParticleLifetime, voxel.Color)};

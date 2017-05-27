@@ -62,6 +62,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void Clean(bool removePlayers=false) {
+		PicaVoxel.VoxelParticleSystem.Instance.GetComponent<ParticleSystem>().Clear();
 		foreach (GameObject go in recycle) {
 			if (go != null) {
 				Destroy(go);
