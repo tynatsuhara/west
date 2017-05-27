@@ -27,6 +27,7 @@ public class Location {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 	}
 
+	// Save things local to this location (ie updates to environment)
 	public void Save() {
 		
 	}
