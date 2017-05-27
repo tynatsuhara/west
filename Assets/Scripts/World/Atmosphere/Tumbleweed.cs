@@ -6,8 +6,15 @@ public class Tumbleweed : MonoBehaviour {
     private Vector3 nextWind;
     public float windForce;
     public SphereCollider sc;
+    public Color32[] colors;
 
     public void Start() {
+        float radius = sc.radius = Random.Range(.3f, .6f);
+        int density = (int) (radius * 75);
+        for (int i = 0; i < density; i++) {
+            // todo: put voxels randomly in sphere shape
+        }
+
         wind = NewDirection();
         StartCoroutine(UpdateWind());
     }
