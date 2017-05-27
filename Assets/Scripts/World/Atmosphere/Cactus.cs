@@ -36,12 +36,13 @@ public class Cactus : MonoBehaviour {
         public bool flower;
 
         public CactusSaveData() {
+            offsets = new float[4];            
             for (int i = 0; i < 4; i++) {  // 4 possible arms
                 if (Random.Range(0, 2) == 1) {  // put an arm on this side
                     arms.Set(i + (Random.Range(0, 2) == 1 ? 4 : 0), true);  // randomly choose between big and small
                 }
+                offsets[i] = 0;
             }
-            offsets = new float[4];
             overallOffset = Random.Range(0, 11) * .1f;
             rotation = Random.Range(0, 360);
             flower = Random.Range(0, 3) == 0;
