@@ -4,6 +4,7 @@ using System.Collections;
 public class Tumbleweed : MonoBehaviour {
     private Vector3 wind;
     private Vector3 nextWind;
+    private float forcePercentage;
     public float windForce;
     public float windTorque;
     public float density;
@@ -31,14 +32,15 @@ public class Tumbleweed : MonoBehaviour {
     }
 
     public void FixedUpdate() {
-        GetComponent<Rigidbody>().AddForce(wind * windForce, ForceMode.Force);
-        GetComponent<Rigidbody>().AddTorque(wind * windTorque, ForceMode.Force);
+        GetComponent<Rigidbody>().AddForce(wind * windForce * forcePercentage, ForceMode.Force);
+        GetComponent<Rigidbody>().AddTorque(wind * windTorque * forcePercentage, ForceMode.Force);
     }
 
     private IEnumerator UpdateWind() {
         while (true) {
             yield return new WaitForSeconds(Random.Range(5, 10));
             nextWind = NewDirection();
+            forcePercentage = Random.Range(.1f, 1f);
         }
     }
 
