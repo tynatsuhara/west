@@ -18,6 +18,7 @@ public class Location {
 	public int width = 20;  // w and h might be changed later by Generate()!
 	public int height = 10;
 	private BitArray trails;
+	private BitArray buildings;
 
 	public Location(Map parent, float x, float y) {
 		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};
@@ -148,6 +149,11 @@ public class Location {
 		}
 	}
 
+	private bool TileOccupied(int x, int y) {
+		int val = Val(x, y);
+		return !buildings.Get(val) && !trails.Get(val);
+	}
+
 	private int Val(int x, int y) {
 		return x + y * width;
 	}
@@ -186,7 +192,6 @@ public class Location {
 		}
 		return null;
 	}
-
 	private List<int> TileNeighbors(int tile) {
 		List<int> lst = new List<int>();
 		if (tile >= width)               // not on the bottom row, so add tile below
@@ -198,5 +203,23 @@ public class Location {
 		if (tile % width != width - 1)           // not on right column, so add tile to the right
 			lst.Add(tile + 1);
 		return lst;
+	}
+
+	// ================= BUILDING STUFF ================= //
+
+	// returns Val(x, y) where (x, y) is the bottom left corner
+	// if a spot cannot easily be found, returns -1
+	private int randomBuildingPos(int w, int h) {
+		for (int i = 0; i < 10; i++) {
+			int x = Random.Range(0, width - w + 1);
+			int y = Random.Range(0, height - h + 1);
+			bool obstructed = false;
+			for (int xi = x; xi < x + w && !obstructed; xi++) {
+				for (int yi = y; yi < y + h && !obstructed; yi++) {
+					obstructed = TileOccupied(xi, yi);
+				}
+			}
+		}
+		return -1;
 	}
 }
