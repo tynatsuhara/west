@@ -4,6 +4,7 @@ using System.Collections;
 public class Cactus : MonoBehaviour {
     
     public GameObject[] arms;
+    public GameObject flower;
     private CactusSaveData data;    
 
     public CactusSaveData SaveData() {
@@ -21,6 +22,9 @@ public class Cactus : MonoBehaviour {
         }
         transform.Translate(new Vector3(0, data.overallOffset, 0));
         transform.RotateAround(transform.position, transform.up, data.rotation);
+        if (!data.flower) {
+            Destroy(flower);
+        }
     }
     
     [System.Serializable]
@@ -29,6 +33,7 @@ public class Cactus : MonoBehaviour {
         public float[] offsets;  // 4 arm vertical offsets
         public float overallOffset;  // vertical offset
         public int rotation;
+        public bool flower;
 
         public CactusSaveData() {
             for (int i = 0; i < 4; i++) {  // 4 possible arms
@@ -37,7 +42,9 @@ public class Cactus : MonoBehaviour {
                 }
             }
             offsets = new float[4];
+            overallOffset = Random.Range(0, 11) * .1f;
             rotation = Random.Range(0, 360);
+            flower = Random.Range(0, 3) == 0;
         }
     }
 }
