@@ -30,7 +30,12 @@ public class Location {
 
 	// Save things local to this location (ie updates to environment)
 	public void Save() {
-		
+		if (Map.CurrentLocation() == this) {
+			foreach (Cactus c in Object.FindObjectsOfType<Cactus>()) {
+				var data = c.SaveData();
+				cacti[data.tile] = data;
+			}
+		}
 	}
 
 	public bool DoneConnecting() {
@@ -134,7 +139,8 @@ public class Location {
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
 		for (int i = 0; i < cactiAmount; i++) {
-			cacti[RandomUnoccupiedTile()] = new Cactus.CactusSaveData();
+			int tile = RandomUnoccupiedTile();
+			cacti[tile] = new Cactus.CactusSaveData(tile);
 		}
 
 		// temp horse spawning

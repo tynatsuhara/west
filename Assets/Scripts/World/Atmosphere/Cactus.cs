@@ -1,13 +1,27 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
-public class Cactus : MonoBehaviour {
+public class Cactus : MonoBehaviour, Damageable {
     
     public GameObject bigArm;
     public GameObject lilArm;
     public GameObject flower;
     private GameObject[] arms = new GameObject[8];
     private CactusSaveData data;
+
+    public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
+        List<GameObject> onArms = arms.Where(a => a != null && a.transform.parent == transform).ToList();
+        GameObject which = onArms[Random.Range(0, onArms.Count)];
+        int index = arms.ToList().IndexOf(which);
+        which.transform.parent = null;
+        which.GetComponent<Rigidbody>().isKinematic = false;
+        which.GetComponent<Rigidbody>().AddForce(angle * 5f, ForceMode.Impulse);
+        which.transform.RotateAround(which.transform.position, Random.insideUnitSphere, Random.Range(10, 50));
+        data.arms.Set(index, false);
+        return true;
+    }
 
     public CactusSaveData SaveData() {
         return data;
@@ -40,8 +54,10 @@ public class Cactus : MonoBehaviour {
         public float overallOffset;  // vertical offset
         public int rotation;
         public bool flower;
+        public int tile;
 
-        public CactusSaveData() {
+        public CactusSaveData(int tile) {
+            this.tile = tile;
             offsets = new float[4];            
             for (int i = 0; i < 4; i++) {  // 4 possible arms
                 if (Random.Range(0, 3) == 1) {  // put an arm on this side
