@@ -143,6 +143,7 @@
      <Compile Include="Assets\Scripts\WalkCycle.cs" />
      <Compile Include="Assets\Scripts\Wall.cs" />
      <Compile Include="Assets\Scripts\Window.cs" />
+     <Compile Include="Assets\Scripts\World\Atmosphere\Tumbleweed.cs" />
      <Compile Include="Assets\Scripts\World\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Location.cs" />
      <Compile Include="Assets\Scripts\World\Map.cs" />

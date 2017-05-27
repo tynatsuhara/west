@@ -82,6 +82,8 @@
      <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Editor\QubicleImportWindow.cs" />
      <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Editor\QubicleImporter.cs" />
      <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Editor\RandomDeformerEditor.cs" />
+     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Editor\TerrainGenerator.cs" />
+     <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Editor\TerrainGeneratorWindow.cs" />
      <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Editor\VolumeEditor.cs" />
      <Compile Include="Assets\PicaVoxel\PicaVoxel\Scripts\Editor\VolumeInspector.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />

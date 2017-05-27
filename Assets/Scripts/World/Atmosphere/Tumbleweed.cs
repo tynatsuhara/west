@@ -5,14 +5,20 @@ public class Tumbleweed : MonoBehaviour {
     private Vector3 wind;
     private Vector3 nextWind;
     public float windForce;
+    public float density;
     public SphereCollider sc;
     public Color32[] colors;
 
     public void Start() {
         float radius = sc.radius = Random.Range(.3f, .6f);
-        int density = (int) (radius * 75);
-        for (int i = 0; i < density; i++) {
-            // todo: put voxels randomly in sphere shape
+        int d = (int) (radius * density);
+        PicaVoxel.Volume vol = GetComponent<PicaVoxel.Volume>();
+        for (int i = 0; i < d; i++) {
+            Vector3 pos = transform.position + Random.insideUnitSphere * radius;
+            PicaVoxel.Voxel voxel = new PicaVoxel.Voxel();
+            voxel.Color = colors[Random.Range(0, colors.Length)];
+            voxel.State = PicaVoxel.VoxelState.Active;
+            vol.SetVoxelAtWorldPosition(pos, voxel);
         }
 
         wind = NewDirection();

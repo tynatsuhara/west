@@ -762,8 +762,10 @@ namespace PicaVoxel
                 for (int i = 0; i < frame.transform.FindChild("Chunks").childCount; i++)
                 {
                     var o = frame.transform.FindChild("Chunks").GetChild(i).gameObject;
-                    if (o.GetComponent<Renderer>())
-                        EditorUtility.SetSelectedWireframeHidden(o.GetComponent<Renderer>(), IsEnabledForEditing && !DrawMesh);
+                    if (o.GetComponent<Renderer>() && IsEnabledForEditing)
+                        EditorUtility.SetSelectedRenderState(o.GetComponent<Renderer>(), EditorSelectedRenderState.Hidden);
+                    else
+                        EditorUtility.SetSelectedRenderState(o.GetComponent<Renderer>(), EditorSelectedRenderState.Highlight);
                 }
             }
 

@@ -47,7 +47,7 @@ namespace PicaVoxel
             }
 
             System = GetComponent<ParticleSystem>();
-            parts = new ParticleSystem.Particle[System.maxParticles];
+            parts = new ParticleSystem.Particle[System.main.maxParticles];
         }
 
         // Update is called once per frame
@@ -102,14 +102,14 @@ namespace PicaVoxel
 
         }
 
-        public void SpawnSingle(Vector3 worldPos, Voxel voxel, float voxelSize, Vector3 velocity, float lifetime = 0)
+        public void SpawnSingle(Vector3 worldPos, Voxel voxel, float voxelSize, Vector3 velocity)
         {
             System.Emit(new ParticleSystem.EmitParams()
             {
                 position = worldPos,
                 velocity = velocity,
                 startSize = voxelSize,
-                startLifetime = lifetime == 0 ? ParticleLifetime : lifetime,
+                startLifetime = ParticleLifetime,
                 startColor = voxel.Color
             }, 1);
             //worldPos, velocity, voxelSize, ParticleLifetime, voxel.Color)};

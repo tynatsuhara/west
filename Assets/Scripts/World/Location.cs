@@ -113,6 +113,7 @@ public class Location {
 		}
 
 		trails = new BitArray(width * height);
+		buildings = new BitArray(width * height);
 
 		// Place roads from all teleporters to first building
 		int firstDestination = Val(width/2, height/2);

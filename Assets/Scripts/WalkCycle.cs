@@ -92,7 +92,7 @@ public class WalkCycle : MonoBehaviour {
 				pos.y = Mathf.Max(pos.y, .04f);
 
 				Vector3 dir = transform.up * .25f + Random.insideUnitSphere * .5f;
-				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos, v, .1f, dir, Random.Range(.3f, .6f));
+				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos, v, .1f, dir);
 			}
 		}
 	}
