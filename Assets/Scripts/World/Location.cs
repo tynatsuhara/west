@@ -117,6 +117,7 @@ public class Location {
 
 		// Place roads from all teleporters to first building
 		int firstDestination = Val(width/2, height/2);
+		buildings.Set(firstDestination, true);
 		foreach (int exit in exits) {
 			foreach (int path in BestPathFrom(exit, firstDestination)) {
 				trails.Set(path, true);
@@ -127,7 +128,9 @@ public class Location {
 		// temp horse spawning
 		int horseAmount = Random.Range(1, 5);
 		for (int i = 0; i < horseAmount; i++) {
+			int tile = RandomUnoccupiedTile();
 			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
+			hsd.location = new SerializableVector3(TileVectorPosition(tile));
 			SaveGame.currentGame.horses.Add(hsd.guid, hsd);
 			horses.Add(hsd.guid);
 		}
@@ -151,10 +154,19 @@ public class Location {
 			return LevelBuilder.instance.floorPrefab;
 		}
 	}
+	// returns the center vector pos of a tile with y = 0
+	public Vector3 TileVectorPosition(int val) {
+		float xPos = X(val) * LevelBuilder.TILE_SIZE + LevelBuilder.TILE_SIZE/2f;
+		float zPos = Y(val) * LevelBuilder.TILE_SIZE + LevelBuilder.TILE_SIZE/2f;
+		return new Vector3(xPos, 0, zPos);
+	}
+	public int RandomUnoccupiedTile() {
+		List<int> all = Enumerable.Range(0, width * height).Where(x => !TileOccupied(x)).ToList();
+		return all[Random.Range(0, all.Count)];
+	}
 
-	private bool TileOccupied(int x, int y) {
-		int val = Val(x, y);
-		return !buildings.Get(val) && !trails.Get(val);
+	private bool TileOccupied(int val) {
+		return buildings.Get(val) || trails.Get(val);
 	}
 
 	private int Val(int x, int y) {
@@ -225,7 +237,7 @@ public class Location {
 			bool obstructed = false;
 			for (int xi = x; xi < x + w && !obstructed; xi++) {
 				for (int yi = y; yi < y + h && !obstructed; yi++) {
-					obstructed = TileOccupied(xi, yi);
+					obstructed = TileOccupied(Val(xi, yi));
 				}
 			}
 		}
