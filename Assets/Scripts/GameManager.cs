@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 		LoadLocation(SaveGame.currentGame.map.currentLocation);
-		players = SpawnPlayers(playersToSpawn);		
+		players = SpawnPlayers(playersToSpawn);
 		GameObject.Find("Map").GetComponent<VisualMap>().Draw();
 		SetTimeScale(1f);
 
@@ -186,7 +186,11 @@ public class GameManager : MonoBehaviour {
 			pc.playerUI.player = pc;
 			pc.playerUI.transform.SetParent(pc.playerCamera.transform, false);
 
-			pc.LoadSaveData(SaveGame.currentGame.savedPlayers[pc.id - 1]);		
+			pc.LoadSaveData(SaveGame.currentGame.savedPlayers[pc.id - 1]);
+
+			// don't delete these guys when we load a new locations!
+			LevelBuilder.instance.permanent.Add(pc.transform);
+			LevelBuilder.instance.permanent.Add(pc.playerCamera.cam.transform.root);			
 		}
 
 		// split screen dimensions

@@ -19,7 +19,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject destinationMarkerPrefab;
 	public Material mat;
 	public Color32[] biomeColors;
-	public List<GameObject> recycle;  // everything that is spawned in the world that should be deleted later
+	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
 	private Teleporter[] teleporters;
 	private PicaVoxel.Volume[,] floorTiles;
@@ -37,6 +37,8 @@ public class LevelBuilder : MonoBehaviour {
 		if (!firstLoad) {
 			SaveGame.Save();
 			Clean();
+		} else {
+			permanent = Object.FindObjectsOfType<Transform>().Where(x => x.parent == null).ToList();
 		}
 
 		Location l = Map.Location(guid);
@@ -59,15 +61,15 @@ public class LevelBuilder : MonoBehaviour {
 				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
 			}
 		}
-		recycle.Add(floorHolder);
 		PositionWalls();
 	}
 
 	public void Clean(bool removePlayers=false) {
 		PicaVoxel.VoxelParticleSystem.Instance.GetComponent<ParticleSystem>().Clear();
-		foreach (GameObject go in recycle) {
-			if (go != null) {
-				Destroy(go);
+		List<Transform> delete = Object.FindObjectsOfType<Transform>().Where(x => x.parent == null && !permanent.Contains(x)).ToList();
+		foreach (Transform t in delete) {
+			if (t != null) {
+				Destroy(t.gameObject);
 			}
 		}
 		foreach (PlayerControls pc in GameManager.players) {
@@ -102,7 +104,6 @@ public class LevelBuilder : MonoBehaviour {
 				Horse.HorseSaveData hsd = SaveGame.currentGame.horses[id];
 				Horse h = Instantiate(horsePrefab).GetComponent<Horse>();
 				h.LoadSaveData(hsd);
-				recycle.Add(h.gameObject);
 			}
 		}
 	}
@@ -111,7 +112,6 @@ public class LevelBuilder : MonoBehaviour {
 		foreach (int tile in loadedLocation.cacti.Keys) {
 			GameObject c = Instantiate(cactusPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
 			c.GetComponent<Cactus>().LoadSaveData(loadedLocation.cacti[tile]);
-			recycle.Add(c);
 		}
 	}
 
@@ -124,7 +124,6 @@ public class LevelBuilder : MonoBehaviour {
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;
 			porter.GetComponent<Teleporter>().LoadSaveData(td);
-			recycle.Add(porter);
 			teleporterList.Add(porter.GetComponent<Teleporter>());
 		}
 		teleporters = teleporterList.ToArray();
