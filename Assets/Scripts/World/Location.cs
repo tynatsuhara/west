@@ -20,8 +20,8 @@ public class Location {
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 
 	public int biomeColor = Random.Range(0, LevelBuilder.instance.biomeColors.Length);
-	public int width = 20;  // w and h might be changed later by Generate()!
-	public int height = 10;
+	public int width = 20;  // minimums, w and h might be changed later by Generate()!
+	public int height = 20;
 	private BitArray trails;
 	private BitArray buildingSpaces;
 

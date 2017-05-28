@@ -44,9 +44,9 @@ public class Building {
             if (rotation == 0) {
                 return doorOffsetY_;
             } else if (rotation == 1) {
-                return width - doorOffsetX_ - 1;
+                return width_ - doorOffsetX_ - 1;
             } else if (rotation == 2) {
-                return height - doorOffsetY_ - 1;
+                return height_ - doorOffsetY_ - 1;
             } else {
                 return doorOffsetX_;
             }
