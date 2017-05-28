@@ -145,6 +145,7 @@
      <Compile Include="Assets\Scripts\Window.cs" />
      <Compile Include="Assets\Scripts\World\Atmosphere\Cactus.cs" />
      <Compile Include="Assets\Scripts\World\Atmosphere\Tumbleweed.cs" />
+     <Compile Include="Assets\Scripts\World\Building.cs" />
      <Compile Include="Assets\Scripts\World\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Location.cs" />
      <Compile Include="Assets\Scripts\World\Map.cs" />
