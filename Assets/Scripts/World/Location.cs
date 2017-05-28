@@ -17,7 +17,7 @@ public class Location {
 	public List<System.Guid> characters = new List<System.Guid>();
 	public Dictionary<int, Cactus.CactusSaveData> cacti = new Dictionary<int, Cactus.CactusSaveData>();  // maps tile to cactus
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
-	
+
 	public int biomeColor = Random.Range(0, LevelBuilder.instance.biomeColors.Length);
 	public int width = 20;  // w and h might be changed later by Generate()!
 	public int height = 10;
@@ -167,9 +167,7 @@ public class Location {
 
 	public GameObject TileAt(int x, int y) {
 		int val = Val(x, y);
-		if (buildings.Get(val)) {
-			return LevelBuilder.instance.buildingPrefabPlaceholder;
-		} else if (trails.Get(val)) {
+		if (trails.Get(val)) {
 			return LevelBuilder.instance.trailPrefab;
 		} else {
 			return LevelBuilder.instance.floorPrefab;
@@ -258,9 +256,13 @@ public class Location {
 
 	// ================= BUILDING STUFF =============g==== //
 
+	private Building TryPlaceBuilding(Building prefab) {
+		return null;
+	}
+
 	// returns Val(x, y) where (x, y) is the bottom left corner
 	// if a spot cannot easily be found, returns -1
-	private int randomBuildingPos(int w, int h) {
+	private int RandomBuildingPos(int w, int h) {
 		for (int i = 0; i < 10; i++) {
 			int x = Random.Range(0, width - w + 1);
 			int y = Random.Range(0, height - h + 1);

@@ -9,7 +9,6 @@ public class LevelBuilder : MonoBehaviour {
 
 	public GameObject floorPrefab;
 	public GameObject trailPrefab;
-	public GameObject buildingPrefabPlaceholder;
 	public GameObject wallPrefab;
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;
@@ -20,6 +19,8 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject destinationMarkerPrefab;
 	public Material mat;
 	public Color32[] biomeColors;
+	public Building[] buildingPrefabs;
+
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
 	private Teleporter[] teleporters;
