@@ -28,6 +28,7 @@ public class Teleporter : MonoBehaviour {
 				GameManager.instance.loadReposition = otherSide.position.val;
 				float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
 				GameManager.instance.LoadLocation(toId, 4 /* minutes per distance unit */ * dist * pc.moveSpeed / pc.CalculateSpeed());
+				ignore = true;
 			} else {
 				// TODO: save character to the other location
 			}
@@ -39,12 +40,12 @@ public class Teleporter : MonoBehaviour {
 		GetComponentInChildren<TextObject>().Say(destination, color: hasQuest ? "green" : "white", permanent: true);
 	}
 
-	public void LoadSaveData(TeleporterData td) {
+	public void LoadSaveData(TeleporterData td, System.Guid currentLoc) {
 		toId = td.toId;
 		transform.position = td.position.val;
 		destination = SaveGame.currentGame.map.locations[toId].name;
 		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
-				.Where(x => x.toId == SaveGame.currentGame.map.currentLocation && x.tag == td.tag).First();
+				.Where(x => x.toId == currentLoc && x.tag == td.tag).First();
 	}
 
 	private IEnumerator Delay() {

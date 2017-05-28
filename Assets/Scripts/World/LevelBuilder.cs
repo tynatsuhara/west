@@ -19,7 +19,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject destinationMarkerPrefab;
 	public Material mat;
 	public Color32[] biomeColors;
-	public Building[] buildingPrefabs;
+	public GameObject[] buildingPrefabs;
 
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
@@ -47,6 +47,7 @@ public class LevelBuilder : MonoBehaviour {
 		loadedLocation = l;
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
+		SpawnBuildings();
 		SpawnHorses(firstLoad);
 		SpawnFoliage();
 		SpawnTeleporters();
@@ -70,9 +71,7 @@ public class LevelBuilder : MonoBehaviour {
 		PicaVoxel.VoxelParticleSystem.Instance.GetComponent<ParticleSystem>().Clear();
 		List<Transform> delete = Object.FindObjectsOfType<Transform>().Where(x => x.parent == null && !permanent.Contains(x)).ToList();
 		foreach (Transform t in delete) {
-			if (t != null) {
-				Destroy(t.gameObject);
-			}
+			Destroy(t.gameObject);
 		}
 		foreach (PlayerControls pc in GameManager.players) {
 			if (removePlayers) {
@@ -115,6 +114,7 @@ public class LevelBuilder : MonoBehaviour {
 			GameObject c = Instantiate(cactusPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
 			c.GetComponent<Cactus>().LoadSaveData(loadedLocation.cacti[tile]);
 		}
+		// Debug.Log("spawning " + loadedLocation.cacti.Count + " cacti");
 
 		int tumbleweeds = Random.Range(0, 2);
 		for (int i = 0; i < tumbleweeds; i++) {
@@ -131,7 +131,7 @@ public class LevelBuilder : MonoBehaviour {
 			GameObject porter = Instantiate(teleporterPrefab);
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;
-			porter.GetComponent<Teleporter>().LoadSaveData(td);
+			porter.GetComponent<Teleporter>().LoadSaveData(td, loadedLocation.guid);
 			teleporterList.Add(porter.GetComponent<Teleporter>());
 		}
 		teleporters = teleporterList.ToArray();
@@ -165,8 +165,14 @@ public class LevelBuilder : MonoBehaviour {
 			spotParent.name = "QuestPositionParent";
 			foreach (Vector3 v in destinationMarkers) {
 				GameObject spot = Instantiate(destinationMarkerPrefab, v, Quaternion.identity);
-				spot.transform.parent = spotParent.transform;
+				spot.transform.SetParent(spotParent.transform);
 			}
+		}
+	}
+
+	private void SpawnBuildings() {
+		foreach (Building b in loadedLocation.buildings) {
+			Instantiate(buildingPrefabs[b.prefabIndex]);
 		}
 	}
 

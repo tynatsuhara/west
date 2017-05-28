@@ -13,6 +13,7 @@ public class Location {
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
 
 	// Things contained locally
+	public List<Building> buildings = new List<Building>();
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<System.Guid> characters = new List<System.Guid>();
 	public Dictionary<int, Cactus.CactusSaveData> cacti = new Dictionary<int, Cactus.CactusSaveData>();  // maps tile to cactus
@@ -22,7 +23,7 @@ public class Location {
 	public int width = 20;  // w and h might be changed later by Generate()!
 	public int height = 10;
 	private BitArray trails;
-	private BitArray buildings;
+	private BitArray buildingSpaces;
 
 	public Location(Map parent, float x, float y) {
 		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};
@@ -127,17 +128,9 @@ public class Location {
 		}
 
 		trails = new BitArray(width * height);
-		buildings = new BitArray(width * height);
+		buildingSpaces = new BitArray(width * height);
 
-		// Place roads from all teleporters to first building
-		int firstDestination = Val(width/2, height/2);
-		buildings.Set(firstDestination, true);
-		foreach (int exit in exits) {
-			foreach (int path in BestPathFrom(exit, firstDestination)) {
-				trails.Set(path, true);
-			}
-			// TODO: make roads form loops
-		}
+		PlaceBuildingsAndRoads(exits);
 
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
@@ -185,7 +178,11 @@ public class Location {
 	}
 
 	private bool TileOccupied(int val) {
-		return buildings.Get(val) || trails.Get(val) || cacti.ContainsKey(val);
+		int x = X(val);
+		int y = Y(val);
+		if (x < 0 || x >= width || y < 0 || y >= height)
+			return true;
+		return buildingSpaces.Get(val) || trails.Get(val) || cacti.ContainsKey(val);
 	}
 
 	private int Val(int x, int y) {
@@ -254,23 +251,60 @@ public class Location {
 		return lst;
 	}
 
-	// ================= BUILDING STUFF =============g==== //
+	// ================= BUILDING STUFF ================= //
 
-	private Building TryPlaceBuilding(Building prefab) {
-		return null;
+	private void PlaceBuildingsAndRoads(List<int> exits) {
+		// Place roads from all teleporters to first building
+		int firstDestination = TryPlaceBuilding(new Building());
+		if (firstDestination == -1)
+			return;
+		buildingSpaces.Set(firstDestination, true);
+		foreach (int exit in exits) {
+			foreach (int path in BestPathFrom(exit, firstDestination)) {
+				trails.Set(path, true);
+			}
+			// TODO: make roads form loops
+		}
+	}
+
+	private int TryPlaceBuilding(Building b) {
+		b.Rotate(Random.Range(0, 4));
+
+		for (int i = 0; i < 3; i++) {
+			int place = RandomBuildingPos(b);
+			if (place == -1)
+				continue;  // rotate and try again
+			
+			// mark spaces as occupied by building
+			int x = X(place);
+			int y = Y(place);
+			for (int xi = x; xi < x + b.width; xi++) {
+				for (int yi = y; yi < y + b.height; yi++) {
+					buildingSpaces.Set(Val(xi, yi), true);
+				}
+			}
+
+			b.bottomLeftTile = place;
+			buildings.Add(b);
+			return Val(x + b.doorOffsetX, y + b.doorOffsetY);
+		}
+		return -1;
 	}
 
 	// returns Val(x, y) where (x, y) is the bottom left corner
 	// if a spot cannot easily be found, returns -1
-	private int RandomBuildingPos(int w, int h) {
-		for (int i = 0; i < 10; i++) {
-			int x = Random.Range(0, width - w + 1);
-			int y = Random.Range(0, height - h + 1);
+	private int RandomBuildingPos(Building b) {
+		for (int i = 0; i < 20; i++) {
+			int x = Random.Range(0, width - b.width + 1);
+			int y = Random.Range(0, height - b.height + 1);
 			bool obstructed = false;
-			for (int xi = x; xi < x + w && !obstructed; xi++) {
-				for (int yi = y; yi < y + h && !obstructed; yi++) {
+			for (int xi = x; xi < x + b.width && !obstructed; xi++) {
+				for (int yi = y; yi < y + b.height && !obstructed; yi++) {
 					obstructed = TileOccupied(Val(xi, yi));
 				}
+			}
+			if (!obstructed && !TileOccupied(Val(x + b.doorOffsetX, y + b.doorOffsetY))) {
+				return Val(x, y);
 			}
 		}
 		return -1;
