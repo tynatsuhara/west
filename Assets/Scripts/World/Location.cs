@@ -11,10 +11,13 @@ public class Location {
 	public string icon;  // bull head in pixel western font
 	public SerializableVector3 worldLocation;
 	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
+
+	// Things contained locally
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<System.Guid> characters = new List<System.Guid>();
 	public Dictionary<int, Cactus.CactusSaveData> cacti = new Dictionary<int, Cactus.CactusSaveData>();  // maps tile to cactus
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
+	
 	public int biomeColor = Random.Range(0, LevelBuilder.instance.biomeColors.Length);
 	public int width = 20;  // w and h might be changed later by Generate()!
 	public int height = 10;
