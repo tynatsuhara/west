@@ -14,6 +14,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;
 	public GameObject cactusPrefab;
+	public GameObject tumbleweedPrefab;
 	public GameObject horsePrefab;
 	public GameObject teleporterPrefab;
 	public GameObject destinationMarkerPrefab;
@@ -112,6 +113,12 @@ public class LevelBuilder : MonoBehaviour {
 		foreach (int tile in loadedLocation.cacti.Keys) {
 			GameObject c = Instantiate(cactusPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
 			c.GetComponent<Cactus>().LoadSaveData(loadedLocation.cacti[tile]);
+		}
+
+		int tumbleweeds = Random.Range(0, 2);
+		for (int i = 0; i < tumbleweeds; i++) {
+			int tile = loadedLocation.RandomUnoccupiedTile();
+			Instantiate(tumbleweedPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
 		}
 	}
 

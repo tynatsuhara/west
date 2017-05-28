@@ -24,6 +24,7 @@ public class Tumbleweed : MonoBehaviour {
         }
 
         wind = NewDirection();
+        forcePercentage = Random.Range(.5f, 1f);        
         StartCoroutine(UpdateWind());
     }
 
