@@ -224,7 +224,7 @@ public class Location {
 				int valY = Y(v);
 				if (buildingSpaces.Get(v)) {
 					continue;
-				} else if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1) {  // don't travel right on edges
+				} else if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1 || AdjacentToBuilding(v)) {  // don't travel right on edges
 					alt += 2;
 				} else if (trails.Get(v)) {
 					alt += .1f;
@@ -250,6 +250,14 @@ public class Location {
 		if (tile % width != width - 1)           // not on right column, so add tile to the right
 			lst.Add(tile + 1);
 		return lst;
+	}
+	private bool AdjacentToBuilding(int tile) {
+		List<int> ns = TileNeighbors(tile);
+		foreach (int n in ns) {
+			if (buildingSpaces.Get(n))
+				return true;
+		}
+		return false;
 	}
 
 	// ================= BUILDING STUFF ================= //
