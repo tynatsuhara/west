@@ -166,11 +166,10 @@ public class Location {
 			return LevelBuilder.instance.floorPrefab;
 		}
 	}
-	// returns the center vector pos of a tile with y = 0
-	public Vector3 TileVectorPosition(int val) {
-		float xPos = X(val) * LevelBuilder.TILE_SIZE + LevelBuilder.TILE_SIZE/2f;
-		float zPos = Y(val) * LevelBuilder.TILE_SIZE + LevelBuilder.TILE_SIZE/2f;
-		return new Vector3(xPos, 0, zPos);
+	public Vector3 TileVectorPosition(int val, bool center = true) {
+		float xPos = X(val) * LevelBuilder.TILE_SIZE;
+		float zPos = Y(val) * LevelBuilder.TILE_SIZE;
+		return new Vector3(xPos, 0, zPos) + (center ? new Vector3(LevelBuilder.TILE_SIZE/2f, 0, LevelBuilder.TILE_SIZE/2f) : Vector3.zero);
 	}
 	public int RandomUnoccupiedTile() {
 		List<int> all = Enumerable.Range(0, width * height).Where(x => !TileOccupied(x)).ToList();

@@ -7,6 +7,9 @@ public class Building {
     private int doorOffsetX_ = 1;
     private int doorOffsetY_ = -1;
 
+    public int angle {
+        get { return rotation * 90; }
+    }
     public int width {
         get {
             if (rotation % 2 == 1) {
