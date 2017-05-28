@@ -294,9 +294,10 @@ public class Location {
 	// returns Val(x, y) where (x, y) is the bottom left corner
 	// if a spot cannot easily be found, returns -1
 	private int RandomBuildingPos(Building b) {
+		int padding = 3;  // amount of spaces from edge to building
 		for (int i = 0; i < 20; i++) {
-			int x = Random.Range(0, width - b.width + 1);
-			int y = Random.Range(0, height - b.height + 1);
+			int x = Random.Range(padding, width - b.width + 1 - padding);
+			int y = Random.Range(padding, height - b.height + 1 - padding);
 			bool obstructed = false;
 			for (int xi = x; xi < x + b.width && !obstructed; xi++) {
 				for (int yi = y; yi < y + b.height && !obstructed; yi++) {
