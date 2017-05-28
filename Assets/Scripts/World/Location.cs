@@ -222,7 +222,9 @@ public class Location {
 				float alt = dist[u];
 				int valX = X(v);
 				int valY = Y(v);
-				if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1) {  // don't travel right on edges
+				if (buildingSpaces.Get(v)) {
+					continue;
+				} else if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1) {  // don't travel right on edges
 					alt += 2;
 				} else if (trails.Get(v)) {
 					alt += .1f;
@@ -257,7 +259,6 @@ public class Location {
 		int firstDestination = TryPlaceBuilding(new Building());
 		if (firstDestination == -1)
 			return;
-		buildingSpaces.Set(firstDestination, true);
 		foreach (int exit in exits) {
 			foreach (int path in BestPathFrom(exit, firstDestination)) {
 				trails.Set(path, true);
