@@ -264,14 +264,17 @@ public class Location {
 
 	private void PlaceBuildingsAndRoads(List<int> exits) {
 		// Place roads from all teleporters to first building
-		int firstDestination = TryPlaceBuilding(new Building());
-		if (firstDestination == -1)
-			return;
-		foreach (int exit in exits) {
-			foreach (int path in BestPathFrom(exit, firstDestination)) {
-				trails.Set(path, true);
+		int buildingsToAttempt = Random.Range(5, 10);
+		for (int i = 0; i < buildingsToAttempt; i++) {
+			int destination = TryPlaceBuilding(new Building());
+			if (destination == -1)
+				continue;
+			foreach (int exit in exits) {
+				foreach (int path in BestPathFrom(exit, destination)) {
+					trails.Set(path, true);
+				}
+				// TODO: make roads form loops
 			}
-			// TODO: make roads form loops
 		}
 	}
 
@@ -304,16 +307,18 @@ public class Location {
 	private int RandomBuildingPos(Building b) {
 		int padding = 3;  // amount of spaces from edge to building
 		for (int i = 0; i < 20; i++) {
+			int paddedW = b.width + 2;
+			int paddedH = b.height + 2;
 			int x = Random.Range(padding, width - b.width + 1 - padding);
 			int y = Random.Range(padding, height - b.height + 1 - padding);
 			bool obstructed = false;
-			for (int xi = x; xi < x + b.width && !obstructed; xi++) {
-				for (int yi = y; yi < y + b.height && !obstructed; yi++) {
+			for (int xi = x; xi < x + paddedW && !obstructed; xi++) {
+				for (int yi = y; yi < y + paddedH && !obstructed; yi++) {
 					obstructed = TileOccupied(Val(xi, yi));
 				}
 			}
 			if (!obstructed && !TileOccupied(Val(x + b.doorOffsetX, y + b.doorOffsetY))) {
-				return Val(x, y);
+				return Val(x+1, y+1);
 			}
 		}
 		return -1;
