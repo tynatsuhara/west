@@ -78,7 +78,16 @@ public class PlayerControls : Character {
 		}
 
 		if ((p1 && Input.GetMouseButton(0)) || Input.GetKey("joystick " + id + " button 7")) {
-			Shoot();
+			Ray ray = playerCamera.cam.ScreenPointToRay(playerUI.mousePos);
+			RaycastHit hit;
+			if (Physics.Raycast(ray, out hit) && !hit.collider.GetComponentInParent<Floor>()) {
+				// Debug.Log(hit.transform.root.name);
+				Damageable d = hit.collider.GetComponentInParent<Damageable>();
+				MonoBehaviour db = (MonoBehaviour) d;
+				Shoot(d == null ? hit.point : db.transform.position);
+			} else {
+				Shoot();
+			}
 		} else if ((p1 && Input.GetMouseButtonDown(1)) || Input.GetKeyDown("joystick " + id + " button 6")) {
 			Melee();
 		// } else if (Input.GetKeyDown(KeyCode.Alpha3)) {      // TODO: ¿improve explosions?
