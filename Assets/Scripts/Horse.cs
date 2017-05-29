@@ -20,7 +20,8 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 	// Ride
 	public void Interact(Character character) {
-		if (!isAlive)
+		Debug.Log("interact?");
+		if (!isAlive || rider != null)
 			return;
 		character.MountHorse(this);
 		rider = character;
@@ -48,7 +49,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 			if (type != DamageType.MELEE && type != DamageType.NONLETHAL) {
 				exploder.Explode(angle * 3);
 			}
-			StartCoroutine(FallOver());
+			StartCoroutine(FallOver(800));
 		}
 		return false;
 	}
@@ -131,6 +132,8 @@ public class Horse : LivingThing, Interactable, Damageable {
 		transform.eulerAngles = data.eulerAngles.val;
 		tamed = hsd.tamed;
 		health = hsd.health;
+		if (!isAlive)
+			StartCoroutine(FallOver(800));
 		Color();		
 	}
 

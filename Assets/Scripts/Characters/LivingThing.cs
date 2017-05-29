@@ -13,7 +13,7 @@ public abstract class LivingThing : MonoBehaviour {
 	protected List<PicaVoxel.Volume> bodyParts = new List<PicaVoxel.Volume>();          // all body parts which can bleed/be damaged
 	protected List<PicaVoxel.Volume> separateBodyParts = new List<PicaVoxel.Volume>();  // parts which are considered separate entities (eg decapitation)
 
-	protected IEnumerator FallOver() {
+	protected IEnumerator FallOver(float force) {
 		GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 		yield return new WaitForSeconds(Random.Range(.2f, 1f));
 		for (int i = 0; i < 10; i++) {
@@ -23,7 +23,7 @@ public abstract class LivingThing : MonoBehaviour {
 				fallDir.z = fallDir.y;
 				fallDir.y = 0;
 				for (int j = 0; j < 3; j++) {
-					GetComponent<Rigidbody>().AddForce(fallDir * (400f + i * 150f), ForceMode.Impulse);
+					GetComponent<Rigidbody>().AddForce(fallDir * (force + i * 150f), ForceMode.Impulse);
 					yield return new WaitForSeconds(.08f);
 				}
 			}

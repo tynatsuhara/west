@@ -193,7 +193,7 @@ public abstract class Character : LivingThing, Damageable {
 			speech.SayRandom(Speech.DEATH_QUOTES, showFlash: true);
 		}
 
-		StartCoroutine(FallOver());
+		StartCoroutine(FallOver(400));
 		// Invoke("RemoveBody", 60f);
 	}
 
