@@ -47,7 +47,10 @@ public class Horse : LivingThing, Interactable, Damageable {
 				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder
 			}
 			if (type != DamageType.MELEE && type != DamageType.NONLETHAL) {
+				BleedEverywhere();
 				exploder.Explode(angle * 3);
+			} else {
+				SpurtBlood();
 			}
 			StartCoroutine(FallOver(800));
 		}
