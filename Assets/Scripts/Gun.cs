@@ -98,6 +98,8 @@ public abstract class Gun : MonoBehaviour {
 			if (rhits.Length > 0) {
 				if (hits.Contains(rhits[0].collider.GetComponentInParent<Damageable>()))
 					continue;
+				if (isPlayer)
+					player.playerUI.HitMarker();
 				Damageable d = rhits[0].collider.GetComponentInParent<Damageable>();
 				d.Damage(rhits[0].collider.transform.root.position, owner.transform.forward, 1f, isPlayer, type);
 				if (rhits[0].collider.GetComponentInParent<Character>() != null)
