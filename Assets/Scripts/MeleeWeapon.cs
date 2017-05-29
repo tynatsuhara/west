@@ -22,7 +22,7 @@ public class MeleeWeapon : Gun {
 			volume.SetFrame(GUN_BASE_FRAME);
 	}
 
-	public override bool Shoot() {
+	public override bool Shoot(Vector3 target) {
 		bool wasMeleeing = meleeing;
 		Melee(damageType, swingDirection);
 		return wasMeleeing;

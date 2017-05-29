@@ -13,8 +13,8 @@ public class DualPistol : Pistol {
 			SwapArms();
 	}
 
-	public override bool Shoot() {
-		if (base.Shoot()) {
+	public override bool Shoot(Vector3 target) {
+		if (base.Shoot(target)) {
 			SwapArms();
 			return true;
 		}

@@ -249,8 +249,11 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	public virtual void Shoot() {
+		Shoot(transform.position + transform.forward);
+	}
+	public virtual void Shoot(Vector3 target) {
 		if (weaponDrawn_ && currentGun != null && !isDragging) {
-			currentGun.Shoot();
+			currentGun.Shoot(target);
 		} 
 	}
 

@@ -31,7 +31,7 @@ public abstract class Gun : MonoBehaviour {
 	}
 
 	// returns true if the attack executed that frame (ie gun fired)
-	abstract public bool Shoot();
+	abstract public bool Shoot(Vector3 target);
 	abstract public void Release();
 	abstract public void Reload();
 	abstract public void CancelReload();

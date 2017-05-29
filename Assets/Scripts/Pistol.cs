@@ -22,11 +22,11 @@ public class Pistol : Gun {
 		base.Awake();
 	}
 
-	public override bool Shoot() {
+	public override bool Shoot(Vector3 target) {
 		if (delayed || shooting || reloading || bulletsFired == clipSize || owner == null)
 			return false;
 		
-		RaycastShoot(transform.parent.position, -transform.forward);
+		RaycastShoot(transform.parent.position, target - transform.parent.position);
 		// SetFrame before Play to avoid delay
 		volume.SetFrame(ANIM_START_FRAME);
 		anim.Shoot();
