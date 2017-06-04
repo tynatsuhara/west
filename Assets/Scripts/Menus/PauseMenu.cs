@@ -22,7 +22,7 @@ public class PauseMenu : Menu {
 			GameManager.instance.SetPaused(false);
 		} else if (node == save) {
 			GameUI.instance.topCenterText.Say("GAME SAVED", showFlash: true);
-			SaveGame.Save();
+			SaveGame.Save(true);
 		} else if (node == quit) {
 			LevelBuilder.instance.Clean(removePlayers: true);
 			SceneManager.LoadScene("main menu");

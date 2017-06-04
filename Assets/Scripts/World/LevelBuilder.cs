@@ -37,7 +37,7 @@ public class LevelBuilder : MonoBehaviour {
 		bool firstLoad = GameManager.instance.loadReposition == Vector3.zero;
 
 		if (!firstLoad) {
-			SaveGame.Save();
+			SaveGame.Save(false);
 			Clean();
 		} else {
 			permanent = Object.FindObjectsOfType<Transform>().Where(x => x.parent == null).ToList();

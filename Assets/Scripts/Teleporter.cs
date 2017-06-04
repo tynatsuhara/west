@@ -22,6 +22,7 @@ public class Teleporter : MonoBehaviour {
 			if (pc) {
 				GameManager.instance.loadReposition = otherSide.position.val;
 				float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
+				// loading location autosaves before transport, so make sure to do any save modification (eg moving horses) after location load
 				GameManager.instance.LoadLocation(toId, 4 /* minutes per distance unit */ * dist * pc.moveSpeed / pc.CalculateSpeed());
 				ignore = true;
 			} else {

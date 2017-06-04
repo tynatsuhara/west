@@ -36,7 +36,7 @@ public class SaveGame {
 		currentGame.stats = new Statistics();
 	}
 
-	public static void Save() {
+	public static void Save(bool writeToDisk) {
 		// save players in scene
 		currentGame.savedPlayers = GameManager.players.Select(x => x.SaveData()).ToArray();
 
@@ -51,12 +51,14 @@ public class SaveGame {
 		// save any necessary things in the locations
 		currentGame.map.Save();
 
-		if (!Directory.Exists(DirPath()))
-			Directory.CreateDirectory(DirPath());
-		BinaryFormatter formatter = new BinaryFormatter();
-		FileStream saveFile = File.Create(SavePath());
-		formatter.Serialize(saveFile, currentGame);
-		saveFile.Close();
+		if (writeToDisk) {
+			if (!Directory.Exists(DirPath()))
+				Directory.CreateDirectory(DirPath());
+			BinaryFormatter formatter = new BinaryFormatter();
+			FileStream saveFile = File.Create(SavePath());
+			formatter.Serialize(saveFile, currentGame);
+			saveFile.Close();
+		}
 
 		// Debug.Log("game saved at " + SavePath());		
 	}
