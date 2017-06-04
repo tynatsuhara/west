@@ -20,7 +20,6 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 	// Ride
 	public void Interact(Character character) {
-		Debug.Log("interact?");
 		if (!isAlive || rider != null)
 			return;
 		character.MountHorse(this);

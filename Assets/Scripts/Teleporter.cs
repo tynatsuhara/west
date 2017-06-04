@@ -19,11 +19,6 @@ public class Teleporter : MonoBehaviour {
 		Character character = other.GetComponentInParent<Character>();		
 		PlayerControls pc = other.GetComponentInParent<PlayerControls>();
 		if (character || pc) {
-			if (character.ridingHorse) {
-				Horse.HorseSaveData hsd = character.mount.SaveData();
-				Map.CurrentLocation().horses.Remove(hsd.guid);
-				Map.Location(toId).horses.Add(hsd.guid);
-			}
 			if (pc) {
 				GameManager.instance.loadReposition = otherSide.position.val;
 				float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
@@ -31,6 +26,11 @@ public class Teleporter : MonoBehaviour {
 				ignore = true;
 			} else {
 				// TODO: save character to the other location
+			}
+			if (character.ridingHorse) {
+				Horse.HorseSaveData hsd = character.mount.SaveData();
+				Map.CurrentLocation().horses.Remove(hsd.guid);
+				Map.Location(toId).horses.Add(hsd.guid);
 			}
 		}
 	}

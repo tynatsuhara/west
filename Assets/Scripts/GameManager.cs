@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
 			return lst;
 		}
 	}
-	public static List<Horse> localHorses {
+	public static List<Horse> spawnedHorses {
 		get {
 			return Object.FindObjectsOfType<Horse>().ToList();
 		}

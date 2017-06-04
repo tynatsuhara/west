@@ -194,6 +194,9 @@ public class PlayerControls : Character {
 				if (firstPersonCam.enabled) {
 					transform.rotation = rider;
 				}
+				mount.GetComponent<WalkCycle>().StartWalk();
+			} else {
+				mount.GetComponent<WalkCycle>().StandStill(true);
 			}
 		} else if ((x != 0 || z != 0) && !walk.isWalking) {
 			walk.StartWalk();
@@ -272,7 +275,7 @@ public class PlayerControls : Character {
 		if (psd.health >= 0)
 			health = psd.health;
 		if (psd.ridingHorse)
-			GameManager.localHorses.Where(x => x.SaveData().guid == psd.mountGuid).First().Interact(this);
+			GameManager.spawnedHorses.Where(x => x.SaveData().guid == psd.mountGuid).First().Interact(this);
 		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
 		CharacterOptionsManager.instance.SetSkinColor(id, psd.skinColor);
 		CharacterOptionsManager.instance.SetHairColor(id, psd.hairColor);

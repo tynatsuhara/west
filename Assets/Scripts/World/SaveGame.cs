@@ -41,9 +41,11 @@ public class SaveGame {
 		currentGame.savedPlayers = GameManager.players.Select(x => x.SaveData()).ToArray();
 
 		// save local wildlife
-		foreach (Horse h in GameManager.localHorses) {
+		foreach (Horse h in GameManager.spawnedHorses) {
 			Horse.HorseSaveData hsd = h.SaveData();
-			currentGame.horses[hsd.guid] = hsd;
+			if (Map.CurrentLocation().horses.Contains(hsd.guid)) {
+				currentGame.horses[hsd.guid] = hsd;
+			}
 		}
 
 		// save any necessary things in the locations
