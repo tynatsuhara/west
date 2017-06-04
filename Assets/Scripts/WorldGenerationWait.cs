@@ -15,7 +15,8 @@ public class WorldGenerationWait : MonoBehaviour {
 	private IEnumerator Delay() {
 		yield return new WaitForSeconds(.1f);
 		GameManager.newGame = true;
+		SaveGame.NewGame();		
 		SaveGame.GenerateWorld();
-		SceneManager.LoadScene("game");		
+		SceneManager.LoadScene("customization");		
 	}
 }

@@ -21,8 +21,7 @@ public class MainMenu : Menu {
 
 	public override void Enter(MenuNode node) {
 		if (node == newGame) {
-			SaveGame.NewGame();
-			SceneManager.LoadScene("customization");
+			SceneManager.LoadScene("world creation");
 		} else if (node == loadGame) {
 			SceneManager.LoadScene("game");
 		} else if (node == quitGame) {
