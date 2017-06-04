@@ -13,6 +13,8 @@ public class Cactus : MonoBehaviour, Damageable {
 
     public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
         List<GameObject> onArms = arms.Where(a => a != null && a.transform.parent == transform).ToList();
+        if (onArms.Count == 0)
+            return true;
         GameObject which = onArms[Random.Range(0, onArms.Count)];
         int index = arms.ToList().IndexOf(which);
         which.transform.parent = null;
