@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
@@ -16,7 +17,7 @@ public class Map {
 	public List<System.Guid[]> railroads = new List<System.Guid[]>();	
 	public System.Guid currentLocation;
 
-	public Map() {
+	public IEnumerator MakeMap(Text display) {
 		locations = new Dictionary<System.Guid, Location>();		
 		while (locations.Count < MIN_LOCATION_AMOUNT) {
 			locations.Clear();
@@ -24,6 +25,8 @@ public class Map {
 			// spawn locations
 			List<Location> ls = new List<Location>();
 			for (int i = 0; i < MAX_LOCATION_AMOUNT; i++) {
+				display.text = "PLACING TOWN " + (i+1) + "/" + MAX_LOCATION_AMOUNT;
+				yield return new WaitForEndOfFrame();
 				Location l = new Location(this, Random.Range(0, WORLD_COORD_SIZE), Random.Range(0, WORLD_COORD_SIZE));
 				for (int j = 0; j < 10 && TooClose(ls, l); j++) {
 					l = new Location(this, Random.Range(0, WORLD_COORD_SIZE), Random.Range(0, WORLD_COORD_SIZE));
@@ -34,6 +37,8 @@ public class Map {
 			}
 
 			// connect locations together
+			display.text = "BUILDING ROADS";
+			yield return new WaitForEndOfFrame();
 			foreach (Location l in ls) {
 				var others = ls.OrderBy(x => (l.worldLocation.val - x.worldLocation.val).magnitude).ToList().Take(10);
 				foreach (Location o in others) {
@@ -52,9 +57,15 @@ public class Map {
 				locations.Add(l.guid, l);
 
 			// Find largest connected map
-			List<Location> graph = ls.Select(x => DFS(x))
-									.OrderBy(x => x.Count)
-									.Reverse().First();
+			display.text = "PRUNING MAP";
+			yield return new WaitForEndOfFrame();
+			List<Location> graph = null;
+			foreach (Location l in ls) {
+				graph = DFS(l);
+				if (graph.Count >= MIN_LOCATION_AMOUNT)
+					break;
+			}
+			
 			locations.Clear();
 			foreach (Location l in graph) {
 				locations.Add(l.guid, l);
@@ -77,6 +88,8 @@ public class Map {
 
 		foreach (System.Guid g in locations.Keys) {
 			locations[g].Generate();
+			display.text = "GENERATING TOWN " + locations[g].name.ToUpper();
+			yield return new WaitForEndOfFrame();
 			currentLocation = g;			
 		}
 		Debug.Log("Generated " + locations.Count + " towns");

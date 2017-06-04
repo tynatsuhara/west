@@ -6,17 +6,21 @@ using UnityEngine.UI;
 
 public class WorldGenerationWait : MonoBehaviour {
 
-	public Text display;
+	public Text loading;
+	public Text display;  // details
 
 	void Start () {
-		StartCoroutine(Delay());
+		StartCoroutine(GenerateWorld());
 	}
 	
-	private IEnumerator Delay() {
-		yield return new WaitForSeconds(.1f);
+	private IEnumerator GenerateWorld() {
 		GameManager.newGame = true;
-		SaveGame.NewGame();		
-		SaveGame.GenerateWorld();
-		SceneManager.LoadScene("customization");		
+		SaveGame.NewGame();
+		SaveGame.currentGame.map = new Map();
+		yield return StartCoroutine(SaveGame.currentGame.map.MakeMap(display));
+		SaveGame.currentGame.quests = new QuestManager();	
+		SaveGame.currentGame.time = new WorldTime();
+		SaveGame.currentGame.stats = new Statistics();
+		SceneManager.LoadScene("customization");
 	}
 }

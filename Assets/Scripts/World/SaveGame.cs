@@ -28,14 +28,6 @@ public class SaveGame {
 			currentGame.savedPlayers[i] = new PlayerControls.PlayerSaveData();
 	}
 
-	// Called once character creation has been done
-	public static void GenerateWorld() {
-		currentGame.map = new Map();
-		currentGame.quests = new QuestManager();	
-		currentGame.time = new WorldTime();
-		currentGame.stats = new Statistics();
-	}
-
 	public static void Save(bool writeToDisk) {
 		// save players in scene
 		currentGame.savedPlayers = GameManager.players.Select(x => x.SaveData()).ToArray();
