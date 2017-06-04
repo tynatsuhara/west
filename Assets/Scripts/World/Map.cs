@@ -64,6 +64,7 @@ public class Map {
 				graph = DFS(l);
 				if (graph.Count >= MIN_LOCATION_AMOUNT)
 					break;
+				yield return new WaitForEndOfFrame();				
 			}
 			
 			locations.Clear();
