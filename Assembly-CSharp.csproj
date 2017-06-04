@@ -154,6 +154,7 @@
      <Compile Include="Assets\Scripts\World\VisualMap.cs" />
      <Compile Include="Assets\Scripts\World\WorldTime.cs" />
      <Compile Include="Assets\Scripts\WorldBlood.cs" />
+     <Compile Include="Assets\Scripts\WorldGenerationWait.cs" />
      <Compile Include="Assets\Scripts\WorldPoint.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />

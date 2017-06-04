@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		// needs to happen in start so that instances are set up
 		if (newGame) {
-			SaveGame.GenerateWorld();
 			newGame = false;
 		} else {
 			SaveGame.Load();
@@ -117,7 +116,7 @@ public class GameManager : MonoBehaviour {
 	public void LoadLocation(System.Guid guid, float timeChange = 0f) {
 		SaveGame.currentGame.time.worldTime += timeChange;
 		SetPaused(false);
-		GetComponent<LevelBuilder>().LoadLocation(guid);
+		LevelBuilder.instance.LoadLocation(guid);
 		SaveGame.currentGame.map.currentLocation = guid;
 	}
 
