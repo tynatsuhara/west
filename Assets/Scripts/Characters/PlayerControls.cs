@@ -194,7 +194,8 @@ public class PlayerControls : Character {
 				if (firstPersonCam.enabled) {
 					transform.rotation = rider;
 				}
-				mount.GetComponent<WalkCycle>().StartWalk();
+				if (!mount.GetComponent<WalkCycle>().isWalking)
+					mount.GetComponent<WalkCycle>().StartWalk();
 			} else {
 				mount.GetComponent<WalkCycle>().StandStill(true);
 			}

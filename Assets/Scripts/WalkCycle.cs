@@ -70,7 +70,7 @@ public class WalkCycle : MonoBehaviour {
 
 	private static PicaVoxel.Voxel? dirtVoxel;
 	protected void KickUpDirt() {
-		if (!walker.walking)
+		if (!isWalking)
 			return;
 		
 		if (dirtVoxel == null) {
@@ -82,7 +82,6 @@ public class WalkCycle : MonoBehaviour {
 
 		Floor f = LevelBuilder.instance.FloorAt(transform.position);
 		if (f != null && f.kickUpDirt) {
-			Debug.Log("dirty boy");
 			PicaVoxel.Voxel v = dirtVoxel.Value;
 			v.Color = f.dirtColor == Color.white ? GetBiomeTint() : f.dirtColor;
 			int dirts = Random.Range(1, 4);	
