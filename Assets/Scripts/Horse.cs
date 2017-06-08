@@ -85,6 +85,9 @@ public class Horse : LivingThing, Interactable, Damageable {
 		palette.Add(0, bodyColor[data.bodyColor]);
 		palette.Add(10, bodyColor[data.maneColor]);
 
+		HashSet<Vector3> speckles = new HashSet<Vector3>();
+		bool firstFrame = true;
+
 		PicaVoxel.Volume volume = GetComponent<PicaVoxel.Volume>();
 		foreach (PicaVoxel.Frame frame in volume.Frames) {
 			for (int x = 0; x < frame.XSize; x++) {
@@ -97,11 +100,13 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 						if (palette.ContainsKey(vox.Value)) {
 							Color32 c = palette[vox.Value];
-							if (data.speckled && Random.Range(0, 10) == 0) {
+							Vector3 specktor3 = new Vector3(x, y, z);
+							if (data.speckled && ((firstFrame && Random.Range(0, 10) == 0) || (!firstFrame && speckles.Contains(specktor3)))) {
 								int lightness = 20;
 								c.r = (byte) Mathf.Clamp(c.r + lightness, 0, 255);
 								c.g = (byte) Mathf.Clamp(c.g + lightness, 0, 255);
 								c.b = (byte) Mathf.Clamp(c.b + lightness, 0, 255);
+								speckles.Add(specktor3);
 							}
 							int r = 4;
 							vox.Color = new Color32(CharacterCustomization.JiggleByte(c.r, r), 
@@ -116,6 +121,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 				}
 			}
 			frame.UpdateChunks(true);
+			firstFrame = false;
 		}
 	}
 
