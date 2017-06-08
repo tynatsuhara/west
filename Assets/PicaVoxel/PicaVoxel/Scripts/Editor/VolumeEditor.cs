@@ -177,7 +177,7 @@ namespace PicaVoxel
 
             Event e = Event.current;
 
-            GUILayout.BeginArea(new Rect(10, 10, 120, 500));
+            GUILayout.BeginArea(new Rect(10, 70, 120, 500));
             GUILayout.BeginVertical();
 
             GUISkin skin = EditorGUIUtility.GetBuiltinSkin(EditorSkin.Scene);
@@ -564,8 +564,9 @@ namespace PicaVoxel
 
             // Animation
             GUI.backgroundColor = (EditorGUIUtility.isProSkin ? Color.white : Color.grey);
-            GUILayout.BeginArea(new Rect(Screen.width - 410, Screen.height - 100, 400, 50),
-                EditorUtility.Buttons["pvButton_AnimBG"]);
+            // GUILayout.BeginArea(new Rect(Screen.width - 410, Screen.height - 100, 400, 50),
+                // EditorUtility.Buttons["pvButton_AnimBG"]);
+            GUILayout.BeginArea(new Rect(10, 10, 400, 50), EditorUtility.Buttons["pvButton_AnimBG"]);            
             GUILayout.BeginHorizontal(new GUIStyle() { alignment = TextAnchor.MiddleCenter }, GUILayout.Width(260));
             if (GUILayout.Button(new GUIContent(EditorUtility.Buttons["pvButton_AddFramePrev"], "Add frame before"),
                 new GUIStyle(GUI.skin.button)
