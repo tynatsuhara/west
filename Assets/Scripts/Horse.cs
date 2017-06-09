@@ -40,7 +40,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) - Vector3.up * Random.Range(.2f, .6f);
 		if (isAlive)
 			Bleed(exploder.transform.position, Random.Range(1, 10), angle);
-		health -= damage;		
+		health -= damage;
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
 		if (wasAlive && !isAlive) {
@@ -50,12 +50,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 			if (rider != null) {
 				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder
 			}
-			if (type != DamageType.MELEE && type != DamageType.NONLETHAL) {
-				BleedEverywhere();
-				exploder.Explode(angle * 3);
-			} else {
-				SpurtBlood();
-			}
+			DamageEffects(exploder, angle, type);
 			StartCoroutine(FallOver(800));
 		}
 		return false;

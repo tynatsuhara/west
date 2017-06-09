@@ -143,7 +143,7 @@ public abstract class Character : LivingThing, Damageable {
 			}
 			foreach (PicaVoxel.Volume vol in separateBodyParts) {
 				Rigidbody body = vol.GetComponentInParent<Rigidbody>();
-				body.AddForceAtPosition(forceVal * angle.normalized, type == DamageType.MELEE 
+				body.AddForceAtPosition(forceVal * angle.normalized, type == DamageType.SLICE 
 									? transform.position + Vector3.up * Random.Range(-.4f, .3f)  // make the head fly
 									: exploder.transform.position, ForceMode.Impulse);
 			}
@@ -176,19 +176,10 @@ public abstract class Character : LivingThing, Damageable {
 			DropWeapon(angle * Random.Range(5, 10) + Vector3.up * Random.Range(2, 6));
 		}
 
-		if (type == DamageType.SLICE) {
-			if (Random.Range(0, 2) == 0)
-				Decapitate();
-		} else if (type != DamageType.MELEE && type != DamageType.NONLETHAL) {
-			exploder.Explode(angle * 3);
-			// BloodSplatter(location);
+		if (type == DamageType.SLICE && Random.Range(0, 2) == 0) {
+			Decapitate();
 		}
-		if (type == DamageType.NONLETHAL) {
-			SpurtBlood();
-			PuddleBlood();
-		} else {
-			BleedEverywhere();
-		}
+		DamageEffects(exploder, angle, type);
 
 		if (Random.Range(0, 2) == 0) {
 			speech.SayRandom(Speech.DEATH_QUOTES, showFlash: true);

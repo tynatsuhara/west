@@ -33,6 +33,27 @@ public abstract class LivingThing : MonoBehaviour {
 		}
 	}
 
+	public void DamageEffects(PicaVoxel.Exploder exploder, Vector3 angle, DamageType type) {
+		if (type != DamageType.MELEE && type != DamageType.SLICE && type != DamageType.NONLETHAL && type != DamageType.RANGED) {
+			exploder.Explode(angle * 3);
+		}
+		if (type == DamageType.NONLETHAL) {
+			SpurtBlood();
+			PuddleBlood();
+		} else {
+			BleedEverywhere();
+		}
+
+		if (type != DamageType.MELEE && type != DamageType.NONLETHAL && type != DamageType.SLICE && type != DamageType.RANGED) {
+			BleedEverywhere();
+			exploder.Explode(angle * 3);
+		} else if (type == DamageType.SLICE || type == DamageType.RANGED) {
+			BleedEverywhere();
+		} else {
+			SpurtBlood();
+		}
+	}
+
 	// GORE GORE GORE
 
 	protected void BleedEverywhere() {
@@ -44,6 +65,7 @@ public abstract class LivingThing : MonoBehaviour {
 		Invoke("CancelPuddling", Random.Range(10f, 30f));
 	}
 
+	// Puts a few drops on the ground
 	protected void PuddleBlood() {
 		int times = Random.Range(1, 5);
 		for (int i = 0; i < times; i++) {
@@ -56,6 +78,7 @@ public abstract class LivingThing : MonoBehaviour {
 		CancelInvoke("PuddleBlood");
 	}
 
+	// One lil spurt
 	protected void SpurtBlood() {
 		Bleed(separateBodyParts[Random.Range(0, separateBodyParts.Count)].transform.position, Random.Range(5, 10), Vector3.up);
 	}

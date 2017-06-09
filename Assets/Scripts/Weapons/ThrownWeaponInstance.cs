@@ -36,7 +36,7 @@ public class ThrownWeaponInstance : MonoBehaviour {
 		}
 		Damageable d = collision.transform.GetComponentInParent<Damageable>();
 		if (d != null)
-			d.Damage(collision.contacts[0].point, direction, damage, thrower.isPlayer, DamageType.MELEE);
+			d.Damage(collision.contacts[0].point, direction, damage, thrower.isPlayer, DamageType.RANGED);
 		this.enabled = false;
 	}
 }
