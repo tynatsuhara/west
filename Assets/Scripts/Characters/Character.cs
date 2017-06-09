@@ -108,7 +108,6 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	public bool lastDamageNonlethal;
-	public bool killedByPlayer;
 	public virtual bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
 		bool isPlayer = tag.Equals("Player");
 		lastDamageNonlethal = type == DamageType.NONLETHAL;
@@ -130,8 +129,10 @@ public abstract class Character : LivingThing, Damageable {
 
 		health = Mathf.Max(0, health - damage);
 		if (!isAlive && wasAlive) {
-			killedByPlayer = isPlayer;
 			Die(location, angle, type);
+			if (!(this is PlayerControls) && playerAttacker) {
+				SaveGame.currentGame.stats.peopleKilled++;
+			}
 		}
 
 		// regular knockback
