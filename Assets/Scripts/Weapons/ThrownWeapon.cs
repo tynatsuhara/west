@@ -7,8 +7,6 @@ public class ThrownWeapon : Weapon {
 	public GameObject thrownPrefab;
 	public Vector3 thrownSpawnPoint;
 	public float throwRate;
-	public float dropTime;
-	public float speed;
 
 	private bool canThrow = true;
 	public const int THROWN_FRAME = 3;
@@ -17,18 +15,20 @@ public class ThrownWeapon : Weapon {
 		if (meleeing || !canThrow)
 			return false;
 
-		StartCoroutine(Throw());
-		StartCoroutine(Reset());
-		return true;
-	}
-	private IEnumerator Throw() {
+		// Spawn projectile
 		volume.SetFrame(THROWN_FRAME);
 		GameObject go = Instantiate(thrownPrefab, transform.position, transform.rotation);
 		go.transform.parent = transform;
 		go.transform.localPosition = thrownSpawnPoint;
 		go.transform.parent = null;
+		go.GetComponent<ThrownWeaponInstance>().direction = (target - transform.position).normalized;
+		go.GetComponent<ThrownWeaponInstance>().thrower = this;
+		foreach (Collider weaponCollider in go.GetComponentsInChildren<Collider>())
+			foreach (Collider characterCollider in owner.transform.root.GetComponentsInChildren<Collider>())
+				Physics.IgnoreCollision(weaponCollider, characterCollider, true);
 
-		yield return new WaitForSeconds(dropTime);
+		StartCoroutine(Reset());
+		return true;
 	}
 	private IEnumerator Reset() {
 		canThrow = false;

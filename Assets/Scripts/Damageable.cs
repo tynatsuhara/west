@@ -13,5 +13,6 @@ public enum DamageType {
 	MELEE,
 	EXPLOSIVE,
 	SLICE,
-	NONLETHAL
+	NONLETHAL,
+	RANGED  // tomahawks, knives, etc
 }
