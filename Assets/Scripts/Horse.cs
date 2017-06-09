@@ -9,6 +9,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
+	public GameObject saddle;
 	public bool tamed;
 	public float jumpForce;
 	public PicaVoxel.Exploder exploder;
@@ -31,6 +32,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 	public void Dismount() {
 		rider = null;
+		GetComponent<WalkCycle>().StandStill();
 	}
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
@@ -70,6 +72,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 			}
 			if (i == jumpsNeeded - 1) {
 				tamed = true;
+				saddle.SetActive(tamed);				
 			}
 		}
 	}
@@ -139,6 +142,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		transform.position = data.location.val;
 		transform.eulerAngles = data.eulerAngles.val;
 		tamed = hsd.tamed;
+		saddle.SetActive(tamed);
 		health = hsd.health;
 		if (!isAlive)
 			StartCoroutine(FallOver(800));
