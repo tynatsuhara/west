@@ -37,6 +37,18 @@ public class ThrownWeapon : Weapon {
 		player.playerUI.UpdateAmmo(name);
 	}
 
+	public override void Melee(DamageType type = DamageType.MELEE, int dir = 0) {
+		if (meleeing)
+			return;
+		volume.SetFrame(ANIM_START_FRAME);
+		StartCoroutine(ResetFrame());
+		base.Melee(type, -1);
+	}
+	private IEnumerator ResetFrame() {
+		yield return new WaitForSeconds(.3f);
+		volume.SetFrame(GUN_BASE_FRAME);
+	}
+
 	// We don't actually need to save any state
 	public override System.Object SaveData() {
 		return null;
