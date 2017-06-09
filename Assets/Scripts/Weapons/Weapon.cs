@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 public abstract class Weapon : MonoBehaviour {
 
-	public Character owner;
-	public PicaVoxel.Volume volume;
-	public GunAnimation anim;
 	public float damage;
 	public float range;
 	public int maxEnemiesMelee = 1;
 	public Vector3 inPlayerPos;
 	public Collider droppedCollider;
 
+	protected Character owner;	
+	protected PicaVoxel.Volume volume;	
 	protected bool enqueuedReload = false;
+	protected GunAnimation anim;	
 
 	// Gun frames
 	public const int GUN_BASE_FRAME = 0;

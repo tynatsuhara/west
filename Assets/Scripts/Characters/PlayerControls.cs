@@ -290,8 +290,8 @@ public class PlayerControls : Character {
 		public SerializableVector3 position;
 		public Inventory inv = new Inventory();
 		public float health = -1;
-		public int weaponId = -1;
-		public int sidearmId = 0;  // start with pistol
+		public int weaponId = 0;  // start with revolver
+		public int sidearmId = -1;
 		public int equippedWeapon = 1;  // start wielding sidearm
 		public System.Object[] gunSaves;		
 		public bool isWeaponDrawn;

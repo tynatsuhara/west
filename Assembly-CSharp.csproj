@@ -140,6 +140,7 @@
      <Compile Include="Assets\Scripts\Weapons\DualPistol.cs" />
      <Compile Include="Assets\Scripts\Weapons\GunAnimation.cs" />
      <Compile Include="Assets\Scripts\Weapons\MeleeWeapon.cs" />
+     <Compile Include="Assets\Scripts\Weapons\ThrownWeapon.cs" />
      <Compile Include="Assets\Scripts\Weapons\Weapon.cs" />
      <Compile Include="Assets\Scripts\Window.cs" />
      <Compile Include="Assets\Scripts\World\Atmosphere\Cactus.cs" />
