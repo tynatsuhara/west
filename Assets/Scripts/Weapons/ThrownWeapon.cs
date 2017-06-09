@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class ThrownWeapon : Weapon {
 
+	public GameObject thrownPrefab;
+	public Vector3 thrownSpawnPoint;
 	public float throwRate;
 	public float dropTime;
 	public float speed;
 
 	private bool canThrow = true;
+	public const int THROWN_FRAME = 3;
 
 	public override bool Shoot(Vector3 target) {
-		if (!canThrow)
+		if (meleeing || !canThrow)
 			return false;
 
 		StartCoroutine(Throw());
@@ -19,11 +22,18 @@ public class ThrownWeapon : Weapon {
 		return true;
 	}
 	private IEnumerator Throw() {
+		volume.SetFrame(THROWN_FRAME);
+		GameObject go = Instantiate(thrownPrefab, transform.position, transform.rotation);
+		go.transform.parent = transform;
+		go.transform.localPosition = thrownSpawnPoint;
+		go.transform.parent = null;
+
 		yield return new WaitForSeconds(dropTime);
 	}
 	private IEnumerator Reset() {
 		canThrow = false;
 		yield return new WaitForSeconds(throwRate);
+		volume.SetFrame(GUN_BASE_FRAME);
 		canThrow = true;
 	}
 
@@ -38,7 +48,7 @@ public class ThrownWeapon : Weapon {
 	}
 
 	public override void Melee(DamageType type = DamageType.MELEE, int dir = 0) {
-		if (meleeing)
+		if (meleeing || !canThrow)
 			return;
 		volume.SetFrame(ANIM_START_FRAME);
 		StartCoroutine(ResetFrame());

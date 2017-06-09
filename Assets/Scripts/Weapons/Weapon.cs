@@ -102,7 +102,7 @@ public abstract class Weapon : MonoBehaviour {
 					player.playerUI.HitMarker();
 				Damageable d = rhits[0].collider.GetComponentInParent<Damageable>();
 				d.Damage(rhits[0].collider.transform.root.position, owner.transform.forward, 1f, isPlayer, type);
-				if (rhits[0].collider.GetComponentInParent<Character>() != null)
+				if (rhits[0].collider.GetComponentInParent<LivingThing>() != null)
 					MeleeHitPlayerCallback();
 				GameManager.instance.AlertInRange(Character.Reaction.AGGRO, 
 						transform.position, 5f, visual: transform.root.gameObject);

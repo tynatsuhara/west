@@ -17,11 +17,6 @@ public class MeleeWeapon : Weapon {
 		SaveColors();
 	}
 
-	void Update() {
-		if (!meleeing && volume.CurrentFrame == ANIM_START_FRAME)
-			volume.SetFrame(GUN_BASE_FRAME);
-	}
-
 	public override bool Shoot(Vector3 target) {
 		bool wasMeleeing = meleeing;
 		Melee(damageType, swingDirection);
@@ -32,7 +27,12 @@ public class MeleeWeapon : Weapon {
 		if (meleeing)
 			return;
 		volume.SetFrame(ANIM_START_FRAME);
+		StartCoroutine(ResetFrame());
 		base.Melee(type, swingDirection);
+	}
+	private IEnumerator ResetFrame() {
+		yield return new WaitForSeconds(.4f);
+		volume.SetFrame(GUN_BASE_FRAME);
 	}
 
 	public override void Release() {}
