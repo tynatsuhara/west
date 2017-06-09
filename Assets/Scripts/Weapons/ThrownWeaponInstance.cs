@@ -14,7 +14,6 @@ public class ThrownWeaponInstance : MonoBehaviour {
 	private float startTime;
 
 	void Start() {
-		Debug.DrawRay(transform.position, direction * 10f, Color.red, 5f);
 		startTime = Time.time;
 		GetComponent<Rigidbody>().AddForce(direction * force, ForceMode.Impulse);		
 	}
@@ -38,6 +37,8 @@ public class ThrownWeaponInstance : MonoBehaviour {
 		Damageable d = collision.transform.GetComponentInParent<Damageable>();
 		if (d != null)
 			d.Damage(collision.contacts[0].point, direction, damage, thrower.isPlayer, DamageType.RANGED);
+		if (thrower.isPlayer)
+			thrower.player.playerUI.HitMarker();
 		this.enabled = false;
 	}
 }
