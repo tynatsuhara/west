@@ -44,6 +44,9 @@ public class Horse : LivingThing, Interactable, Damageable {
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
 		if (wasAlive && !isAlive) {
+			if (playerAttacker) {
+				SaveGame.currentGame.stats.animalsKilled++;
+			}
 			if (rider != null) {
 				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder
 			}
