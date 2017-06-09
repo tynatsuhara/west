@@ -80,7 +80,9 @@ public class PlayerControls : Character {
 		if ((p1 && Input.GetMouseButton(0)) || Input.GetKey("joystick " + id + " button 7")) {
 			Ray ray = firstPersonCam.enabled ? new Ray(transform.position, firstPersonCam.transform.forward) : playerCamera.cam.ScreenPointToRay(playerUI.mousePos);
 			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit) && (!hit.collider.GetComponentInParent<Floor>() || firstPersonCam.enabled)) {
+			if (Physics.Raycast(ray, out hit) && 
+					(!hit.collider.GetComponentInParent<Floor>() || firstPersonCam.enabled) && 
+					hit.collider.transform.root != transform.root) {
 				// Debug.Log(hit.collider.transform.root.name);
 				Damageable d = hit.collider.GetComponentInParent<Damageable>();
 				MonoBehaviour db = (MonoBehaviour) d;

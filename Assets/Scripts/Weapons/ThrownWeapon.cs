@@ -21,7 +21,7 @@ public class ThrownWeapon : Weapon {
 		go.transform.parent = transform;
 		go.transform.localPosition = thrownSpawnPoint;
 		go.transform.parent = null;
-		go.GetComponent<ThrownWeaponInstance>().direction = (target - transform.position).normalized;
+		go.GetComponent<ThrownWeaponInstance>().direction = (target - transform.root.position).normalized;
 		go.GetComponent<ThrownWeaponInstance>().thrower = this;
 		foreach (Collider weaponCollider in go.GetComponentsInChildren<Collider>())
 			foreach (Collider characterCollider in owner.transform.root.GetComponentsInChildren<Collider>())

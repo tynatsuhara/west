@@ -14,6 +14,7 @@ public class ThrownWeaponInstance : MonoBehaviour {
 	private float startTime;
 
 	void Start() {
+		Debug.DrawRay(transform.position, direction * 10f, Color.red, 5f);
 		startTime = Time.time;
 		GetComponent<Rigidbody>().AddForce(direction * force, ForceMode.Impulse);		
 	}
