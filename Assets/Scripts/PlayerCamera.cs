@@ -49,11 +49,14 @@ public class PlayerCamera : MonoBehaviour {
 
 			// rotation
 			bool rotateButtonPress = (player.id == 1 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.C))) || pressedDpad;
+			bool halfDist = player.id == 1 && Input.GetKey(KeyCode.LeftShift);
 			if (rotateButtonPress) {
 				startTime = Time.realtimeSinceStartup;
-				int dir = Input.GetKeyDown(KeyCode.Z) ? -1 : 1;
+				float dir = Input.GetKeyDown(KeyCode.Z) ? -1 : 1;
 				if (pressedDpad)
 					dir = newDpadValue;
+				if (halfDist)
+					dir *= .5f;
 				Quaternion tempRot = transform.rotation;
 				transform.rotation = rotationGoal;
 				transform.RotateAround(cameraLookAtPosition, Vector3.up, -rotationAngle * dir);
