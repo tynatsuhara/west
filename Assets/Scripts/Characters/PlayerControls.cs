@@ -246,8 +246,8 @@ public class PlayerControls : Character {
 		psd.equippedWeapon = gunIndex;
 		psd.isWeaponDrawn = weaponDrawn;
 		psd.gunSaves = new System.Object[] {
-			guns[0] == null ? null : guns[0].GetComponent<Gun>().SaveData(),
-			guns[1] == null ? null : guns[1].GetComponent<Gun>().SaveData(),
+			guns[0] == null ? null : guns[0].GetComponent<Weapon>().SaveData(),
+			guns[1] == null ? null : guns[1].GetComponent<Weapon>().SaveData(),
 		};
 		psd.health = health;
 		psd.ridingHorse = ridingHorse;
@@ -267,7 +267,7 @@ public class PlayerControls : Character {
 		if (psd.gunSaves != null) {
 			for (int i = 0; i < guns.Length; i++) {
 				if (guns[i] != null && psd.gunSaves[i] != null) {
-					guns[i].GetComponent<Gun>().LoadSaveData(psd.gunSaves[i]);
+					guns[i].GetComponent<Weapon>().LoadSaveData(psd.gunSaves[i]);
 				}
 			}
 		}

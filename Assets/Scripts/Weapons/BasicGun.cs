@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 
-public class Pistol : Gun {
+public class BasicGun : Weapon {
 
 	public float knockback;
 	public float shootSpeed;

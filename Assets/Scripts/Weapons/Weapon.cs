@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Gun : MonoBehaviour {
+public abstract class Weapon : MonoBehaviour {
 
 	public Character owner;
 	public PicaVoxel.Volume volume;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DualPistol : Pistol {
+public class DualPistol : BasicGun {
 
 	public PicaVoxel.Volume volume2;
 	public GunAnimation anim2;

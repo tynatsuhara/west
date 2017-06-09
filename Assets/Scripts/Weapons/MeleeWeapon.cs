@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 
-public class MeleeWeapon : Gun {
+public class MeleeWeapon : Weapon {
 
 	private Dictionary<byte, Color32> originalColors;	
 	private Dictionary<byte, Vector3[]> locations;	

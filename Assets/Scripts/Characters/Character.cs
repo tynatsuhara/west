@@ -40,7 +40,7 @@ public abstract class Character : LivingThing, Damageable {
 	public Vector3 lastMoveDirection;
 
 	public GameObject[] guns;
-	protected Gun currentGun;
+	protected Weapon currentGun;
 	public int sidearmId;
 	public int weaponId;
 	protected int gunIndex = 0;
@@ -243,7 +243,7 @@ public abstract class Character : LivingThing, Damageable {
 
 		weaponDrawn_ = drawn;
 		arms.gameObject.SetActive(!drawn);
-		currentGun = guns[gunIndex].GetComponent<Gun>();
+		currentGun = guns[gunIndex].GetComponent<Weapon>();
 
 		if (!weaponDropped)
 			guns[gunIndex].SetActive(drawn);
@@ -357,7 +357,7 @@ public abstract class Character : LivingThing, Damageable {
 			GameObject gun = guns[i] = Instantiate(guns[i]) as GameObject;
 			gun.name = gun.name.Replace("(Clone)", "");
 			gunVolumes.AddRange(guns[i].GetComponentsInChildren<PicaVoxel.Volume>());
-			currentGun = gun.GetComponent<Gun>();
+			currentGun = gun.GetComponent<Weapon>();
 			currentGun.isPlayer = this is PlayerControls;
 			gun.transform.parent = transform;
 			gun.transform.localPosition = currentGun.inPlayerPos;
@@ -379,8 +379,8 @@ public abstract class Character : LivingThing, Damageable {
 		if (guns[index] == null)
 			return;
 		if (this is PlayerControls)
-			guns[index].GetComponent<Gun>().UpdateUI();
-		if (gunIndex == index || (guns[gunIndex] != null && guns[gunIndex].GetComponent<Gun>().meleeing)) {
+			guns[index].GetComponent<Weapon>().UpdateUI();
+		if (gunIndex == index || (guns[gunIndex] != null && guns[gunIndex].GetComponent<Weapon>().meleeing)) {
 			return;
 		} else if (!weaponDrawn) {
 			gunIndex = index;
@@ -396,7 +396,7 @@ public abstract class Character : LivingThing, Damageable {
 		foreach (GameObject g in guns)
 			g.SetActive(false);
 		guns[gunIndex].SetActive(true);
-		currentGun = guns[gunIndex].GetComponent<Gun>();
+		currentGun = guns[gunIndex].GetComponent<Weapon>();
 		if (!(currentGun is MeleeWeapon))
 			currentGun.DelayAttack(.25f);
 	}
