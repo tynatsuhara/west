@@ -13,8 +13,8 @@ public class GunAnimation : MonoBehaviour {
 		volume = GetComponent<PicaVoxel.Volume>();
 	}
 
-	public void Shoot() {
-		volume.SetFrame(2);
+	public void Shoot(int startFrame = 2) {
+		volume.SetFrame(startFrame);
 		playing = true;
 	}
 

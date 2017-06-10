@@ -16,7 +16,8 @@ public class ThrownWeapon : Weapon {
 			return false;
 
 		// Spawn projectile
-		volume.SetFrame(THROWN_FRAME);
+		// volume.SetFrame(THROWN_FRAME);
+		GetComponent<GunAnimation>().Shoot(THROWN_FRAME);
 		GameObject go = Instantiate(thrownPrefab, transform.position, transform.rotation);
 		go.transform.parent = transform;
 		go.transform.localPosition = thrownSpawnPoint;
