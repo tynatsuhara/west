@@ -29,6 +29,13 @@ public abstract class Character : LivingThing, Damageable {
 		get { return bag != null; }
 	}
 
+	// customization stuff
+	private string outfit;
+	private int skinColor;
+	private int hairColor;
+	private int hairStyle;
+	private int accessory;
+
 	public PicaVoxel.Volume head;
 	public PicaVoxel.Volume body;
 	public PicaVoxel.Volume arms;
@@ -66,6 +73,12 @@ public abstract class Character : LivingThing, Damageable {
 		bodyParts.Add(body);
 		bodyParts.Add(head);
 		speech = GetComponentInChildren<TextObject>();
+
+		Accessory[] accs = new Accessory[] {		
+			CharacterOptionsManager.instance.hairstyles[hairStyle],
+			CharacterOptionsManager.instance.accessories[accessory],
+		};
+		GetComponent<CharacterCustomization>().ColorCharacter(outfit, skinColor, hairColor, accs);
 	}
 
 	public abstract void Alert(Reaction importance, Vector3 position);
@@ -526,6 +539,11 @@ public abstract class Character : LivingThing, Damageable {
 		data.health = health;
 		data.ridingHorse = ridingHorse;
 		data.mountGuid = ridingHorse ? mount.GetComponent<Horse>().SaveData().guid : System.Guid.Empty;
+		data.outfit = outfit;
+		data.skinColor = skinColor;
+		data.hairColor = hairColor;
+		data.hairStyle = hairStyle;
+		data.accessory = accessory;
 		return data;
 	}
 
@@ -551,6 +569,11 @@ public abstract class Character : LivingThing, Damageable {
 			health = data.health;
 		if (data.ridingHorse)
 			GameManager.spawnedHorses.Where(x => x.SaveData().guid == data.mountGuid).First().Interact(this);
+		outfit = data.outfit;
+		skinColor = data.skinColor;
+		hairColor = data.hairColor;
+		hairStyle = data.hairStyle;
+		accessory = data.accessory;
 	}
 
 	[System.Serializable]

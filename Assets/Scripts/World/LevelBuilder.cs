@@ -20,6 +20,7 @@ public class LevelBuilder : MonoBehaviour {
 	public Material mat;
 	public Color32[] biomeColors;
 	public GameObject[] buildingPrefabs;
+	public GameObject npcPrefab;
 
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
@@ -48,6 +49,7 @@ public class LevelBuilder : MonoBehaviour {
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
 		SpawnBuildings();
+		SpawnNPCs();
 		SpawnHorses(firstLoad);
 		SpawnFoliage();
 		SpawnTeleporters();
@@ -95,8 +97,17 @@ public class LevelBuilder : MonoBehaviour {
 		return f == null ? null : f.GetComponent<Floor>();
 	}
 
+	private void SpawnNPCs() {
+		foreach (System.Guid id in loadedLocation.characters) {
+			NPC.NPCSaveData data = SaveGame.currentGame.savedCharacters[id];
+			NPC npc = Instantiate(npcPrefab).GetComponent<NPC>();
+			npc.LoadSaveData(data);
+		}
+	}	
 
 	private void SpawnHorses(bool spawnRiddenByPlayers) {
+		// we only want to spawn the horses ridden by players when they don't exist
+		// because horses transition seamlessly through teleporters
 		List<System.Guid> spawnExceptions = spawnRiddenByPlayers
 				? new List<System.Guid>()
 				: SaveGame.currentGame.savedPlayers.Select(x => x.mountGuid).Where(x => x != System.Guid.Empty).ToList();

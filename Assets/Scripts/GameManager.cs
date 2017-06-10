@@ -14,9 +14,6 @@ public class GameManager : MonoBehaviour {
 	public GameObject playerPrefab;
 	public GameObject playerCamPrefab;
 	public GameObject playerUIPrefab;
-
-	// FOR TESTING
-	public GameObject civPrefab;
 	
 	public bool objectivesComplete;
 

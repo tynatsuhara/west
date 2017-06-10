@@ -28,23 +28,11 @@ public class NPC : Character, Interactable {
 	public NPCState currentState;
 	protected UnityEngine.AI.NavMeshAgent agent;
 
-	// customization stuff
-	private string outfit;
-	private int skinColor;
-	private int hairColor;
-	private int hairStyle;
-	private int accessory;
-
 	public override void Start() {
 		StartCoroutine(UpdateEvidenceInSight(.5f));
 		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
 
 		base.Start();
-		Accessory[] accs = new Accessory[] {		
-			CharacterOptionsManager.instance.hairstyles[hairStyle],
-			CharacterOptionsManager.instance.accessories[accessory],
-		};
-		GetComponent<CharacterCustomization>().ColorCharacter(outfit, skinColor, hairColor, accs);
 		transform.RotateAround(transform.position, transform.up, Random.Range(0, 360));
 		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 	}

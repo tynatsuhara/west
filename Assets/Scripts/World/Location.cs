@@ -145,9 +145,15 @@ public class Location {
 			int tile = RandomUnoccupiedTile();
 			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
 			hsd.location = new SerializableVector3(TileVectorPosition(tile));
-			SaveGame.currentGame.horses.Add(hsd.guid, hsd);
+			SaveGame.currentGame.horses[hsd.guid] = hsd;
 			horses.Add(hsd.guid);
 		}
+
+		// temp NPC spawning
+		NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE);
+		npc.position = new SerializableVector3(TileVectorPosition(RandomUnoccupiedTile()));
+		SaveGame.currentGame.savedCharacters[npc.guid] = npc;
+		characters.Add(npc.guid);
 	}
 
 	private List<int> Subset(List<int> lst, int size) {

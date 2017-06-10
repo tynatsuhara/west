@@ -13,10 +13,7 @@ public class PlayerControls : Character {
 
 	public override void Start() {
 		name = "Player " + id;
-		
 		base.Start();
-		CharacterOptionsManager.instance.CustomizeFromSave(this);
-
 		InitFirstPersonCamera();
 	}
 
