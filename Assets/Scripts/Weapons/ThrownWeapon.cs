@@ -16,7 +16,6 @@ public class ThrownWeapon : Weapon {
 			return false;
 
 		// Spawn projectile
-		// volume.SetFrame(THROWN_FRAME);
 		GetComponent<GunAnimation>().Shoot(THROWN_FRAME);
 		GameObject go = Instantiate(thrownPrefab, transform.position, transform.rotation);
 		go.transform.parent = transform;
@@ -24,8 +23,8 @@ public class ThrownWeapon : Weapon {
 		go.transform.parent = null;
 		go.GetComponent<ThrownWeaponInstance>().direction = (target - transform.root.position).normalized;
 		go.GetComponent<ThrownWeaponInstance>().thrower = this;
-		foreach (Collider weaponCollider in go.GetComponentsInChildren<Collider>())
-			foreach (Collider characterCollider in owner.transform.root.GetComponentsInChildren<Collider>())
+		foreach (Collider characterCollider in owner.transform.root.GetComponentsInChildren<Collider>())
+			foreach (Collider weaponCollider in go.GetComponentsInChildren<Collider>())
 				Physics.IgnoreCollision(weaponCollider, characterCollider, true);
 
 		StartCoroutine(Reset());

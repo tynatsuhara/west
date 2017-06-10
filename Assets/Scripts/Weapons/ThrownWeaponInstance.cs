@@ -27,10 +27,13 @@ public class ThrownWeaponInstance : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		if (collision.transform.root.tag == "Ground")  // stop from glitching out in the floor (weird scaling issues)
-			return;
+		this.enabled = false;
+		GetComponent<Rigidbody>().useGravity = true;		
+		// stop from glitching out (weird scaling issues)
+		if (collision.transform.root.tag == "Ground" || collision.transform.root.tag == "Wall")
+			return;			
 		GetComponent<Rigidbody>().isKinematic = true;
-		transform.parent = collision.transform.root;
+		transform.parent = collision.transform;
 		foreach (var c in GetComponentsInChildren<Collider>()) {
 			c.enabled = false;
 		}
@@ -39,6 +42,5 @@ public class ThrownWeaponInstance : MonoBehaviour {
 			d.Damage(collision.contacts[0].point, direction, damage, thrower.isPlayer, DamageType.RANGED);
 		if (thrower.isPlayer && collision.transform.GetComponentInParent<LivingThing>() != null)
 			thrower.player.playerUI.HitMarker();
-		this.enabled = false;
 	}
 }

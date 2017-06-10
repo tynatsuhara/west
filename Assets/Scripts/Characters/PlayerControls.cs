@@ -81,9 +81,8 @@ public class PlayerControls : Character {
 			Ray ray = firstPersonCam.enabled ? new Ray(transform.position, firstPersonCam.transform.forward) : playerCamera.cam.ScreenPointToRay(playerUI.mousePos);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit) && 
-					(!hit.collider.GetComponentInParent<Floor>() || firstPersonCam.enabled) && 
+					(hit.transform.root.tag != "Ground" && hit.collider.transform.root.GetComponentInChildren<Floor>() == null || firstPersonCam.enabled) && 
 					hit.collider.transform.root != transform.root) {
-				// Debug.Log(hit.collider.transform.root.name);
 				Damageable d = hit.collider.GetComponentInParent<Damageable>();
 				MonoBehaviour db = (MonoBehaviour) d;
 				// Shoot(d == null ? hit.point : db.transform.position);
