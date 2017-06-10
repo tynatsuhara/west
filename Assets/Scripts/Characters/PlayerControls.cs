@@ -238,47 +238,14 @@ public class PlayerControls : Character {
 	public override void Alert(Reaction importance, Vector3 position) {}
 
 
+	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public PlayerSaveData SaveData() {
-		PlayerSaveData psd = SaveGame.currentGame.savedPlayers[id - 1];
-		psd.position = new SerializableVector3(transform.position);
-		psd.inv = inventory;
-		psd.weaponId = weaponId;
-		psd.sidearmId = sidearmId;
-		psd.equippedWeapon = gunIndex;
-		psd.isWeaponDrawn = weaponDrawn;
-		psd.gunSaves = new System.Object[] {
-			guns[0] == null ? null : guns[0].GetComponent<Weapon>().SaveData(),
-			guns[1] == null ? null : guns[1].GetComponent<Weapon>().SaveData(),
-		};
-		psd.health = health;
-		psd.ridingHorse = ridingHorse;
-		psd.mountGuid = ridingHorse ? mount.GetComponent<Horse>().SaveData().guid : System.Guid.Empty;
-		return psd;
+		return (PlayerSaveData) base.SaveData(SaveGame.currentGame.savedPlayers[id - 1]);
 	}
 
 	public void LoadSaveData(PlayerSaveData psd) {
-		guid = psd.guid;
-		if (psd.position != null)
-			transform.position = psd.position.val;
-		inventory = psd.inv;
-		weaponId = psd.weaponId;
-		sidearmId = psd.sidearmId;
-		gunIndex = psd.equippedWeapon;
-		SpawnGun();
-		if (psd.gunSaves != null) {
-			for (int i = 0; i < guns.Length; i++) {
-				if (guns[i] != null && psd.gunSaves[i] != null) {
-					guns[i].GetComponent<Weapon>().LoadSaveData(psd.gunSaves[i]);
-				}
-			}
-		}
-		if (psd.isWeaponDrawn)
-			DrawWeapon();
-		if (psd.health >= 0)
-			health = psd.health;
-		if (psd.ridingHorse)
-			GameManager.spawnedHorses.Where(x => x.SaveData().guid == psd.mountGuid).First().Interact(this);
+		base.LoadSaveData(psd);
 		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
 		CharacterOptionsManager.instance.SetSkinColor(id, psd.skinColor);
 		CharacterOptionsManager.instance.SetHairColor(id, psd.hairColor);
@@ -287,23 +254,6 @@ public class PlayerControls : Character {
 	}
 
 	[System.Serializable]
-	public class PlayerSaveData {
-		public System.Guid guid = System.Guid.NewGuid();
-		public SerializableVector3 position;
-		public Inventory inv = new Inventory();
-		public float health = -1;
-		public int weaponId = 0;  // start with revolver
-		public int sidearmId = -1;
-		public int equippedWeapon = 0;  // start wielding primary
-		public System.Object[] gunSaves;		
-		public bool isWeaponDrawn;
-		public string outfit = "default";
-		public int skinColor;
-		public int hairColor;
-		public int hairStyle;
-		public int accessory;
-
-		public bool ridingHorse;
-		public System.Guid mountGuid;
+	public class PlayerSaveData : CharacterSaveData {
 	}
 }

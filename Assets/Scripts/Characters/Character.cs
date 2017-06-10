@@ -509,4 +509,69 @@ public abstract class Character : LivingThing, Damageable {
 		RaycastHit hit;
 		return FacingObstruction(out hit, distance);
 	}
+
+
+	///////////////////// SAVE STATE FUNCTIONS /////////////////////
+
+	public CharacterSaveData SaveData(CharacterSaveData data) {
+		data.position = new SerializableVector3(transform.position);
+		data.inv = inventory;
+		data.weaponId = weaponId;
+		data.sidearmId = sidearmId;
+		data.equippedWeapon = gunIndex;
+		data.isWeaponDrawn = weaponDrawn;
+		data.gunSaves = new System.Object[] {
+			guns[0] == null ? null : guns[0].GetComponent<Weapon>().SaveData(),
+			guns[1] == null ? null : guns[1].GetComponent<Weapon>().SaveData(),
+		};
+		data.health = health;
+		data.ridingHorse = ridingHorse;
+		data.mountGuid = ridingHorse ? mount.GetComponent<Horse>().SaveData().guid : System.Guid.Empty;
+		return data;
+	}
+
+	public void LoadSaveData(CharacterSaveData data) {
+		guid = data.guid;
+		if (data.position != null)
+			transform.position = data.position.val;
+		inventory = data.inv;
+		weaponId = data.weaponId;
+		sidearmId = data.sidearmId;
+		gunIndex = data.equippedWeapon;
+		SpawnGun();
+		if (data.gunSaves != null) {
+			for (int i = 0; i < guns.Length; i++) {
+				if (guns[i] != null && data.gunSaves[i] != null) {
+					guns[i].GetComponent<Weapon>().LoadSaveData(data.gunSaves[i]);
+				}
+			}
+		}
+		if (data.isWeaponDrawn)
+			DrawWeapon();
+		if (data.health >= 0)
+			health = data.health;
+		if (data.ridingHorse)
+			GameManager.spawnedHorses.Where(x => x.SaveData().guid == data.mountGuid).First().Interact(this);
+	}
+
+	[System.Serializable]
+	public class CharacterSaveData {
+		public System.Guid guid = System.Guid.NewGuid();
+		public SerializableVector3 position;
+		public Inventory inv = new Inventory();
+		public float health = -1;
+		public int weaponId = 0;  // start with revolver
+		public int sidearmId = -1;
+		public int equippedWeapon = 0;  // start wielding primary
+		public System.Object[] gunSaves;		
+		public bool isWeaponDrawn;
+		public string outfit = "default";
+		public int skinColor;
+		public int hairColor;
+		public int hairStyle;
+		public int accessory;
+
+		public bool ridingHorse;
+		public System.Guid mountGuid;
+	}
 }

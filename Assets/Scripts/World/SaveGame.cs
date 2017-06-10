@@ -10,7 +10,7 @@ public class SaveGame {
 	public static SaveGame currentGame;
 
 	public bool gameOver;
-	public Dictionary<System.Guid, PlayerControls.PlayerSaveData> savedCharacters;
+	public Dictionary<System.Guid, NPC.NPCSaveData> savedCharacters;
 	public Dictionary<System.Guid, Horse.HorseSaveData> horses;
 	public PlayerControls.PlayerSaveData[] savedPlayers;
 	public Map map;
@@ -22,7 +22,7 @@ public class SaveGame {
 	public static void NewGame() {
 		currentGame = new SaveGame();
 		currentGame.horses = new Dictionary<System.Guid, Horse.HorseSaveData>();
-		currentGame.savedCharacters = new Dictionary<System.Guid, PlayerControls.PlayerSaveData>();
+		currentGame.savedCharacters = new Dictionary<System.Guid, NPC.NPCSaveData>();
 		currentGame.savedPlayers = new PlayerControls.PlayerSaveData[4];
 		for (int i = 0; i < 4; i++)
 			currentGame.savedPlayers[i] = new PlayerControls.PlayerSaveData();

@@ -249,4 +249,19 @@ public class NPC : Character, Interactable {
 	}
 
 	public override void Alert(Reaction importance, Vector3 position) {}
+
+
+	///////////////////// SAVE STATE FUNCTIONS /////////////////////
+
+	public NPCSaveData SaveData() {
+		return (NPCSaveData) SaveGame.currentGame.savedCharacters[guid];
+	}
+
+	public void LoadSaveData(NPCSaveData data) {
+		base.LoadSaveData(data);	
+	}
+
+	[System.Serializable]
+	public class NPCSaveData : CharacterSaveData {
+	}
 }
