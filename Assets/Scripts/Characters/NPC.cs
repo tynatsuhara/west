@@ -269,17 +269,20 @@ public class NPC : Character, Interactable {
 	public NPCSaveData SaveData() {
 		NPCSaveData data = (NPCSaveData) base.SaveData(SaveGame.currentGame.savedCharacters[guid]);
 		data.type = type;
+		data.name = name;
 		return data;
 	}
 
 	public void LoadSaveData(NPCSaveData data) {
 		base.LoadSaveData(data);
 		type = data.type;
+		name = data.name;
 	}
 
 	[System.Serializable]
 	public class NPCSaveData : CharacterSaveData {
 		public NPCType type;
+		public string name = NameGen.CharacterName();
 		
 		public NPCSaveData(NPCType type) {
 			this.type = type;
