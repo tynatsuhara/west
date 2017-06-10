@@ -37,7 +37,7 @@ public class ThrownWeaponInstance : MonoBehaviour {
 		Damageable d = collision.transform.GetComponentInParent<Damageable>();
 		if (d != null)
 			d.Damage(collision.contacts[0].point, direction, damage, thrower.isPlayer, DamageType.RANGED);
-		if (thrower.isPlayer)
+		if (thrower.isPlayer && collision.transform.GetComponentInParent<LivingThing>() != null)
 			thrower.player.playerUI.HitMarker();
 		this.enabled = false;
 	}
