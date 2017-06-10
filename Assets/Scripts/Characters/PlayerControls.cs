@@ -86,7 +86,8 @@ public class PlayerControls : Character {
 				// Debug.Log(hit.collider.transform.root.name);
 				Damageable d = hit.collider.GetComponentInParent<Damageable>();
 				MonoBehaviour db = (MonoBehaviour) d;
-				Shoot(d == null ? hit.point : db.transform.position);
+				// Shoot(d == null ? hit.point : db.transform.position);
+				Shoot(hit.point + (ray.direction) * .35f);
 			} else {
 				Shoot();
 			}
