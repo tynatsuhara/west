@@ -17,6 +17,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 	public void Start() {
 		bodyParts.Add(GetComponent<PicaVoxel.Volume>());
 		separateBodyParts.AddRange(bodyParts);
+		SetName();	
 	}
 
 	// Ride
@@ -25,6 +26,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 			return;
 		character.MountHorse(this);
 		rider = character;
+		SetName();
 		if (!tamed)
 			StartCoroutine(Tame());
 	}
@@ -33,6 +35,17 @@ public class Horse : LivingThing, Interactable, Damageable {
 	public void Dismount() {
 		rider = null;
 		GetComponent<WalkCycle>().StandStill();
+		SetName();
+	}
+
+	private void SetName() {
+		if (rider != null) {
+			name = rider.name + "'s Horse";
+		} else if (tamed) {
+			name = "Horse";
+		} else {
+			name = "Wild Horse";
+		}
 	}
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
