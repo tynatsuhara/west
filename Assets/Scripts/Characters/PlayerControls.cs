@@ -294,7 +294,7 @@ public class PlayerControls : Character {
 		public float health = -1;
 		public int weaponId = 0;  // start with revolver
 		public int sidearmId = -1;
-		public int equippedWeapon = 1;  // start wielding sidearm
+		public int equippedWeapon = 0;  // start wielding primary
 		public System.Object[] gunSaves;		
 		public bool isWeaponDrawn;
 		public string outfit = "default";
