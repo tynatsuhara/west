@@ -7,7 +7,6 @@ public class Civilian : NPC {
 
 	public override void Start() {
 		base.Start();
-		GetComponent<CharacterCustomization>().ColorCharacter(Outfits.fits["default"], true, accessories);
 		currentState = NPCState.PASSIVE;
 		braveCitizen = sidearmId != -1;
 	}

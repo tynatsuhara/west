@@ -9,8 +9,8 @@ using System.Linq;
 
 public class CharacterCustomization : MonoBehaviour {
 
-	public Color32 skinColor;
-	public Color32 hairColor;
+	private Color32 skinColor;
+	private Color32 hairColor;
 
 	public Accessory[] hair;
 	public Accessory[] accessory;
@@ -24,24 +24,17 @@ public class CharacterCustomization : MonoBehaviour {
 	public PicaVoxel.Volume[] gunz;
 
 	private List<PicaVoxel.Volume> spawnedAccessories;
-	public void ColorCharacter(Outfits.Outfit outfit, bool randomize = false, Accessory[] accessories = null) {
+	public void ColorCharacter(string outfitStr, int skinColorID, int hairColorID, Accessory[] accessories = null) {
+		Outfits.Outfit outfit = Outfits.fits.ContainsKey(outfitStr) ? Outfits.fits[outfitStr] : Outfits.fits["default"];
+		skinColor = CharacterOptionsManager.instance.skinColors[skinColorID];
+		hairColor = CharacterOptionsManager.instance.hairColors[hairColorID];
+
 		if (spawnedAccessories != null) {
 			foreach (PicaVoxel.Volume vol in spawnedAccessories) {
 				if (vol == null)
 					continue;
 				Destroy(vol.gameObject);
 			}
-		}
-
-		if (randomize) {
-			Color32[] skinColors = CharacterOptionsManager.instance.skinColors;
-			Color32[] hairColors = CharacterOptionsManager.instance.skinColors;
-			hairColor = hairColors[Random.Range(0, hairColors.Length)];
-			skinColor = skinColors[Random.Range(0, skinColors.Length)];
-			accessories = new Accessory[] {
-				hair[Random.Range(0, hair.Length)], 
-				accessory[Random.Range(0, accessory.Length)] 
-			};
 		}
 
 		List<Accessory> accPrefabs = new List<Accessory>(outfit.accessories);

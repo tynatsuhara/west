@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 public class NPC : Character, Interactable {
 
+	public enum NPCType {
+		NORMIE
+	}
+
 	public enum NPCState {
 		PASSIVE,
 		CURIOUS,    			 	// they know something is up, but don't know of the player
@@ -20,18 +24,27 @@ public class NPC : Character, Interactable {
 		get { return timeInCurrentState == 0; }
 	}
 
+	public NPCType type;
 	public NPCState currentState;
 	protected UnityEngine.AI.NavMeshAgent agent;
+
+	// customization stuff
+	private string outfit;
+	private int skinColor;
+	private int hairColor;
+	private int hairStyle;
+	private int accessory;
 
 	public override void Start() {
 		StartCoroutine(UpdateEvidenceInSight(.5f));
 		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
 
 		base.Start();
-		SpawnGun();
-		CharacterCustomization cc = GetComponent<CharacterCustomization>();
-		string outfitName = cc.outfitNames[Random.Range(0, cc.outfitNames.Length)];
-		GetComponent<CharacterCustomization>().ColorCharacter(Outfits.fits[outfitName], true);
+		Accessory[] accs = new Accessory[] {		
+			CharacterOptionsManager.instance.hairstyles[hairStyle],
+			CharacterOptionsManager.instance.accessories[accessory],
+		};
+		GetComponent<CharacterCustomization>().ColorCharacter(outfit, skinColor, hairColor, accs);
 		transform.RotateAround(transform.position, transform.up, Random.Range(0, 360));
 		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 	}
@@ -254,14 +267,22 @@ public class NPC : Character, Interactable {
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public NPCSaveData SaveData() {
-		return (NPCSaveData) SaveGame.currentGame.savedCharacters[guid];
+		NPCSaveData data = (NPCSaveData) base.SaveData(SaveGame.currentGame.savedCharacters[guid]);
+		data.type = type;
+		return data;
 	}
 
 	public void LoadSaveData(NPCSaveData data) {
-		base.LoadSaveData(data);	
+		base.LoadSaveData(data);
+		type = data.type;
 	}
 
 	[System.Serializable]
 	public class NPCSaveData : CharacterSaveData {
+		public NPCType type;
+		
+		public NPCSaveData(NPCType type) {
+			this.type = type;
+		}
 	}
 }

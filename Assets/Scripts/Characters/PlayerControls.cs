@@ -241,7 +241,8 @@ public class PlayerControls : Character {
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public PlayerSaveData SaveData() {
-		return (PlayerSaveData) base.SaveData(SaveGame.currentGame.savedPlayers[id - 1]);
+		PlayerSaveData data = (PlayerSaveData) base.SaveData(SaveGame.currentGame.savedPlayers[id - 1]);
+		return data;
 	}
 
 	public void LoadSaveData(PlayerSaveData psd) {

@@ -12,7 +12,6 @@ public abstract class Character : LivingThing, Damageable {
 	};
 	public LayerMask sightLayers;
 	public TextObject speech;
-	public Accessory[] accessories;
 	
 	protected Rigidbody rb;
 	protected System.Guid guid;  // null the first time a unique character is spawned

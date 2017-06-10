@@ -128,12 +128,8 @@ public class CharacterOptionsManager : MonoBehaviour {
 	// SAVING/LOADING OPTIONS FUNCTIONS
 
 	public void CustomizeFromSave(PlayerControls p) {
-		CharacterCustomization cc = p.GetComponent<CharacterCustomization>();
-		cc.skinColor = skinColors[LoadSkinColor(p.id)];
-		cc.hairColor = hairColors[LoadHairColor(p.id)];
 		Accessory[] accs = new Accessory[] { hairstyles[LoadHairstyle(p.id)], accessories[LoadAccessory(p.id)] };
-		string outfit = LoadOutfitName(p.id);
-		cc.ColorCharacter(Outfits.fits.ContainsKey(outfit) ? Outfits.fits[outfit] : Outfits.fits["default"], accessories: accs);
+		p.GetComponent<CharacterCustomization>().ColorCharacter(LoadOutfitName(p.id), LoadSkinColor(p.id), LoadHairColor(p.id), accessories: accs);
 	}
 
 	public int CurrentSidearmId(int id) {
