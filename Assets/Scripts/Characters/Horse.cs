@@ -69,7 +69,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		return false;
 	}
 
-	public IEnumerator Tame() {
+	private IEnumerator Tame() {
 		int jumpsNeeded = Random.Range(4, 8);
 		for (int i = 0; i < jumpsNeeded; i++) {
 			yield return new WaitForSeconds(Random.Range(.2f, .7f));
@@ -82,10 +82,15 @@ public class Horse : LivingThing, Interactable, Damageable {
 				break;
 			}
 			if (i == jumpsNeeded - 1) {
-				tamed = true;
-				saddle.SetActive(tamed);				
+				SetTamed(rider.guid);
 			}
 		}
+	}
+
+	private void SetTamed(System.Guid owner) {
+		tamed = true;
+		data.owner = owner;
+		saddle.SetActive(tamed);	
 	}
 
 	public void Jump() {
@@ -152,7 +157,8 @@ public class Horse : LivingThing, Interactable, Damageable {
 		data = hsd;
 		transform.position = data.location.val;
 		transform.eulerAngles = data.eulerAngles.val;
-		tamed = hsd.tamed;
+		if (data.tamed)
+			SetTamed(data.owner);
 		saddle.SetActive(tamed);
 		health = hsd.health;
 		if (!isAlive)
@@ -162,13 +168,16 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 	[System.Serializable]
 	public class HorseSaveData {
-		public HorseSaveData(GameObject horsePrefab) {
+		public HorseSaveData(GameObject horsePrefab, System.Guid owner) {
 			Horse h = horsePrefab.GetComponent<Horse>();
 			health = h.healthMax;
 			bodyColor = Random.Range(0, h.bodyColor.Length);
 			maneColor = Random.Range(0, h.maneColor.Length);
 			speckled = Random.Range(0, 5) == 0;
-			tamed = h.tamed;
+			if (owner != System.Guid.Empty) {
+				tamed = true;
+				this.owner = owner;
+			}
 		}
 
 		public System.Guid guid = System.Guid.NewGuid();
@@ -177,6 +186,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		public int maneColor;
 		public bool speckled;
 		public bool tamed;
+		public System.Guid owner;
 		public SerializableVector3 location = new SerializableVector3(Vector3.zero);
 		public SerializableVector3 eulerAngles = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 	}

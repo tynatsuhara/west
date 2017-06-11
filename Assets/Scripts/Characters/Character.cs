@@ -14,7 +14,7 @@ public abstract class Character : LivingThing, Damageable {
 	public TextObject speech;
 	
 	protected Rigidbody rb;
-	protected System.Guid guid;  // null the first time a unique character is spawned
+	public System.Guid guid;  // null the first time a unique character is spawned
 	protected bool firstSetup {
 		get { return guid == System.Guid.Empty; }
 	}

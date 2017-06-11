@@ -143,7 +143,7 @@ public class Location {
 		int horseAmount = Random.Range(1, 5);
 		for (int i = 0; i < horseAmount; i++) {
 			int tile = RandomUnoccupiedTile();
-			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab);
+			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, System.Guid.Empty);
 			hsd.location = new SerializableVector3(TileVectorPosition(tile));
 			SaveGame.currentGame.horses[hsd.guid] = hsd;
 			horses.Add(hsd.guid);
