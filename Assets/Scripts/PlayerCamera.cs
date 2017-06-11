@@ -32,7 +32,7 @@ public class PlayerCamera : MonoBehaviour {
 		firstPersonInitPosition = player.firstPersonCam.transform.localPosition;
 	}
 	
-	void LateUpdate () {
+	void FixedUpdate () {
 		UpdatePosition();
 	}
 

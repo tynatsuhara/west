@@ -27,7 +27,6 @@ public class PlayerControls : Character {
 		if (currentGun != null)
 			currentGun.UpdateUI();
 		LookAtMouse();
-		Walk();
 		Rotate();
 	}
 
@@ -117,7 +116,7 @@ public class PlayerControls : Character {
 	void FixedUpdate () {
 		if (!isAlive || GameManager.paused)
 			return;
-		
+		Walk();		
 		Drag();
     }
 
@@ -164,7 +163,7 @@ public class PlayerControls : Character {
 
 		float cameraRotation = playerCamera.transform.eulerAngles.y;
 
-		float speed = CalculateSpeed() * Time.deltaTime;
+		float speed = CalculateSpeed() * Time.fixedDeltaTime;
 		if (Cheats.instance.IsCheatEnabled("konami"))
 			speed *= 3f;
 
