@@ -11,4 +11,7 @@ public class Accessory : MonoBehaviour {
 
 	public bool headParent;
 	public bool bodyParent;
+
+	public bool maleOnly;
+	public bool femaleOnly;
 }

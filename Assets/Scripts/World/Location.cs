@@ -152,7 +152,7 @@ public class Location {
 		// temp NPC spawning
 		int pplAmount = Random.Range(1, 5);
 		for (int i = 0; i < pplAmount; i++) {
-			NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE);
+			NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE, Random.Range(0, 2) == 0);
 			npc.position = new SerializableVector3(TileVectorPosition(RandomUnoccupiedTile()));
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
 			characters.Add(npc.guid);

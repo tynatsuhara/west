@@ -30,6 +30,7 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	// customization stuff
+	private bool female;
 	private string outfit;
 	private int skinColor;
 	private int hairColor;
@@ -577,6 +578,7 @@ public abstract class Character : LivingThing, Damageable {
 		hairColor = data.hairColor;
 		hairStyle = data.hairStyle;
 		accessory = data.accessory;
+		female = data.female;
 	}
 
 	[System.Serializable]
@@ -595,6 +597,7 @@ public abstract class Character : LivingThing, Damageable {
 		public int hairColor;
 		public int hairStyle;
 		public int accessory;
+		public bool female;
 
 		public bool ridingHorse;
 		public System.Guid mountGuid;

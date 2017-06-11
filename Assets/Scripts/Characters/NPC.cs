@@ -273,11 +273,13 @@ public class NPC : Character, Interactable {
 	[System.Serializable]
 	public class NPCSaveData : CharacterSaveData {
 		public NPCType type;
-		public string name = NameGen.CharacterName();
+		public string name;
 		public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 		
-		public NPCSaveData(NPCType type) {
+		public NPCSaveData(NPCType type, bool female = false, string lastName = "") {
 			this.type = type;
+			this.female = female;
+			name = NameGen.CharacterName(female, lastName);
 		}
 	}
 }
