@@ -145,6 +145,7 @@ public abstract class Character : LivingThing, Damageable {
 			Die(location, angle, type);
 			if (!(this is PlayerControls) && playerAttacker) {
 				SaveGame.currentGame.stats.peopleKilled++;
+				SaveGame.currentGame.crime.Commit(Map.CurrentLocation().guid, "Murder", 30);
 			}
 		}
 

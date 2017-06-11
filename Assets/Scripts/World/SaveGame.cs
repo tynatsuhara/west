@@ -17,6 +17,7 @@ public class SaveGame {
 	public QuestManager quests;
 	public WorldTime time;
 	public Statistics stats;
+	public Crime crime;
 
 	// Establishes a new game with data for the player(s)
 	public static void NewGame() {

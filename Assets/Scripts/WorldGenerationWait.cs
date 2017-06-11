@@ -21,6 +21,7 @@ public class WorldGenerationWait : MonoBehaviour {
 		SaveGame.currentGame.quests = new QuestManager();	
 		SaveGame.currentGame.time = new WorldTime();
 		SaveGame.currentGame.stats = new Statistics();
+		SaveGame.currentGame.crime = new Crime();
 		SceneManager.LoadScene("customization");
 	}
 }
