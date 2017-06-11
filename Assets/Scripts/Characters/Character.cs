@@ -427,7 +427,7 @@ public abstract class Character : LivingThing, Damageable {
 		hits = Physics.RaycastAll(transform.position, target.transform.position - transform.position, viewDist, sightLayers)
 					  .Where(x => x.transform.root != transform.root)
 					  .OrderBy(x => (x.point - transform.position).magnitude).ToArray();
-		if (hits.Length > 0) {		
+		if (hits.Length > 0) {
 			return hits[0].collider.transform.root == target.transform.root;
 		}
 
@@ -445,6 +445,8 @@ public abstract class Character : LivingThing, Damageable {
 			return false;
 		
 		List<Character> draggableChars = GameManager.allCharacters.Where(x => {
+			if (x == this)
+				return false;
 			if (x is NPC) {
 				NPC z = (NPC) x;
 				return !x.isAlive || z.currentState == NPC.NPCState.HELD_HOSTAGE_TIED;
@@ -454,7 +456,7 @@ public abstract class Character : LivingThing, Damageable {
 
 		List<Rigidbody> rbs = new List<Rigidbody>();
 		foreach (Character c in draggableChars) {
-			rbs.AddRange(separateBodyParts.Select(x => x.GetComponentInParent<Rigidbody>()));
+			rbs.AddRange(c.separateBodyParts.Select(x => x.GetComponentInParent<Rigidbody>()));
 		}
 
 		float grabRange = 1.5f;
@@ -464,8 +466,6 @@ public abstract class Character : LivingThing, Damageable {
 			if (CanSee(limb.gameObject, 100f, grabRange)) {
 				draggedBody = limb;
 				return true;
-			// } else {
-				// Debug.Log("couldn't see " + limb.name);
 			}
 		}
 		return false;
