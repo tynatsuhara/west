@@ -38,10 +38,11 @@ public class PlayerCamera : MonoBehaviour {
 
 	private int lastDpadValue;
 	private void UpdatePosition() {
+		transform.localPosition = diff;
+		transform.position = Vector3.Lerp(transform.position, AveragePointBetweenTargets(), followSpeed);
+		diff = transform.localPosition;		
+
 		if (!player.firstPersonCam.enabled) {
-			transform.localPosition = diff;
-			transform.position = Vector3.Lerp(transform.position, AveragePointBetweenTargets(), followSpeed);
-			diff = transform.localPosition;
 			Vector3 cameraLookAtPosition = transform.position;
 			cam.transform.LookAt(transform.position);
 

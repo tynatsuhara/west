@@ -172,7 +172,7 @@ public class GameManager : MonoBehaviour {
 			pc.id = playersToSpawn[i];
 			result.Add(pc);
 
-			pc.playerCamera = (Instantiate(playerCamPrefab) as GameObject).GetComponent<PlayerCamera>();
+			pc.playerCamera = Instantiate(playerCamPrefab).GetComponent<PlayerCamera>();
 			pc.playerCamera.player = pc;
 			cams.Add(pc.playerCamera.cam);
 
@@ -183,6 +183,7 @@ public class GameManager : MonoBehaviour {
 			pc.playerUI.transform.SetParent(pc.playerCamera.transform, false);
 
 			pc.LoadSaveData(SaveGame.currentGame.savedPlayers[pc.id - 1]);
+			pc.playerCamera.transform.position = pc.transform.position;
 
 			// don't delete these guys when we load a new locations!
 			LevelBuilder.instance.permanent.Add(pc.transform);
