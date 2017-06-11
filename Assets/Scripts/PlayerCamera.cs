@@ -8,6 +8,7 @@ public class PlayerCamera : MonoBehaviour {
 	public float maxZoom;
 	public float rotationAngle;
 	public float rotationSpeed;
+	public float followSpeed;
 	public Camera cam;
 
 	private Transform[] targets;
@@ -31,7 +32,7 @@ public class PlayerCamera : MonoBehaviour {
 		firstPersonInitPosition = player.firstPersonCam.transform.localPosition;
 	}
 	
-	void Update () {
+	void LateUpdate () {
 		UpdatePosition();
 	}
 
@@ -39,7 +40,8 @@ public class PlayerCamera : MonoBehaviour {
 	private void UpdatePosition() {
 		if (!player.firstPersonCam.enabled) {
 			transform.localPosition = diff;
-			transform.position = AveragePointBetweenTargets();
+			transform.position = Vector3.Lerp(transform.position, AveragePointBetweenTargets(), followSpeed);
+			diff = transform.localPosition;
 			Vector3 cameraLookAtPosition = transform.position;
 			cam.transform.LookAt(transform.position);
 
