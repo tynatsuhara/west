@@ -258,7 +258,6 @@ public class NPC : Character, Interactable {
 		data.type = type;
 		data.name = name;
 		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
-		Debug.Log("character rotation saved " + data.guid + " " + transform.rotation.eulerAngles);
 		return data;
 	}
 
@@ -269,7 +268,6 @@ public class NPC : Character, Interactable {
 		if (!isAlive)
 			SetDeathPhysics();
 		transform.rotation = Quaternion.Euler(data.rotation.val);
-		Debug.Log("character rotation loaded " + data.guid + " " + data.rotation.val);
 	}
 
 	[System.Serializable]
