@@ -31,17 +31,24 @@ public class PlayerCamera : MonoBehaviour {
 		player.firstPersonCam.GetComponent<AudioListener>().enabled = player.id == 1;  // can only have one at a time		
 		firstPersonInitPosition = player.firstPersonCam.transform.localPosition;
 	}
+
+	void Update() {
+		UpdatePosition();
+	}
 	
 	void FixedUpdate () {
-		UpdatePosition();
+		transform.localPosition = diff;
+		transform.position = Vector3.Lerp(transform.position, AveragePointBetweenTargets(), followSpeed);
+		diff = transform.localPosition;		
+		// shaking
+		if (timeElapsed < duration && !GameManager.paused) {
+			transform.position += Random.insideUnitSphere * power * (duration - timeElapsed);
+			timeElapsed += Time.deltaTime;
+		}
 	}
 
 	private int lastDpadValue;
 	private void UpdatePosition() {
-		transform.localPosition = diff;
-		transform.position = Vector3.Lerp(transform.position, AveragePointBetweenTargets(), followSpeed);
-		diff = transform.localPosition;		
-
 		if (!player.firstPersonCam.enabled) {
 			Vector3 cameraLookAtPosition = transform.position;
 			cam.transform.LookAt(transform.position);
@@ -49,8 +56,6 @@ public class PlayerCamera : MonoBehaviour {
 			int newDpadValue = Input.GetAxis("DPX" + player.id) == 0 ? 0 : (int) Mathf.Sign(Input.GetAxis("DPX" + player.id));
 			bool pressedDpad = newDpadValue != lastDpadValue;
 			lastDpadValue = newDpadValue;
-
-			// rotation
 			bool rotateButtonPress = (player.id == 1 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.C))) || pressedDpad;
 			bool halfDist = player.id == 1 && Input.GetKey(KeyCode.LeftShift);
 			if (rotateButtonPress) {
@@ -72,12 +77,6 @@ public class PlayerCamera : MonoBehaviour {
 				// not linked to deltaTime, since time is frozen when paused
 				float realTimeElapsed = (Time.realtimeSinceStartup - startTime);
 				transform.rotation = Quaternion.Slerp(transform.rotation, rotationGoal, rotationSpeed * realTimeElapsed);
-			}
-
-			// shaking
-			if (timeElapsed < duration && !GameManager.paused) {
-				transform.position += Random.insideUnitSphere * power * (duration - timeElapsed);
-				timeElapsed += Time.deltaTime;
 			}
 
 			// zoom in/out
