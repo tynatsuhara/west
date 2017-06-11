@@ -139,16 +139,6 @@ public class Location {
 			cacti[tile] = new Cactus.CactusSaveData(tile);
 		}
 
-		// temp horse spawning
-		int horseAmount = Random.Range(1, 5);
-		for (int i = 0; i < horseAmount; i++) {
-			int tile = RandomUnoccupiedTile();
-			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, System.Guid.Empty);
-			hsd.location = new SerializableVector3(TileVectorPosition(tile));
-			SaveGame.currentGame.horses[hsd.guid] = hsd;
-			horses.Add(hsd.guid);
-		}
-
 		// temp NPC spawning
 		int pplAmount = Random.Range(1, 5);
 		for (int i = 0; i < pplAmount; i++) {
@@ -156,6 +146,16 @@ public class Location {
 			npc.position = new SerializableVector3(TileVectorPosition(RandomUnoccupiedTile()));
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
 			characters.Add(npc.guid);
+		}
+
+		// temp horse spawning
+		int horseAmount = pplAmount + Random.Range(1, 3);
+		for (int i = 0; i < horseAmount; i++) {
+			int tile = RandomUnoccupiedTile();
+			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < pplAmount ? characters[i] : System.Guid.Empty);
+			hsd.location = new SerializableVector3(TileVectorPosition(tile));
+			SaveGame.currentGame.horses[hsd.guid] = hsd;
+			horses.Add(hsd.guid);
 		}
 	}
 

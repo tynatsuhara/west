@@ -30,7 +30,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		if (!tamed) {
 			StartCoroutine(Tame());
 		} else if (character.guid != data.owner && character is PlayerControls) {
-			SaveGame.currentGame.crime.Commit(Map.CurrentLocation().guid, "Horse Murder", 30);			
+			SaveGame.currentGame.crime.Commit(Map.CurrentLocation().guid, "Horse Theft", 10);			
 		}
 	}
 	public void Uninteract(Character character) {}
