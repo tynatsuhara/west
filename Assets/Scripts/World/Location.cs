@@ -150,10 +150,13 @@ public class Location {
 		}
 
 		// temp NPC spawning
-		NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE);
-		npc.position = new SerializableVector3(TileVectorPosition(RandomUnoccupiedTile()));
-		SaveGame.currentGame.savedCharacters[npc.guid] = npc;
-		characters.Add(npc.guid);
+		int pplAmount = Random.Range(1, 5);
+		for (int i = 0; i < pplAmount; i++) {
+			NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE);
+			npc.position = new SerializableVector3(TileVectorPosition(RandomUnoccupiedTile()));
+			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
+			characters.Add(npc.guid);
+		}
 	}
 
 	private List<int> Subset(List<int> lst, int size) {
