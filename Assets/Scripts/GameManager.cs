@@ -17,13 +17,13 @@ public class GameManager : MonoBehaviour {
 	
 	public bool objectivesComplete;
 
-	public static List<NPC> characters {
-		get { return new List<NPC>(); }	
+	public static List<NPC> spawnedNPCs {
+		get { return Object.FindObjectsOfType<NPC>().ToList(); }	
 	}
 	public static List<PlayerControls> players;
 	public static List<Character> allCharacters {
 		get {
-			List<Character> lst = characters.Select(x => (Character) x).ToList();
+			List<Character> lst = spawnedNPCs.Select(x => (Character) x).ToList();
 			lst.AddRange(players.Select(x => (Character) x));
 			return lst;
 		}
@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour {
 	// severity and range. If visual is nonnull, the character must have line
 	// of sight to the visual to be alerted.
 	public void AlertInRange(Character.Reaction importance, Vector3 location, float range, GameObject visual = null) {
-		foreach (Character c in characters.Where(x => x.isAlive)) {
+		foreach (Character c in spawnedNPCs.Where(x => x.isAlive)) {
 			if ((c.transform.position - location).magnitude < range) {
 				if (visual != null && !c.CanSee(visual))
 					continue;
@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour {
 	// Return all characters in the given range from the given point, ordered by increasing distance
 	public List<Character> CharactersWithinDistance(Vector3 from, float range) {
 		List<Character> ret = new List<Character>();
-		foreach (Character c in characters) {
+		foreach (Character c in spawnedNPCs) {
 			if ((c.transform.position - from).magnitude < range) {
 				ret.Add(c);
 			}

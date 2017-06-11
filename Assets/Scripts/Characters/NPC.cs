@@ -33,7 +33,6 @@ public class NPC : Character, Interactable {
 		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
 
 		base.Start();
-		transform.RotateAround(transform.position, transform.up, Random.Range(0, 360));
 		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 	}
 
@@ -196,7 +195,7 @@ public class NPC : Character, Interactable {
 		return null;
 	}
 	private Vector3? CorpsesInSight() {
-		foreach (NPC c in GameManager.characters) {
+		foreach (NPC c in GameManager.spawnedNPCs) {
 			bool isEvidence = !c.isAlive;
 			isEvidence |= c.currentState == Civilian.NPCState.ALERTING;
 			isEvidence |= c.currentState == Civilian.NPCState.HELD_HOSTAGE_TIED;
@@ -258,6 +257,8 @@ public class NPC : Character, Interactable {
 		NPCSaveData data = (NPCSaveData) base.SaveData(SaveGame.currentGame.savedCharacters[guid]);
 		data.type = type;
 		data.name = name;
+		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
+		Debug.Log("character rotation saved " + data.guid + " " + transform.rotation.eulerAngles);
 		return data;
 	}
 
@@ -265,12 +266,17 @@ public class NPC : Character, Interactable {
 		base.LoadSaveData(data);
 		type = data.type;
 		name = data.name;
+		if (!isAlive)
+			SetDeathPhysics();
+		transform.rotation = Quaternion.Euler(data.rotation.val);
+		Debug.Log("character rotation loaded " + data.guid + " " + data.rotation.val);
 	}
 
 	[System.Serializable]
 	public class NPCSaveData : CharacterSaveData {
 		public NPCType type;
 		public string name = NameGen.CharacterName();
+		public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 		
 		public NPCSaveData(NPCType type) {
 			this.type = type;

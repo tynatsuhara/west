@@ -174,15 +174,8 @@ public abstract class Character : LivingThing, Damageable {
 		}
 		GameManager.instance.AlertInRange(Reaction.AGGRO, transform.position, 2f);
 		InteractCancel();
-		UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-		if (agent != null)
-			agent.enabled = false;
-		UnityEngine.AI.NavMeshObstacle obstacle = GetComponent<UnityEngine.AI.NavMeshObstacle>();
-		if (obstacle != null)
-			obstacle.enabled = true;
-
-		walk.StandStill();
-		rb.constraints = RigidbodyConstraints.None;
+		SetDeathPhysics();
+		walk.StandStill();		
 
 		if (weaponDrawn) {
 			DropWeapon(angle * Random.Range(5, 10) + Vector3.up * Random.Range(2, 6));
@@ -199,6 +192,16 @@ public abstract class Character : LivingThing, Damageable {
 
 		StartCoroutine(FallOver(400));
 		// Invoke("RemoveBody", 60f);
+	}
+
+	protected void SetDeathPhysics() {
+		UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+		if (agent != null)
+			agent.enabled = false;
+		UnityEngine.AI.NavMeshObstacle obstacle = GetComponent<UnityEngine.AI.NavMeshObstacle>();
+		if (obstacle != null)
+			obstacle.enabled = true;
+		GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 	}
 
 	private void Decapitate() {
@@ -340,7 +343,7 @@ public abstract class Character : LivingThing, Damageable {
 		ridingHorse = isMounted;
 	}
 
-	public void SpawnGun() {
+	public void SpawnGuns() {
 		if (weaponId == -1 && sidearmId == -1)
 			return;
 
@@ -533,8 +536,8 @@ public abstract class Character : LivingThing, Damageable {
 		data.equippedWeapon = gunIndex;
 		data.isWeaponDrawn = weaponDrawn;
 		data.gunSaves = new System.Object[] {
-			guns[0] == null ? null : guns[0].GetComponent<Weapon>().SaveData(),
-			guns[1] == null ? null : guns[1].GetComponent<Weapon>().SaveData(),
+			guns.Length < 1 || guns[0] == null ? null : guns[0].GetComponent<Weapon>().SaveData(),
+			guns.Length < 2 || guns[1] == null ? null : guns[1].GetComponent<Weapon>().SaveData(),
 		};
 		data.health = health;
 		data.ridingHorse = ridingHorse;
@@ -555,7 +558,7 @@ public abstract class Character : LivingThing, Damageable {
 		weaponId = data.weaponId;
 		sidearmId = data.sidearmId;
 		gunIndex = data.equippedWeapon;
-		SpawnGun();
+		SpawnGuns();
 		if (data.gunSaves != null) {
 			for (int i = 0; i < guns.Length; i++) {
 				if (guns[i] != null && data.gunSaves[i] != null) {

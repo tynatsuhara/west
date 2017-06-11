@@ -34,9 +34,17 @@ public class SaveGame {
 
 		// save local wildlife
 		foreach (Horse h in GameManager.spawnedHorses) {
-			Horse.HorseSaveData hsd = h.SaveData();
-			if (Map.CurrentLocation().horses.Contains(hsd.guid)) {
-				currentGame.horses[hsd.guid] = hsd;
+			Horse.HorseSaveData data = h.SaveData();
+			if (Map.CurrentLocation().horses.Contains(data.guid)) {
+				currentGame.horses[data.guid] = data;
+			}
+		}
+
+		// save local NPCs
+		foreach (NPC npc in GameManager.spawnedNPCs) {
+			NPC.NPCSaveData data = npc.SaveData();
+			if (Map.CurrentLocation().characters.Contains(data.guid)) {
+				currentGame.savedCharacters[data.guid] = data;
 			}
 		}
 
