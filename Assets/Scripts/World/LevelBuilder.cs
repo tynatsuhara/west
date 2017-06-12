@@ -56,7 +56,7 @@ public class LevelBuilder : MonoBehaviour {
 		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters
 		string greeting = l.name + ", population " + l.characters.Count;
 		int bounty = SaveGame.currentGame.crime.Bounty(guid);
-		GameUI.instance.topCenterText.Say(bounty > 0 ? greeting + "\nbounty $" : greeting);
+		GameUI.instance.topCenterText.Say(bounty > 0 ? greeting + "\nbounty $" + bounty : greeting);
 
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";
