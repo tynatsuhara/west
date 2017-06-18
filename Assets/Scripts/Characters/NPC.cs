@@ -10,7 +10,7 @@ public class NPC : Character, Interactable {
 	}
 
 	public enum NPCState {
-		PASSIVE,
+		PASSIVE,                    // following their schedule
 		CURIOUS,    			 	// they know something is up, but don't know of the player
 		SEARCHING,   				// they are aware of the player, but don't know location
 		ALERTING,					// running to notify guards
@@ -27,6 +27,7 @@ public class NPC : Character, Interactable {
 	public NPCType type;
 	public NPCState currentState;
 	protected UnityEngine.AI.NavMeshAgent agent;
+	protected List<Character> enemies = new List<Character>();
 
 	public override void Start() {
 		StartCoroutine(UpdateEvidenceInSight(.5f));
