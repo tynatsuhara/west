@@ -3,12 +3,12 @@ using System.Collections;
 
 public class Civilian : NPC {
 
-	public bool braveCitizen;  // can enter attacking states
+	public bool hasGun;  // can enter attacking states
 
 	public override void Start() {
 		base.Start();
 		currentState = NPCState.PASSIVE;
-		braveCitizen = sidearmId != -1;
+		hasGun = sidearmId != -1 || weaponId != -1;
 	}
 
 	//=================== STATE FUNCTIONS ===================//
@@ -36,7 +36,7 @@ public class Civilian : NPC {
 		if (playerScript == null)
 			return;
 
-		if (braveCitizen && !checkDrawWeaponInvoked && playerScript.IsEquipped() && playerScript.isAlive) {
+		if (hasGun && !checkDrawWeaponInvoked && playerScript.IsEquipped() && playerScript.isAlive) {
 			// switch to attacking
 			bool canSeePlayer = currentState == NPCState.PASSIVE 
 					? CanSee(playerScript.gameObject) 
