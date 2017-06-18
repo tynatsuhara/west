@@ -15,8 +15,8 @@ public class NPC : Character, Interactable {
 		SEARCHING,   				// they are aware of the player, but don't know location
 		ALERTING,					// running to notify guards
 		FLEEING,					// running off the map
-		HELD_HOSTAGE_UNTIED,
-		HELD_HOSTAGE_TIED,
+		DOWN_UNTIED,
+		DOWN_TIED,
 		ATTACKING
 	}
 
@@ -68,11 +68,11 @@ public class NPC : Character, Interactable {
 			case NPCState.FLEEING:
 				StateFleeing();
 				break;
-			case NPCState.HELD_HOSTAGE_UNTIED:
-				StateHeldHostageUntied();
+			case NPCState.DOWN_UNTIED:
+				StateDownUntied();
 				break;
-			case NPCState.HELD_HOSTAGE_TIED:
-				StateHeldHostageTied();
+			case NPCState.DOWN_TIED:
+				StateDownTied();
 				break;
 			case NPCState.ATTACKING:
 				StateAttacking();
@@ -87,12 +87,12 @@ public class NPC : Character, Interactable {
 	protected virtual void StateSearching() {}
 	protected virtual void StateAlerting() {}
 	protected virtual void StateFleeing() {}
-	protected virtual void StateHeldHostageUntied() {}
-	protected virtual void StateHeldHostageTied() {}
+	protected virtual void StateDownUntied() {}
+	protected virtual void StateDownTied() {}
 	protected virtual void StateAttacking() {}
 
 	public override void Die(Vector3 location, Vector3 angle, DamageType type = DamageType.MELEE) {
-		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0 && currentState != NPCState.HELD_HOSTAGE_TIED)
+		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0 && currentState != NPCState.DOWN_TIED)
 			arms.SetFrame(0);
 		base.Die(location, angle, type);		
 	}
@@ -160,9 +160,9 @@ public class NPC : Character, Interactable {
 	}
 
 	public void Interact(Character character) {
-		if (character.zipties > 0 && (currentState == NPCState.HELD_HOSTAGE_UNTIED)) {
+		if (character.zipties > 0 && (currentState == NPCState.DOWN_UNTIED)) {
 			character.zipties--;
-			TransitionState(NPCState.HELD_HOSTAGE_TIED);
+			TransitionState(NPCState.DOWN_TIED);
 		}
 	}
 	public void Uninteract(Character character) {}
@@ -199,8 +199,8 @@ public class NPC : Character, Interactable {
 		foreach (NPC c in GameManager.spawnedNPCs) {
 			bool isEvidence = !c.isAlive;
 			isEvidence |= c.currentState == Civilian.NPCState.ALERTING;
-			isEvidence |= c.currentState == Civilian.NPCState.HELD_HOSTAGE_TIED;
-			isEvidence |= c.currentState == Civilian.NPCState.HELD_HOSTAGE_UNTIED;
+			isEvidence |= c.currentState == Civilian.NPCState.DOWN_TIED;
+			isEvidence |= c.currentState == Civilian.NPCState.DOWN_UNTIED;
 			if (isEvidence && CanSee(c.gameObject)) {
 				return c.transform.position;
 			}

@@ -101,7 +101,7 @@ public class Civilian : NPC {
 	}
 
 	// CivilianState.HELD_HOSTAGE_UNTIED
-	protected override void StateHeldHostageUntied() {
+	protected override void StateDownUntied() {
 		LoseLookTarget();						
 
 		if (firstStateIteration) {
@@ -117,7 +117,7 @@ public class Civilian : NPC {
 	}
 
 	// CivilianState.HELD_HOSTAGE_TIED
-	protected override void StateHeldHostageTied() {
+	protected override void StateDownTied() {
 		if (arms.CurrentFrame != 2) {
 			arms.SetFrame(2);
 		}
@@ -127,12 +127,12 @@ public class Civilian : NPC {
 	public override void Alert(Reaction importance, Vector3 position) {
 		if (!isAlive||
 			currentState == NPCState.ATTACKING ||
-			currentState == NPCState.HELD_HOSTAGE_UNTIED ||
-			currentState == NPCState.HELD_HOSTAGE_TIED)
+			currentState == NPCState.DOWN_UNTIED ||
+			currentState == NPCState.DOWN_TIED)
 			return;
 
 		if (currentState == NPCState.ALERTING) {
-			TransitionState(NPCState.HELD_HOSTAGE_UNTIED);
+			TransitionState(NPCState.DOWN_UNTIED);
 			return;
 		}
 
@@ -146,7 +146,7 @@ public class Civilian : NPC {
 			if (Random.Range(0, 2) == 0) {
 				TransitionState(NPCState.FLEEING, Random.Range(.3f, 1f));
 			} else {
-				TransitionState(NPCState.HELD_HOSTAGE_UNTIED, Random.Range(.3f, 1f));
+				TransitionState(NPCState.DOWN_UNTIED, Random.Range(.3f, 1f));
 			}
 		}
 	}

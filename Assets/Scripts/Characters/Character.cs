@@ -451,7 +451,7 @@ public abstract class Character : LivingThing, Damageable {
 				return false;
 			if (x is NPC) {
 				NPC z = (NPC) x;
-				return !x.isAlive || z.currentState == NPC.NPCState.HELD_HOSTAGE_TIED;
+				return !x.isAlive || z.currentState == NPC.NPCState.DOWN_TIED;
 			}
 			return !x.isAlive;
 		}).ToList();
