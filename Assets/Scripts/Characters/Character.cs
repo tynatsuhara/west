@@ -38,7 +38,9 @@ public abstract class Character : LivingThing, Damageable {
 	private int accessory;
 
 	public PicaVoxel.Volume head;
-	public PicaVoxel.Volume body;
+	public PicaVoxel.Volume body {
+		get { return female ? bodyF : bodyM; }
+	}
 	public PicaVoxel.Volume bodyM;
 	public PicaVoxel.Volume bodyF;
 	public PicaVoxel.Volume arms;
@@ -376,6 +378,10 @@ public abstract class Character : LivingThing, Damageable {
 				currentGun.player = (PlayerControls) this;
 		}
 
+		GetComponent<CharacterCustomization>().body = body;
+		GetComponent<CharacterCustomization>().head = head;
+		GetComponent<CharacterCustomization>().legs = walk.GetComponent<PicaVoxel.Volume>();
+		GetComponent<CharacterCustomization>().arms = arms;
 		GetComponent<CharacterCustomization>().gunz = gunVolumes.ToArray();
 		currentGun = null;
 		SelectGun(gunIndex);
@@ -560,12 +566,8 @@ public abstract class Character : LivingThing, Damageable {
 		sidearmId = data.sidearmId;
 		gunIndex = data.equippedWeapon;
 
-		body = data.female ? bodyF : bodyM;
-		(data.female ? bodyM : bodyF).gameObject.SetActive(false);
-		GetComponent<CharacterCustomization>().body = body;
-		GetComponent<CharacterCustomization>().head = head;
-		GetComponent<CharacterCustomization>().legs = walk.GetComponent<PicaVoxel.Volume>();
-		GetComponent<CharacterCustomization>().arms = arms;
+		female = data.female;		
+		(female ? bodyM : bodyF).gameObject.SetActive(false);
 
 		SpawnGuns();
 		if (data.gunSaves != null) {
@@ -586,7 +588,6 @@ public abstract class Character : LivingThing, Damageable {
 		hairColor = data.hairColor;
 		hairStyle = data.hairStyle;
 		accessory = data.accessory;
-		female = data.female;
 	}
 
 	[System.Serializable]
