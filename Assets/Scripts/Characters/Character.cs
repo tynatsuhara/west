@@ -39,6 +39,8 @@ public abstract class Character : LivingThing, Damageable {
 
 	public PicaVoxel.Volume head;
 	public PicaVoxel.Volume body;
+	public PicaVoxel.Volume bodyM;
+	public PicaVoxel.Volume bodyF;
 	public PicaVoxel.Volume arms;
 	public PicaVoxel.Volume legs;
 
@@ -373,11 +375,8 @@ public abstract class Character : LivingThing, Damageable {
 			if (currentGun.isPlayer)
 				currentGun.player = (PlayerControls) this;
 		}
-		GetComponent<CharacterCustomization>().head = head;
-		GetComponent<CharacterCustomization>().body = body;
-		GetComponent<CharacterCustomization>().legs = walk.GetComponent<PicaVoxel.Volume>();
-		GetComponent<CharacterCustomization>().arms = arms;
-		GetComponent<CharacterCustomization>().gunz = gunVolumes.ToArray();		
+
+		GetComponent<CharacterCustomization>().gunz = gunVolumes.ToArray();
 		currentGun = null;
 		SelectGun(gunIndex);
 	}
@@ -560,6 +559,14 @@ public abstract class Character : LivingThing, Damageable {
 		weaponId = data.weaponId;
 		sidearmId = data.sidearmId;
 		gunIndex = data.equippedWeapon;
+
+		body = data.female ? bodyF : bodyM;
+		(data.female ? bodyM : bodyF).gameObject.SetActive(false);
+		GetComponent<CharacterCustomization>().body = body;
+		GetComponent<CharacterCustomization>().head = head;
+		GetComponent<CharacterCustomization>().legs = walk.GetComponent<PicaVoxel.Volume>();
+		GetComponent<CharacterCustomization>().arms = arms;
+
 		SpawnGuns();
 		if (data.gunSaves != null) {
 			for (int i = 0; i < guns.Length; i++) {

@@ -17,7 +17,8 @@ public class NPC : Character, Interactable {
 		FLEEING,					// running off the map
 		DOWN_UNTIED,
 		DOWN_TIED,
-		ATTACKING
+		ATTACKING,
+		ATTACK_READY                // standoff
 	}
 
 	public bool firstStateIteration {
