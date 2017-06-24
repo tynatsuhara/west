@@ -17,22 +17,25 @@ public class Teleporter : MonoBehaviour {
 		if (ignore)
 			return;
 		Character character = other.GetComponentInParent<Character>();		
-		PlayerControls pc = other.GetComponentInParent<PlayerControls>();
-		if (character || pc) {
-			if (pc) {
-				GameManager.instance.loadReposition = otherSide.position.val;
-				float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
-				// loading location autosaves before transport, so make sure to do any save modification (eg moving horses) after location load
-				GameManager.instance.LoadLocation(toId, 4 /* minutes per distance unit */ * dist * pc.moveSpeed / pc.CalculateSpeed());
-				ignore = true;
-			} else {
-				// TODO: save character to the other location
-			}
-			if (character.ridingHorse) {
-				Horse.HorseSaveData hsd = character.mount.SaveData();
-				Map.CurrentLocation().horses.Remove(hsd.guid);
-				Map.Location(toId).horses.Add(hsd.guid);
-			}
+		if (character != null) {
+			Teleport(character);
+		}
+	}
+
+	public void Teleport(Character character) {
+		if (character is PlayerControls) {
+			GameManager.instance.loadReposition = otherSide.position.val;
+			float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
+			// loading location autosaves before transport, so make sure to do any save modification (eg moving horses) after location load
+			GameManager.instance.LoadLocation(toId, 4 /* minutes per distance unit */ * dist * character.moveSpeed / character.CalculateSpeed());
+			ignore = true;
+		} else {
+			// TODO: save character to the other location
+		}
+		if (character.ridingHorse) {
+			Horse.HorseSaveData hsd = character.mount.SaveData();
+			Map.CurrentLocation().horses.Remove(hsd.guid);
+			Map.Location(toId).horses.Add(hsd.guid);
 		}
 	}
 
