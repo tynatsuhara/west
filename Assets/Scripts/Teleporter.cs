@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Teleporter : MonoBehaviour {
 
 	public System.Guid toId;
 	public string destination;
 	private TeleporterData otherSide;
+	public float radius {
+		get { return GetComponent<SphereCollider>().radius; }
+	}
+
 	private bool ignore = true;
+	private Dictionary<Character, bool> collidingWith = new Dictionary<Character, bool>();
 
 	void Awake() {
 		StartCoroutine(Delay());
@@ -16,10 +22,24 @@ public class Teleporter : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (ignore)
 			return;
-		Character character = other.GetComponentInParent<Character>();		
-		if (character != null) {
-			Teleport(character);
+		PlayerControls pc = other.GetComponentInParent<PlayerControls>();		
+		if (pc != null) {
+			collidingWith[pc] = true;
+			GameUI.instance.topCenterText.Say("TRAVEL TO " + destination + "?", permanent: true);
 		}
+	}
+	void OnTriggerExit(Collider other) {
+		if (ignore)
+			return;
+		PlayerControls pc = other.GetComponentInParent<PlayerControls>();		
+		if (pc != null) {
+			collidingWith[pc] = false;
+			GameUI.instance.topCenterText.Clear();
+		}
+	}
+
+	public bool CollidingWith(Character c) {
+		return collidingWith.ContainsKey(c) && collidingWith[c];
 	}
 
 	public void Teleport(Character character) {

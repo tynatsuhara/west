@@ -55,7 +55,13 @@ public class PlayerControls : Character {
 
 		// E - Interact
 		if ((p1 && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown("joystick " + id + " button 1")) {
-			if (ridingHorse) {
+			Teleporter teleporter = GameObject.FindObjectsOfType<Teleporter>()
+					.Where(x => x.CollidingWith(this))
+					.OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
+					.FirstOrDefault();
+			if (teleporter != null) {
+				teleporter.Teleport(this);
+			} else if (ridingHorse) {
 				Dismount();
 			} else {
 				bool drag = draggedBody || DragBody();
