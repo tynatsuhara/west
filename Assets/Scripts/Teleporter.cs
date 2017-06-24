@@ -13,7 +13,7 @@ public class Teleporter : MonoBehaviour {
 	}
 
 	private bool ignore = true;
-	private Dictionary<Character, bool> collidingWith = new Dictionary<Character, bool>();
+	private HashSet<Character> collidingWith = new HashSet<Character>();
 
 	void Awake() {
 		StartCoroutine(Delay());
@@ -24,7 +24,7 @@ public class Teleporter : MonoBehaviour {
 			return;
 		PlayerControls pc = other.GetComponentInParent<PlayerControls>();		
 		if (pc != null) {
-			collidingWith[pc] = true;
+			collidingWith.Add(pc);
 			GameUI.instance.topCenterText.Say("TRAVEL TO " + destination + "?", permanent: true);
 		}
 	}
@@ -32,14 +32,14 @@ public class Teleporter : MonoBehaviour {
 		if (ignore)
 			return;
 		PlayerControls pc = other.GetComponentInParent<PlayerControls>();		
-		if (pc != null) {
-			collidingWith[pc] = false;
+		if (pc != null && collidingWith.Contains(pc)) {
+			collidingWith.Remove(pc);
 			GameUI.instance.topCenterText.Clear();
 		}
 	}
 
 	public bool CollidingWith(Character c) {
-		return collidingWith.ContainsKey(c) && collidingWith[c];
+		return collidingWith.Contains(c);
 	}
 
 	public void Teleport(Character character) {
