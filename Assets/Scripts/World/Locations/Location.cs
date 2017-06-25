@@ -15,6 +15,7 @@ public abstract class Location {
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 	public Dictionary<int, Cactus.CactusSaveData> cacti = new Dictionary<int, Cactus.CactusSaveData>();  // maps tile to cactus
+	public Dictionary<int, Headstone.HeadstoneSaveData> headstones = new Dictionary<int, Headstone.HeadstoneSaveData>();  // tile to headstone frame
 	public List<Building> buildings = new List<Building>();
 	public SerializableVector3 worldLocation;
 
@@ -30,8 +31,10 @@ public abstract class Location {
 	public void Save() {
 		if (Map.CurrentLocation() == this) {
 			foreach (Cactus c in Object.FindObjectsOfType<Cactus>()) {
-				var data = c.SaveData();
-				cacti[data.tile] = data;
+				cacti[c.SaveData().tile] = c.SaveData();
+			}
+			foreach (Headstone h in Object.FindObjectsOfType<Headstone>()) {
+				headstones[h.SaveData().tile] = h.SaveData();
 			}
 		}
 	}

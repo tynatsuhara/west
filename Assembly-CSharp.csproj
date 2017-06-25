@@ -145,6 +145,7 @@
      <Compile Include="Assets\Scripts\Weapons\Weapon.cs" />
      <Compile Include="Assets\Scripts\Window.cs" />
      <Compile Include="Assets\Scripts\World\Atmosphere\Cactus.cs" />
+     <Compile Include="Assets\Scripts\World\Atmosphere\Headstone.cs" />
      <Compile Include="Assets\Scripts\World\Atmosphere\Tumbleweed.cs" />
      <Compile Include="Assets\Scripts\World\Crime.cs" />
      <Compile Include="Assets\Scripts\World\Exteriors\Building.cs" />
