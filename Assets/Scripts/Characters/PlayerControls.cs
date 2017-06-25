@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -116,6 +117,12 @@ public class PlayerControls : Character {
 
 		if (Input.GetKeyDown(KeyCode.Alpha0)) {
 			Damage(transform.position, Random.insideUnitCircle, 1);
+		}
+
+		if (Input.GetKeyDown(KeyCode.F5)) {
+			SaveGame.Save(true);
+		} else if (Input.GetKeyDown(KeyCode.F9)) {
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 	}
  
