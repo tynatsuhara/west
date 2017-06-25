@@ -30,6 +30,13 @@ public class PlayerCamera : MonoBehaviour {
 		player.firstPersonCam.cullingMask = cam.cullingMask & ~(1 << LayerMask.NameToLayer("accessory" + player.id));
 		player.firstPersonCam.GetComponent<AudioListener>().enabled = player.id == 1;  // can only have one at a time		
 		firstPersonInitPosition = player.firstPersonCam.transform.localPosition;
+
+		float x = PlayerPrefs.GetFloat("player" + player.id + "cameraX", transform.eulerAngles.x);
+		float y = PlayerPrefs.GetFloat("player" + player.id + "cameraY", transform.eulerAngles.y);
+		float z = PlayerPrefs.GetFloat("player" + player.id + "cameraZ", transform.eulerAngles.z);
+		transform.eulerAngles = new Vector3(x, y, z);
+		rotationGoal = transform.rotation;
+		cam.orthographicSize = PlayerPrefs.GetFloat("player" + player.id + "cameraZoom", cam.orthographicSize);
 	}
 
 	void Update() {
@@ -69,6 +76,9 @@ public class PlayerCamera : MonoBehaviour {
 				transform.rotation = rotationGoal;
 				transform.RotateAround(cameraLookAtPosition, Vector3.up, -rotationAngle * dir);
 				rotationGoal = transform.rotation;
+				PlayerPrefs.SetFloat("player" + player.id + "cameraX", rotationGoal.eulerAngles.x);
+				PlayerPrefs.SetFloat("player" + player.id + "cameraY", rotationGoal.eulerAngles.y);
+				PlayerPrefs.SetFloat("player" + player.id + "cameraZ", rotationGoal.eulerAngles.z);
 				transform.RotateAround(cameraLookAtPosition, Vector3.up, rotationAngle * dir);
 				transform.rotation = tempRot;
 				rotating = true;
@@ -84,6 +94,7 @@ public class PlayerCamera : MonoBehaviour {
 					? Input.GetAxis("Mouse ScrollWheel") 
 					: Input.GetAxis("DPY" + player.id) * .5f;
 			cam.orthographicSize = Mathf.Min(Mathf.Max(minZoom, cam.orthographicSize - zoom), maxZoom);
+			PlayerPrefs.SetFloat("player" + player.id + "cameraZoom", cam.orthographicSize);
 		} else {
 
 			// first person shake
