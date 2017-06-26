@@ -56,7 +56,7 @@ public abstract class Weapon : MonoBehaviour {
 				break;
 			if (!hitMarker) {
 				LivingThing c = hits[i].transform.GetComponentInParent<LivingThing>();
-				hitMarker = c != null && c.isAlive && !(c is PlayerControls);
+				hitMarker = c != null && c.isAlive && (!(c is PlayerControls) || GameManager.instance.friendlyFireEnabled);
 			}
 			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, isPlayer);
 		}
