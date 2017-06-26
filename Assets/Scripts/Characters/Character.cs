@@ -45,6 +45,10 @@ public abstract class Character : LivingThing, Damageable {
 	public PicaVoxel.Volume bodyF;
 	public PicaVoxel.Volume arms;
 	public PicaVoxel.Volume legs;
+	private PicaVoxel.Volume[] volumesToSave {
+		get { return new PicaVoxel.Volume[]{ head, body }; }
+	}
+	private List<List<byte[]>> voxelBlobs;
 
 	public float moveSpeed;
 	public float rotationSpeed;
@@ -84,6 +88,13 @@ public abstract class Character : LivingThing, Damageable {
 			CharacterOptionsManager.instance.accessories[accessory],
 		};
 		GetComponent<CharacterCustomization>().ColorCharacter(outfit, skinColor, hairColor, accs);
+
+		if (voxelBlobs != null) {
+			var vols = volumesToSave;
+			for (int i = 0; i < vols.Length; i++) {
+				vols[i].SetBytes(voxelBlobs[i]);
+			}
+		}
 	}
 
 	public abstract void Alert(Reaction importance, Vector3 position);
@@ -536,6 +547,7 @@ public abstract class Character : LivingThing, Damageable {
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public CharacterSaveData SaveData(CharacterSaveData data) {
+		data.voxelBlobs = SaveVoxelBytes();
 		data.position = new SerializableVector3(transform.position);
 		data.inv = inventory;
 		data.weaponId = weaponId;
@@ -559,6 +571,7 @@ public abstract class Character : LivingThing, Damageable {
 
 	public void LoadSaveData(CharacterSaveData data) {
 		guid = data.guid;
+		voxelBlobs = data.voxelBlobs;
 		if (data.position != null)
 			transform.position = data.position.val;
 		inventory = data.inv;
@@ -590,9 +603,18 @@ public abstract class Character : LivingThing, Damageable {
 		accessory = data.accessory;
 	}
 
+	private List<List<byte[]>> SaveVoxelBytes() {
+		List<List<byte[]>> result = new List<List<byte[]>>();
+		foreach (PicaVoxel.Volume vol in volumesToSave) {
+			result.Add(vol.GetBytes());
+		}
+		return result;
+	}
+
 	[System.Serializable]
 	public class CharacterSaveData {
 		public System.Guid guid = System.Guid.NewGuid();
+		public List<List<byte[]>> voxelBlobs;
 		public SerializableVector3 position;
 		public Inventory inv = new Inventory();
 		public float health = -1;

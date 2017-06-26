@@ -723,6 +723,21 @@ namespace PicaVoxel
             foreach (Frame frame in Frames) frame.SaveForSerialize();
         }
 
+
+        // HACK
+        public List<byte[]> GetBytes() {
+            List<byte[]> bytes = new List<byte[]>();
+            foreach (Frame frame in Frames) bytes.Add(frame.ToCompressedByteArray());
+            return bytes;
+        }
+        public void SetBytes(List<byte[]> bytes) {
+            for (int i = 0; i < Frames.Count; i++) {
+                Frames[i].FromCompressedByteArray(bytes[i]);
+            }
+            UpdateAllChunks();
+        }
+
+
         /// <summary>
         /// Change the mesh collision mode of all frames
         /// </summary>
