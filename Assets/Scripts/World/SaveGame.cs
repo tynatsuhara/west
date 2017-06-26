@@ -10,7 +10,6 @@ public class SaveGame {
 	public static SaveGame currentGame;
 
 	public bool gameOver;
-	// public Dictionary<System.Guid, byte[]> voxelBlobs;	
 	public Dictionary<System.Guid, NPC.NPCSaveData> savedCharacters;
 	public Dictionary<System.Guid, Horse.HorseSaveData> horses;
 	public PlayerControls.PlayerSaveData[] savedPlayers;
@@ -23,7 +22,6 @@ public class SaveGame {
 	// Establishes a new game with data for the player(s)
 	public static void NewGame() {
 		currentGame = new SaveGame();
-		// currentGame.voxelBlobs = new Dictionary<System.Guid, byte[]>();
 		currentGame.horses = new Dictionary<System.Guid, Horse.HorseSaveData>();
 		currentGame.savedCharacters = new Dictionary<System.Guid, NPC.NPCSaveData>();
 		currentGame.savedPlayers = new PlayerControls.PlayerSaveData[4];
