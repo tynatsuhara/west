@@ -13,6 +13,7 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject wallCornerPrefab;
 	public GameObject doorPrefab;
 	public GameObject cactusPrefab;
+	public GameObject headstonePrefab;
 	public GameObject tumbleweedPrefab;
 	public GameObject horsePrefab;
 	public GameObject teleporterPrefab;
