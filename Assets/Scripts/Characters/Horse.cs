@@ -150,6 +150,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 
 
 	public HorseSaveData SaveData() {
+		data.bytes = GetComponent<PicaVoxel.Volume>().GetBytes();
 		data.location = new SerializableVector3(transform.position);
 		data.eulerAngles = new SerializableVector3(transform.eulerAngles);
 		data.tamed = tamed;
@@ -167,7 +168,9 @@ public class Horse : LivingThing, Interactable, Damageable {
 		health = hsd.health;
 		if (!isAlive)
 			StartCoroutine(FallOver(800));
-		Color();		
+		Color();
+		if (data.bytes != null)
+			GetComponent<PicaVoxel.Volume>().SetBytes(data.bytes);
 	}
 
 	[System.Serializable]
@@ -185,6 +188,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		}
 
 		public System.Guid guid = System.Guid.NewGuid();
+		public List<byte[]> bytes;
 		public float health;
 		public int bodyColor;
 		public int maneColor;
