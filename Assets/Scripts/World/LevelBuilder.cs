@@ -52,7 +52,7 @@ public class LevelBuilder : MonoBehaviour {
 		SpawnBuildings();
 		SpawnNPCs();
 		SpawnHorses(firstLoad);
-		SpawnFoliage();
+		SpawnAtmospherics();
 		SpawnTeleporters();
 		SaveGame.currentGame.quests.UpdateQuests();  // mark quests at teleporters
 		string greeting = l.name + ", population " + l.characters.Count;
@@ -123,17 +123,24 @@ public class LevelBuilder : MonoBehaviour {
 		}
 	}
 
-	private void SpawnFoliage() {
+	private void SpawnAtmospherics() {
+		// cacti
 		foreach (int tile in loadedLocation.cacti.Keys) {
 			GameObject c = Instantiate(cactusPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
 			c.GetComponent<Cactus>().LoadSaveData(loadedLocation.cacti[tile]);
 		}
-		// Debug.Log("spawning " + loadedLocation.cacti.Count + " cacti");
 
+		// tumbly weedos
 		int tumbleweeds = Random.Range(0, 2);
 		for (int i = 0; i < tumbleweeds; i++) {
 			int tile = loadedLocation.RandomUnoccupiedTile();
 			Instantiate(tumbleweedPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
+		}
+
+		// headstones
+		foreach (int tile in loadedLocation.headstones.Keys) {
+			GameObject h = Instantiate(headstonePrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
+			h.GetComponent<Headstone>().LoadSaveData(loadedLocation.headstones[tile]);
 		}
 	}
 
