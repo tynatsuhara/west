@@ -120,6 +120,7 @@ public class PlayerControls : Character {
 		}
 
 		if (Input.GetKeyDown(KeyCode.F5)) {
+			GameUI.instance.topCenterText.Say("QUICKSAVING...", showFlash: true);
 			SaveGame.Save(true);
 		} else if (Input.GetKeyDown(KeyCode.F9)) {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
