@@ -76,6 +76,9 @@ public abstract class Character : LivingThing, Damageable {
 		get { return draggedBody != null; }
 	}
 
+	public HashSet<System.Guid> groups = new HashSet<System.Guid>();
+	public HashSet<System.Guid> enemyGroups = new HashSet<System.Guid>();
+
 	public virtual void Start() {
 		rb = GetComponent<Rigidbody>();
 		separateBodyParts.Add(body);

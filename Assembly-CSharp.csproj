@@ -97,6 +97,7 @@
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\Characters\Civilian.cs" />
      <Compile Include="Assets\Scripts\Characters\Enemy.cs" />
+     <Compile Include="Assets\Scripts\Characters\Group.cs" />
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />
      <Compile Include="Assets\Scripts\Characters\LivingThing.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC.cs" />
