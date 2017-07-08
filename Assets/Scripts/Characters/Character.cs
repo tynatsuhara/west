@@ -140,7 +140,7 @@ public abstract class Character : LivingThing, Damageable {
 
 	public bool lastDamageNonlethal;
 	public virtual bool Damage(Vector3 location, Vector3 angle, float damage, Character attacker = null, DamageType type = DamageType.BULLET) {
-		bool isPlayer = tag.Equals("Player");
+		bool isPlayer = this is Player;
 		lastDamageNonlethal = type == DamageType.NONLETHAL;
 
 		if (!weaponDrawn)
