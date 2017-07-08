@@ -11,11 +11,9 @@ public class CharacterSpeechEvent : WorldEvent {
     }
 
     public override void Execute() {
-        if (Map.CurrentLocation() == Map.LocationOfCharacter(character)) {
-            Character c = GameManager.instance.GetCharacter(character);
-            if (c != null && c.isAlive) {
-                c.speech.Say(message);
-            }
+        Character c = GameManager.instance.GetCharacter(character);
+        if (c != null && c.isAlive) {
+            c.speech.Say(message);
         }
     }
 }
