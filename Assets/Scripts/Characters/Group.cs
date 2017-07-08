@@ -7,8 +7,8 @@ public class Group {
 
     public System.Guid guid = System.Guid.NewGuid();
     public string name;
-    HashSet<System.Guid> leaders = new HashSet<System.Guid>();
-    HashSet<System.Guid> members = new HashSet<System.Guid>();
+    List<System.Guid> leaders = new List<System.Guid>();
+    List<System.Guid> members = new List<System.Guid>();
 
     public Group(string name) {
         this.name = name;
@@ -16,6 +16,8 @@ public class Group {
 
     public void Add(Character c, bool leader) {
         c.groups.Add(guid);
-        (leader ? leaders : members).Add(c.guid);
+        var list = leader ? leaders : members;
+        if (!list.Contains(c.guid))
+            list.Add(c.guid);
     }
 }

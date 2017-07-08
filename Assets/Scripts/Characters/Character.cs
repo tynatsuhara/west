@@ -76,8 +76,8 @@ public abstract class Character : LivingThing, Damageable {
 		get { return draggedBody != null; }
 	}
 
-	public HashSet<System.Guid> groups = new HashSet<System.Guid>();
-	public HashSet<System.Guid> enemyGroups = new HashSet<System.Guid>();
+	public List<System.Guid> groups = new List<System.Guid>();
+	public List<System.Guid> enemyGroups = new List<System.Guid>();
 
 	public virtual void Start() {
 		rb = GetComponent<Rigidbody>();
@@ -577,8 +577,8 @@ public abstract class Character : LivingThing, Damageable {
 		data.hairColor = hairColor;
 		data.hairStyle = hairStyle;
 		data.accessory = accessory;
-		data.groups = groups;
-		data.enemyGroups = enemyGroups;
+		data.groups = groups.ToList();
+		data.enemyGroups = enemyGroups.ToList();
 		return data;
 	}
 
@@ -647,7 +647,7 @@ public abstract class Character : LivingThing, Damageable {
 
 		public bool ridingHorse;
 		public System.Guid mountGuid;
-		public HashSet<System.Guid> groups;
-		public HashSet<System.Guid> enemyGroups;
+		public List<System.Guid> groups = new List<System.Guid>();
+		public List<System.Guid> enemyGroups = new List<System.Guid>();
 	}
 }
