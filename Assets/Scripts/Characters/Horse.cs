@@ -60,7 +60,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
 		if (wasAlive && !isAlive) {
-			if (attacker is PlayerControls) {
+			if (attacker is Player) {
 				SaveGame.currentGame.stats.animalsKilled++;
 			}
 			if (attacker != null) {

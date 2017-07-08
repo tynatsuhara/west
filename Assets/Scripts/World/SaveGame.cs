@@ -13,7 +13,7 @@ public class SaveGame {
 	public Dictionary<System.Guid, NPC.NPCSaveData> savedCharacters;
 	public Dictionary<System.Guid, Group> groups;
 	public Dictionary<System.Guid, Horse.HorseSaveData> horses;
-	public PlayerControls.PlayerSaveData[] savedPlayers;
+	public Player.PlayerSaveData[] savedPlayers;
 	public Map map;
 	public QuestManager quests;
 	public WorldTime time;
@@ -25,9 +25,9 @@ public class SaveGame {
 		currentGame = new SaveGame();
 		currentGame.horses = new Dictionary<System.Guid, Horse.HorseSaveData>();
 		currentGame.savedCharacters = new Dictionary<System.Guid, NPC.NPCSaveData>();
-		currentGame.savedPlayers = new PlayerControls.PlayerSaveData[4];
+		currentGame.savedPlayers = new Player.PlayerSaveData[4];
 		for (int i = 0; i < 4; i++)
-			currentGame.savedPlayers[i] = new PlayerControls.PlayerSaveData();
+			currentGame.savedPlayers[i] = new Player.PlayerSaveData();
 	}
 
 	public static void Save(bool writeToDisk) {

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour {
 
-	public PlayerControls player;
+	public Player player;
 
 	public Text invText;
 	public Text ammoText;

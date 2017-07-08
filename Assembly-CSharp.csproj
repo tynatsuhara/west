@@ -101,7 +101,7 @@
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />
      <Compile Include="Assets\Scripts\Characters\LivingThing.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC.cs" />
-     <Compile Include="Assets\Scripts\Characters\PlayerControls.cs" />
+     <Compile Include="Assets\Scripts\Characters\Player.cs" />
      <Compile Include="Assets\Scripts\Cheats.cs" />
      <Compile Include="Assets\Scripts\Damageable.cs" />
      <Compile Include="Assets\Scripts\Door.cs" />

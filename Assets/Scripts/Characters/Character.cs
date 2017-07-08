@@ -146,7 +146,7 @@ public abstract class Character : LivingThing, Damageable {
 		if (!weaponDrawn)
 			damage *= 2f;
 
-		if (isPlayer && (attacker is PlayerControls) && !GameManager.instance.friendlyFireEnabled)
+		if (isPlayer && (attacker is Player) && !GameManager.instance.friendlyFireEnabled)
 			damage = 0f;
 
 		if (isAlive && !isPlayer)
@@ -161,7 +161,7 @@ public abstract class Character : LivingThing, Damageable {
 		health = Mathf.Max(0, health - damage);
 		if (!isAlive && wasAlive) {
 			Die(location, angle, type);
-			if (!(this is PlayerControls) && (attacker is PlayerControls)) {
+			if (!(this is Player) && (attacker is Player)) {
 				SaveGame.currentGame.stats.peopleKilled++;
 			}
 			if (attacker != null) {
@@ -386,12 +386,12 @@ public abstract class Character : LivingThing, Damageable {
 			gun.name = gun.name.Replace("(Clone)", "");
 			gunVolumes.AddRange(guns[i].GetComponentsInChildren<PicaVoxel.Volume>());
 			currentGun = gun.GetComponent<Weapon>();
-			currentGun.isPlayer = this is PlayerControls;
+			currentGun.isPlayer = this is Player;
 			gun.transform.parent = transform;
 			gun.transform.localPosition = currentGun.inPlayerPos;
 			gun.transform.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
 			if (currentGun.isPlayer)
-				currentGun.player = (PlayerControls) this;
+				currentGun.player = (Player) this;
 		}
 
 		GetComponent<CharacterCustomization>().body = body;
@@ -407,7 +407,7 @@ public abstract class Character : LivingThing, Damageable {
 		index = Mathf.Clamp(index, 0, guns.Length);
 		if (guns[index] == null)
 			return;
-		if (this is PlayerControls)
+		if (this is Player)
 			guns[index].GetComponent<Weapon>().UpdateUI();
 		if (gunIndex == index || (guns[gunIndex] != null && guns[gunIndex].GetComponent<Weapon>().meleeing)) {
 			return;

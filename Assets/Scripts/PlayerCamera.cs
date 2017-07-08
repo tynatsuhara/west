@@ -3,7 +3,7 @@ using System.Linq;
 
 public class PlayerCamera : MonoBehaviour {
 
-	public PlayerControls player;
+	public Player player;
 	public float minZoom;
 	public float maxZoom;
 	public float rotationAngle;

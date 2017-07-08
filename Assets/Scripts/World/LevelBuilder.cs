@@ -78,7 +78,7 @@ public class LevelBuilder : MonoBehaviour {
 		foreach (Transform t in delete) {
 			Destroy(t.gameObject);
 		}
-		foreach (PlayerControls pc in GameManager.players) {
+		foreach (Player pc in GameManager.players) {
 			if (removePlayers) {
 				Destroy(pc.gameObject);
 			} else {

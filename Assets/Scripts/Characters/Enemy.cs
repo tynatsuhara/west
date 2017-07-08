@@ -5,15 +5,15 @@ using System.Linq;
 
 public class Enemy : NPC {
 
-	private static Dictionary<PlayerControls, PlayerKnowledge> knowledge;
+	private static Dictionary<Player, PlayerKnowledge> knowledge;
 
 	public float walkingAnimationThreshold;
 
 	public override void Start() {
 		base.Start();
 		if (knowledge == null) {
-			knowledge = new Dictionary<PlayerControls, PlayerKnowledge>();
-			foreach (PlayerControls pc in GameManager.players)
+			knowledge = new Dictionary<Player, PlayerKnowledge>();
+			foreach (Player pc in GameManager.players)
 				knowledge.Add(pc, new PlayerKnowledge());
 		}
 
@@ -56,7 +56,7 @@ public class Enemy : NPC {
 		if (firstStateIteration || targetPlayer == null) {
 			DrawWeapon();
 			targetPlayer = null;
-			foreach (PlayerControls pc in GameManager.players) {
+			foreach (Player pc in GameManager.players) {
 				if (targetPlayer == null || (transform.position - targetPlayer.transform.position).magnitude > 
 						(transform.position - pc.transform.position).magnitude)
 					targetPlayer = pc;
@@ -65,14 +65,14 @@ public class Enemy : NPC {
 				agent.SetDestination(targetPlayer.transform.position);
 			}
 		} else {
-			foreach (PlayerControls pc in GameManager.players.OrderBy(x => (transform.position - x.transform.position).magnitude)) {
+			foreach (Player pc in GameManager.players.OrderBy(x => (transform.position - x.transform.position).magnitude)) {
 				if (!knowledge[pc].unknownLocation) {
 					targetPlayer = pc;
 					TransitionState(NPCState.ATTACKING);
 					return;
 				}
 			}
-			foreach (PlayerControls pc in GameManager.players.Where(x => x.IsEquipped() && x.isAlive)) {
+			foreach (Player pc in GameManager.players.Where(x => x.IsEquipped() && x.isAlive)) {
 				if (CanSee(pc.gameObject)) {
 					TransitionState(NPCState.ATTACKING);
 					return;
@@ -82,7 +82,7 @@ public class Enemy : NPC {
 	}
 
 	// EnemyState.ATTACKING
-	private PlayerControls targetPlayer;
+	private Player targetPlayer;
 	protected override void StateAttacking() {
 		// GameManager.instance.WereGoingLoudBoys();		
 		if (targetPlayer == null || !targetPlayer.isAlive || knowledge[targetPlayer].unknownLocation) {
@@ -133,7 +133,7 @@ public class Enemy : NPC {
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		PlayerControls pc = collision.collider.GetComponentInParent<PlayerControls>();
+		Player pc = collision.collider.GetComponentInParent<Player>();
 		if (pc != null)
 			// Alert(GameManager.instance.alarmsRaised ? Reaction.AGGRO : Reaction.SUSPICIOUS, pc.transform.position);
 			Alert(Reaction.SUSPICIOUS, pc.transform.position);

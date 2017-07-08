@@ -32,7 +32,7 @@ public class Civilian : NPC {
 		if (SeenByAnyPlayers())
 			return;
 		
-		PlayerControls playerScript = ClosestEnemyPlayerInSight();
+		Player playerScript = ClosestEnemyPlayerInSight();
 		if (playerScript == null)
 			return;
 
@@ -49,7 +49,7 @@ public class Civilian : NPC {
 	}
 
 	private bool SeenByAnyPlayers() {
-		foreach (PlayerControls pc in GameManager.players) {
+		foreach (Player pc in GameManager.players) {
 			if (pc.CanSee(gameObject))
 				return true;
 		}
@@ -91,7 +91,7 @@ public class Civilian : NPC {
 	protected override void StateAttacking() {
 		ResetRB();
 		DrawWeapon();
-		PlayerControls pc = ClosestEnemyPlayerInSight();
+		Player pc = ClosestEnemyPlayerInSight();
 		if (pc != null) {
 			LookAt(pc.transform);
 			if (CanSee(pc.gameObject, fov:40f)) {

@@ -14,7 +14,7 @@ public class CharacterOptionsManager : MonoBehaviour {
 	public static CharacterOptionsManager instance;
 
 	public string nextScene;
-	public PlayerControls[] players;
+	public Player[] players;
 	public Camera[] cams;
 	private List<int> playingPlayers;
 	private bool[] readyPlayers;
@@ -40,14 +40,14 @@ public class CharacterOptionsManager : MonoBehaviour {
 		for (int i = 1; i < players.Length; i++) {
 			players[i] = (Instantiate(players[0].gameObject, 
 								      players[0].transform.position + Vector3.right * dist * i, 
-									  players[0].transform.rotation) as GameObject).GetComponent<PlayerControls>();
+									  players[0].transform.rotation) as GameObject).GetComponent<Player>();
 			players[i].id = i + 1;
 			cams[i] = (Instantiate(cams[0].gameObject, cams[0].transform.position + Vector3.right * dist * i, 
 								   cams[0].transform.rotation) as GameObject).GetComponent<Camera>();
 			cams[i].gameObject.SetActive(false);
 			cams[i].GetComponentInChildren<WeaponSelection>().playerId = players[i].id;
 		}
-		foreach (PlayerControls pc in players) {
+		foreach (Player pc in players) {
 			CustomizeFromSave(pc);
 		}
 	}
@@ -127,7 +127,7 @@ public class CharacterOptionsManager : MonoBehaviour {
 
 	// SAVING/LOADING OPTIONS FUNCTIONS
 
-	public void CustomizeFromSave(PlayerControls p) {
+	public void CustomizeFromSave(Player p) {
 		Accessory[] accs = new Accessory[] { hairstyles[LoadHairstyle(p.id)], accessories[LoadAccessory(p.id)] };
 		p.GetComponent<CharacterCustomization>().ColorCharacter(LoadOutfitName(p.id), LoadSkinColor(p.id), LoadHairColor(p.id), accessories: accs);
 	}

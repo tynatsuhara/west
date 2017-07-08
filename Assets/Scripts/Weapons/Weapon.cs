@@ -22,7 +22,7 @@ public abstract class Weapon : MonoBehaviour {
 	public const int ANIM_START_FRAME = 2;
 
 	public bool isPlayer;
-	public PlayerControls player;
+	public Player player;
 
 	public virtual void Awake() {
 		owner = GetComponentInParent<Character>();
@@ -56,7 +56,7 @@ public abstract class Weapon : MonoBehaviour {
 				break;
 			if (!hitMarker) {
 				LivingThing c = hits[i].transform.GetComponentInParent<LivingThing>();
-				hitMarker = c != null && c.isAlive && (!(c is PlayerControls) || GameManager.instance.friendlyFireEnabled);
+				hitMarker = c != null && c.isAlive && (!(c is Player) || GameManager.instance.friendlyFireEnabled);
 			}
 			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, owner);
 		}
@@ -165,7 +165,7 @@ public abstract class Weapon : MonoBehaviour {
 
 	public void PlayerEffects(float power, float duration) {
 		if (isPlayer) {
-			GetComponentInParent<PlayerControls>().playerCamera.Shake(power, duration);
+			GetComponentInParent<Player>().playerCamera.Shake(power, duration);
 		}
 	}
 }

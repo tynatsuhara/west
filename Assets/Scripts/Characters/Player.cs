@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections.Generic;
 
-public class PlayerControls : Character {
+public class Player : Character {
 
 	// fields assigned by GameManager when spawned
 	public int id;

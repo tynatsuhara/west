@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour {
 	public static List<NPC> spawnedNPCs {
 		get { return Object.FindObjectsOfType<NPC>().ToList(); }	
 	}
-	public static List<PlayerControls> players;
+	public static List<Player> players;
 	public static List<Character> allCharacters {
 		get {
 			List<Character> lst = spawnedNPCs.Select(x => (Character) x).ToList();
@@ -162,13 +162,13 @@ public class GameManager : MonoBehaviour {
 	// 	GetComponent<EnemySpawner>().StartSpawning();
 	// }
 
-	private List<PlayerControls> SpawnPlayers(int[] playersToSpawn) {
+	private List<Player> SpawnPlayers(int[] playersToSpawn) {
 		playersToSpawn = playersToSpawn == null || playersToSpawn.Length == 0 ? new int[] { 1 } : playersToSpawn;
-		List<PlayerControls> result = new List<PlayerControls>();
+		List<Player> result = new List<Player>();
 		List<Camera> cams = new List<Camera>();
 		for (int i = 0; i < playersToSpawn.Length; i++) {
 			GameObject p = Instantiate(playerPrefab, new Vector3(i, 1f, 1f), Quaternion.identity) as GameObject;
-			PlayerControls pc = p.GetComponent<PlayerControls>();
+			Player pc = p.GetComponent<Player>();
 			pc.id = playersToSpawn[i];
 			result.Add(pc);
 
@@ -204,7 +204,7 @@ public class GameManager : MonoBehaviour {
 			cams[2].rect = new Rect(0, 0, .5f, .5f);
 			cams[3].rect = new Rect(.5f, 0f, .5f, .5f);
 		}
-		foreach (PlayerControls pc in result) {
+		foreach (Player pc in result) {
 			pc.firstPersonCam.rect = pc.playerCamera.cam.rect;
 		}
 		return result;

@@ -22,7 +22,7 @@ public class Teleporter : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (ignore)
 			return;
-		PlayerControls pc = other.GetComponentInParent<PlayerControls>();		
+		Player pc = other.GetComponentInParent<Player>();		
 		if (pc != null) {
 			collidingWith.Add(pc);
 			GameUI.instance.topCenterText.Say("TRAVEL TO " + destination + "?", permanent: true);
@@ -31,7 +31,7 @@ public class Teleporter : MonoBehaviour {
 	void OnTriggerExit(Collider other) {
 		if (ignore)
 			return;
-		PlayerControls pc = other.GetComponentInParent<PlayerControls>();		
+		Player pc = other.GetComponentInParent<Player>();		
 		if (pc != null && collidingWith.Contains(pc)) {
 			collidingWith.Remove(pc);
 			GameUI.instance.topCenterText.Clear();
@@ -43,7 +43,7 @@ public class Teleporter : MonoBehaviour {
 	}
 
 	public void Teleport(Character character) {
-		if (character is PlayerControls) {
+		if (character is Player) {
 			GameManager.instance.loadReposition = otherSide.position.val;
 			float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
 			// loading location autosaves before transport, so make sure to do any save modification (eg moving horses) after location load

@@ -182,13 +182,13 @@ public class NPC : Character, Interactable {
 	}
 
 	// Returns the point of the closest enemy in sight
-	private Dictionary<PlayerControls, float> enemyPlayersInSight = new Dictionary<PlayerControls, float>();	
+	private Dictionary<Player, float> enemyPlayersInSight = new Dictionary<Player, float>();	
 	private Vector3? AddEquippedPlayersInSight() {
-		List<PlayerControls> seenPlayers = GameManager.players
+		List<Player> seenPlayers = GameManager.players
 				.Where(x => x.IsEquipped() && (CanSee(x.gameObject)))
 				.OrderBy(x => (x.transform.position - transform.position).magnitude)
 				.ToList();
-		foreach (PlayerControls pc in seenPlayers) {
+		foreach (Player pc in seenPlayers) {
 			if (!enemyPlayersInSight.ContainsKey(pc))
 				enemyPlayersInSight.Add(pc, Time.time);
 		}
@@ -211,16 +211,16 @@ public class NPC : Character, Interactable {
 
 	private static float TIME_IN_SIGHT_BEFORE_ATTACK = .6f;
 	protected void LookForEvidence() {
-		foreach (PlayerControls pc in enemyPlayersInSight.Keys) {
+		foreach (Player pc in enemyPlayersInSight.Keys) {
 			if (Time.time - enemyPlayersInSight[pc] > TIME_IN_SIGHT_BEFORE_ATTACK) {
 				Alert(Reaction.AGGRO, evidencePoint.Value);				
 			}
 		}
 	}
 	private IEnumerator UpdateEquippedPlayersInSight(float timeStep) {
-		PlayerControls[] pcs = enemyPlayersInSight.Keys.ToArray();
+		Player[] pcs = enemyPlayersInSight.Keys.ToArray();
 		while (isAlive) {
-			foreach (PlayerControls pc in pcs) {
+			foreach (Player pc in pcs) {
 				if (!CanSee(pc.gameObject)) {
 					enemyPlayersInSight.Remove(pc);
 				}
@@ -229,9 +229,9 @@ public class NPC : Character, Interactable {
 		}
 	}
 
-	public PlayerControls ClosestEnemyPlayerInSight() {
-		PlayerControls playerScript = null;
-		foreach (PlayerControls pc in GameManager.players) {
+	public Player ClosestEnemyPlayerInSight() {
+		Player playerScript = null;
+		foreach (Player pc in GameManager.players) {
 			if (!pc.IsEquipped() || !CanSee(pc.gameObject) || !pc.isAlive)
 				continue;
 

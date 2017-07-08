@@ -22,7 +22,7 @@ public class C4 : Explosive {
 	private void SpawnC4() {
 		amount--;
 		RaycastHit hit;
-		GameObject wall = GetComponent<PlayerControls>().FacingObstruction(out hit, .8f);
+		GameObject wall = GetComponent<Player>().FacingObstruction(out hit, .8f);
 		placed = Instantiate(prefab) as GameObject;			
 		if (wall == null || wall.GetComponentInParent<Character>() != null) {
 			Vector3 pos = transform.position + transform.forward * .5f;
