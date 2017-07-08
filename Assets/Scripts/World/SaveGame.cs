@@ -19,6 +19,7 @@ public class SaveGame {
 	public WorldTime time;
 	public Statistics stats;
 	public Crime crime;
+	public EventQueue events;
 
 	// Establishes a new game with data for the player(s)
 	public static void NewGame() {

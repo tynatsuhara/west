@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour {
 		GameObject.Find("Map").GetComponent<VisualMap>().Draw();
 		SetTimeScale(1f);
 
+		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());
 	}
 	
