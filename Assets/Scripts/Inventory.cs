@@ -19,7 +19,7 @@ public class Inventory {
 	private Dictionary<int, string> messages;
 	private Dictionary<string, int> amounts;
 
-	void Start () {
+	public Inventory() {
 		inv = new Dictionary<int, int>();
 		messages = new Dictionary<int, string>();
 		amounts = new Dictionary<string, int>();
