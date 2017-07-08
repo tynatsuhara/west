@@ -29,8 +29,8 @@ public class Horse : LivingThing, Interactable, Damageable {
 		SetName();
 		if (!tamed) {
 			StartCoroutine(Tame());
-		} else if (character.guid != data.owner && character is PlayerControls) {
-			SaveGame.currentGame.crime.Commit(Map.CurrentLocation().guid, "Horse Theft", 10);			
+		} else if (character.guid != data.owner) {
+			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentLocation().guid, "Horse Theft", 10);			
 		}
 	}
 	public void Uninteract(Character character) {}
@@ -51,7 +51,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		}
 	}
 
-	public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
+	public bool Damage(Vector3 location, Vector3 angle, float damage, Character attacker = null, DamageType type = DamageType.BULLET) {
 		bool wasAlive = isAlive;
 		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) - Vector3.up * Random.Range(.2f, .6f);
 		if (isAlive)
@@ -60,9 +60,11 @@ public class Horse : LivingThing, Interactable, Damageable {
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
 		if (wasAlive && !isAlive) {
-			if (playerAttacker) {
+			if (attacker is PlayerControls) {
 				SaveGame.currentGame.stats.animalsKilled++;
-				SaveGame.currentGame.crime.Commit(Map.CurrentLocation().guid, "Horse Murder", 30);
+			}
+			if (attacker != null) {
+				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentLocation().guid, "Horse Murder", 30);
 			}
 			if (rider != null) {
 				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder

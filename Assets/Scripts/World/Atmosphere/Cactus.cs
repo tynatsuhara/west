@@ -11,7 +11,7 @@ public class Cactus : MonoBehaviour, Damageable {
     private GameObject[] arms = new GameObject[8];
     private CactusSaveData data;
 
-    public bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
+    public bool Damage(Vector3 location, Vector3 angle, float damage, Character attacker = null, DamageType type = DamageType.BULLET) {
         List<GameObject> onArms = arms.Where(a => a != null && a.transform.parent == transform).ToList();
         if (onArms.Count == 0)
             return true;

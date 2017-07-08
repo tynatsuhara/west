@@ -11,7 +11,7 @@ public abstract class Weapon : MonoBehaviour {
 	public Vector3 inPlayerPos;
 	public Collider droppedCollider;
 
-	protected Character owner;	
+	public Character owner;	
 	protected PicaVoxel.Volume volume;	
 	protected bool enqueuedReload = false;
 	protected GunAnimation anim;	
@@ -58,7 +58,7 @@ public abstract class Weapon : MonoBehaviour {
 				LivingThing c = hits[i].transform.GetComponentInParent<LivingThing>();
 				hitMarker = c != null && c.isAlive && (!(c is PlayerControls) || GameManager.instance.friendlyFireEnabled);
 			}
-			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, isPlayer);
+			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, owner);
 		}
 		if (hitMarker && isPlayer) {
 			player.playerUI.HitMarker();
@@ -101,7 +101,7 @@ public abstract class Weapon : MonoBehaviour {
 				if (isPlayer)
 					player.playerUI.HitMarker();
 				Damageable d = rhits[0].collider.GetComponentInParent<Damageable>();
-				d.Damage(rhits[0].collider.transform.root.position, owner.transform.forward, 1f, isPlayer, type);
+				d.Damage(rhits[0].collider.transform.root.position, owner.transform.forward, 1f, owner, type);
 				if (rhits[0].collider.GetComponentInParent<LivingThing>() != null)
 					MeleeHitPlayerCallback();
 				GameManager.instance.AlertInRange(Character.Reaction.AGGRO, 

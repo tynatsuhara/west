@@ -4,9 +4,9 @@ using System.Linq;
 
 public class Explosive : MonoBehaviour {
 
-	private bool isPlayer;
+	private Character placer;
 	void Awake() {
-		isPlayer = GetComponent<PlayerControls>() != null;
+		placer = GetComponent<Character>();
 	}
 
 	// Called when the user presses a button
@@ -31,7 +31,7 @@ public class Explosive : MonoBehaviour {
 				Damageable damageScript = hits[i].transform.GetComponentInParent<Damageable>();
 				if (damageScript == null)
 					break;
-				keepGoing = damageScript.Damage(hits[i].point, new Vector3(x, y, z), damagePerRay, isPlayer, DamageType.EXPLOSIVE);
+				keepGoing = damageScript.Damage(hits[i].point, new Vector3(x, y, z), damagePerRay, placer, DamageType.EXPLOSIVE);
 			}
 		}
 	}

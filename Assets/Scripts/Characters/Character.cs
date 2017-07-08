@@ -139,14 +139,14 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	public bool lastDamageNonlethal;
-	public virtual bool Damage(Vector3 location, Vector3 angle, float damage, bool playerAttacker = false, DamageType type = DamageType.BULLET) {
+	public virtual bool Damage(Vector3 location, Vector3 angle, float damage, Character attacker = null, DamageType type = DamageType.BULLET) {
 		bool isPlayer = tag.Equals("Player");
 		lastDamageNonlethal = type == DamageType.NONLETHAL;
 
 		if (!weaponDrawn)
 			damage *= 2f;
 
-		if (isPlayer && playerAttacker && !GameManager.instance.friendlyFireEnabled)
+		if (isPlayer && (attacker is PlayerControls) && !GameManager.instance.friendlyFireEnabled)
 			damage = 0f;
 
 		if (isAlive && !isPlayer)
@@ -161,9 +161,11 @@ public abstract class Character : LivingThing, Damageable {
 		health = Mathf.Max(0, health - damage);
 		if (!isAlive && wasAlive) {
 			Die(location, angle, type);
-			if (!(this is PlayerControls) && playerAttacker) {
+			if (!(this is PlayerControls) && (attacker is PlayerControls)) {
 				SaveGame.currentGame.stats.peopleKilled++;
-				SaveGame.currentGame.crime.Commit(Map.CurrentLocation().guid, "Murder", 100);
+			}
+			if (attacker != null) {
+				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentLocation().guid, "Murder", 100);
 			}
 		}
 
