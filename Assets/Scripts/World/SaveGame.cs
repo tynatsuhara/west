@@ -11,7 +11,7 @@ public class SaveGame {
 
 	public bool gameOver;
 	public Dictionary<System.Guid, NPC.NPCSaveData> savedCharacters;
-	public Dictionary<System.Guid, Group> groups;
+	public Dictionary<string, Group> groups;
 	public Dictionary<System.Guid, Horse.HorseSaveData> horses;
 	public Player.PlayerSaveData[] savedPlayers;
 	public Map map;

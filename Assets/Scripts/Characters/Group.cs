@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 [System.Serializable]
 public class Group {
+
+    public const string CRIMINALS = "Criminals";
+
     public System.Guid guid = System.Guid.NewGuid();
     public string name;
     HashSet<System.Guid> leaders = new HashSet<System.Guid>();

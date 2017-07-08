@@ -577,6 +577,8 @@ public abstract class Character : LivingThing, Damageable {
 		data.hairColor = hairColor;
 		data.hairStyle = hairStyle;
 		data.accessory = accessory;
+		data.groups = groups;
+		data.enemyGroups = enemyGroups;
 		return data;
 	}
 
@@ -612,6 +614,8 @@ public abstract class Character : LivingThing, Damageable {
 		hairColor = data.hairColor;
 		hairStyle = data.hairStyle;
 		accessory = data.accessory;
+		groups = data.groups;
+		enemyGroups = data.enemyGroups;
 	}
 
 	private List<List<byte[]>> SaveVoxelBytes() {
@@ -643,5 +647,7 @@ public abstract class Character : LivingThing, Damageable {
 
 		public bool ridingHorse;
 		public System.Guid mountGuid;
+		public HashSet<System.Guid> groups;
+		public HashSet<System.Guid> enemyGroups;
 	}
 }
