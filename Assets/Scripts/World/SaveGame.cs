@@ -63,7 +63,7 @@ public class SaveGame {
 			saveFile.Close();
 		}
 
-		// Debug.Log("game saved at " + SavePath());		
+		Debug.Log("game saved at " + SavePath());		
 	}
 
 	public static void Load() {
