@@ -160,13 +160,7 @@ public abstract class Character : LivingThing, Damageable {
 
 		health = Mathf.Max(0, health - damage);
 		if (!isAlive && wasAlive) {
-			Die(location, angle, type);
-			if (!(this is Player) && (attacker is Player)) {
-				SaveGame.currentGame.stats.peopleKilled++;
-			}
-			if (attacker != null) {
-				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentLocation().guid, "Murder", 100);
-			}
+			Die(location, angle, attacker, type);
 		}
 
 		// regular knockback
@@ -190,7 +184,7 @@ public abstract class Character : LivingThing, Damageable {
 		Die(transform.position, Vector3.one);
 	}
 
-	public virtual void Die(Vector3 location, Vector3 angle, DamageType type = DamageType.MELEE) {
+	public virtual void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
 		if (ridingHorse) {
 			Dismount();
 		}
@@ -210,6 +204,18 @@ public abstract class Character : LivingThing, Damageable {
 
 		if (Random.Range(0, 2) == 0) {
 			speech.SayRandom(Speech.DEATH_QUOTES, showFlash: true);
+		}
+
+		if (!(this is Player) && (attacker is Player)) {
+			SaveGame.currentGame.stats.peopleKilled++;
+		}
+		if (attacker != null) {
+			int bounty = SaveGame.currentGame.crime.Bounty(guid);
+			if (bounty == 0) {  // killed an innocent
+				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentLocation().guid, "Murder", 100);
+			} else {
+				// give them the bounty
+			}
 		}
 
 		StartCoroutine(FallOver(400));

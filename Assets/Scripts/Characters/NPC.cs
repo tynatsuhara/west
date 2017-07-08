@@ -92,10 +92,10 @@ public class NPC : Character, Interactable {
 	protected virtual void StateDownTied() {}
 	protected virtual void StateAttacking() {}
 
-	public override void Die(Vector3 location, Vector3 angle, DamageType type = DamageType.MELEE) {
+	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
 		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0 && currentState != NPCState.DOWN_TIED)
 			arms.SetFrame(0);
-		base.Die(location, angle, type);		
+		base.Die(location, angle, attacker, type);		
 	}
 
 	private void LegAnimation() {
