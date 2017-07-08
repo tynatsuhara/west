@@ -223,4 +223,8 @@ public class GameManager : MonoBehaviour {
 
 		Debug.Log(category + " + $" + dollarAmount.ToString("#,##0"));
 	}
+
+	public Character GetCharacter(System.Guid guid) {
+		return allCharacters.Where(x => x.guid == guid).FirstOrDefault();
+	}
 }

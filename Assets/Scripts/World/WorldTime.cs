@@ -29,6 +29,10 @@ public class WorldTime {
         }
     }
 
+    public static float Future(int minutes = 0, int hours = 0, int days = 0, int years = 0) {
+        return SaveGame.currentGame.time.worldTime + MINUTE * minutes + HOUR * hours + DAY * days + YEAR * years;
+    }
+
     public string DateString() {
         int year = (int)(worldTime/YEAR) + startYear;
         int day = (int)(worldTime_ % YEAR/DAY);

@@ -17,12 +17,12 @@ public class WorldGenerationWait : MonoBehaviour {
 		GameManager.newGame = true;
 		SaveGame.NewGame();
 		SaveGame.currentGame.time = new WorldTime();
+		SaveGame.currentGame.events = new EventQueue();
 		SaveGame.currentGame.map = new Map();
 		yield return StartCoroutine(SaveGame.currentGame.map.MakeMap(display));
 		SaveGame.currentGame.quests = new QuestManager();	
 		SaveGame.currentGame.stats = new Statistics();
 		SaveGame.currentGame.crime = new Crime();
-		SaveGame.currentGame.events = new EventQueue();
 		SceneManager.LoadScene("customization");
 	}
 }
