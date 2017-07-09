@@ -76,6 +76,7 @@ public abstract class Character : LivingThing, Damageable {
 		get { return draggedBody != null; }
 	}
 
+	public System.Guid killedBy;
 	public List<System.Guid> groups = new List<System.Guid>();
 	public List<System.Guid> enemyGroups = new List<System.Guid>();
 
@@ -210,6 +211,7 @@ public abstract class Character : LivingThing, Damageable {
 			SaveGame.currentGame.stats.peopleKilled++;
 		}
 		if (attacker != null) {
+			killedBy = attacker.guid;
 			int bounty = SaveGame.currentGame.crime.Bounty(guid);
 			if (bounty == 0) {  // killed an innocent
 				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentLocation().guid, "Murder", 100);
@@ -577,8 +579,9 @@ public abstract class Character : LivingThing, Damageable {
 		data.hairColor = hairColor;
 		data.hairStyle = hairStyle;
 		data.accessory = accessory;
-		data.groups = groups.ToList();
-		data.enemyGroups = enemyGroups.ToList();
+		data.groups = groups;
+		data.enemyGroups = enemyGroups;
+		data.killedBy = killedBy;
 		return data;
 	}
 
@@ -616,6 +619,7 @@ public abstract class Character : LivingThing, Damageable {
 		accessory = data.accessory;
 		groups = data.groups;
 		enemyGroups = data.enemyGroups;
+		killedBy = data.killedBy;
 	}
 
 	private List<List<byte[]>> SaveVoxelBytes() {
@@ -644,10 +648,10 @@ public abstract class Character : LivingThing, Damageable {
 		public int hairStyle;
 		public int accessory;
 		public bool female;
-
 		public bool ridingHorse;
 		public System.Guid mountGuid;
 		public List<System.Guid> groups = new List<System.Guid>();
 		public List<System.Guid> enemyGroups = new List<System.Guid>();
+		public System.Guid killedBy;
 	}
 }
