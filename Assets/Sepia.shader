@@ -1,7 +1,7 @@
 ﻿Shader "Custom/Sepia" {
 Properties {
 	_MainTex ("Base (RGB)", 2D) = "white" {}
-	_SepiaIntensity ("SepiaIntensity", Range(0, 1)) = .5
+	_SepiaIntensity ("SepiaIntensity", Range(0, 1)) = .3
 }
 
 SubShader {
