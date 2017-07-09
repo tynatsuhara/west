@@ -8,11 +8,14 @@ public class EventQueue {
 
     public IEnumerator Tick() {
         while (true) {
-            while (events.Count > 0 && events.Keys[0] <= SaveGame.currentGame.time.worldTime) {
-                events.Values[0].Execute();
-                events.RemoveAt(0);
-            }
+            CheckQueue(true);
             yield return new WaitForSeconds(WorldTime.MINUTE);
+        }
+    }
+    public void CheckQueue(bool hasLoadedLocation) {
+        while (events.Count > 0 && events.Keys[0] <= SaveGame.currentGame.time.worldTime) {
+            events.Values[0].Execute(hasLoadedLocation);
+            events.RemoveAt(0);
         }
     }
     

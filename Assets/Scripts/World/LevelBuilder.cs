@@ -45,6 +45,7 @@ public class LevelBuilder : MonoBehaviour {
 			permanent = Object.FindObjectsOfType<Transform>().Where(x => x.parent == null).ToList();
 		}
 
+		SaveGame.currentGame.events.CheckQueue(false);
 		Location l = Map.Location(guid);
 		loadedLocation = l;
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);

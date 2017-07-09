@@ -10,7 +10,10 @@ public class CharacterSpeechEvent : WorldEvent {
         this.message = message;
     }
 
-    public override void Execute() {
+    public override void Execute(bool hasLoadedLocation) {
+        if (!hasLoadedLocation) {
+            return;
+        }
         Character c = GameManager.instance.GetCharacter(character);
         if (c != null && c.isAlive) {
             c.speech.Say(message);
