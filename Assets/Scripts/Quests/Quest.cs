@@ -4,6 +4,7 @@ using System.Linq;
 
 [System.Serializable]
 public abstract class Quest {
+	public System.Guid guid = System.Guid.NewGuid();
 	protected List<Task> completedTasks = new List<Task>();
 	protected List<Task> tasks = new List<Task>();
 

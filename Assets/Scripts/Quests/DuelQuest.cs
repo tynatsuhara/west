@@ -7,11 +7,6 @@ public class DuelQuest : Quest {
 	private GoToTask centerOfRoad;
 	private GoToTask sevenPaces;
 
-	// public DuelQuest(System.Guid characterToDuel) {
-	// 	centerOfRoad = new GoToTask()
-	// 	sevenPaces = new GoToTask()
-	// }
-
 	public DuelQuest(System.Guid duelingOpponent) {
 		this.duelingOpponent = duelingOpponent;
 		Location l = Map.LocationOfCharacter(duelingOpponent);
