@@ -157,17 +157,11 @@ public class LevelBuilder : MonoBehaviour {
 			teleporterList.Add(porter.GetComponent<Teleporter>());
 		}
 		teleporters = teleporterList.ToArray();
-		MarkQuestDestinations();
 	}
 
-	public void MarkQuestDestinations() {
+	// Called by quest manager
+	public void MarkQuestDestinations(List<Task.TaskDestination> destinations) {
 		// Quest teleporter destinations		
-		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
-		foreach (Quest q in SaveGame.currentGame.quests.markedQuests) {
-			Task t = q.UpdateQuest();
-			if (t != null)
-				destinations.AddRange(t.GetLocations());
-		}
 		List<System.Guid> questTeleportDestinations = destinations
 				.Where(x => loadedLocation.guid != x.location)
 				.Select(x => SaveGame.currentGame.map.BestPathFrom(loadedLocation.guid, x.location)[0])

@@ -19,6 +19,7 @@ public class QuestManager {
 	}
 
 	public void UpdateQuests() {
+		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
 		bool anyComplete = false;
 		foreach (Quest q in quests.Values) {
 			Task task = q.UpdateQuest();
@@ -31,11 +32,10 @@ public class QuestManager {
 				completedQuests.Add(q.guid);
 			} else {
 				Debug.Log(task.message);
+				destinations.AddRange(task.GetLocations());
 			}
 		}
-		if (anyComplete) {
-			LevelBuilder.instance.MarkQuestDestinations();
-		}
+		LevelBuilder.instance.MarkQuestDestinations(destinations);
 	}
 
 	public void AddQuest(Quest q) {
