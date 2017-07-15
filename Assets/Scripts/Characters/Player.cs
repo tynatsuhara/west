@@ -126,9 +126,9 @@ public class Player : Character {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 
-		if (Input.GetKeyDown(KeyCode.L)) {
-			SaveGame.currentGame.time.worldTime += WorldTime.HOUR;
-		}
+		// if (Input.GetKeyDown(KeyCode.L)) {
+		// 	SaveGame.currentGame.time.worldTime += WorldTime.HOUR;
+		// }
 	}
  
 	void FixedUpdate () {
