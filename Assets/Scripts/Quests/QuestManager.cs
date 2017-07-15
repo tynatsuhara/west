@@ -25,6 +25,7 @@ public class QuestManager {
 			Task task = q.UpdateQuest();
 			if (q.failed) {
 				Debug.Log("quest failed");
+				activeQuests.Remove(q.guid);				
 			} else if (task == null) {
 				Debug.Log("quest complete");
 				anyComplete = true;

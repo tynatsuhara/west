@@ -18,7 +18,6 @@ public class DuelQuest : Quest {
 
 	public override Task UpdateQuest() {
 		if (killTask.complete && (!centerOfRoad.complete || !sevenPaces.complete)) {
-			Debug.Log("killTask is complete I guess");
 			failed = true;
 			return null;
 		}
