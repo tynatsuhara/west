@@ -11,12 +11,14 @@ public class QuestManager {
 	}
 
 	public QuestManager() {
-		quests.Add(new DuelQuest());  // TEMP
+		var characters = SaveGame.currentGame.savedCharacters.Keys.ToArray();
+		quests.Add(new DuelQuest(characters[Random.Range(0, characters.Length)]));  // TEMP
 	}
 
 	public void UpdateQuests() {
 		bool anyComplete = false;
 		foreach (Quest q in quests) {
+			q.Tick();
 			if (q.complete) {
 				Debug.Log("quest complete");
 				anyComplete = true;

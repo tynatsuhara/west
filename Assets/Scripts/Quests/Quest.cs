@@ -11,6 +11,8 @@ public abstract class Quest {
 		get { return tasks.Count == 0; }
 	}
 
+	public virtual void Tick() {}
+
 	public Task.TaskDestination[] GetLocations() {
 		return complete ? new Task.TaskDestination[0] : tasks[0].GetLocations();
 	}
