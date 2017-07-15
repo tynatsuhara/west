@@ -26,8 +26,10 @@ public class DuelQuest : Quest {
 			return centerOfRoad;
 		} else if (!sevenPaces.complete) {
 			return sevenPaces;
-		} else {
+		} else if (!killTask.complete) {
 			return killTask;
 		}
+
+		return null;  // complete!
 	}
 }
