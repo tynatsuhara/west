@@ -19,8 +19,4 @@ public class KillTask : Task {
     public KillTask(System.Guid character) {
         this.character = character;
     }
-
-	public override TaskDestination[] GetLocations() {
-        return new TaskDestination[]{};
-	}
 }

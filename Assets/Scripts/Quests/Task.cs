@@ -10,7 +10,9 @@ public abstract class Task {
 		get;
 	}
 
-	public abstract TaskDestination[] GetLocations();
+	public virtual TaskDestination[] GetLocations() {
+		return new TaskDestination[]{};
+	}
 
 	public class TaskDestination {
 		public System.Guid location;
