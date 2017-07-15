@@ -608,7 +608,7 @@ public abstract class Character : LivingThing, Damageable {
 		}
 		if (data.isWeaponDrawn)
 			DrawWeapon();
-		if (data.health >= 0)
+		if (!float.IsNaN(data.health))
 			health = data.health;
 		if (data.ridingHorse)
 			GameManager.spawnedHorses.Where(x => x.SaveData().guid == data.mountGuid).First().Interact(this);
@@ -636,7 +636,7 @@ public abstract class Character : LivingThing, Damageable {
 		public List<List<byte[]>> voxelBlobs;
 		public SerializableVector3 position;
 		public Inventory inv = new Inventory();
-		public float health = -1;
+		public float health = float.NaN;
 		public int weaponId = 0;  // start with revolver
 		public int sidearmId = -1;
 		public int equippedWeapon = 0;  // start wielding primary
@@ -653,5 +653,9 @@ public abstract class Character : LivingThing, Damageable {
 		public List<System.Guid> groups = new List<System.Guid>();
 		public List<System.Guid> enemyGroups = new List<System.Guid>();
 		public System.Guid killedBy;
+
+		public bool isAlive {
+			get { return float.IsNaN(health) || health > 0; }
+		}
 	}
 }

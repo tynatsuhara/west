@@ -6,6 +6,9 @@ public abstract class Task {
 	public abstract bool complete {
 		get;
 	}
+	public abstract string message {
+		get;
+	}
 
 	public abstract TaskDestination[] GetLocations();
 

@@ -21,12 +21,16 @@ public class QuestManager {
 	public void UpdateQuests() {
 		bool anyComplete = false;
 		foreach (Quest q in quests.Values) {
-			q.Tick();
-			if (q.complete) {
+			Task task = q.UpdateQuest();
+			if (q.failed) {
+				Debug.Log("quest failed");
+			} else if (task == null) {
 				Debug.Log("quest complete");
 				anyComplete = true;
 				activeQuests.Remove(q.guid);
 				completedQuests.Add(q.guid);
+			} else {
+				Debug.Log(task.message);
 			}
 		}
 		if (anyComplete) {

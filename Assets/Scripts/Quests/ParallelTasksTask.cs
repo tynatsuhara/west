@@ -5,12 +5,15 @@ using System.Linq;
 public class ParallelTasksTask : Task {
 	private Task[] tasks;
 
-	public ParallelTasksTask(params Task[] tasks) {
-		this.tasks = tasks.ToArray();
-	}
-
 	public override bool complete {
 		get { return tasks.All(x => x.complete); }
+	}
+	public override string message {
+		get { return tasks.Select(x => x.message).Aggregate((s1, s2) => s1 + "\n" + s2); }
+	}
+
+	public ParallelTasksTask(params Task[] tasks) {
+		this.tasks = tasks.ToArray();
 	}
 
 	public override TaskDestination[] GetLocations() {
