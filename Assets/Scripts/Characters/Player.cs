@@ -171,7 +171,7 @@ public class Player : Character {
 	private void Move(float x, float z) {
 		if (ridingHorse) {
 			walk.Ride();
-			if (!mount.SaveData().tamed)
+			if (!mount.tamed)
 				return;
 		}
 
