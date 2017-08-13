@@ -43,9 +43,9 @@ public class TextObject : MonoBehaviour {
 		if (!ui) {
 			foreach (Player p in GameManager.players) {
 				if (p.firstPersonCam.enabled) {
-					text[p.id-1].fontSize = 4;
+					text[p.id-1].transform.localScale = Vector3.one;					
 				} else {
-					text[p.id-1].fontSize = (int) (4 + p.playerCamera.cam.orthographicSize * .3f);
+					text[p.id-1].transform.localScale = Vector3.one * (p.playerCamera.cam.orthographicSize * .15f + .5f);
 				}
 			}
 		}
