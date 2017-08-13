@@ -20,6 +20,7 @@ public class TextObject : MonoBehaviour {
 	public bool pausable = true;
 	public bool currentlyDisplaying = false;
 	public bool ui = false;
+	public bool frozen = false;
 
 	void Awake() {
 		text = GetComponentsInChildren<Text>();
@@ -39,18 +40,33 @@ public class TextObject : MonoBehaviour {
 			lastSayTime += Time.unscaledDeltaTime;
 			return;
 		}
-		CheckLoopTime();	
-		CheckToggleTime();
-		CheckClearTime();
+		if (!ui) {
+			foreach (Player p in GameManager.players) {
+				if (p.firstPersonCam.enabled) {
+					text[p.id-1].fontSize = 4;
+				} else {
+					text[p.id-1].fontSize = (int) (4 + p.playerCamera.cam.orthographicSize * .3f);
+				}
+			}
+		}
+		if (!frozen) {
+			CheckLoopTime();	
+			CheckToggleTime();
+			CheckClearTime();
+		}
 	}
 
 	void LateUpdate() {
 		string s = wordQueue.Count > 0 ? ParseString(wordQueue[0]) : "";
 		if (ui) {
-			GetComponent<Text>().text = s;
+			if (!frozen) {
+				GetComponent<Text>().text = s;
+			}
 		} else {
 			for (int i = 0; i < GameManager.players.Count; i++) {
-				text[i].text = s;
+				if (!frozen) {
+					text[i].text = s;
+				}
 				text[i].transform.rotation = GameManager.players[i].firstPersonCam.enabled 
 						? GameManager.players[i].firstPersonCam.transform.rotation
 						: GameManager.players[i].playerCamera.cam.transform.rotation;

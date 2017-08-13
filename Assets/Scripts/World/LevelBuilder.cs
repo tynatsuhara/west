@@ -37,6 +37,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public void LoadLocation(System.Guid guid) {
 		bool firstLoad = GameManager.instance.loadReposition == Vector3.zero;
+		markedDestinations = new Dictionary<string, GameObject>();
 
 		if (!firstLoad) {
 			SaveGame.Save(false);
@@ -159,6 +160,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	// Called by quest manager
+	private Dictionary<string, GameObject> markedDestinations;
 	public void MarkQuestDestinations(List<Task.TaskDestination> destinations) {
 		// Quest teleporter destinations		
 		List<System.Guid> questTeleportDestinations = destinations
@@ -174,17 +176,32 @@ public class LevelBuilder : MonoBehaviour {
 				.Where(x => loadedLocation.guid == x.location)
 				.Select(x => x.position)
 				.ToList();
+		List<string> destStrings = destinationMarkers.Select(x => x.ToString()).ToList();
+		List<Vector3> newDestinationMarkers = destinationMarkers
+				.Where(x => !markedDestinations.ContainsKey(x.ToString()))
+				.ToList();
+		List<Vector3> expiredDestinationMarkers = markedDestinations.Values
+				.Where(x => !destStrings.Contains(x.transform.position.ToString()))
+				.Select(x => x.transform.position)
+				.ToList();
+		
 		GameObject spotParent = GameObject.Find("QuestPositionParent");
-		if (spotParent != null) {
-			Destroy(spotParent);
-		}
-		if (destinationMarkers.Count > 0) {
+		if (spotParent == null) {
+			Debug.Log("spawning spot parent");
 			spotParent = new GameObject();
 			spotParent.name = "QuestPositionParent";
-			foreach (Vector3 v in destinationMarkers) {
-				GameObject spot = Instantiate(destinationMarkerPrefab, v, Quaternion.identity);
-				spot.transform.SetParent(spotParent.transform);
-			}
+		}
+		foreach (Vector3 expired in expiredDestinationMarkers) {
+			Debug.Log("deleting " + expired);
+			Destroy(markedDestinations[expired.ToString()]);
+			markedDestinations.Remove(expired.ToString());
+		}
+		foreach (Vector3 v in newDestinationMarkers) {
+			Debug.Log("spawning " + v);
+			GameObject spot = Instantiate(destinationMarkerPrefab, v, Quaternion.identity);
+			spot.transform.SetParent(spotParent.transform);
+			markedDestinations.Add(v.ToString(), spot);
+			spot.name = v.ToString();
 		}
 	}
 

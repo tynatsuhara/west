@@ -11,8 +11,8 @@ public class DuelQuest : Quest {
 	public DuelQuest(System.Guid duelingOpponent) {
 		this.duelingOpponent = duelingOpponent;
 		Location l = Map.LocationOfCharacter(duelingOpponent);
-		centerOfRoad = new GoToTask(l.guid, new Vector3(Random.Range(0, l.width), 0, Random.Range(0, l.height)), false, "Start the duel");
-		sevenPaces = new GoToTask(l.guid, new Vector3(Random.Range(0, l.width), 0, Random.Range(0, l.height)), true, "Walk seven paces");
+		centerOfRoad = new GoToTask(l.guid, l.TileVectorPosition(l.RandomUnoccupiedTile()), false, "Start the duel");
+		sevenPaces = new GoToTask(l.guid, l.TileVectorPosition(l.RandomUnoccupiedTile()), true, "Walk seven paces");
 		killTask = new KillTask(duelingOpponent);
 	}
 
