@@ -252,7 +252,6 @@ public class NPC : Character, Interactable {
 
 	public override void Alert(Reaction importance, Vector3 position) {}
 
-
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public NPCSaveData SaveData() {

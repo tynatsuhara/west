@@ -17,10 +17,17 @@ public abstract class Task {
 	public class TaskDestination {
 		public System.Guid location;
 		public Vector3 position;
+		public System.Guid character;
 
 		public TaskDestination(System.Guid location, Vector3 position) {
 			this.location = location;
 			this.position = position;
+			this.character = System.Guid.Empty;
+		}
+
+		public TaskDestination(System.Guid character) {
+			this.location = Map.LocationOfCharacter(character).guid;
+			this.character = character;
 		}
 	}
 }

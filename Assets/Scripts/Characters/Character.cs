@@ -203,6 +203,7 @@ public abstract class Character : LivingThing, Damageable {
 		}
 		DamageEffects(exploder, angle, type);
 
+		UnMarkForQuest();
 		if (Random.Range(0, 2) == 0) {
 			speech.SayRandom(Speech.DEATH_QUOTES, showFlash: true);
 		}
@@ -554,6 +555,17 @@ public abstract class Character : LivingThing, Damageable {
 	public GameObject FacingObstruction(float distance = 1f) {
 		RaycastHit hit;
 		return FacingObstruction(out hit, distance);
+	}
+
+	public GameObject questMarker;
+	public void MarkForQuest() {
+		if (questMarker != null)
+			questMarker.SetActive(true);
+	}
+
+	public void UnMarkForQuest() {
+		if (questMarker != null)
+			questMarker.SetActive(false);
 	}
 
 

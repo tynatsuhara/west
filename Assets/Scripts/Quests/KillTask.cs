@@ -12,9 +12,16 @@ public class KillTask : Task {
                 : !SaveGame.currentGame.savedCharacters[character].isAlive;
         }
 	}
+
     public override string message {
         get { return "Kill " + SaveGame.currentGame.savedCharacters[character].name; }
     }
+
+    public override TaskDestination[] GetLocations() {
+		return new TaskDestination[]{
+            new TaskDestination(character)
+        };
+	}
 
     public KillTask(System.Guid character) {
         this.character = character;

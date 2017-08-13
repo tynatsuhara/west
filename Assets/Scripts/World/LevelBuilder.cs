@@ -171,9 +171,21 @@ public class LevelBuilder : MonoBehaviour {
 			t.MarkQuest(questTeleportDestinations.Contains(t.toId));
 		}
 
+		List<System.Guid> markedCharacters = destinations
+				.Where(x => x.location == loadedLocation.guid && x.character != System.Guid.Empty)
+				.Select(x => x.character)
+				.ToList();
+		foreach (NPC npc in GameManager.spawnedNPCs) {
+			if (markedCharacters.Contains(npc.guid)) {
+				npc.MarkForQuest();
+			} else {
+				npc.UnMarkForQuest();
+			}
+		}
+
 		// Quests in this location, spawn markers at spots
 		List<Vector3> destinationMarkers = destinations
-				.Where(x => loadedLocation.guid == x.location)
+				.Where(x => loadedLocation.guid == x.location && x.character == System.Guid.Empty)
 				.Select(x => x.position)
 				.ToList();
 		List<string> destStrings = destinationMarkers.Select(x => x.ToString()).ToList();
@@ -187,17 +199,14 @@ public class LevelBuilder : MonoBehaviour {
 		
 		GameObject spotParent = GameObject.Find("QuestPositionParent");
 		if (spotParent == null) {
-			Debug.Log("spawning spot parent");
 			spotParent = new GameObject();
 			spotParent.name = "QuestPositionParent";
 		}
 		foreach (Vector3 expired in expiredDestinationMarkers) {
-			Debug.Log("deleting " + expired);
 			Destroy(markedDestinations[expired.ToString()]);
 			markedDestinations.Remove(expired.ToString());
 		}
 		foreach (Vector3 v in newDestinationMarkers) {
-			Debug.Log("spawning " + v);
 			GameObject spot = Instantiate(destinationMarkerPrefab, v, Quaternion.identity);
 			spot.transform.SetParent(spotParent.transform);
 			markedDestinations.Add(v.ToString(), spot);
