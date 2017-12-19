@@ -267,16 +267,16 @@ namespace PicaVoxel
                     bake.tag = "Untagged";
                     bake.name = vol.name;
                     DestroyImmediate(bake.GetComponent<Volume>());
-                    DestroyImmediate(bake.transform.FindChild("Hitbox").gameObject);
+                    DestroyImmediate(bake.transform.Find("Hitbox").gameObject);
                     for (int i = 0; i < bake.transform.childCount; i++)
                     {
                         GameObject o = bake.transform.GetChild(i).gameObject;
                         if (o.GetComponent<Frame>() != null)
                         {
                             DestroyImmediate(o.GetComponent<Frame>());
-                            for (int c = 0; c < o.transform.FindChild("Chunks").childCount; c++)
+                            for (int c = 0; c < o.transform.Find("Chunks").childCount; c++)
                             {
-                                GameObject chunk = o.transform.FindChild("Chunks").GetChild(c).gameObject;
+                                GameObject chunk = o.transform.Find("Chunks").GetChild(c).gameObject;
                                 if (chunk.GetComponent<Chunk>() != null)
                                     DestroyImmediate(chunk.GetComponent<Chunk>());
                             }

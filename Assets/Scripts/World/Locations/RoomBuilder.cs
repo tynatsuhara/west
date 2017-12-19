@@ -41,6 +41,7 @@ public class RoomBuilder {
             // find place to attach (looking at all already placed rooms)
             // attach it (rotate if needed)
         }
+        Debug.Log("finished! \n" + String.Join("\n", grid.ToArray()));
         return this;
     }
 
@@ -67,8 +68,14 @@ public class RoomBuilder {
                     bool matchBelow = spaceBelowDoors.Count > 0 && thatSpaceAboveDoors.Count > 0;
                     if ((matchAbove && !matchBelow) || (matchAbove && matchBelow && UnityEngine.Random.Range(0, 2) == 0)) {
                         // place room above
+                        if (Merge(spaceAboveDoors.First(), thatSpaceBelowDoors.First(), room)) {
+                            return true;
+                        }
                     } else if (matchBelow) {
                         // place room below
+                        if (Merge(spaceBelowDoors.First(), thatSpaceAboveDoors.First(), room)) {
+                            return true;
+                        }
                     }
 
                     Rotate();
@@ -81,8 +88,57 @@ public class RoomBuilder {
         return false;
     }
 
-    private bool Merge(FindResult thisPos, FindResult otherPos) {
-        
+    private bool Merge(FindResult thisPos, FindResult otherPos, RoomBuilder other) {
+        int bottomPad = 0, topPad = 0, leftPad = 0, rightPad = 0;
+
+        for (int r = 0; r < other.grid.Count; r++) {
+            for (int c = 0; c < other.grid[0].Length; c++) {
+                int overlapRow = thisPos.row + r - otherPos.row;
+                bottomPad = Mathf.Min(bottomPad, overlapRow);
+                topPad = Mathf.Max(topPad, overlapRow);
+                bool outsideRow = overlapRow < 0 || overlapRow >= grid.Count;
+
+                int overlapCol = thisPos.col + c - otherPos.col;
+                leftPad = Mathf.Min(leftPad, overlapCol);
+                rightPad = Mathf.Max(rightPad, overlapCol);
+                bool outsideCol = overlapCol < 0 || overlapCol >= grid[0].Length;
+                
+                if (!outsideCol && !outsideRow && !CanOverlap(grid[overlapRow][overlapCol], other.grid[r][c])) {
+                    return false;
+                }
+            }
+        }
+
+        thisPos.row += bottomPad;
+        thisPos.col += leftPad;
+        int originalLength = grid[0].Length;
+
+        for (int i = 0; i < bottomPad; i++) {
+            grid.Insert(0, "");
+        }
+        for (int i = 0; i < topPad; i++) {
+            grid.Add("");
+        }
+        for (int i = 0; i < grid.Count; i++) {
+            grid[i] = grid[i].PadLeft(originalLength + leftPad).PadRight(originalLength + leftPad + rightPad);
+        }
+
+        List<char[]> arrs = grid.Select(x => x.ToCharArray()).ToList();
+        for (int r = 0; r < other.grid.Count; r++) {
+            for (int c = 0; c < other.grid[0].Length; c++) {
+                int overlapRow = thisPos.row + r - otherPos.row;
+                int overlapCol = thisPos.col + c - otherPos.col;
+                char winner = other.grid[r][c] != ' ' ? other.grid[r][c] : arrs[overlapRow][overlapCol];
+                arrs[overlapRow][overlapCol] = winner;
+            }
+        }
+
+        return true;
+    }
+
+    private bool CanOverlap(char a, char b) {
+        char wall = 'a';
+        return (a == ' ' || a == wall) && (b == ' ' || b == wall);
     }
 
     // returns [row, col] or null if not found
@@ -96,8 +152,8 @@ public class RoomBuilder {
                 // track all the hits in the row
                 if (index != -1 && (rowHits.Count == 0 || rowHits[rowHits.Count - 1] != index)) {
                     rowHits.Add(index);
-                    bool spaceAbove = r == 0 || row.Substring(index, index + on.Length).Trim().Length == 0;
-                    bool spaceBelow = r == grid.Count || row.Substring(index, index + on.Length).Trim().Length == 0;
+                    bool spaceAbove = r == 0 || grid[r-1].Substring(index, on.Length).Trim().Length == 0;
+                    bool spaceBelow = r == grid.Count-1 || grid[r+1].Substring(index, on.Length).Trim().Length == 0;
                     result.Add(new FindResult(r, index, spaceAbove, spaceBelow));
                 }
             }
@@ -127,7 +183,7 @@ public class RoomBuilder {
         List<string> result = new List<string>();
         for (int i = 0; i < grid[0].Length; i++) {
             StringBuilder sb = new StringBuilder(grid.Count);
-            result.Add(String.Join("", grid.Select(str => str.Substring(i, i+1)).ToArray()));
+            result.Add(String.Join("", grid.Select(str => "" + str[i]).ToArray()));
         }
         return result;
     }

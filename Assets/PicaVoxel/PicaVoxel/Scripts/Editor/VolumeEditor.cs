@@ -161,8 +161,8 @@ namespace PicaVoxel
                 if (frame.transform.localScale != Vector3.one && !Application.isPlaying)
                     frame.transform.localScale = Vector3.one;
 
-                if (frame.transform.FindChild("Chunks").localScale != Vector3.one && !Application.isPlaying)
-                    frame.transform.FindChild("Chunks").localScale = Vector3.one;
+                if (frame.transform.Find("Chunks").localScale != Vector3.one && !Application.isPlaying)
+                    frame.transform.Find("Chunks").localScale = Vector3.one;
             }
 
 
@@ -759,7 +759,7 @@ namespace PicaVoxel
                             EditorPersistence.CursorMode != EditorCursorMode.BrushSubtract)
                         {
                             Gizmos.matrix =
-                                voxelObject.GetCurrentFrame().transform.FindChild("Chunks").localToWorldMatrix;
+                                voxelObject.GetCurrentFrame().transform.Find("Chunks").localToWorldMatrix;
                             Handles.color = (EditorPersistence.CursorMode == EditorCursorMode.Subtract ||
                                              EditorPersistence.CursorMode == EditorCursorMode.BoxSubtract ||
                                              EditorPersistence.CursorMode == EditorCursorMode.PickColor ||
@@ -1638,7 +1638,7 @@ namespace PicaVoxel
 
             if (EditorPersistence.CursorMode == EditorCursorMode.Select)
             {
-                Gizmos.matrix = voxelObject.GetCurrentFrame().transform.FindChild("Chunks").localToWorldMatrix;
+                Gizmos.matrix = voxelObject.GetCurrentFrame().transform.Find("Chunks").localToWorldMatrix;
                 Handles.color = Color.red;
 
                 int i = 0;

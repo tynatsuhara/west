@@ -310,7 +310,7 @@ namespace PicaVoxel
         /// </summary>
         public void UpdatePivot()
         {
-            transform.FindChild("Chunks").localPosition = -ParentVolume.Pivot;
+            transform.Find("Chunks").localPosition = -ParentVolume.Pivot;
         }
 
         public void UpdateTransformMatrix()
@@ -477,7 +477,7 @@ namespace PicaVoxel
             {
                 DestroyMeshColliders();
 
-                Transform chunkContainer = transform.FindChild("Chunks");
+                Transform chunkContainer = transform.Find("Chunks");
                 for (int i = chunkContainer.childCount - 1; i >= 0; i--)
                     if (chunkContainer.GetChild(i).GetComponent<Chunk>() != null)
                         DestroyImmediate(chunkContainer.GetChild(i).gameObject);
@@ -574,7 +574,7 @@ namespace PicaVoxel
 
             DestroyMeshColliders();
 
-            Transform chunkContainer = transform.FindChild("Chunks");
+            Transform chunkContainer = transform.Find("Chunks");
 
             for (int i = chunkContainer.childCount - 1; i >= 0; i--)
                 if (chunkContainer.GetChild(i).GetComponent<Chunk>() != null)
@@ -707,7 +707,7 @@ namespace PicaVoxel
                 for (int y = 0; y < (int)Mathf.Ceil((float)YSize / ParentVolume.YChunkSize); y++)
                     for (int z = 0; z < (int)Mathf.Ceil((float)ZSize / ParentVolume.ZChunkSize); z++)
                     {
-                        Transform c = transform.FindChild("Chunks/Chunk (" + x + "," + y + "," + z + ")");
+                        Transform c = transform.Find("Chunks/Chunk (" + x + "," + y + "," + z + ")");
                         if (c == null)
                         {
                             //Debug.LogWarning("Couldn't get chunk refs - should probably work out why!");

@@ -120,7 +120,7 @@ namespace PicaVoxel
 
         private void Awake()
         {
-            Hitbox = transform.FindChild("Hitbox").GetComponent<BoxCollider>();
+            Hitbox = transform.Find("Hitbox").GetComponent<BoxCollider>();
 
             int startFrame = CurrentFrame;
             if (Application.isPlaying)
@@ -707,10 +707,10 @@ namespace PicaVoxel
 
         private void UpdateBoxCollider()
         {
-            Hitbox = transform.FindChild("Hitbox").GetComponent<BoxCollider>();
+            Hitbox = transform.Find("Hitbox").GetComponent<BoxCollider>();
             Hitbox.size = new Vector3(XSize*VoxelSize, YSize*VoxelSize, ZSize*VoxelSize);
             Hitbox.center = new Vector3(XSize*VoxelSize, YSize*VoxelSize, ZSize*VoxelSize)/2f;
-            transform.FindChild("Hitbox").transform.localPosition = -Pivot;
+            transform.Find("Hitbox").transform.localPosition = -Pivot;
 
         }
 
@@ -774,9 +774,9 @@ namespace PicaVoxel
         {
             foreach (Frame frame in Frames)
             {
-                for (int i = 0; i < frame.transform.FindChild("Chunks").childCount; i++)
+                for (int i = 0; i < frame.transform.Find("Chunks").childCount; i++)
                 {
-                    var o = frame.transform.FindChild("Chunks").GetChild(i).gameObject;
+                    var o = frame.transform.Find("Chunks").GetChild(i).gameObject;
                     if (o.GetComponent<Renderer>() && IsEnabledForEditing)
                         EditorUtility.SetSelectedRenderState(o.GetComponent<Renderer>(), EditorSelectedRenderState.Hidden);
                     else
@@ -788,7 +788,7 @@ namespace PicaVoxel
 
             if (DrawGrid)
             {
-                Gizmos.matrix = Frames[CurrentFrame].transform.FindChild("Chunks").localToWorldMatrix;
+                Gizmos.matrix = Frames[CurrentFrame].transform.Find("Chunks").localToWorldMatrix;
                 Gizmos.color = new Color(1f, 1f, 1f, 0.1f);
                 for (int x = 0; x <= XSize; x++)
                     for (int y = 0; y <= YSize; y++)
