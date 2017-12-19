@@ -215,12 +215,12 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnBuildings() {
-		foreach (Building b in loadedLocation.buildings) {
-			int t = b.bottomLeftTile;
-			Instantiate(buildingPrefabs[b.prefabIndex],
-						loadedLocation.TileVectorPosition(b.bottomLeftTile, false) + new Vector3(b.width/2f, 0, b.height/2f) * TILE_SIZE, 
-						Quaternion.Euler(0, b.angle, 0));
-		}
+		// foreach (Building b in loadedLocation.buildings) {
+		// 	int t = b.bottomLeftTile;
+		// 	Instantiate(buildingPrefabs[b.prefabIndex],
+		// 				loadedLocation.TileVectorPosition(b.bottomLeftTile, false) + new Vector3(b.width/2f, 0, b.height/2f) * TILE_SIZE, 
+		// 				Quaternion.Euler(0, b.angle, 0));
+		// }
 	}
 
 	private void PositionWalls() {

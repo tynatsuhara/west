@@ -84,11 +84,13 @@ public class Teleporter : MonoBehaviour {
 		public System.Guid toId;
 		public SerializableVector3 position;
 		public string tag;
+		public bool connectRoad;
 
-		public TeleporterData(System.Guid toId, Vector3 position, string tag = "") {
+		public TeleporterData(System.Guid toId, Vector3 position, string tag = "", bool connectRoad = true) {
 			this.toId = toId;
 			this.position = new SerializableVector3(position);
 			this.tag = tag;
+			this.connectRoad = connectRoad;
 		}
 	}
 }

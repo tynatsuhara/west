@@ -103,7 +103,7 @@ public class TownLocation : Location {
 		trails = new BitArray(width * height);
 		buildingSpaces = new BitArray(width * height);
 
-		PlaceBuildingsAndRoads(exits);
+		// PlaceBuildingsAndRoads(exits);
 
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
@@ -228,65 +228,65 @@ public class TownLocation : Location {
 
 	// ================= BUILDING STUFF ================= //
 
-	private void PlaceBuildingsAndRoads(List<int> exits) {
-		// Place roads from all teleporters to first building
-		int buildingsToAttempt = Random.Range(5, 10);
-		for (int i = 0; i < buildingsToAttempt; i++) {
-			int destination = TryPlaceBuilding(new Building());
-			if (destination == -1)
-				continue;
-			foreach (int exit in exits) {
-				foreach (int path in BestPathFrom(exit, destination)) {
-					trails.Set(path, true);
-				}
-				// TODO: make roads form loops
-			}
-		}
-	}
+	// private void PlaceBuildingsAndRoads(List<int> exits) {
+	// 	// Place roads from all teleporters to first building
+	// 	int buildingsToAttempt = Random.Range(5, 10);
+	// 	for (int i = 0; i < buildingsToAttempt; i++) {
+	// 		int destination = TryPlaceBuilding(new Building());
+	// 		if (destination == -1)
+	// 			continue;
+	// 		foreach (int exit in exits) {
+	// 			foreach (int path in BestPathFrom(exit, destination)) {
+	// 				trails.Set(path, true);
+	// 			}
+	// 			// TODO: make roads form loops
+	// 		}
+	// 	}
+	// }
 
-	private int TryPlaceBuilding(Building b) {
-		b.Rotate(Random.Range(0, 4));
+	// private int TryPlaceBuilding(Building b) {
+	// 	b.Rotate(Random.Range(0, 4));
 
-		for (int i = 0; i < 3; i++) {
-			int place = RandomBuildingPos(b);
-			if (place == -1)
-				continue;  // rotate and try again
+	// 	for (int i = 0; i < 3; i++) {
+	// 		int place = RandomBuildingPos(b);
+	// 		if (place == -1)
+	// 			continue;  // rotate and try again
 			
-			// mark spaces as occupied by building
-			int x = X(place);
-			int y = Y(place);
-			for (int xi = x; xi < x + b.width; xi++) {
-				for (int yi = y; yi < y + b.height; yi++) {
-					buildingSpaces.Set(Val(xi, yi), true);
-				}
-			}
+	// 		// mark spaces as occupied by building
+	// 		int x = X(place);
+	// 		int y = Y(place);
+	// 		for (int xi = x; xi < x + b.width; xi++) {
+	// 			for (int yi = y; yi < y + b.height; yi++) {
+	// 				buildingSpaces.Set(Val(xi, yi), true);
+	// 			}
+	// 		}
 
-			b.bottomLeftTile = place;
-			buildings.Add(b);
-			return Val(x + b.doorOffsetX, y + b.doorOffsetY);
-		}
-		return -1;
-	}
+	// 		b.bottomLeftTile = place;
+	// 		buildings.Add(b);
+	// 		return Val(x + b.doorOffsetX, y + b.doorOffsetY);
+	// 	}
+	// 	return -1;
+	// }
 
-	// returns Val(x, y) where (x, y) is the bottom left corner
-	// if a spot cannot easily be found, returns -1
-	private int RandomBuildingPos(Building b) {
-		int padding = 3;  // amount of spaces from edge to building
-		for (int i = 0; i < 20; i++) {
-			int paddedW = b.width + 2;
-			int paddedH = b.height + 2;
-			int x = Random.Range(padding, width - b.width + 1 - padding);
-			int y = Random.Range(padding, height - b.height + 1 - padding);
-			bool obstructed = false;
-			for (int xi = x; xi < x + paddedW && !obstructed; xi++) {
-				for (int yi = y; yi < y + paddedH && !obstructed; yi++) {
-					obstructed = TileOccupied(Val(xi, yi));
-				}
-			}
-			if (!obstructed && !TileOccupied(Val(x + b.doorOffsetX, y + b.doorOffsetY))) {
-				return Val(x+1, y+1);
-			}
-		}
-		return -1;
-	}
+	// // returns Val(x, y) where (x, y) is the bottom left corner
+	// // if a spot cannot easily be found, returns -1
+	// private int RandomBuildingPos(Building b) {
+	// 	int padding = 3;  // amount of spaces from edge to building
+	// 	for (int i = 0; i < 20; i++) {
+	// 		int paddedW = b.width + 2;
+	// 		int paddedH = b.height + 2;
+	// 		int x = Random.Range(padding, width - b.width + 1 - padding);
+	// 		int y = Random.Range(padding, height - b.height + 1 - padding);
+	// 		bool obstructed = false;
+	// 		for (int xi = x; xi < x + paddedW && !obstructed; xi++) {
+	// 			for (int yi = y; yi < y + paddedH && !obstructed; yi++) {
+	// 				obstructed = TileOccupied(Val(xi, yi));
+	// 			}
+	// 		}
+	// 		if (!obstructed && !TileOccupied(Val(x + b.doorOffsetX, y + b.doorOffsetY))) {
+	// 			return Val(x+1, y+1);
+	// 		}
+	// 	}
+	// 	return -1;
+	// }
 }
