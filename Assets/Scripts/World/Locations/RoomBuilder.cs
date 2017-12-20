@@ -28,18 +28,23 @@ public class RoomBuilder {
 
     // rooms should be attached in order of importance (building out from the root room)
     // todo: additional parameters? (optional, etc)
-    public RoomBuilder Attach(string on, RoomBuilder room) {
+    public RoomBuilder Attach(string on, string replacement, RoomBuilder room) {
         connections.Add(room, on);
         return this;
     }
 
+    public RoomBuilder Replace(string str, string with) {
+        for (int i = 0; i < grid.Count; i++) {
+            grid[i] = grid[i].Replace(str, with);
+        }
+        return this;
+    }
+
     // Merges all the attached rooms together
-    public RoomBuilder Finish() {
+    public RoomBuilder Merge() {
         foreach (RoomBuilder room in connections.Keys) {
             string connector = connections[room];
             TryAttachRoom(room, connector);
-            // find place to attach (looking at all already placed rooms)
-            // attach it (rotate if needed)
         }
         Debug.Log("finished! \n" + ToString());
         return this;
@@ -113,7 +118,7 @@ public class RoomBuilder {
                 minCol = Mathf.Min(minCol, overlapCol);
                 maxCol = Mathf.Max(maxCol, overlapCol);
                 
-                if (!outsideCol && !outsideRow && !CanOverlap(grid[overlapRow][overlapCol], other.grid[r][c])) {
+                if (!outsideCol && !outsideRow && Overlap(grid[overlapRow][overlapCol], other.grid[r][c]) == null) {
                     Debug.Log("failed overlap, thisPos=" + thisPos + ", otherPos=" + otherPos + ", a=" + grid[overlapRow][overlapCol] + ", b=" + other.grid[r][c]);
                     return false;
                 }
@@ -146,7 +151,7 @@ public class RoomBuilder {
             for (int c = 0; c < other.grid[0].Length; c++) {
                 int overlapRow = thisPos.row + r - otherPos.row;
                 int overlapCol = thisPos.col + c - otherPos.col;
-                char winner = other.grid[r][c] != ' ' ? other.grid[r][c] : arrs[overlapRow][overlapCol];
+                char winner = (char) Overlap(other.grid[r][c], arrs[overlapRow][overlapCol]);
                 Debug.Log("overlapRow=" + overlapRow + ", overlapCol=" + overlapCol);
                 arrs[overlapRow][overlapCol] = winner;
             }
@@ -156,9 +161,19 @@ public class RoomBuilder {
         return true;
     }
 
-    private bool CanOverlap(char a, char b) {
-        char wall = 'a';
-        return a == b || ((a == ' ' || a == wall) && (b == ' ' || b == wall));
+    private char? Overlap(char a, char b) {
+        char wall = '=';
+        if (a == ' ')
+            return b;
+        if (b == ' ')
+            return a;
+        if (a == b)
+            return a;
+        if (a == wall)
+            return a;
+        if (b == wall)
+            return b;
+        return null;
     }
 
     // returns [row, col] or null if not found

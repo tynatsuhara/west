@@ -10,21 +10,21 @@ public class Benchmarking : MonoBehaviour {
 
 		for (int i = 0; i < 1; i++) {
 			RoomBuilder room = new RoomBuilder(
-				"aaaaaaaaaaaaa",
-				"afffffffffffa",
-				"afffffffffffa",
-				"afffffffffffa",
-				"aaabbbaaaaaaa"
+				"=============",
+				"=///////////#",
+				"=///////////#",
+				"=///////////#",
+				"=###########="
 			)
-			.Attach("b", new RoomBuilder(
-				"aaaaaaaaa",
-				"bfffffffb",
-				"abbbaaaaa"
+			.Attach("#", "-", new RoomBuilder(
+				"====#====",
+				"#///////=",
+				"======##="
 			))
-			.Finish();
+			.Merge();
 		}
 
 		timer.Stop();
-		UnityEngine.Debug.Log("time elapsed = " + timer.ElapsedMilliseconds);
+		UnityEngine.Debug.Log("time elapsed = " + timer.ElapsedMilliseconds + "ms");
 	}
 }
