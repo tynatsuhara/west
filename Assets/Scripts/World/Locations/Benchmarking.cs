@@ -21,7 +21,10 @@ public class Benchmarking : MonoBehaviour {
 				"#///////=",
 				"======##="
 			))
-			.Merge();
+			.Merge()
+			.Replace("#", "=");
+
+			UnityEngine.Debug.Log(room);
 		}
 
 		timer.Stop();

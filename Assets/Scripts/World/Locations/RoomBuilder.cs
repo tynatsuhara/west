@@ -10,6 +10,7 @@ public class RoomBuilder {
     private int[] removableRows;
     private int[] removableCols;
     private Dictionary<RoomBuilder, string> connections = new Dictionary<RoomBuilder, string>();
+    private Dictionary<RoomBuilder, string> replacements = new Dictionary<RoomBuilder, string>();
     private Dictionary<char, Action<Vector3>> functions = new Dictionary<char, Action<Vector3>>();
 
     public RoomBuilder(params string[] grid) {
@@ -30,6 +31,7 @@ public class RoomBuilder {
     // todo: additional parameters? (optional, etc)
     public RoomBuilder Attach(string on, string replacement, RoomBuilder room) {
         connections.Add(room, on);
+        replacements.Add(room, replacement);
         return this;
     }
 
@@ -46,7 +48,6 @@ public class RoomBuilder {
             string connector = connections[room];
             TryAttachRoom(room, connector);
         }
-        Debug.Log("finished! \n" + ToString());
         return this;
     }
 
@@ -155,6 +156,10 @@ public class RoomBuilder {
                 // Debug.Log("overlapRow=" + overlapRow + ", overlapCol=" + overlapCol);
                 arrs[overlapRow][overlapCol] = winner;
             }
+        }
+        string replacement = replacements[other];
+        for (int i = 0; i < replacement.Length; i++) {
+            arrs[thisPos.row][thisPos.col + i] = replacement[i];
         }
         grid = arrs.Select(x => new string(x)).ToList();
 
