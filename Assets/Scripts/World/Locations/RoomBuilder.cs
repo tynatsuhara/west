@@ -63,7 +63,7 @@ public class RoomBuilder {
         for (int i = 0; i < 2; i++) {
             // get all "on" strings in the other grid with space above/below them
             List<FindResult> thatDoors = room.Find(on);
-            Debug.Log("thatDoors = " + String.Join(" + ", thatDoors.Select(x => x.ToString()).ToArray()));
+            // Debug.Log("thatDoors = " + String.Join(" + ", thatDoors.Select(x => x.ToString()).ToArray()));
             List<FindResult> thatSpaceAboveDoors = thatDoors.Where(x => x.spaceAbove).OrderBy(x => System.Guid.NewGuid()).ToList();
             List<FindResult> thatSpaceBelowDoors = thatDoors.Where(x => x.spaceBelow).OrderBy(x => System.Guid.NewGuid()).ToList();
             
@@ -72,7 +72,7 @@ public class RoomBuilder {
                     List<FindResult> thisDoors = Find(on);
                     List<FindResult> spaceAboveDoors = thisDoors.Where(x => x.spaceAbove).OrderBy(x => System.Guid.NewGuid()).ToList();
                     List<FindResult> spaceBelowDoors = thisDoors.Where(x => x.spaceBelow).OrderBy(x => System.Guid.NewGuid()).ToList();
-                    Debug.Log("thisDoors = " + String.Join(" + ", thisDoors.Select(x => x.ToString()).ToArray()));
+                    // Debug.Log("thisDoors = " + String.Join(" + ", thisDoors.Select(x => x.ToString()).ToArray()));
 
                     List<FindResult>[] sides;
                     if (UnityEngine.Random.Range(0, 2) == 0) {
@@ -119,7 +119,7 @@ public class RoomBuilder {
                 maxCol = Mathf.Max(maxCol, overlapCol);
                 
                 if (!outsideCol && !outsideRow && Overlap(grid[overlapRow][overlapCol], other.grid[r][c]) == null) {
-                    Debug.Log("failed overlap, thisPos=" + thisPos + ", otherPos=" + otherPos + ", a=" + grid[overlapRow][overlapCol] + ", b=" + other.grid[r][c]);
+                    // Debug.Log("failed overlap, thisPos=" + thisPos + ", otherPos=" + otherPos + ", a=" + grid[overlapRow][overlapCol] + ", b=" + other.grid[r][c]);
                     return false;
                 }
             }
@@ -129,7 +129,7 @@ public class RoomBuilder {
         int topPad = Mathf.Max(maxRow - grid.Count + 1, 0);
         int leftPad = Mathf.Max(-minCol, 0);
         int rightPad = Mathf.Max(maxCol - grid[0].Length + 1, 0);
-        Debug.LogFormat("{0} {1} {2} {3}", bottomPad, topPad, leftPad, rightPad);
+        // Debug.LogFormat("{0} {1} {2} {3}", bottomPad, topPad, leftPad, rightPad);
 
         // adjust the size of the grid
         thisPos.row += bottomPad;
@@ -152,7 +152,7 @@ public class RoomBuilder {
                 int overlapRow = thisPos.row + r - otherPos.row;
                 int overlapCol = thisPos.col + c - otherPos.col;
                 char winner = (char) Overlap(other.grid[r][c], arrs[overlapRow][overlapCol]);
-                Debug.Log("overlapRow=" + overlapRow + ", overlapCol=" + overlapCol);
+                // Debug.Log("overlapRow=" + overlapRow + ", overlapCol=" + overlapCol);
                 arrs[overlapRow][overlapCol] = winner;
             }
         }
