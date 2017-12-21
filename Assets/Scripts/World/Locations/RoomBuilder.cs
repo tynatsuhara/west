@@ -7,24 +7,11 @@ using UnityEngine;
 [System.Serializable]
 public class RoomBuilder {
     private List<string> grid = new List<string>();
-    private int[] removableRows;
-    private int[] removableCols;
     private Dictionary<RoomBuilder, string> connections = new Dictionary<RoomBuilder, string>();
     private Dictionary<RoomBuilder, string> replacements = new Dictionary<RoomBuilder, string>();
-    private Dictionary<char, Action<Vector3>> functions = new Dictionary<char, Action<Vector3>>();
 
     public RoomBuilder(params string[] grid) {
         this.grid.AddRange(grid);
-    }
-
-    public RoomBuilder SetRemovableRows(params int[] rows) {
-        removableRows = rows;
-        return this;
-    }
-
-    public RoomBuilder SetRemovableColumns(params int[] columns) {
-        removableCols = columns;
-        return this;
     }
 
     // rooms should be attached in order of importance (building out from the root room)
@@ -230,11 +217,6 @@ public class RoomBuilder {
             result.Add(String.Join("", grid.Select(str => "" + str[i]).Reverse().ToArray()));
         }
         return result;
-    }
-
-    // TODO: how do I want to map to a grid of objects? string constants? needs to be serializable, actions aren't
-    public void Map(char c, Action<Vector3> func) {
-        functions[c] = func;
     }
 
     public void MapToTeleporter(char c) {
