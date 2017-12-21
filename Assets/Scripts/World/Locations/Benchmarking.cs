@@ -9,7 +9,7 @@ public class Benchmarking : MonoBehaviour {
 		Stopwatch timer = Stopwatch.StartNew();	
 
 		for (int i = 0; i < 100; i++) {
-			RoomBuilder room = new RoomBuilder(
+			InteriorLocation room = new RoomBuilder(
 				"=============",
 				"=///////////#",
 				"=///////////#",
@@ -27,8 +27,8 @@ public class Benchmarking : MonoBehaviour {
 				"#///////=",
 				"======##="
 			))
-			.Merge()
-			.Replace("#", "=");
+			.Replace("#", "=")
+			.Build(null);
 
 			UnityEngine.Debug.Log(room);
 		}

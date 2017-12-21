@@ -19,7 +19,7 @@ public abstract class Location {
 	public List<Building> buildings = new List<Building>();
 	public SerializableVector3 worldLocation;
 
-	public int biomeColor = Random.Range(0, LevelBuilder.instance.biomeColors.Length);
+	public int biomeColor = LevelBuilder.instance == null ? 0 : Random.Range(0, LevelBuilder.instance.biomeColors.Length);
 	public int width = 20;  // minimums, w and h might be changed later by Generate()!
 	public int height = 20;
 

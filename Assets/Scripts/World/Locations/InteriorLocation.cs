@@ -19,4 +19,8 @@ public class InteriorLocation : Location {
 	public override bool TileOccupied(int x, int y) {
         return grid[x][y] != ' ';
     }
+
+    public override string ToString() {
+        return string.Join("\n", grid.ToArray());
+    }
 }

@@ -7,8 +7,6 @@ using UnityEngine;
 [System.Serializable]
 public class RoomBuilder {
     private List<string> grid = new List<string>();
-    private Dictionary<RoomBuilder, string> connections = new Dictionary<RoomBuilder, string>();
-    private Dictionary<RoomBuilder, string> replacements = new Dictionary<RoomBuilder, string>();
 
     public RoomBuilder(params string[] grid) {
         this.grid.AddRange(grid);
@@ -21,8 +19,7 @@ public class RoomBuilder {
     // rooms should be attached in order of importance (building out from the root room)
     // todo: additional parameters? (optional, etc)
     public RoomBuilder Attach(string on, string replacement, RoomBuilder room) {
-        connections.Add(room, on);
-        replacements.Add(room, replacement);
+        TryAttachRoom(room, on, replacement);
         return this;
     }
 
@@ -33,20 +30,11 @@ public class RoomBuilder {
         return this;
     }
 
-    // Merges all the attached rooms together
-    public RoomBuilder Merge() {
-        foreach (RoomBuilder room in connections.Keys) {
-            string connector = connections[room];
-            TryAttachRoom(room, connector);
-        }
-        return this;
-    }
-
     public override string ToString() {
         return String.Join("\n", grid.ToArray());
     }
 
-    private bool TryAttachRoom(RoomBuilder room, string on) {
+    private bool TryAttachRoom(RoomBuilder room, string on, string replacement) {
         int initialRotation = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < initialRotation; i++) {
             room.Rotate();
@@ -76,7 +64,7 @@ public class RoomBuilder {
                     for (int f = 0; f < 3; f += 2) {
                         foreach (FindResult f1 in sides[f]) {
                             foreach (FindResult f2 in sides[f+1]) {
-                                if (Merge(f1, f2, room)) {
+                                if (Merge(f1, f2, room, replacement)) {
                                     return true;
                                 }
                             }
@@ -94,7 +82,7 @@ public class RoomBuilder {
     }
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
-    private bool Merge(FindResult thisPos, FindResult otherPos, RoomBuilder other) {
+    private bool Merge(FindResult thisPos, FindResult otherPos, RoomBuilder other, string replacement) {
         int minRow = 0, maxRow = 0, minCol = 0, maxCol = 0;
 
         // make sure all overlapping is safe and account for padding
@@ -148,7 +136,6 @@ public class RoomBuilder {
                 arrs[overlapRow][overlapCol] = winner;
             }
         }
-        string replacement = replacements[other];
         for (int i = 0; i < replacement.Length; i++) {
             arrs[thisPos.row][thisPos.col + i] = replacement[i];
         }

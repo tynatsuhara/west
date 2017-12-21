@@ -3,7 +3,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class Building {
-    // these TDs store relative positions to the center of the building
+    // TODO: these TDs should store relative positions to the center of the building?
     public List<Teleporter.TeleporterData> doors = new List<Teleporter.TeleporterData>();
 
     // predefined for each building type (later set with builder class)
