@@ -144,6 +144,17 @@ public class RoomBuilder {
         return true;
     }
 
+    // map from char to chars it can overlap
+    private Dictionary<char, HashSet<char>> overlapRules = new Dictionary<char, HashSet<char>>();
+
+    public RoomBuilder AddOverlapRule(char winner, char loser) {
+        if (!overlapRules.ContainsKey(winner)) {
+            overlapRules.Add(winner, new HashSet<char>());
+        }
+        overlapRules[winner].Add(loser);
+        return this;
+    }
+
     private char? Overlap(char a, char b) {
         char wall = '=';
         if (a == ' ')
@@ -152,9 +163,9 @@ public class RoomBuilder {
             return a;
         if (a == b)
             return a;
-        if (a == wall)
+        if (overlapRules.ContainsKey(a) && overlapRules[a].Contains(b))
             return a;
-        if (b == wall)
+        if (overlapRules.ContainsKey(b) && overlapRules[b].Contains(a))
             return b;
         return null;
     }

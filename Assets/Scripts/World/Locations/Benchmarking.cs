@@ -16,8 +16,9 @@ public class Benchmarking : MonoBehaviour {
 				"=///////////#",
 				"=###########="
 			)
+			.AddOverlapRule('#', '=')
 			.Attach("#", "-", new RoomBuilder(
-				"=======",
+				"==###==",
 				"#/////=",
 				"#/////=",
 				"======="
