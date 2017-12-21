@@ -8,6 +8,8 @@ public class InteriorLocation : Location {
 
     public InteriorLocation(Map parent, List<string> grid) : base(parent) {
         this.grid = grid;
+        height = grid.Count;
+        width = grid[0].Length;
     }
 
 	public override GameObject PrefabAt(int x, int y) {
