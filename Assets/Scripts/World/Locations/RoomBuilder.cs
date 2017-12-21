@@ -14,6 +14,10 @@ public class RoomBuilder {
         this.grid.AddRange(grid);
     }
 
+    public InteriorLocation Build(Map parent) {
+        return new InteriorLocation(parent, grid);
+    }
+
     // rooms should be attached in order of importance (building out from the root room)
     // todo: additional parameters? (optional, etc)
     public RoomBuilder Attach(string on, string replacement, RoomBuilder room) {

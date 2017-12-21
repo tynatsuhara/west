@@ -1,23 +1,20 @@
 using UnityEngine;
-using System.Linq;
 using System.Collections.Generic;
-using System.Collections;
 
 [System.Serializable]
 public class InteriorLocation : Location {
 
-    public InteriorLocation(Map parent) : base(parent) {
-    }
-    
-    public override void Generate() {
+    private List<string> grid;
 
+    public InteriorLocation(Map parent, List<string> grid) : base(parent) {
+        this.grid = grid;
     }
 
-	public override GameObject TileAt(int x, int y) {
+	public override GameObject PrefabAt(int x, int y) {
         return LevelBuilder.instance.floorPrefab;
     }
 
-	public override bool TileOccupied(int val) {
-
+	public override bool TileOccupied(int x, int y) {
+        return grid[x][y] != ' ';
     }
 }

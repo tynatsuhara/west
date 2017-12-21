@@ -43,9 +43,8 @@ public abstract class Location {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
 	}
 
-	public abstract void Generate();  // Build the layout for a location
-	public abstract GameObject TileAt(int x, int y);
-	public abstract bool TileOccupied(int val);
+	public abstract GameObject PrefabAt(int x, int y);
+	public abstract bool TileOccupied(int x, int y);
 
 	protected List<int> Subset(List<int> lst, int size) {
 		List<int> newList = lst.ToList();
@@ -61,7 +60,7 @@ public abstract class Location {
 		return new Vector3(xPos, 0, zPos) + (center ? new Vector3(LevelBuilder.TILE_SIZE/2f, 0, LevelBuilder.TILE_SIZE/2f) : Vector3.zero);
 	}
 	public int RandomUnoccupiedTile() {
-		List<int> all = Enumerable.Range(0, width * height).Where(x => !TileOccupied(x)).ToList();
+		List<int> all = Enumerable.Range(0, width * height).Where(val => !TileOccupied(X(val), Y(val))).ToList();
 		return all[Random.Range(0, all.Count)];
 	}
 

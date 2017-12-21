@@ -33,7 +33,7 @@ public class TownLocation : Location {
 	}
 
 	// Build the street layout for a town
-	public override void Generate() {
+	public void Generate() {
 		connections = connections.Where(x => x != System.Guid.Empty).ToArray();
 		List<Location> links = connections.Select(x => parent.locations[x]).ToList();
 		
@@ -143,7 +143,7 @@ public class TownLocation : Location {
 		return newList;
 	}
 
-	public override GameObject TileAt(int x, int y) {
+	public override GameObject PrefabAt(int x, int y) {
 		int val = Val(x, y);
 		if (trails.Get(val)) {
 			return LevelBuilder.instance.trailPrefab;
@@ -152,11 +152,10 @@ public class TownLocation : Location {
 		}
 	}
 
-	public override bool TileOccupied(int val) {
-		int x = X(val);
-		int y = Y(val);
+	public override bool TileOccupied(int x, int y) {
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return true;
+		int val = Val(x, y);
 		return buildingSpaces.Get(val) || trails.Get(val) || cacti.ContainsKey(val);
 	}
 
@@ -280,10 +279,10 @@ public class TownLocation : Location {
 	// 		bool obstructed = false;
 	// 		for (int xi = x; xi < x + paddedW && !obstructed; xi++) {
 	// 			for (int yi = y; yi < y + paddedH && !obstructed; yi++) {
-	// 				obstructed = TileOccupied(Val(xi, yi));
+	// 				obstructed = TileOccupied(Valx, int yxi, yi));
 	// 			}
 	// 		}
-	// 		if (!obstructed && !TileOccupied(Val(x + b.doorOffsetX, y + b.doorOffsetY))) {
+	// 		if (!obstructed && !TileOccupied(Valx, int yx + b.doorOffsetX, y + b.doorOffsetY))) {
 	// 			return Val(x+1, y+1);
 	// 		}
 	// 	}
