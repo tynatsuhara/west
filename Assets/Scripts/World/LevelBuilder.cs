@@ -64,7 +64,10 @@ public class LevelBuilder : MonoBehaviour {
 		floorHolder.name = "Ground";
 		for (int i = 0; i < l.width; i++) {
 			for (var j = 0; j < l.height; j++) {
-				GameObject tile = Instantiate(l.PrefabAt(i, j), new Vector3(i * TILE_SIZE, -.2f, j * TILE_SIZE), 
+				GameObject tilePrefab = l.PrefabAt(j, i);
+				if (tilePrefab == null)
+					continue;
+				GameObject tile = Instantiate(tilePrefab, new Vector3(i * TILE_SIZE, -.2f, j * TILE_SIZE), 
 											  Quaternion.identity) as GameObject;
 				tile.transform.parent = floorHolder.transform;
 				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
@@ -125,6 +128,9 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnAtmospherics() {
+		if (!(loadedLocation is TownLocation))
+			return;
+
 		// cacti
 		foreach (int tile in loadedLocation.cacti.Keys) {
 			GameObject c = Instantiate(cactusPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
