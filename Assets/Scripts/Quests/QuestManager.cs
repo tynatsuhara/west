@@ -37,6 +37,7 @@ public class QuestManager {
 			}
 		}
 		LevelBuilder.instance.MarkQuestDestinations(destinations);
+		VisualMap.instance.MarkQuestDestinations(destinations);
 	}
 
 	public void AddQuest(Quest q) {

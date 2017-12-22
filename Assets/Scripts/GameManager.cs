@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour {
 
 		LoadLocation(SaveGame.currentGame.map.currentLocation, firstLoadSinceStartup:true);
 		players = SpawnPlayers(playersToSpawn);
-		GameObject.Find("Map").GetComponent<VisualMap>().Draw();
 		SetTimeScale(1f);
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
@@ -126,6 +125,7 @@ public class GameManager : MonoBehaviour {
 		SetPaused(false);
 		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);
 		SaveGame.currentGame.map.currentLocation = guid;
+		GameObject.Find("Map").GetComponent<VisualMap>().Draw();		
 	}
 
 	public Vector3 loadReposition;
