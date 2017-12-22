@@ -18,12 +18,12 @@ public class InteriorLocation : Location {
     }
 
 	public override GameObject PrefabAt(int x, int y) {
-        return grid[x][y] != ' ' ? LevelBuilder.instance.floorPrefab : null;
+        return grid[y][x] != ' ' ? LevelBuilder.instance.floorPrefab : null;
     }
 
 	public override bool TileOccupied(int x, int y) {
         // TODO: allow for multiple chars
-        return grid[x][y] != ' ' && grid[x][y] != '/';
+        return grid[y][x] != ' ' && grid[y][x] != '/';
     }
 
     public override string ToString() {
