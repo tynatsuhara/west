@@ -11,11 +11,12 @@ public class InteriorLocation : Location {
         parent.locations[guid] = this;  // register the guid with the map
         height = grid.Count;
         width = grid[0].Length;
-        name = "Interior!";
+        name = "SOME BUILDING";
         worldLocation = parent.locations[town].worldLocation;
         teleporters.Add(new Teleporter.TeleporterData(town, Vector3.one, "front door"));
         connections = new System.Guid[]{ town };
         this.town = town;
+        discovered = true;
     }
 
 	public override GameObject PrefabAt(int x, int y) {

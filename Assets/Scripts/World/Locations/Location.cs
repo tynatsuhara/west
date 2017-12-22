@@ -9,6 +9,7 @@ public abstract class Location {
 	// YOU WILL NEED TO OVERRIDE SOME FIELDS IN HERE IF EXTENDING LOCATION
 
 	public bool onMap = true;
+	public bool discovered;
 	public string name = "DEFAULT_NAME";
 	public string icon;  // bull head in pixel western font
 	public Map parent;
