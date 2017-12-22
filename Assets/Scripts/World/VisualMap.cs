@@ -26,12 +26,12 @@ public class VisualMap : MonoBehaviour {
 			newtxt.transform.SetParent(txt.transform.parent);
 			newtxt.name = kv.Value.name;
 			newtxt.GetComponent<Text>().text = (kv.Value.icon.Length > 0 ? kv.Value.icon + "\n" : "") + kv.Value.name;
-			newtxt.GetComponent<Text>().color = currentLocationColor;
+			newtxt.GetComponent<Text>().color = defaultColor;
 			newtxt.transform.localPosition = kv.Value.worldLocation.val * scale;
 			newtxt.transform.position -= offset;
 			txtObjects.Add(kv.Key, newtxt);
 		}
-		Destroy(txt.gameObject);
+		Destroy(txt);
 	}
 
 	private List<System.Guid> marked = new List<System.Guid>();
