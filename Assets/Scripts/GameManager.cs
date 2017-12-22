@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour {
 
 	void Start () {
 		// needs to happen in start so that instances are set up
+		bool isNewGame = newGame;
 		if (newGame) {
 			newGame = false;
 		} else {
@@ -55,6 +56,10 @@ public class GameManager : MonoBehaviour {
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());
+
+		if (isNewGame) {
+			StartCoroutine(SaveAfterNewGame());
+		}
 	}
 	
 	void Update () {
@@ -79,6 +84,11 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	private float gameEndTime;
+
+	private IEnumerator SaveAfterNewGame() {
+		yield return new WaitForSeconds(1);
+		SaveGame.Save(true);
+	}
 
 	private void CheckPause() {
 		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9")) {
