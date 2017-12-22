@@ -13,7 +13,7 @@ public class PauseMenu : Menu {
 
 	// called right before the pause menu is displayed
 	public void Awaken() {
-		time.text = SaveGame.currentGame.time.DateString();
+		time.text = Map.CurrentLocation().name + "\n" + SaveGame.currentGame.time.DateString();
 		NewSelect(resume);
 	}
 

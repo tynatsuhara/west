@@ -10,7 +10,7 @@ public class WorldTime {
     private int startYear = Random.Range(1875, 1885);
     public WorldTime() {
         worldTime_ = Random.Range(0, 365) * DAY +
-                     Random.Range(8, 4) * HOUR +  // between 8AM-4PM
+                     Random.Range(8, 12) * HOUR +  // between 8AM-12PM
                      Random.Range(0, 60) * MINUTE;
     }
 

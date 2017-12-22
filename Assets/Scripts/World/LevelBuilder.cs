@@ -58,7 +58,7 @@ public class LevelBuilder : MonoBehaviour {
 		SpawnTeleporters();
 		string greeting = l.name + ", population " + l.characters.Count;
 		int bounty = SaveGame.currentGame.savedPlayers.Select(x => SaveGame.currentGame.crime.Bounty(x.guid, guid)).Aggregate((x, y) => x + y);
-		GameUI.instance.topCenterText.Say(bounty > 0 ? greeting + "\nbounty $" + bounty : greeting);
+		GameUI.instance.topCenterText.Say(bounty > 0 ? greeting + "\nbounty $" + bounty : greeting, duration:4);
 
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";
