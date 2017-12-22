@@ -5,11 +5,14 @@ using System.Collections.Generic;
 public class InteriorLocation : Location {
 
     private List<string> grid;
+    new public string name = "Interior!";
 
-    public InteriorLocation(Map parent, List<string> grid) : base(parent) {
+    public InteriorLocation(Map parent, System.Guid outside, List<string> grid) : base(parent, false) {
         this.grid = grid;
+        parent.locations[guid] = this;  // register the guid with the map
         height = grid.Count;
         width = grid[0].Length;
+        teleporters.Add(new Teleporter.TeleporterData(outside, Vector3.zero, "front door"));
     }
 
 	public override GameObject PrefabAt(int x, int y) {

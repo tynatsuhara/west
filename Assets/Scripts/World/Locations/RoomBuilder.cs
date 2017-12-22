@@ -12,8 +12,8 @@ public class RoomBuilder {
         this.grid.AddRange(grid);
     }
 
-    public InteriorLocation Build(Map parent) {
-        return new InteriorLocation(parent, grid);
+    public InteriorLocation Build(Map parent, System.Guid outside) {
+        return new InteriorLocation(parent, outside, grid);
     }
 
     // rooms should be attached in order of importance (building out from the root room)

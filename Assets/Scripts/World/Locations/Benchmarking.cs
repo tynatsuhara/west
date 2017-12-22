@@ -29,7 +29,7 @@ public class Benchmarking : MonoBehaviour {
 				"======##="
 			))
 			.Replace("#", "=")
-			.Build(null);
+			.Build(null, System.Guid.Empty);
 
 			UnityEngine.Debug.Log(room);
 		}

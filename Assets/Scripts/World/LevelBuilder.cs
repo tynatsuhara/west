@@ -25,7 +25,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
-	private Teleporter[] teleporters;
+	private List<Teleporter> teleporters = new List<Teleporter>();
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
 
@@ -146,17 +146,16 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnTeleporters() {
-		var teleporterList = new List<Teleporter>();
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
 		foreach (Teleporter.TeleporterData td in loadedLocation.teleporters) {
 			GameObject porter = Instantiate(teleporterPrefab);
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;
+			porter.transform.position = td.position.val;
 			porter.GetComponent<Teleporter>().LoadSaveData(td, loadedLocation.guid);
-			teleporterList.Add(porter.GetComponent<Teleporter>());
+			teleporters.Add(porter.GetComponent<Teleporter>());
 		}
-		teleporters = teleporterList.ToArray();
 	}
 
 	// Called by quest manager
@@ -215,12 +214,15 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnBuildings() {
-		// foreach (Building b in loadedLocation.buildings) {
-		// 	int t = b.bottomLeftTile;
-		// 	Instantiate(buildingPrefabs[b.prefabIndex],
-		// 				loadedLocation.TileVectorPosition(b.bottomLeftTile, false) + new Vector3(b.width/2f, 0, b.height/2f) * TILE_SIZE, 
-		// 				Quaternion.Euler(0, b.angle, 0));
-		// }
+		foreach (Building b in loadedLocation.buildings) {
+			int t = b.bottomLeftTile;
+			GameObject spawnedBuilding = Instantiate(buildingPrefabs[b.prefabIndex],
+						loadedLocation.TileVectorPosition(b.bottomLeftTile, false) + new Vector3(b.width/2f, 0, b.height/2f) * TILE_SIZE, 
+						Quaternion.Euler(0, b.angle, 0));
+			Teleporter porter = spawnedBuilding.GetComponentInChildren<Teleporter>();
+			porter.LoadSaveData(b.doors[0], loadedLocation.guid);
+			teleporters.Add(porter);
+		}
 	}
 
 	private void PositionWalls() {

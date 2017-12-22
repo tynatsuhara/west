@@ -5,6 +5,7 @@ using System.Collections;
 
 [System.Serializable]
 public abstract class Location {
+	public bool onMap = true;
 	public string name = "DEFAULT_NAME";
 	public string icon;  // bull head in pixel western font
 	public Map parent;
@@ -23,8 +24,9 @@ public abstract class Location {
 	public int width = 20;  // minimums, w and h might be changed later by Generate()!
 	public int height = 20;
 
-	public Location(Map parent) {
+	public Location(Map parent, bool onMap) {
 		this.parent = parent;
+		this.onMap = onMap;
 	}
 
 	// Save things local to this location (ie updates to environment)
