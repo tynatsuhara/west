@@ -33,6 +33,7 @@ public class TextObject : MonoBehaviour {
 	}
 
 	void Update() {
+		AdjustScale();
 		if (GameManager.paused && pausable) {
 			// push the start times further into the future
 			togglingStartTime += Time.unscaledDeltaTime;
@@ -40,6 +41,14 @@ public class TextObject : MonoBehaviour {
 			lastSayTime += Time.unscaledDeltaTime;
 			return;
 		}
+		if (!frozen) {
+			CheckLoopTime();	
+			CheckToggleTime();
+			CheckClearTime();
+		}
+	}
+
+	private void AdjustScale() {
 		if (!ui) {
 			foreach (Player p in GameManager.players) {
 				if (p.firstPersonCam.enabled) {
@@ -49,11 +58,6 @@ public class TextObject : MonoBehaviour {
 					text[p.id-1].transform.localScale = overallScale * (p.playerCamera.cam.orthographicSize * .15f + .5f) * Vector3.one;
 				}
 			}
-		}
-		if (!frozen) {
-			CheckLoopTime();	
-			CheckToggleTime();
-			CheckClearTime();
 		}
 	}
 
