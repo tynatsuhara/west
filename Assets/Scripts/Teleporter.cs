@@ -7,7 +7,7 @@ public class Teleporter : MonoBehaviour {
 
 	public System.Guid toId;
 	public string destination;
-	private TeleporterData otherSide;
+	public TeleporterData otherSide;
 	public float radius {
 		get { return GetComponent<SphereCollider>().radius; }
 	}
@@ -49,6 +49,7 @@ public class Teleporter : MonoBehaviour {
 			// loading location autosaves before transport, so make sure to do any save modification (eg moving horses) after location load
 			GameManager.instance.LoadLocation(toId, 4 /* minutes per distance unit */ * dist * character.moveSpeed / character.CalculateSpeed());
 			ignore = true;
+			Debug.Log("Teleporting to " + otherSide.position.val);
 		} else {
 			// TODO: save character to the other location
 		}

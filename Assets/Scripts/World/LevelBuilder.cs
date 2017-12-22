@@ -226,6 +226,7 @@ public class LevelBuilder : MonoBehaviour {
 						loadedLocation.TileVectorPosition(b.bottomLeftTile, false) + new Vector3(b.width/2f, 0, b.height/2f) * TILE_SIZE, 
 						Quaternion.Euler(0, b.angle, 0));
 			Teleporter porter = spawnedBuilding.GetComponentInChildren<Teleporter>();
+			b.doors[0].position = new SerializableVector3(porter.transform.position);
 			porter.LoadSaveData(b.doors[0], loadedLocation.guid);
 			teleporters.Add(porter);
 		}
