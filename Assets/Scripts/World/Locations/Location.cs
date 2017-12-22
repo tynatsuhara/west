@@ -5,12 +5,16 @@ using System.Collections;
 
 [System.Serializable]
 public abstract class Location {
+
+	// YOU WILL NEED TO OVERRIDE SOME FIELDS IN HERE IF EXTENDING LOCATION
+
 	public bool onMap = true;
 	public string name = "DEFAULT_NAME";
 	public string icon;  // bull head in pixel western font
 	public Map parent;
 	public System.Guid town;
 	public System.Guid guid = System.Guid.NewGuid();
+	public System.Guid[] connections;
 
 	public List<System.Guid> characters = new List<System.Guid>();
 	public List<System.Guid> horses = new List<System.Guid>();

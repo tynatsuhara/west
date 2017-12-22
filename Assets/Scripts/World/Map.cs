@@ -13,16 +13,14 @@ public class Map {
 	public const int MIN_DISTANCE_BETWEEN_LOCATIONS = 5;
 
 	// coordinates increase up and to the right
-	public Dictionary<System.Guid, TownLocation> towns;	
-	public Dictionary<System.Guid, Location> locations;
+	public Dictionary<System.Guid, Location> locations = new Dictionary<System.Guid, Location>();
 	public List<System.Guid[]> railroads = new List<System.Guid[]>();	
 	public System.Guid currentLocation;
 
 	public IEnumerator MakeMap(Text display) {
 		locations = new Dictionary<System.Guid, Location>();	
-		towns = new Dictionary<System.Guid, TownLocation>();	
-		while (towns.Count < MIN_LOCATION_AMOUNT) {
-			towns.Clear();
+		while (locations.Count < MIN_LOCATION_AMOUNT) {
+			locations.Clear();
 
 			// spawn locations
 			List<TownLocation> ls = new List<TownLocation>();
@@ -56,12 +54,12 @@ public class Map {
 			}
 
 			foreach (TownLocation l in ls)
-				towns.Add(l.guid, l);
+				locations.Add(l.guid, l);
 
 			// Find largest connected map
 			display.text = "PRUNING MAP";
 			yield return new WaitForEndOfFrame();
-			List<TownLocation> graph = null;
+			List<Location> graph = null;
 			foreach (TownLocation l in ls) {
 				graph = DFS(l);
 				if (graph.Count >= MIN_LOCATION_AMOUNT)
@@ -69,9 +67,9 @@ public class Map {
 				yield return new WaitForEndOfFrame();				
 			}
 			
-			towns.Clear();
+			locations.Clear();
 			foreach (TownLocation l in graph) {
-				towns.Add(l.guid, l);
+				locations.Add(l.guid, l);
 			}
 		}
 
@@ -89,17 +87,15 @@ public class Map {
 		// 	Debug.Log("finished generating train");			
 		// }
 
-		foreach (System.Guid g in towns.Keys) {
-			locations[g] = towns[g];
-		}
-		foreach (System.Guid g in towns.Keys) {
-			TownLocation town = towns[g];
+		List<System.Guid> towns = locations.Keys.ToList();
+		foreach (System.Guid g in towns) {
+			TownLocation town = (TownLocation) locations[g];
 			town.Generate();
 			display.text = "GENERATING TOWN " + town.name.ToUpper();
 			yield return new WaitForEndOfFrame();
 			currentLocation = g;
 		}
-		Debug.Log("Generated " + towns.Count + " towns");
+		Debug.Log("Generated " + towns.Count + " towns, " + locations.Count + " locations total");
 	}
 
 	private bool TooClose(List<TownLocation> towns, Location newL) {
@@ -111,35 +107,35 @@ public class Map {
 		return false;
 	}
 
-	private List<TownLocation> DFS(TownLocation l, List<TownLocation> outGraph = null) {
+	private List<Location> DFS(Location l, List<Location> outGraph = null) {
 		if (outGraph == null)
-			outGraph = new List<TownLocation>();
+			outGraph = new List<Location>();
 		outGraph.Add(l);
 		foreach (System.Guid l2 in l.connections) {
-			if (l2 == System.Guid.Empty || outGraph.Contains(towns[l2]))
+			if (l2 == System.Guid.Empty || outGraph.Contains(locations[l2]))
 				continue;
-			DFS(towns[l2], outGraph);
+			DFS(locations[l2], outGraph);
 		}
 		return outGraph;
 	}
 
 	public List<System.Guid> BestPathFrom(System.Guid start, System.Guid destination) {
-		TownLocation src = towns[start];
-		TownLocation dst = towns[destination];
+		Location src = locations[start];
+		Location dst = locations[destination];
 
-		Dictionary<TownLocation, int> dist = new Dictionary<TownLocation, int>();
-		foreach (TownLocation l in towns.Values)
+		Dictionary<Location, int> dist = new Dictionary<Location, int>();
+		foreach (Location l in locations.Values)
 			dist.Add(l, int.MaxValue);
 		dist[src] = 0;
 
 		Dictionary<Location, Location> prev = new Dictionary<Location, Location>();
-		foreach (Location l in towns.Values)
+		foreach (Location l in locations.Values)
 			prev.Add(l, null);
 		
-		List<TownLocation> q = towns.Values.ToList();
+		List<Location> q = locations.Values.ToList();
 
 		while (q.Count > 0) {
-			TownLocation u = q.OrderBy(x => dist[x]).First();
+			Location u = q.OrderBy(x => dist.ContainsKey(x) ? dist[x] : 0).First();
 			if (u == dst) {
 				List<Location> path = new List<Location>();
 				path.Add(u);
@@ -151,7 +147,7 @@ public class Map {
 			q.Remove(u);
 
 			foreach (System.Guid vg in u.connections) {
-				TownLocation v = towns[vg];
+				Location v = locations[vg];
 				int alt = dist[u] + (int)(u.worldLocation.val - v.worldLocation.val).magnitude;
 				if (alt < dist[v]) {
 					dist[v] = alt;

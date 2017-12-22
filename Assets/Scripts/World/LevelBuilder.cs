@@ -25,7 +25,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
-	private List<Teleporter> teleporters = new List<Teleporter>();
+	private List<Teleporter> teleporters;
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
 
@@ -35,11 +35,10 @@ public class LevelBuilder : MonoBehaviour {
 		instance = this;
 	}
 
-	public void LoadLocation(System.Guid guid) {
-		bool firstLoad = GameManager.instance.loadReposition == Vector3.zero;
+	public void LoadLocation(System.Guid guid, bool firstLoadSinceStartup) {
 		markedDestinations = new Dictionary<string, GameObject>();
 
-		if (!firstLoad) {
+		if (!firstLoadSinceStartup) {
 			SaveGame.Save(false);
 			Clean();
 		} else {
@@ -51,9 +50,10 @@ public class LevelBuilder : MonoBehaviour {
 		loadedLocation = l;
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
+		teleporters = new List<Teleporter>();
 		SpawnBuildings();
 		SpawnNPCs();
-		SpawnHorses(firstLoad);
+		SpawnHorses(firstLoadSinceStartup);
 		SpawnAtmospherics();
 		SpawnTeleporters();
 		string greeting = l.name + ", population " + l.characters.Count;
@@ -148,7 +148,7 @@ public class LevelBuilder : MonoBehaviour {
 	private void SpawnTeleporters() {
 		GameObject porterParent = new GameObject();
 		porterParent.name = "Teleporters";
-		foreach (Teleporter.TeleporterData td in loadedLocation.teleporters) {
+		foreach (Teleporter.TeleporterData td in loadedLocation.teleporters /* HACK */ .Where(x => Map.Location(x.toId).onMap)) {
 			GameObject porter = Instantiate(teleporterPrefab);
 			porter.name = "-> " + SaveGame.currentGame.map.locations[td.toId].name;
 			porter.transform.parent = porterParent.transform;

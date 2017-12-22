@@ -6,8 +6,6 @@ using System.Collections;
 [System.Serializable]
 public class TownLocation : Location {
 
-	public System.Guid[] connections = new System.Guid[Random.Range(1, 6)];
-
 	// Things contained locally
 	private BitArray trails;
 	private BitArray buildingSpaces;
@@ -17,6 +15,7 @@ public class TownLocation : Location {
 		icon = icons[Random.Range(0, icons.Length)];
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 		name = NameGen.townName.Generate("<name>");
+		connections = new System.Guid[Random.Range(1, 6)];
 	}
 
 	public bool DoneConnecting() {
@@ -241,6 +240,7 @@ public class TownLocation : Location {
 				}
 				// TODO: make roads form loops
 			}
+			teleporters.AddRange(nextBuilding.doors);
 			nextBuilding = new Building(GetInterior());
 		}
 	}

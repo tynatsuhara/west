@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour {
 			SaveGame.Load();
 		}
 
-		LoadLocation(SaveGame.currentGame.map.currentLocation);
+		LoadLocation(SaveGame.currentGame.map.currentLocation, firstLoadSinceStartup:true);
 		players = SpawnPlayers(playersToSpawn);
 		GameObject.Find("Map").GetComponent<VisualMap>().Draw();
 		SetTimeScale(1f);
@@ -111,10 +111,10 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public void LoadLocation(System.Guid guid, float timeChange = 0f) {
+	public void LoadLocation(System.Guid guid, float timeChange = 0f, bool firstLoadSinceStartup = false) {
 		SaveGame.currentGame.time.worldTime += timeChange;
 		SetPaused(false);
-		LevelBuilder.instance.LoadLocation(guid);
+		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);
 		SaveGame.currentGame.map.currentLocation = guid;
 	}
 
