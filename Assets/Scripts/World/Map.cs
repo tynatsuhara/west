@@ -39,17 +39,13 @@ public class Map {
 			// connect locations together
 			display.text = "BUILDING ROADS";
 			yield return new WaitForEndOfFrame();
-			foreach (TownLocation l in ls) {
-				var others = ls.OrderBy(x => (l.worldLocation.val - x.worldLocation.val).magnitude).ToList().Take(10);
-				foreach (TownLocation o in others) {
-					if (l == o)
-						continue;
-					if (l.CanConnectTo(o) && o.CanConnectTo(l)) {
-						l.Connect(o);
-						o.Connect(l);
-					}
-					if (l.DoneConnecting())
-						break;
+			var distances = ls.SelectMany(l1 => ls.Select(l2 => new {l1, l2, (l1.worldLocation.val - l2.worldLocation.val).magnitude}))
+					.OrderBy(x => x.magnitude)
+					.ToList();
+			foreach (var tuple in distances) {
+				if (tuple.l1 != tuple.l2 && tuple.l1.CanConnectTo(tuple.l2) && tuple.l2.CanConnectTo(tuple.l1)) {
+					tuple.l1.Connect(tuple.l2);
+					tuple.l2.Connect(tuple.l1);
 				}
 			}
 

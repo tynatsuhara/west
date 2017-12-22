@@ -23,7 +23,10 @@ public class TownLocation : Location {
 	}
 
 	public bool CanConnectTo(TownLocation l) {
-		return connections.Contains(System.Guid.Empty) && l.connections.Contains(System.Guid.Empty);
+		return connections.Contains(System.Guid.Empty) 
+				&& l.connections.Contains(System.Guid.Empty)
+				&& !connections.Contains(l.guid)
+				&& !l.connections.Contains(l.guid);
 	}
 
 	public void Connect(TownLocation l) {
