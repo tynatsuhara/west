@@ -38,14 +38,22 @@ public class VisualMap : MonoBehaviour {
 	public void MarkQuestDestinations(List<Task.TaskDestination> destinations) {
 		destinations = destinations.Where(x => Map.Location(x.location).onMap).ToList();
 		destinations.ForEach(x => marked.Remove(x.location));
+
 		foreach (System.Guid id in marked) {
 			txtObjects[id].GetComponent<Text>().color = defaultColor;
 		}
+		marked = destinations.Select(x => x.location).ToList();
+
 		foreach (var kv in destinations) {
 			txtObjects[kv.location].GetComponent<Text>().color = questDestinationColor;
 		}
-		txtObjects[Map.CurrentLocation().guid].GetComponent<Text>().color = currentLocationColor;
-		marked = destinations.Select(x => x.location).ToList();
-		marked.Add(Map.CurrentLocation().guid);
+
+		if (Map.CurrentLocation().onMap) {
+			txtObjects[Map.CurrentLocation().guid].GetComponent<Text>().color = currentLocationColor;
+			marked.Add(Map.CurrentLocation().guid);
+		} else {
+			txtObjects[Map.CurrentLocation().town].GetComponent<Text>().color = currentLocationColor;
+			marked.Add(Map.CurrentLocation().town);
+		}
 	}
 }
