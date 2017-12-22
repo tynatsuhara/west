@@ -45,7 +45,8 @@ public class TextObject : MonoBehaviour {
 				if (p.firstPersonCam.enabled) {
 					text[p.id-1].transform.localScale = Vector3.one;					
 				} else {
-					text[p.id-1].transform.localScale = Vector3.one * (p.playerCamera.cam.orthographicSize * .15f + .5f);
+					float overallScale = .7f;
+					text[p.id-1].transform.localScale = overallScale * (p.playerCamera.cam.orthographicSize * .15f + .5f) * Vector3.one;
 				}
 			}
 		}
