@@ -5,11 +5,6 @@ using System.Linq;
 [System.Serializable]
 public class QuestManager {
 	public Dictionary<System.Guid, Quest> quests = new Dictionary<System.Guid, Quest>();
-	public List<System.Guid> activeQuests = new List<System.Guid>();	
-	public List<System.Guid> completedQuests = new List<System.Guid>();
-	public List<Quest> markedQuests {
-		get { return activeQuests.Select(g => quests[g]).ToList(); }	
-	}
 
 	public QuestManager() {
 		var characters = SaveGame.currentGame.savedCharacters.Keys.ToArray();
@@ -20,19 +15,18 @@ public class QuestManager {
 
 	public void UpdateQuests() {
 		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
-		bool anyComplete = false;
-		foreach (Quest q in quests.Values) {
+		foreach (Quest q in quests.Values.Where(x => !x.complete)) {
 			Task task = q.UpdateQuest();
 			if (q.failed) {
-				Debug.Log("quest failed");
-				activeQuests.Remove(q.guid);				
+				Debug.Log("quest failed: " + q.title);
+				q.active = true;
+				q.active = false;			
 			} else if (task == null) {
-				Debug.Log("quest complete");
-				anyComplete = true;
-				activeQuests.Remove(q.guid);
-				completedQuests.Add(q.guid);
+				Debug.Log("quest complete: " + q.title);
+				q.complete = true;
+				q.active = false;
 			} else {
-				Debug.Log(task.message);
+				Debug.Log(q.title + ": " + task.message);
 				destinations.AddRange(task.GetLocations());
 			}
 		}

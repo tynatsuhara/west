@@ -14,6 +14,7 @@ public class DuelQuest : Quest {
 		centerOfRoad = new GoToTask(l.guid, l.TileVectorPosition(l.RandomUnoccupiedTile()), false, "Start the duel");
 		sevenPaces = new GoToTask(l.guid, l.TileVectorPosition(l.RandomUnoccupiedTile()), true, "Walk seven paces");
 		killTask = new KillTask(duelingOpponent);
+		title = "Duel " + SaveGame.currentGame.savedCharacters[duelingOpponent].name;
 	}
 
 	public override Task UpdateQuest() {
