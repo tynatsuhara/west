@@ -26,6 +26,7 @@ public class Teleporter : MonoBehaviour {
 		if (pc != null) {
 			collidingWith.Add(pc);
 			GameUI.instance.topCenterText.Say("TRAVEL TO " + destination + "?", permanent: true);
+			UpdateText();
 		}
 	}
 	void OnTriggerExit(Collider other) {
@@ -35,6 +36,7 @@ public class Teleporter : MonoBehaviour {
 		if (pc != null && collidingWith.Contains(pc)) {
 			collidingWith.Remove(pc);
 			GameUI.instance.topCenterText.Clear();
+			UpdateText();
 		}
 	}
 
@@ -59,9 +61,23 @@ public class Teleporter : MonoBehaviour {
 		}
 	}
 
+	private void UpdateText() {
+		string str = "";
+		if (collidingWith.Count > 0) {
+			str += destination;
+		} else if (hasQuest) {
+			str = "*";
+		} else {
+			str = "";
+		}
+		GetComponentInChildren<TextObject>().Say(str, color: hasQuest ? "red" : "white", permanent: true);
+	}
+
 	// Mark if the player should go this way for a quest
+	private bool hasQuest;
 	public void MarkQuest(bool hasQuest) {
-		GetComponentInChildren<TextObject>().Say(destination, color: hasQuest ? "red" : "white", permanent: true);
+		this.hasQuest = hasQuest;
+		UpdateText();
 	}
 
 	public void LoadSaveData(TeleporterData td, System.Guid currentLoc) {
