@@ -165,6 +165,7 @@
      <Compile Include="Assets\Scripts\World\NameGen.cs" />
      <Compile Include="Assets\Scripts\World\SaveGame.cs" />
      <Compile Include="Assets\Scripts\World\VisualMap.cs" />
+     <Compile Include="Assets\Scripts\World\VisualMapLocation.cs" />
      <Compile Include="Assets\Scripts\World\WorldGeneration.cs" />
      <Compile Include="Assets\Scripts\World\WorldTime.cs" />
      <Compile Include="Assets\Scripts\WorldBlood.cs" />
