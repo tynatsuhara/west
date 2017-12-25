@@ -1,40 +1,25 @@
 using System.Collections.Generic;
-using System;
-using System.Text;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
-[System.Serializable]
-public class RoomBuilder {
+public class InteriorBuilder {
+
+    private Dictionary<char, Room> rooms = new Dictionary<char, Room>();
     private List<string> grid = new List<string>();
 
-    public RoomBuilder(params string[] grid) {
-        this.grid.AddRange(grid);
+    // rooms should be attached in order of importance (building out from the root room)
+    // todo: additional parameters? (optional, etc)
+    public InteriorBuilder Attach(string on, string replacement, Room room) {
+        TryAttachRoom(room, on, replacement);
+        return this;
     }
 
     public InteriorLocation Build(Map parent, System.Guid outside) {
         return new InteriorLocation(parent, outside, grid);
     }
 
-    // rooms should be attached in order of importance (building out from the root room)
-    // todo: additional parameters? (optional, etc)
-    public RoomBuilder Attach(string on, string replacement, RoomBuilder room) {
-        TryAttachRoom(room, on, replacement);
-        return this;
-    }
-
-    public RoomBuilder Replace(string str, string with) {
-        for (int i = 0; i < grid.Count; i++) {
-            grid[i] = grid[i].Replace(str, with);
-        }
-        return this;
-    }
-
-    public override string ToString() {
-        return String.Join("\n", grid.ToArray());
-    }
-
-    private bool TryAttachRoom(RoomBuilder room, string on, string replacement) {
+    private bool TryAttachRoom(Room room, string on, string replacement) {
         int initialRotation = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < initialRotation; i++) {
             room.Rotate();
@@ -81,13 +66,43 @@ public class RoomBuilder {
         return false;
     }
 
+    public List<FindResult> Find(string on) {
+        List<FindResult> result = new List<FindResult>();
+        for (int r = 0; r < grid.Count; r++) {
+            string row = grid[r];
+            List<int> rowHits = new List<int>();
+            for (int i = 0; i < row.Length - on.Length + 1; i++) {
+                // track all the hits in the row
+                if (RowStartsWith(r, on, i)) {
+                    rowHits.Add(i);
+                    bool spaceAbove = r == 0 || grid[r-1].Substring(i, on.Length).Trim().Length == 0;
+                    bool spaceBelow = r == grid.Count-1 || grid[r+1].Substring(i, on.Length).Trim().Length == 0;
+                    result.Add(new FindResult(r, i, spaceAbove, spaceBelow));
+                }
+            }
+        }
+        return result;
+    }
+
+    private bool RowStartsWith(int rowIndex, string match, int startIndex) {
+        string row = grid[rowIndex];
+        for (int i = 0; i < match.Length; i++) {
+            int col = startIndex + i;
+            char roomKey = row[col];
+            if (roomKey != ' ' && rooms[roomKey].CharAt(rowIndex, col) != match[i]) {
+                return false;
+            }
+        }
+        return true;
+    } 
+
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
-    private bool Merge(FindResult thisPos, FindResult otherPos, RoomBuilder other, string replacement) {
+    private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string replacement) {
         int minRow = 0, maxRow = 0, minCol = 0, maxCol = 0;
 
         // make sure all overlapping is safe and account for padding
-        for (int r = 0; r < other.grid.Count; r++) {
-            for (int c = 0; c < other.grid[0].Length; c++) {
+        for (int r = 0; r < other.height; r++) {
+            for (int c = 0; c < other.width; c++) {
                 int overlapRow = thisPos.row + r - otherPos.row;
                 bool outsideRow = overlapRow < 0 || overlapRow >= grid.Count;
                 minRow = Mathf.Min(minRow, overlapRow);
@@ -98,7 +113,7 @@ public class RoomBuilder {
                 minCol = Mathf.Min(minCol, overlapCol);
                 maxCol = Mathf.Max(maxCol, overlapCol);
                 
-                if (!outsideCol && !outsideRow && Overlap(grid[overlapRow][overlapCol], other.grid[r][c]) == null) {
+                if (!outsideCol && !outsideRow && other.Occupied(r, c) && grid[overlapRow][overlapCol] != ' ') {
                     // Debug.Log("failed overlap, thisPos=" + thisPos + ", otherPos=" + otherPos + ", a=" + grid[overlapRow][overlapCol] + ", b=" + other.grid[r][c]);
                     return false;
                 }
@@ -127,13 +142,13 @@ public class RoomBuilder {
         }
 
         List<char[]> arrs = grid.Select(x => x.ToCharArray()).ToList();  // expanded grid
-        for (int r = 0; r < other.grid.Count; r++) {
-            for (int c = 0; c < other.grid[0].Length; c++) {
-                int overlapRow = thisPos.row + r - otherPos.row;
-                int overlapCol = thisPos.col + c - otherPos.col;
-                char winner = (char) Overlap(other.grid[r][c], arrs[overlapRow][overlapCol]);
-                // Debug.Log("overlapRow=" + overlapRow + ", overlapCol=" + overlapCol);
-                arrs[overlapRow][overlapCol] = winner;
+        int topLeftRow = thisPos.row - otherPos.row;
+        int topLeftCol = thisPos.col - otherPos.col;
+        for (int r = 0; r < other.height; r++) {
+            for (int c = 0; c < other.width; c++) {
+                if (other.Occupied(r, c)) {
+                    arrs[topLeftRow + r][topLeftCol + c] = other.charKey;
+                }
             }
         }
         for (int i = 0; i < replacement.Length; i++) {
@@ -141,56 +156,12 @@ public class RoomBuilder {
         }
         grid = arrs.Select(x => new string(x)).ToList();
 
+        other.Place(topLeftRow, topLeftCol);
+
         return true;
     }
 
-    // map from char to chars it can overlap
-    private Dictionary<char, HashSet<char>> overlapRules = new Dictionary<char, HashSet<char>>();
-
-    public RoomBuilder AddOverlapRule(char winner, char loser) {
-        if (!overlapRules.ContainsKey(winner)) {
-            overlapRules.Add(winner, new HashSet<char>());
-        }
-        overlapRules[winner].Add(loser);
-        return this;
-    }
-
-    private char? Overlap(char a, char b) {
-        char wall = '=';
-        if (a == ' ')
-            return b;
-        if (b == ' ')
-            return a;
-        if (a == b)
-            return a;
-        if (overlapRules.ContainsKey(a) && overlapRules[a].Contains(b))
-            return a;
-        if (overlapRules.ContainsKey(b) && overlapRules[b].Contains(a))
-            return b;
-        return null;
-    }
-
-    // returns [row, col] or null if not found
-    private List<FindResult> Find(string on) {
-        List<FindResult> result = new List<FindResult>();
-        for (int r = 0; r < grid.Count; r++) {
-            string row = grid[r];
-            List<int> rowHits = new List<int>();
-            for (int i = 0; i < row.Length - on.Length + 1; i++) {
-                int index = row.IndexOf(on, i);
-                // track all the hits in the row
-                if (index != -1 && (rowHits.Count == 0 || rowHits[rowHits.Count - 1] != index)) {
-                    rowHits.Add(index);
-                    bool spaceAbove = r == 0 || grid[r-1].Substring(index, on.Length).Trim().Length == 0;
-                    bool spaceBelow = r == grid.Count-1 || grid[r+1].Substring(index, on.Length).Trim().Length == 0;
-                    result.Add(new FindResult(r, index, spaceAbove, spaceBelow));
-                }
-            }
-        }
-        return result;
-    }
-
-    private class FindResult {
+    public class FindResult {
         public int row, col;
         public bool spaceAbove, spaceBelow;
 
@@ -206,22 +177,15 @@ public class RoomBuilder {
         }
     }
 
-    public void Rotate() {
-        grid = RotateGrid(grid);
-    }
-
-    // rotates 90 degrees clockwise
-    // MUST BE A SQUARE GRID
-    private List<string> RotateGrid(List<string> grid) {
+    private void Rotate() {
+        foreach (Room room in rooms.Values) {
+            room.RotatePlaced(grid.Count);
+        }
         List<string> result = new List<string>();
         for (int i = 0; i < grid[0].Length; i++) {
             StringBuilder sb = new StringBuilder(grid.Count);
-            result.Add(String.Join("", grid.Select(str => "" + str[i]).Reverse().ToArray()));
+            result.Add(string.Join("", grid.Select(str => "" + str[i]).Reverse().ToArray()));
         }
-        return result;
-    }
-
-    public void MapToTeleporter(char c) {
-
+        grid = result;
     }
 }

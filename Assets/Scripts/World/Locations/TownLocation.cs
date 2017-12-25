@@ -249,7 +249,7 @@ public class TownLocation : Location {
 	}
 
 	private InteriorLocation GetInterior() {
-		return new RoomBuilder(
+		return new Room(
 				"=============",
 				"=///////////#",
 				"=///////////#",
@@ -257,13 +257,13 @@ public class TownLocation : Location {
 				"=###########="
 			)
 			.AddOverlapRule('#', '=')
-			.Attach("#", "-", new RoomBuilder(
+			.Attach("#", "-", new Room(
 				"==###==",
 				"#/////=",
 				"#/////=",
 				"======="
 			))
-			.Attach("#", "-", new RoomBuilder(
+			.Attach("#", "-", new Room(
 				"====#====",
 				"#///////=",
 				"======##="
