@@ -10,8 +10,8 @@ public class InteriorBuilder {
 
     // rooms should be attached in order of importance (building out from the root room)
     // todo: additional parameters? (optional, etc)
-    public InteriorBuilder Attach(string on, string replacement, Room room) {
-        TryAttachRoom(room, on, replacement);
+    public InteriorBuilder Attach(string on, Room room) {
+        TryAttachRoom(room, on);
         return this;
     }
 
@@ -19,7 +19,7 @@ public class InteriorBuilder {
         return new InteriorLocation(parent, outside, grid);
     }
 
-    private bool TryAttachRoom(Room room, string on, string replacement) {
+    private bool TryAttachRoom(Room room, string on) {
         int initialRotation = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < initialRotation; i++) {
             room.Rotate();
@@ -49,7 +49,7 @@ public class InteriorBuilder {
                     for (int f = 0; f < 3; f += 2) {
                         foreach (FindResult f1 in sides[f]) {
                             foreach (FindResult f2 in sides[f+1]) {
-                                if (Merge(f1, f2, room, replacement)) {
+                                if (Merge(f1, f2, room, on)) {
                                     return true;
                                 }
                             }
@@ -97,7 +97,7 @@ public class InteriorBuilder {
     } 
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
-    private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string replacement) {
+    private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string on) {
         int minRow = 0, maxRow = 0, minCol = 0, maxCol = 0;
 
         // make sure all overlapping is safe and account for padding
@@ -151,12 +151,10 @@ public class InteriorBuilder {
                 }
             }
         }
-        for (int i = 0; i < replacement.Length; i++) {
-            arrs[thisPos.row][thisPos.col + i] = replacement[i];
-        }
         grid = arrs.Select(x => new string(x)).ToList();
 
         other.Place(topLeftRow, topLeftCol);
+        other.MakeDoorway(otherPos, on);
 
         return true;
     }

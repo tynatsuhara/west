@@ -11,39 +11,32 @@ public class Room {
     private int col;
 
     public int width {
-        get { return grid[0].Length; }
+        get { return squares.First().Count; }
     }
     public int height {
-        get { return grid.Count; }
+        get { return squares.Count; }
     }
 
     public readonly char charKey;
-    private List<string> grid = new List<string>();
+    public readonly char floor;
     private List<List<Square>> squares;
 
-    public Room(char charKey, params string[] grid) {
+    public Room(char charKey, char floor, params string[] grid) {
         this.charKey = charKey;
-        this.grid.AddRange(grid);
-        PlaceSquares();
+        this.floor = floor;
+        PlaceSquares(grid);
     }
 
     public char CharAt(int row, int col) {
-        return grid[row - this.row][col - this.col];
+        return squares[row - this.row][col - this.col].ch;
     }
 
     public bool Occupied(int row, int col) {
-        return grid[row - this.row][col - this.col] != ' ';
-    }
-
-    public Room Replace(string str, string with) {
-        for (int i = 0; i < grid.Count; i++) {
-            grid[i] = grid[i].Replace(str, with);
-        }
-        return this;
+        return squares[row - this.row][col - this.col].ch != ' ';
     }
 
     public override string ToString() {
-        return String.Join("\n", grid.ToArray());
+        return string.Join("\n", squares.Select(x => string.Join("", x.Select(ch => "" + ch.ch).ToArray())).ToArray());
     }
 
     public void Place(int row, int col) {
@@ -51,45 +44,63 @@ public class Room {
         this.col = col;
     }
 
-    public void Rotate() {
-        List<string> result = new List<string>();
-        for (int i = 0; i < grid[0].Length; i++) {
-            StringBuilder sb = new StringBuilder(grid.Count);
-            result.Add(string.Join("", grid.Select(str => "" + str[i]).Reverse().ToArray()));
+    public void MakeDoorway(InteriorBuilder.FindResult place, string door) {
+        for (int i = 0; i < door.Length; i++) {
+            squares[place.row][place.col].ch = floor;
         }
-        grid = result;
-        squares.ForEach(x => x.ForEach(sq => sq.Rotate()));        
+    }
+
+    public void Rotate() {
+        List<List<Square>> result = new List<List<Square>>();
+        for (int i = 0; i < squares.First().Count; i++) {
+            result.Add(squares.Select(row => row[i]).Reverse().ToList());
+        }
+        squares = result;
+        squares.ForEach(x => x.ForEach(sq => sq.Rotate()));
     }
 
     public List<InteriorBuilder.FindResult> Find(string on) {
         List<InteriorBuilder.FindResult> result = new List<InteriorBuilder.FindResult>();
-        for (int r = 0; r < grid.Count; r++) {
-            string row = grid[r];
+        for (int r = 0; r < squares.Count; r++) {
+            List<Square> row = squares[r];
             List<int> rowHits = new List<int>();
-            for (int i = 0; i < row.Length - on.Length + 1; i++) {
-                int index = row.IndexOf(on, i);
+            for (int i = 0; i < row.Count - on.Length + 1; i++) {
                 // track all the hits in the row
-                if (index != -1 && (rowHits.Count == 0 || rowHits[rowHits.Count - 1] != index)) {
-                    rowHits.Add(index);
-                    bool spaceAbove = r == 0 || grid[r-1].Substring(index, on.Length).Trim().Length == 0;
-                    bool spaceBelow = r == grid.Count-1 || grid[r+1].Substring(index, on.Length).Trim().Length == 0;
-                    result.Add(new InteriorBuilder.FindResult(r, index, spaceAbove, spaceBelow));
+                if (RowStartsWith(r, on, i)) {
+                    rowHits.Add(i);
+                    bool spaceAbove = r == 0 || EmptyX(r-1, i, on.Length);
+                    bool spaceBelow = r == squares.Count-1 || EmptyX(r+1, i, on.Length);
+                    result.Add(new InteriorBuilder.FindResult(r, i, spaceAbove, spaceBelow));
                 }
             }
         }
         return result;
     }
 
+    private bool EmptyX(int row, int col, int x) {
+        return squares[row].Skip(col).Take(x).All(sq => sq.ch == ' ');
+    }
+
+    private bool RowStartsWith(int rowIndex, string match, int startIndex) {
+        List<Square> row = squares[rowIndex];
+        for (int i = 0; i < match.Length; i++) {
+            if (row[startIndex + i].ch != match[i]) {
+                return false;
+            }
+        }
+        return true;
+    } 
+
     public void RotatePlaced(int overallHeightBeforeRotation) {
         Rotate();
         int newRow = col;
-        int newCol = overallHeightBeforeRotation - row - grid[0].Length;
+        int newCol = overallHeightBeforeRotation - row - width;
         row = newRow;
         col = newCol;
     }
 
-    private void PlaceSquares() {
-        squares = grid.Select(x => x.ToCharArray().Select(c => new Square()).ToList()).ToList();
+    private void PlaceSquares(string[] grid) {
+        squares = grid.Select(x => x.ToCharArray().Select(c => new Square(c)).ToList()).ToList();
         squares.First().ForEach(x => x.doorTop = true);
         squares.Last().ForEach(x => x.doorBottom = true);
         squares.ForEach(x => x.First().doorLeft = true);
@@ -98,7 +109,12 @@ public class Room {
 
     [System.Serializable]
     private class Square {
+        public char ch;
         public bool doorRight, doorBottom, doorLeft, doorTop;
+
+        public Square(char ch) {
+            this.ch = ch;
+        }
 
         public void Rotate() {
             bool oldRight = doorRight;

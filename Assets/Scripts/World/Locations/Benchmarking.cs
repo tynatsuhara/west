@@ -9,13 +9,14 @@ public class Benchmarking : MonoBehaviour {
 		Stopwatch timer = Stopwatch.StartNew();	
 
 		for (int i = 0; i < 100; i++) {
-			InteriorLocation room = new Room(
+			Room room = new Room('a', '/',
 				"///////////#",
 				"///////////#",
 				"///////////#",
 				"############"
-			)
-			.AddOverlapRule('#', '=')
+			);
+
+			new InteriorBuilder().Attach("#", room);
 			.Attach("#", "-", new Room(
 				"//###//",
 				"#//////",
