@@ -19,10 +19,12 @@ public class Room {
 
     public readonly char charKey;
     private List<string> grid = new List<string>();
+    private List<List<Square>> squares;
 
     public Room(char charKey, params string[] grid) {
         this.charKey = charKey;
         this.grid.AddRange(grid);
+        PlaceSquares();
     }
 
     public char CharAt(int row, int col) {
@@ -56,6 +58,7 @@ public class Room {
             result.Add(string.Join("", grid.Select(str => "" + str[i]).Reverse().ToArray()));
         }
         grid = result;
+        squares.ForEach(x => x.ForEach(sq => sq.Rotate()));        
     }
 
     public List<InteriorBuilder.FindResult> Find(string on) {
@@ -79,19 +82,30 @@ public class Room {
 
     public void RotatePlaced(int overallHeightBeforeRotation) {
         Rotate();
-
         int newRow = col;
         int newCol = overallHeightBeforeRotation - row - grid[0].Length;
-
         row = newRow;
         col = newCol;
+    }
 
-        /*
-        ++++++++++++
-        ++*~~+++++++
-        ++~~~+++++++
-        ++~~~+++++++
-        ++++++++++++
-         */
+    private void PlaceSquares() {
+        squares = grid.Select(x => x.ToCharArray().Select(c => new Square()).ToList()).ToList();
+        squares.First().ForEach(x => x.doorTop = true);
+        squares.Last().ForEach(x => x.doorBottom = true);
+        squares.ForEach(x => x.First().doorLeft = true);
+        squares.ForEach(x => x.Last().doorRight = true);
+    }
+
+    [System.Serializable]
+    private class Square {
+        public bool doorRight, doorBottom, doorLeft, doorTop;
+
+        public void Rotate() {
+            bool oldRight = doorRight;
+            doorRight = doorTop;
+            doorTop = doorLeft;
+            doorLeft = doorBottom;
+            doorBottom = oldRight;
+        }
     }
 }
