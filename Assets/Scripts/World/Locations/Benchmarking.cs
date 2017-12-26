@@ -9,29 +9,21 @@ public class Benchmarking : MonoBehaviour {
 		Stopwatch timer = Stopwatch.StartNew();	
 
 		for (int i = 0; i < 100; i++) {
-			Room room = new Room('a', '/',
+			Room room1 = new Room('a', '/',
+				"      #////#",
+				"      #////#",
+				"//####/////#",
+				"///////#####"
+			);
+
+			Room room2 = new Room('b', '/',
 				"///////////#",
 				"///////////#",
 				"///////////#",
 				"############"
 			);
 
-			new InteriorBuilder().Attach("#", room);
-			.Attach("#", "-", new Room(
-				"//###//",
-				"#//////",
-				"#//////",
-				"///////"
-			))
-			.Attach("#", "-", new Room(
-				"////#////",
-				"#////////",
-				"//////##/"
-			))
-			.Replace("#", "=")
-			.Build(null, System.Guid.Empty);
-
-			UnityEngine.Debug.Log(room);
+			UnityEngine.Debug.Log(new InteriorBuilder(room1).Attach("##", room2));
 		}
 
 		timer.Stop();

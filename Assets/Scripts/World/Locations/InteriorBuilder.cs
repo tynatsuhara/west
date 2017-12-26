@@ -6,7 +6,16 @@ using UnityEngine;
 public class InteriorBuilder {
 
     private Dictionary<char, Room> rooms = new Dictionary<char, Room>();
-    private List<string> grid = new List<string>();
+    private List<string> grid;
+
+    public InteriorBuilder(Room root) {
+        rooms.Add(root.charKey, root);
+        grid = Enumerable.Range(0, root.height)
+                .Select(r => string.Join("", Enumerable.Range(0, root.width)
+                        .Select(c => "" + (root.Occupied(r, c) ? root.charKey : ' '))
+                        .ToArray()))
+                .ToList();
+    }
 
     // rooms should be attached in order of importance (building out from the root room)
     // todo: additional parameters? (optional, etc)
@@ -40,7 +49,8 @@ public class InteriorBuilder {
                     // Debug.Log("thisDoors = " + String.Join(" + ", thisDoors.Select(x => x.ToString()).ToArray()));
 
                     List<FindResult>[] sides;
-                    if (UnityEngine.Random.Range(0, 2) == 0) {
+                    bool checkAbove = UnityEngine.Random.Range(0, 2) == 0;
+                    if (checkAbove) {
                         sides = new List<FindResult>[]{spaceAboveDoors, thatSpaceBelowDoors, spaceBelowDoors, thatSpaceAboveDoors};
                     } else {
                         sides = new List<FindResult>[]{spaceBelowDoors, thatSpaceAboveDoors, spaceAboveDoors, thatSpaceBelowDoors};
@@ -49,11 +59,12 @@ public class InteriorBuilder {
                     for (int f = 0; f < 3; f += 2) {
                         foreach (FindResult f1 in sides[f]) {
                             foreach (FindResult f2 in sides[f+1]) {
-                                if (Merge(f1, f2, room, on)) {
+                                if (Merge(f1, f2, room, on, checkAbove)) {
                                     return true;
                                 }
                             }
                         }
+                        checkAbove = !checkAbove;
                     }
 
                     Rotate();
@@ -97,13 +108,14 @@ public class InteriorBuilder {
     } 
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
-    private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string on) {
+    private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string on, bool placeOtherAbove) {
         int minRow = 0, maxRow = 0, minCol = 0, maxCol = 0;
+        int shift = placeOtherAbove ? -1 : 1;
 
         // make sure all overlapping is safe and account for padding
         for (int r = 0; r < other.height; r++) {
             for (int c = 0; c < other.width; c++) {
-                int overlapRow = thisPos.row + r - otherPos.row;
+                int overlapRow = thisPos.row + r - otherPos.row + shift;
                 bool outsideRow = overlapRow < 0 || overlapRow >= grid.Count;
                 minRow = Mathf.Min(minRow, overlapRow);
                 maxRow = Mathf.Max(maxRow, overlapRow);
@@ -142,7 +154,7 @@ public class InteriorBuilder {
         }
 
         List<char[]> arrs = grid.Select(x => x.ToCharArray()).ToList();  // expanded grid
-        int topLeftRow = thisPos.row - otherPos.row;
+        int topLeftRow = thisPos.row - otherPos.row + shift;
         int topLeftCol = thisPos.col - otherPos.col;
         for (int r = 0; r < other.height; r++) {
             for (int c = 0; c < other.width; c++) {
@@ -153,7 +165,7 @@ public class InteriorBuilder {
         }
         grid = arrs.Select(x => new string(x)).ToList();
 
-        other.Place(topLeftRow, topLeftCol);
+        other.SetInteriorOffset(topLeftRow, topLeftCol);
         other.MakeDoorway(otherPos, on);
 
         return true;
@@ -185,5 +197,9 @@ public class InteriorBuilder {
             result.Add(string.Join("", grid.Select(str => "" + str[i]).Reverse().ToArray()));
         }
         grid = result;
+    }
+
+    public override string ToString() {
+        return string.Join("\n", grid.ToArray());
     }
 }

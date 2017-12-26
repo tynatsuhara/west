@@ -39,7 +39,7 @@ public class Room {
         return string.Join("\n", squares.Select(x => string.Join("", x.Select(ch => "" + ch.ch).ToArray())).ToArray());
     }
 
-    public void Place(int row, int col) {
+    public void SetInteriorOffset(int row, int col) {
         this.row = row;
         this.col = col;
     }
@@ -47,6 +47,7 @@ public class Room {
     public void MakeDoorway(InteriorBuilder.FindResult place, string door) {
         for (int i = 0; i < door.Length; i++) {
             squares[place.row][place.col].ch = floor;
+            squares[place.row][place.col].RemoveWalls();
         }
     }
 
@@ -101,10 +102,18 @@ public class Room {
 
     private void PlaceSquares(string[] grid) {
         squares = grid.Select(x => x.ToCharArray().Select(c => new Square(c)).ToList()).ToList();
-        squares.First().ForEach(x => x.doorTop = true);
-        squares.Last().ForEach(x => x.doorBottom = true);
-        squares.ForEach(x => x.First().doorLeft = true);
-        squares.ForEach(x => x.Last().doorRight = true);
+        // separate empty from non-empty spaces with walls
+        for (int r = 0; r < squares.Count; r++) {
+            for (int c = 0; c < squares[r].Count; c++) {
+                if (!Occupied(r, c)) {
+                    continue;
+                }
+                squares[r][c].doorTop = r == 0 || !Occupied(r-1, c);
+                squares[r][c].doorBottom = r == squares.Count-1 || !Occupied(r+1, c);
+                squares[r][c].doorLeft = c == 0 || !Occupied(r, c-1);
+                squares[r][c].doorRight = c == squares[r].Count-1 || !Occupied(r, c+1);
+            }
+        }
     }
 
     [System.Serializable]
@@ -122,6 +131,10 @@ public class Room {
             doorTop = doorLeft;
             doorLeft = doorBottom;
             doorBottom = oldRight;
+        }
+
+        public void RemoveWalls() {
+            doorRight = doorLeft = doorBottom = doorTop = false;
         }
     }
 }
