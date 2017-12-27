@@ -51,6 +51,7 @@ public class Room {
         }
     }
 
+    // rotate clockwise
     public void Rotate() {
         List<List<Square>> result = new List<List<Square>>();
         for (int i = 0; i < squares.First().Count; i++) {
@@ -125,6 +126,7 @@ public class Room {
             this.ch = ch;
         }
 
+        // rotate clockwise
         public void Rotate() {
             bool oldRight = doorRight;
             doorRight = doorTop;

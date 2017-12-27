@@ -187,6 +187,7 @@ public class InteriorBuilder {
         }
     }
 
+    // rotate clockwise
     private void Rotate() {
         foreach (Room room in rooms.Values) {
             room.RotatePlaced(grid.Count);
