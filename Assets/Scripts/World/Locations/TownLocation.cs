@@ -249,28 +249,21 @@ public class TownLocation : Location {
 	}
 
 	private InteriorLocation GetInterior() {
-		// return new Room(
-		// 		"=============",
-		// 		"=///////////#",
-		// 		"=///////////#",
-		// 		"=///////////#",
-		// 		"=###########="
-		// 	)
-		// 	.AddOverlapRule('#', '=')
-		// 	.Attach("#", "-", new Room(
-		// 		"==###==",
-		// 		"#/////=",
-		// 		"#/////=",
-		// 		"======="
-		// 	))
-		// 	.Attach("#", "-", new Room(
-		// 		"====#====",
-		// 		"#///////=",
-		// 		"======##="
-		// 	))
-		// 	.Replace("#", "=")
-		// 	.Build(parent, guid);
-		return null;
+		Room room1 = new Room('a', '/',
+			"      #////#",
+			"      #////#",
+			"//####/////#",
+			"///////#####"
+		);
+
+		Room room2 = new Room('b', '/',
+			"///////////#",
+			"///////////#",
+			"///////////#",
+			"############"
+		);
+
+		return new InteriorBuilder(room1).Attach("##", room2).Build(parent, guid);
 	}
 
 	private int TryPlaceBuilding(Building b) {

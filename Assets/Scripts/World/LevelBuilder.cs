@@ -47,6 +47,11 @@ public class LevelBuilder : MonoBehaviour {
 
 		SaveGame.currentGame.events.CheckQueue(false);
 		Location l = Map.Location(guid);
+
+		if (l is InteriorLocation) {
+			Debug.Log(l);
+		}
+
 		loadedLocation = l;
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];

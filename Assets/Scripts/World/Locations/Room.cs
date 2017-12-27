@@ -25,19 +25,10 @@ public class Room {
         this.charKey = charKey;
         this.floor = floor;
         PlaceSquares(grid);
-        CheckRep();
     }
 
     public char CharAt(int row, int col) {
-        try {
-            return squares[row - this.row][col - this.col].ch;
-        } catch (System.ArgumentOutOfRangeException e) {
-            Debug.Log("room " + charKey + ", row = " + row + ", col = " + col);
-            Debug.Log("row offset = " + this.row + ", col offset = " + this.col);
-            Debug.Log("height = " + height + ", width = " + width);
-            Debug.Log(e.StackTrace);
-            throw e;
-        }
+        return squares[row - this.row][col - this.col].ch;
     }
 
     public bool Occupied(int row, int col) {
@@ -96,19 +87,16 @@ public class Room {
         int newCol = overallHeightBeforeRotation - row - width;
         row = newRow;
         col = newCol;
-        CheckRep();
     }
 
     // rotate clockwise
     public void Rotate() {
-        CheckRep();
         List<List<Square>> result = new List<List<Square>>();
         for (int i = 0; i < squares.First().Count; i++) {
             result.Add(squares.Select(row => row[i]).Reverse().ToList());
         }
         squares = result;
         squares.ForEach(x => x.ForEach(sq => sq.Rotate()));
-        CheckRep();
     }
 
     private void PlaceSquares(string[] grid) {
@@ -125,11 +113,6 @@ public class Room {
                 squares[r][c].doorRight = c == squares[r].Count-1 || !Occupied(r, c+1);
             }
         }
-    }
-
-    private void CheckRep() {
-        int w = squares.First().Count;
-        Debug.Assert(squares.All(x => x.Count == w));
     }
 
     [System.Serializable]

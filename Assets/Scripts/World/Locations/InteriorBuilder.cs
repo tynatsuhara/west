@@ -13,7 +13,6 @@ public class InteriorBuilder {
         grid = Enumerable.Range(0, root.height)
                 .Select(r => Enumerable.Range(0, root.width).Select(c => (root.Occupied(r, c) ? root : null)).ToList())
                 .ToList();
-        Debug.Log(this);
     }
 
     // rooms should be attached in order of importance (building out from the root room)
@@ -28,18 +27,14 @@ public class InteriorBuilder {
     }
 
     private bool TryAttachRoom(Room room, string on) {
-        CheckRep();
-        
         int initialRotation = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < initialRotation; i++) {
             room.Rotate();
         }
-        Debug.Log("rotating other " + initialRotation + " times");
 
         for (int i = 0; i < 2; i++) {
             // get all "on" strings in the other grid with space above/below them
             List<FindResult> thatDoors = room.Find(on);
-            // Debug.Log("thatDoors = " + String.Join(" + ", thatDoors.Select(x => x.ToString()).ToArray()));
             List<FindResult> thatSpaceAboveDoors = thatDoors.Where(x => x.spaceAbove).OrderBy(x => System.Guid.NewGuid()).ToList();
             List<FindResult> thatSpaceBelowDoors = thatDoors.Where(x => x.spaceBelow).OrderBy(x => System.Guid.NewGuid()).ToList();
             
@@ -48,7 +43,6 @@ public class InteriorBuilder {
                     List<FindResult> thisDoors = Find(on);
                     List<FindResult> spaceAboveDoors = thisDoors.Where(x => x.spaceAbove).OrderBy(x => System.Guid.NewGuid()).ToList();
                     List<FindResult> spaceBelowDoors = thisDoors.Where(x => x.spaceBelow).OrderBy(x => System.Guid.NewGuid()).ToList();
-                    // Debug.Log("thisDoors = " + String.Join(" + ", thisDoors.Select(x => x.ToString()).ToArray()));
 
                     List<FindResult>[] sides;
                     bool checkAbove = UnityEngine.Random.Range(0, 2) == 0;
@@ -70,7 +64,6 @@ public class InteriorBuilder {
                     }
 
                     Rotate();
-                    Debug.Log("rotating this");
                 }
             }
 
@@ -112,8 +105,6 @@ public class InteriorBuilder {
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
     private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string on, bool placeOtherAbove) {
-        CheckRep();
-
         int minRow = 0, maxRow = 0, minCol = 0, maxCol = 0;
         int shift = placeOtherAbove ? -1 : 1;
 
@@ -135,16 +126,10 @@ public class InteriorBuilder {
                 maxCol = Mathf.Max(maxCol, overlapCol);
                 
                 if (!outsideCol && !outsideRow && other.Occupied(r, c) && grid[overlapRow][overlapCol] != null) {
-                    // Debug.Log("failed overlap, thisPos=" + thisPos + ", otherPos=" + otherPos + ", a=" + grid[overlapRow][overlapCol] + ", b=" + other.grid[r][c]);
                     return false;
                 }
             }
         }
-
-        Debug.Log(this);
-        Debug.Log(thisPos);
-        Debug.Log(other);
-        Debug.Log(otherPos);
 
         int bottomPad = Mathf.Max(-minRow, 0);
         int topPad = Mathf.Max(maxRow - grid.Count + 1, 0);
@@ -155,8 +140,6 @@ public class InteriorBuilder {
         topLeftRow += bottomPad;
         topLeftCol += leftPad;
         int originalLength = grid.First().Count;
-
-        Debug.LogFormat("padding = [b:{0}, t:{1}, l:{2}, r:{3}], old l = {4}, new l = {5}, old w = {6}, new w = {7}", bottomPad, topPad, leftPad, rightPad, grid.Count, grid.Count + bottomPad + topPad, grid.First().Count, originalLength + leftPad + rightPad);
 
         for (int i = 0; i < bottomPad; i++) {
             grid.Insert(0, new List<Room>());
@@ -172,8 +155,6 @@ public class InteriorBuilder {
             movedRoom.IncrementOffset(bottomPad, leftPad);
         }
 
-        CheckRep();
-
         // place references in grid for occupied spaces
         for (int r = 0; r < other.height; r++) {
             for (int c = 0; c < other.width; c++) {
@@ -188,7 +169,6 @@ public class InteriorBuilder {
         rooms.Add(other.charKey, other);
 
         // TODO: put doorway on connecting room
-        CheckRep();
 
         return true;
     }
@@ -203,7 +183,6 @@ public class InteriorBuilder {
             result.Add(grid.Select(x => x[i]).Reverse().ToList());
         }
         grid = result;
-        CheckRep();
     }
 
     public override string ToString() {
@@ -233,15 +212,15 @@ public class InteriorBuilder {
         }
     }
 
-    private void CheckRep() {
-        int w = grid.First().Count;
-        Debug.Assert(grid.All(x => x.Count == w));
-        for (int r = 0; r < grid.Count; r++) {
-            for (int c = 0; c < w; c++) {
-                if (grid[r][c] != null) {
-                    Debug.Assert(grid[r][c].CharAt(r, c) != ' ');
-                }
-            }
-        }
-    }
+    // private void CheckRep() {
+    //     int w = grid.First().Count;
+    //     Debug.Assert(grid.All(x => x.Count == w));
+    //     for (int r = 0; r < grid.Count; r++) {
+    //         for (int c = 0; c < w; c++) {
+    //             if (grid[r][c] != null) {
+    //                 Debug.Assert(grid[r][c].CharAt(r, c) != ' ');
+    //             }
+    //         }
+    //     }
+    // }
 }
