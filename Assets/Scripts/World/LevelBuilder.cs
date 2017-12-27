@@ -72,7 +72,7 @@ public class LevelBuilder : MonoBehaviour {
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";
 		for (int i = 0; i < l.width; i++) {
-			for (var j = 0; j < l.height; j++) {
+			for (int j = 0; j < l.height; j++) {
 				GameObject tilePrefab = l.PrefabAt(i, j);
 				if (tilePrefab == null)
 					continue;

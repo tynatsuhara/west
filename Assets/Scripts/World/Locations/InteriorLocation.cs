@@ -21,12 +21,12 @@ public class InteriorLocation : Location {
     }
 
 	public override GameObject PrefabAt(int x, int y) {
-        return grid[y][x] != null ? LevelBuilder.instance.floorPrefab : null;
+        return grid[y][width-x-1] != null ? LevelBuilder.instance.floorPrefab : null;
     }
 
 	public override bool TileOccupied(int x, int y) {
         // TODO: allow for multiple chars
-        return grid[y][x] != null && grid[y][x] != null;
+        return grid[y][width-x-1] != null && grid[y][width-x-1] != null;
     }
 
     public override string ToString() {
