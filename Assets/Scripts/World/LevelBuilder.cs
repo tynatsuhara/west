@@ -243,17 +243,18 @@ public class LevelBuilder : MonoBehaviour {
 
 	private void PositionWalls() {
 		Transform walls = GameObject.Find("Walls").transform;
+		float height = 30;
 		// bottom
-		walls.GetChild(0).localScale = new Vector3(loadedLocation.width * TILE_SIZE + 2, 10, 1);
+		walls.GetChild(0).localScale = new Vector3(loadedLocation.width * TILE_SIZE + 2, height, 1);
 		walls.GetChild(0).position = new Vector3(loadedLocation.width * TILE_SIZE/2f, 1, -.5f);
 		// top
-		walls.GetChild(1).localScale = new Vector3(loadedLocation.width * TILE_SIZE + 2, 10, 1);
+		walls.GetChild(1).localScale = new Vector3(loadedLocation.width * TILE_SIZE + 2, height, 1);
 		walls.GetChild(1).position = new Vector3(loadedLocation.width * TILE_SIZE/2f, 1, loadedLocation.height * TILE_SIZE + .5f);
 		// right
-		walls.GetChild(2).localScale = new Vector3(1, 10, loadedLocation.height * TILE_SIZE + 2);
+		walls.GetChild(2).localScale = new Vector3(1, height, loadedLocation.height * TILE_SIZE + 2);
 		walls.GetChild(2).position = new Vector3(loadedLocation.width * TILE_SIZE + .5f, 1, loadedLocation.height * TILE_SIZE/2f);
 		// left
-		walls.GetChild(3).localScale = new Vector3(1, 10, loadedLocation.height * TILE_SIZE + 2);
+		walls.GetChild(3).localScale = new Vector3(1, height, loadedLocation.height * TILE_SIZE + 2);
 		walls.GetChild(3).position = new Vector3(-.5f, 1, loadedLocation.height * TILE_SIZE/2f);
 	}
 }
