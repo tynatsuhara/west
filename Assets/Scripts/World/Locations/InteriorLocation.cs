@@ -1,16 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public class InteriorLocation : Location {
 
-    private List<string> grid;
+    private List<List<Room>> grid;
 
-    public InteriorLocation(Map parent, System.Guid town, List<string> grid) : base(parent, false) {
+    public InteriorLocation(Map parent, System.Guid town, List<List<Room>> grid) : base(parent, false) {
         this.grid = grid;
         parent.locations[guid] = this;  // register the guid with the map
         height = grid.Count;
-        width = grid[0].Length;
+        width = grid.First().Count;
         name = "SOME BUILDING";
         worldLocation = parent.locations[town].worldLocation;
         teleporters.Add(new Teleporter.TeleporterData(town, Vector3.one, "front door"));
@@ -20,15 +21,22 @@ public class InteriorLocation : Location {
     }
 
 	public override GameObject PrefabAt(int x, int y) {
-        return grid[y][x] != ' ' ? LevelBuilder.instance.floorPrefab : null;
+        return grid[y][x] != null ? LevelBuilder.instance.floorPrefab : null;
     }
 
 	public override bool TileOccupied(int x, int y) {
         // TODO: allow for multiple chars
-        return grid[y][x] != ' ' && grid[y][x] != '/';
+        return grid[y][x] != null && grid[y][x] != null;
     }
 
     public override string ToString() {
-        return string.Join("\n", grid.ToArray());
+        string result = "";
+        for (int r = 0; r < height; r++) {
+            for (int c = 0; c < width; c++) {
+                result += grid[r][c] != null ? grid[r][c].CharAt(r, c) : ' ';
+            }
+            result += '\n';
+        }
+        return result.Substring(0, result.Length - 1);
     }
 }
