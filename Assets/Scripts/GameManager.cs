@@ -79,8 +79,17 @@ public class GameManager : MonoBehaviour {
 				SceneManager.LoadScene("main menu");
 			}
 		} else {
-			CheckPause();
-			CheckSceneReload();
+			bool esc = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9");
+			bool m = Input.GetKeyDown(KeyCode.M);
+			if (paused && esc) {
+				SetPaused(false);
+			} else if (VisualMap.instance.active && (esc || m)) {
+				VisualMap.instance.active = false;
+			} else if (!paused && esc) {
+				SetPaused(true);
+			} else if (m) {
+				VisualMap.instance.active = true;
+			}
 		}
 	}
 	private float gameEndTime;
@@ -88,12 +97,6 @@ public class GameManager : MonoBehaviour {
 	private IEnumerator SaveAfterNewGame() {
 		yield return new WaitForSeconds(1);
 		SaveGame.Save(true);
-	}
-
-	private void CheckPause() {
-		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9")) {
-			SetPaused(!paused);
-		}
 	}
 
 	private float currentTimeScale;
@@ -112,13 +115,6 @@ public class GameManager : MonoBehaviour {
 		currentTimeScale = timeScale;
 		if (!paused)
 			Time.timeScale = timeScale;
-	}
-
-	private void CheckSceneReload() {
-		if ((SaveGame.currentGame.gameOver || paused) && (Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown("joystick button 8"))) {
-			SetPaused(false);
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-		}
 	}
 
 	public void LoadLocation(System.Guid guid, float timeChange = 0f, bool firstLoadSinceStartup = false) {

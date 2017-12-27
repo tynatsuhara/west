@@ -8,9 +8,18 @@ public class VisualMap : MonoBehaviour {
 	public static VisualMap instance;
 	public GameObject iconPrefab;
 	private Dictionary<System.Guid, VisualMapLocation> icons = new Dictionary<System.Guid, VisualMapLocation>();
+	private Camera cam;
+
+	public bool active {
+		get { return cam.enabled; }
+		set {
+			cam.enabled = value;
+		}
+	}
 
 	public void Awake() {
 		instance = this;
+		cam = GetComponentInChildren<Camera>();
 	}
 
 	public void SpawnIcons() {
