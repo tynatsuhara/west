@@ -25,7 +25,6 @@ public class Teleporter : MonoBehaviour {
 		Player pc = other.GetComponentInParent<Player>();		
 		if (pc != null) {
 			collidingWith.Add(pc);
-			GameUI.instance.topCenterText.Say("TRAVEL TO " + destination + "?", permanent: true);
 			UpdateText();
 		}
 	}
@@ -35,7 +34,6 @@ public class Teleporter : MonoBehaviour {
 		Player pc = other.GetComponentInParent<Player>();		
 		if (pc != null && collidingWith.Contains(pc)) {
 			collidingWith.Remove(pc);
-			GameUI.instance.topCenterText.Clear();
 			UpdateText();
 		}
 	}
