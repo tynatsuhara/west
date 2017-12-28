@@ -282,5 +282,11 @@ public class NPC : Character, Interactable {
 			this.female = female;
 			name = NameGen.CharacterName(female, lastName);
 		}
+
+		// return the time at which the next reschedule should happen
+		public float Reschedule() {
+			// TODO: add necessary events to the queue
+			return WorldTime.DAY;
+		}
 	}
 }
