@@ -284,9 +284,9 @@ public class NPC : Character, Interactable {
 		}
 
 		// return the time at which the next reschedule should happen
-		public float Reschedule() {
+		public void Reschedule() {
 			// TODO: add necessary events to the queue
-			return WorldTime.DAY;
+			SaveGame.currentGame.events.CreateEvent(WorldTime.DAY, new ScheduleEvent(guid));
 		}
 	}
 }

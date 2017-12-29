@@ -9,7 +9,6 @@ public class ScheduleEvent : WorldEvent {
     }
 
     public override void Execute(bool hasLoadedLocation) {
-        float timeUntilNextReschedule = SaveGame.currentGame.savedCharacters[character].Reschedule();
-        SaveGame.currentGame.events.CreateEvent(timeUntilNextReschedule, new ScheduleEvent(character));
+        SaveGame.currentGame.savedCharacters[character].Reschedule();
     }
 }
