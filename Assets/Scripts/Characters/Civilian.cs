@@ -22,12 +22,6 @@ public class Civilian : NPC {
 		// LookForEvidence();
 	}
 
-	protected override void StateTraveling() {
-		Debug.Log(name + " is traveling");
-		if (agent.destination != travelDestination.spot.val)
-			agent.SetDestination(travelDestination.spot.val);
-	}
-
 	private void CheckDrawWeapon() {
 		if (!SeenByAnyPlayers()) {
 			TransitionState(NPCState.ATTACKING, 0f);
