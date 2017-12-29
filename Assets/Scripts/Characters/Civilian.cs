@@ -18,7 +18,7 @@ public class Civilian : NPC {
 
 
 		// LoseLookTarget();
-		// BraveCitizenCheck();		
+		// BraveCitizenCheck();
 		// LookForEvidence();
 	}
 

@@ -285,11 +285,22 @@ public class NPC : Character, Interactable {
 		public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 		public NPCState state = NPCState.PASSIVE;
 		public List<Task> tasks = new List<Task>();
+		private float timeOfLastSimulation = SaveGame.currentGame.time.worldTime;
 
 		public NPCSaveData(NPCType type, bool female = false, string lastName = "") {
 			this.type = type;
 			this.female = female;
 			name = NameGen.CharacterName(female, lastName);
+		}
+
+		public void Simulate(float newWorldTime) {
+			if (tasks.Count == 0) {
+				return;
+			}
+
+			// TODO: look at tasks and simulate if necessary
+
+			timeOfLastSimulation = newWorldTime;
 		}
 	}
 }

@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour {
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());
+		StartCoroutine(SimulateWorld());
 
 		if (isNewGame) {
 			StartCoroutine(SaveAfterNewGame());
@@ -93,6 +94,17 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	private float gameEndTime;
+
+	private IEnumerator SimulateWorld() {
+		while (true) {
+			foreach (Location l in SaveGame.currentGame.map.locations.Values) {
+				if (l != Map.CurrentLocation()) {
+					l.Simulate(SaveGame.currentGame.time.worldTime);
+				}
+			}
+			yield return new WaitForSeconds(5f);
+		}
+	}
 
 	private IEnumerator SaveAfterNewGame() {
 		yield return new WaitForSeconds(1);

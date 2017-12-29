@@ -46,6 +46,13 @@ public abstract class Location {
 		}
 	}
 
+	public void Simulate(float newWorldTime) {
+		foreach (System.Guid id in characters) {
+			NPC.NPCSaveData npc = SaveGame.currentGame.savedCharacters[id];
+			npc.Simulate(newWorldTime);
+		}
+	}
+
 	public float DistanceFrom(Location l) {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
 	}
