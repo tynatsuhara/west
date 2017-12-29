@@ -61,7 +61,7 @@ public class VisualMap : MonoBehaviour {
 			icons[kv.location].MarkQuest();
 		}
 
-		System.Guid toMark = Map.CurrentLocation().onMap ? Map.CurrentLocation().guid : Map.CurrentLocation().town;
+		System.Guid toMark = Map.CurrentTown().guid;
 		icons[toMark].MarkCurrentLocation();
 		marked.Add(toMark);
 	}

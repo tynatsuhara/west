@@ -215,7 +215,7 @@ public abstract class Character : LivingThing, Damageable {
 			killedBy = attacker.guid;
 			int bounty = SaveGame.currentGame.crime.Bounty(guid);
 			if (bounty == 0) {  // killed an innocent
-				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentLocation().guid, "Murder", 100);
+				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentTown().guid, "Murder", 100);
 			} else {
 				// give them the bounty
 			}

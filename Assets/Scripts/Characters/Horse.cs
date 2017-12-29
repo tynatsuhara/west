@@ -30,7 +30,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 		if (!tamed) {
 			StartCoroutine(Tame());
 		} else if (character.guid != data.owner) {
-			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentLocation().guid, "Horse Theft", 10);			
+			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentTown().guid, "Horse Theft", 10);			
 		}
 	}
 	public void Uninteract(Character character) {}
@@ -64,7 +64,7 @@ public class Horse : LivingThing, Interactable, Damageable {
 				SaveGame.currentGame.stats.animalsKilled++;
 			}
 			if (attacker != null) {
-				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentLocation().guid, "Horse Murder", 30);
+				SaveGame.currentGame.crime.Commit(attacker.guid, Map.CurrentTown().guid, "Horse Murder", 30);
 			}
 			if (rider != null) {
 				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder
