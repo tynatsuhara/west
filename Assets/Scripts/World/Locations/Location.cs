@@ -66,6 +66,8 @@ public abstract class Location {
 		float zPos = Y(val) * LevelBuilder.TILE_SIZE;
 		return new Vector3(xPos, 0, zPos) + (center ? new Vector3(LevelBuilder.TILE_SIZE/2f, 0, LevelBuilder.TILE_SIZE/2f) : Vector3.zero);
 	}
+
+	// TODO: make this private and return the vector position publicly
 	public int RandomUnoccupiedTile() {
 		List<int> all = Enumerable.Range(0, width * height).Where(val => !TileOccupied(X(val), Y(val))).ToList();
 		return all[Random.Range(0, all.Count)];

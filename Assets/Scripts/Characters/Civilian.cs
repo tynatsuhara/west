@@ -7,7 +7,6 @@ public class Civilian : NPC {
 
 	public override void Start() {
 		base.Start();
-		currentState = NPCState.PASSIVE;
 		hasGun = sidearmId != -1 || weaponId != -1;
 	}
 
@@ -16,11 +15,19 @@ public class Civilian : NPC {
 	// CivilianState.PASSIVE
 	private bool checkDrawWeaponInvoked = false;
 	protected override void StatePassive() {
-		LoseLookTarget();
 
-		BraveCitizenCheck();		
-		LookForEvidence();
+
+		// LoseLookTarget();
+		// BraveCitizenCheck();		
+		// LookForEvidence();
 	}
+
+	protected override void StateTraveling() {
+		Debug.Log(name + " is traveling");
+		if (agent.destination != travelDestination.spot.val)
+			agent.SetDestination(travelDestination.spot.val);
+	}
+
 	private void CheckDrawWeapon() {
 		if (!SeenByAnyPlayers()) {
 			TransitionState(NPCState.ATTACKING, 0f);

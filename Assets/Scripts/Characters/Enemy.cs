@@ -16,12 +16,6 @@ public class Enemy : NPC {
 			foreach (Player pc in GameManager.players)
 				knowledge.Add(pc, new PlayerKnowledge());
 		}
-
-		// if (GameManager.instance.alarmsRaised) {
-			// currentState = NPCState.SEARCHING;
-		// } else {
-			currentState = NPCState.PASSIVE;			
-		// }
 	}
 
 	//=================== STATE FUNCTIONS ===================//

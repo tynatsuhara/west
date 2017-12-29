@@ -11,6 +11,7 @@ public class NPC : Character, Interactable {
 
 	public enum NPCState {
 		PASSIVE,                    // following their schedule
+		TRAVELING,                  // going to target destination
 		CURIOUS,    			 	// they know something is up, but don't know of the player
 		SEARCHING,   				// they are aware of the player, but don't know location
 		ALERTING,					// running to notify guards
@@ -27,6 +28,8 @@ public class NPC : Character, Interactable {
 
 	public NPCType type;
 	public NPCState currentState;
+	protected GoToEvent travelDestination;
+
 	protected UnityEngine.AI.NavMeshAgent agent;
 	protected List<Character> enemies = new List<Character>();
 
@@ -57,6 +60,9 @@ public class NPC : Character, Interactable {
 			case NPCState.PASSIVE:
 				StatePassive();
 				break;
+			case NPCState.TRAVELING:
+				StateTraveling();
+				break;
 			case NPCState.CURIOUS:
 				StateCurious();
 				break;
@@ -84,6 +90,7 @@ public class NPC : Character, Interactable {
 	}
 
 	protected virtual void StatePassive() {}
+	protected virtual void StateTraveling() {}
 	protected virtual void StateCurious() {}
 	protected virtual void StateSearching() {}
 	protected virtual void StateAlerting() {}
@@ -92,10 +99,15 @@ public class NPC : Character, Interactable {
 	protected virtual void StateDownTied() {}
 	protected virtual void StateAttacking() {}
 
+	public void GoTo(GoToEvent evnt) {
+		travelDestination = evnt;
+		TransitionState(NPCState.TRAVELING);
+	}
+
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
 		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0 && currentState != NPCState.DOWN_TIED)
 			arms.SetFrame(0);
-		base.Die(location, angle, attacker, type);		
+		base.Die(location, angle, attacker, type);
 	}
 
 	private void LegAnimation() {
@@ -136,7 +148,7 @@ public class NPC : Character, Interactable {
 			agent.SetDestination(pathToFollow[currentPointIndex].transform.position);
 	}
 	protected void StopFollowingPath() {
-		
+
 	}
 
 	protected bool transitioningState;
@@ -144,6 +156,7 @@ public class NPC : Character, Interactable {
 	private NPCState stateToTransitionTo;
 	private bool resetTimeFlag;
 	public void TransitionState(NPCState newState, float time = 0f) {
+		Debug.Log(name + " transitioning to " + newState);
 		stateToTransitionTo = newState;
 		transitioningState = true;
 		if (time <= 0f) {
@@ -177,12 +190,12 @@ public class NPC : Character, Interactable {
 				evidencePoint = CorpsesInSight();
 			}
 			seesEvidence = evidencePoint != null;
-			yield return new WaitForSeconds(timeStep);			
+			yield return new WaitForSeconds(timeStep);
 		}
 	}
 
 	// Returns the point of the closest enemy in sight
-	private Dictionary<Player, float> enemyPlayersInSight = new Dictionary<Player, float>();	
+	private Dictionary<Player, float> enemyPlayersInSight = new Dictionary<Player, float>();
 	private Vector3? AddEquippedPlayersInSight() {
 		List<Player> seenPlayers = GameManager.players
 				.Where(x => x.IsEquipped() && (CanSee(x.gameObject)))
@@ -213,7 +226,7 @@ public class NPC : Character, Interactable {
 	protected void LookForEvidence() {
 		foreach (Player pc in enemyPlayersInSight.Keys) {
 			if (Time.time - enemyPlayersInSight[pc] > TIME_IN_SIGHT_BEFORE_ATTACK) {
-				Alert(Reaction.AGGRO, evidencePoint.Value);				
+				Alert(Reaction.AGGRO, evidencePoint.Value);
 			}
 		}
 	}
@@ -235,7 +248,7 @@ public class NPC : Character, Interactable {
 			if (!pc.IsEquipped() || !CanSee(pc.gameObject) || !pc.isAlive)
 				continue;
 
-			if (playerScript == null || ((transform.position - pc.transform.position).magnitude < 
+			if (playerScript == null || ((transform.position - pc.transform.position).magnitude <
 									     (transform.position - playerScript.transform.position).magnitude))
 				playerScript = pc;
 		}
@@ -259,6 +272,8 @@ public class NPC : Character, Interactable {
 		data.type = type;
 		data.name = name;
 		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
+		data.travelDestination = travelDestination;
+		data.state = currentState;
 		return data;
 	}
 
@@ -269,6 +284,8 @@ public class NPC : Character, Interactable {
 		if (!isAlive)
 			SetDeathPhysics();
 		transform.rotation = Quaternion.Euler(data.rotation.val);
+		travelDestination = data.travelDestination;
+		TransitionState(data.state);
 	}
 
 	[System.Serializable]
@@ -276,7 +293,9 @@ public class NPC : Character, Interactable {
 		public NPCType type;
 		public string name;
 		public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
-		
+		public NPCState state = NPCState.PASSIVE;
+		public GoToEvent travelDestination;
+
 		public NPCSaveData(NPCType type, bool female = false, string lastName = "") {
 			this.type = type;
 			this.female = female;
@@ -285,8 +304,10 @@ public class NPC : Character, Interactable {
 
 		// return the time at which the next reschedule should happen
 		public void Reschedule() {
-			// TODO: add necessary events to the queue
-			SaveGame.currentGame.events.CreateEvent(WorldTime.DAY, new ScheduleEvent(guid));
+			Location l = Map.LocationOfCharacter(guid);
+			Vector3 v = l.TileVectorPosition(l.RandomUnoccupiedTile());
+			SaveGame.currentGame.events.CreateEvent(WorldTime.Future(minutes: 1), new GoToEvent(guid, l.guid, v));
+			SaveGame.currentGame.events.CreateEvent(WorldTime.Future(minutes: 20), new ScheduleEvent(guid));
 		}
 	}
 }

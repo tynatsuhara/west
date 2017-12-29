@@ -234,4 +234,8 @@ public class GameManager : MonoBehaviour {
 	public Character GetCharacter(System.Guid guid) {
 		return allCharacters.Where(x => x.guid == guid).FirstOrDefault();
 	}
+
+	public NPC GetNPC(System.Guid guid) {
+		return spawnedNPCs.Where(x => x.guid == guid).FirstOrDefault();
+	}
 }
