@@ -74,10 +74,14 @@ public abstract class Location {
 		return new Vector3(xPos, 0, zPos) + (center ? new Vector3(LevelBuilder.TILE_SIZE/2f, 0, LevelBuilder.TILE_SIZE/2f) : Vector3.zero);
 	}
 
-	// TODO: make this private and return the vector position publicly
-	public int RandomUnoccupiedTile() {
+	protected int RandomUnoccupiedTileInt() {
 		List<int> all = Enumerable.Range(0, width * height).Where(val => !TileOccupied(X(val), Y(val))).ToList();
 		return all[Random.Range(0, all.Count)];
+	}
+
+	public Vector3 RandomUnoccupiedTile() {
+		List<int> all = Enumerable.Range(0, width * height).Where(val => !TileOccupied(X(val), Y(val))).ToList();
+		return TileVectorPosition(all[Random.Range(0, all.Count)]);
 	}
 
 	public int Val(int x, int y) {

@@ -149,8 +149,7 @@ public class LevelBuilder : MonoBehaviour {
 		// tumbly weedos
 		int tumbleweeds = Random.Range(0, 2);
 		for (int i = 0; i < tumbleweeds; i++) {
-			int tile = loadedLocation.RandomUnoccupiedTile();
-			Instantiate(tumbleweedPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
+			Instantiate(tumbleweedPrefab, loadedLocation.RandomUnoccupiedTile(), Quaternion.identity);
 		}
 
 		// headstones
