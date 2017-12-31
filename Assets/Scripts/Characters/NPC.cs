@@ -27,7 +27,7 @@ public class NPC : Character, Interactable {
 
 	public NPCType type;
 	public NPCState currentState;
-	public List<Task> tasks;
+	public List<NPCTaskSource> taskSources;
 
 	protected UnityEngine.AI.NavMeshAgent agent;
 	protected List<Character> enemies = new List<Character>();
@@ -263,7 +263,7 @@ public class NPC : Character, Interactable {
 		data.name = name;
 		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
 		data.state = currentState;
-		data.tasks = tasks;
+		data.taskSources = taskSources;
 		return data;
 	}
 
@@ -274,7 +274,7 @@ public class NPC : Character, Interactable {
 		if (!isAlive)
 			SetDeathPhysics();
 		transform.rotation = Quaternion.Euler(data.rotation.val);
-		tasks = data.tasks;
+		taskSources = data.taskSources;
 		TransitionState(data.state);
 	}
 
@@ -284,7 +284,7 @@ public class NPC : Character, Interactable {
 		public string name;
 		public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 		public NPCState state = NPCState.PASSIVE;
-		public List<Task> tasks = new List<Task>();
+		public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
 		private float timeOfLastSimulation = SaveGame.currentGame.time.worldTime;
 
 		public NPCSaveData(NPCType type, bool female = false, string lastName = "") {
@@ -294,10 +294,6 @@ public class NPC : Character, Interactable {
 		}
 
 		public void Simulate(float newWorldTime) {
-			if (tasks.Count == 0) {
-				return;
-			}
-
 			// TODO: look at tasks and simulate if necessary
 
 			timeOfLastSimulation = newWorldTime;
