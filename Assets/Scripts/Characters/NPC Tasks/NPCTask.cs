@@ -15,6 +15,8 @@
         1. Dynamic behavior (only in loaded location, not in simulation)
         2. Quest behavior
         3. Daily schedule
+
+    Solution: TaskSource interface. NPCs store references to all their TaskSources
  */
 
 [System.Serializable]
