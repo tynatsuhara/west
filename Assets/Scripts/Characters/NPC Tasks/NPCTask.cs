@@ -1,3 +1,5 @@
+using System;
+
 /**
     NPC Planning
     Type of NPC / Behavior

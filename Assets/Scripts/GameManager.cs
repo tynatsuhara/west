@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour {
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());
-		StartCoroutine(SimulateWorld());
+		StartCoroutine(SimulateCoroutine());
 
 		if (isNewGame) {
 			StartCoroutine(SaveAfterNewGame());
@@ -95,14 +95,19 @@ public class GameManager : MonoBehaviour {
 	}
 	private float gameEndTime;
 
-	private IEnumerator SimulateWorld() {
+	private IEnumerator SimulateCoroutine() {
 		while (true) {
-			foreach (Location l in SaveGame.currentGame.map.locations.Values) {
-				if (l != Map.CurrentLocation()) {
-					l.Simulate(SaveGame.currentGame.time.worldTime);
-				}
-			}
+			Simulate(false);
 			yield return new WaitForSeconds(5f);
+		}
+	}
+
+	private void Simulate(bool simulateCurrentLocation) {
+		foreach (Location l in SaveGame.currentGame.map.locations.Values) {
+			if (!simulateCurrentLocation && l == Map.CurrentLocation()) {
+				continue;
+			}
+			l.Simulate(SaveGame.currentGame.time.worldTime);
 		}
 	}
 
@@ -130,7 +135,16 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void LoadLocation(System.Guid guid, float timeChange = 0f, bool firstLoadSinceStartup = false) {
-		SaveGame.currentGame.time.worldTime += timeChange;
+		if (!firstLoadSinceStartup) {
+			SaveGame.Save(false);
+		}
+		float idealTimeStep = 10 * WorldTime.MINUTE;
+		int simIterations = (int) (timeChange / idealTimeStep);
+		float timeStep = timeChange / simIterations;
+		for (int i = 0; i < simIterations; i++) {
+			SaveGame.currentGame.time.worldTime += timeStep;
+			Simulate(true);
+		}
 		SetPaused(false);
 		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);
 		SaveGame.currentGame.map.currentLocation = guid;

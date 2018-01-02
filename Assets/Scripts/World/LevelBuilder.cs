@@ -39,7 +39,6 @@ public class LevelBuilder : MonoBehaviour {
 		markedDestinations = new Dictionary<string, GameObject>();
 
 		if (!firstLoadSinceStartup) {
-			SaveGame.Save(false);
 			Clean();
 		} else {
 			permanent = Object.FindObjectsOfType<Transform>().Where(x => x.parent == null).ToList();
