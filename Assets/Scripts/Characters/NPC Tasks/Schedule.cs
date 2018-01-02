@@ -1,17 +1,9 @@
 using System.Collections.Generic;
 
-public class Schedule {
-    private List<Task> tasks = new List<Task>();
-    private List<int> timeForTask = new List<Task>();
+public class Schedule : NPCTaskSource {
 
-    // durations should add to 24 hours
-    public void AddTask(Task task, int duration) {
-        tasks.Add(task);
-        timeForTask.Add(duration);
-    }
-
-    public Task CurrentTask() {
-        float time = SaveGame.currentGame.time.worldTime % WorldTime.DAY;
+    public NPCTask GetTask(System.Guid character) {
+        // float time = SaveGame.currentGame.time.worldTime % WorldTime.DAY;
         return null;
     }
 }

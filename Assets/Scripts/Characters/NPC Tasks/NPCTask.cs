@@ -21,5 +21,5 @@
 
 [System.Serializable]
 public abstract class NPCTask {
-
+    public int priority;
 }

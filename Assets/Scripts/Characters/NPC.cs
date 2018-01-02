@@ -294,6 +294,15 @@ public class NPC : Character, Interactable {
 		}
 
 		public void Simulate(float newWorldTime) {
+			int maxPriority = taskSources
+					.Select(x => x.GetTask(guid))
+					.Where(x => x != null)
+					.Max(x => x.priority);
+			NPCTask task = taskSources
+					.Select(x => x.GetTask(guid))
+					.Where(x => x != null && x.priority == maxPriority)
+					.First();
+			
 			// TODO: look at tasks and simulate if necessary
 
 			timeOfLastSimulation = newWorldTime;
