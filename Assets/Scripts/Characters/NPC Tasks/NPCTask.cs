@@ -24,4 +24,5 @@ using System;
 [System.Serializable]
 public abstract class NPCTask {
     public int priority;
+    public abstract Task.TaskDestination GetLocation();
 }

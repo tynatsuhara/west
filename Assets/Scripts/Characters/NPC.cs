@@ -311,7 +311,8 @@ public class NPC : Character, Interactable {
 		}
 
 		private void SimulateTask(NPCTask task) {
-			// TODO
+			Task.TaskDestination destination = task.GetLocation();
+			// TODO: simulate going to destination
 		}
 	}
 }
