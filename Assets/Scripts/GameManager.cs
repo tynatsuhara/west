@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour {
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());
-		StartCoroutine(SimulateCoroutine());
+		StartCoroutine(SimulateBackground());
 
 		if (isNewGame) {
 			StartCoroutine(SaveAfterNewGame());
@@ -95,19 +95,20 @@ public class GameManager : MonoBehaviour {
 	}
 	private float gameEndTime;
 
-	private IEnumerator SimulateCoroutine() {
+	private IEnumerator SimulateBackground() {
 		while (true) {
-			Simulate(false);
+			Simulate(true);
 			yield return new WaitForSeconds(5f);
 		}
 	}
 
-	private void Simulate(bool simulateCurrentLocation) {
+	// background - true if the player is in a loaded location (aka exclude simulating that location)
+	private void Simulate(bool background) {
 		foreach (Location l in SaveGame.currentGame.map.locations.Values) {
-			if (!simulateCurrentLocation && l == Map.CurrentLocation()) {
+			if (background && l == Map.CurrentLocation()) {
 				continue;
 			}
-			l.Simulate(SaveGame.currentGame.time.worldTime);
+			l.Simulate(SaveGame.currentGame.time.worldTime, background);
 		}
 	}
 
@@ -138,12 +139,9 @@ public class GameManager : MonoBehaviour {
 		if (!firstLoadSinceStartup) {
 			SaveGame.Save(false);
 		}
-		float idealTimeStep = 10 * WorldTime.MINUTE;
-		int simIterations = (int) (timeChange / idealTimeStep);
-		float timeStep = timeChange / simIterations;
-		for (int i = 0; i < simIterations; i++) {
-			SaveGame.currentGame.time.worldTime += timeStep;
-			Simulate(true);
+		if (timeChange > 0) {
+			SaveGame.currentGame.time.worldTime += timeChange;
+			Simulate(false);
 		}
 		SetPaused(false);
 		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);

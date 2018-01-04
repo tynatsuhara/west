@@ -46,10 +46,10 @@ public abstract class Location {
 		}
 	}
 
-	public void Simulate(float newWorldTime) {
+	public void Simulate(float newWorldTime, bool background) {
 		foreach (System.Guid id in characters) {
 			NPC.NPCSaveData npc = SaveGame.currentGame.savedCharacters[id];
-			npc.Simulate(newWorldTime);
+			npc.Simulate(newWorldTime, background);
 		}
 	}
 

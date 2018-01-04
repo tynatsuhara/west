@@ -293,24 +293,18 @@ public class NPC : Character, Interactable {
 			name = NameGen.CharacterName(female, lastName);
 		}
 
-		public void Simulate(float newWorldTime) {
-			List<NPCTask> tasks = taskSources
-					.Select(x => x.GetTask(guid))
-					.Where(x => x != null)
-					.ToList();
+		public void Simulate(float newWorldTime, bool background) {
+			List<NPCTask> tasks = taskSources.Select(x => x.GetTask(guid)).Where(x => x != null).ToList();
 			if (tasks.Count == 0) {
 				return;
 			}
 			int maxPriority = tasks.Max(x => x.priority);
-			NPCTask task = taskSources
-					.Select(x => x.GetTask(guid))
-					.Where(x => x != null && x.priority == maxPriority)
-					.First();
-			SimulateTask(task);
+			NPCTask task = tasks.Where(x => x.priority == maxPriority).First();
+			SimulateTask(task, background);
 			timeOfLastSimulation = newWorldTime;
 		}
 
-		private void SimulateTask(NPCTask task) {
+		private void SimulateTask(NPCTask task, bool background) {
 			Task.TaskDestination destination = task.GetLocation();
 			// TODO: simulate going to destination
 		}
