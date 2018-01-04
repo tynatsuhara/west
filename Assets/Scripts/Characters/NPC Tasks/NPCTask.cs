@@ -25,4 +25,7 @@ using System;
 public abstract class NPCTask {
     public int priority;
     public abstract Task.TaskDestination GetLocation();
+    
+    // Lower bound on time left for a task -- If this is <= 0, the task is done.
+    public abstract float GetTimeLeft();
 }
