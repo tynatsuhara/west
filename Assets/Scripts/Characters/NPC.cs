@@ -285,7 +285,6 @@ public class NPC : Character, Interactable {
 		public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 		public NPCState state = NPCState.PASSIVE;
 		public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
-		private float timeOfLastSimulation = SaveGame.currentGame.time.worldTime;
 
 		public NPCSaveData(NPCType type, bool female = false, string lastName = "") {
 			this.type = type;
@@ -293,18 +292,23 @@ public class NPC : Character, Interactable {
 			name = NameGen.CharacterName(female, lastName);
 		}
 
-		public void Simulate(float newWorldTime, bool background) {
-			List<NPCTask> tasks = taskSources.Select(x => x.GetTask(guid)).Where(x => x != null).ToList();
-			if (tasks.Count == 0) {
-				return;
+		public void Simulate(float startTime, float endTime, bool background) {
+			float simTime = startTime;
+			while (simTime < endTime) {
+				List<NPCTask> tasks = taskSources.Select(x => x.GetTask(guid, simTime)).Where(x => x != null).ToList();
+				if (tasks.Count == 0) {
+					simTime += WorldTime.MINUTE;
+					continue;
+				}
+				int maxPriority = tasks.Max(x => x.priority);
+				NPCTask task = tasks.Where(x => x.priority == maxPriority).First();
+				float minTimeLeft = task.GetTimeLeft();
+				SimulateTask(task, simTime, Mathf.Min(simTime + minTimeLeft, endTime), background);
+				simTime += minTimeLeft;
 			}
-			int maxPriority = tasks.Max(x => x.priority);
-			NPCTask task = tasks.Where(x => x.priority == maxPriority).First();
-			SimulateTask(task, background);
-			timeOfLastSimulation = newWorldTime;
 		}
 
-		private void SimulateTask(NPCTask task, bool background) {
+		private void SimulateTask(NPCTask task, float startTime, float endTime, bool background) {
 			Task.TaskDestination destination = task.GetLocation();
 			// TODO: simulate going to destination
 		}

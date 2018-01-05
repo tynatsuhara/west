@@ -96,19 +96,22 @@ public class GameManager : MonoBehaviour {
 	private float gameEndTime;
 
 	private IEnumerator SimulateBackground() {
+		float lastSimulationTime = SaveGame.currentGame.time.worldTime;
 		while (true) {
-			Simulate(true);
-			yield return new WaitForSeconds(5f);
+			yield return new WaitForSeconds(2f);
+			float newTime = SaveGame.currentGame.time.worldTime;
+			Simulate(lastSimulationTime, newTime, true);
+			lastSimulationTime = newTime;
 		}
 	}
 
 	// background - true if the player is in a loaded location (aka exclude simulating that location)
-	private void Simulate(bool background) {
+	private void Simulate(float startTime, float endTime, bool background) {
 		foreach (Location l in SaveGame.currentGame.map.locations.Values) {
 			if (background && l == Map.CurrentLocation()) {
 				continue;
 			}
-			l.Simulate(SaveGame.currentGame.time.worldTime, background);
+			l.Simulate(startTime, endTime, background);
 		}
 	}
 
@@ -140,8 +143,8 @@ public class GameManager : MonoBehaviour {
 			SaveGame.Save(false);
 		}
 		if (timeChange > 0) {
+			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeChange, false);
 			SaveGame.currentGame.time.worldTime += timeChange;
-			Simulate(false);
 		}
 		SetPaused(false);
 		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);
