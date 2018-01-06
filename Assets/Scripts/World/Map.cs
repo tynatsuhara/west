@@ -167,6 +167,7 @@ public class Map {
 		return (TownLocation)(CurrentLocation() is TownLocation ? CurrentLocation() : Location(CurrentLocation().town));
 	}
 
+	// TODO: replace this so it's not O(n)?
 	public static Location LocationOfCharacter(System.Guid guid) {
 		foreach (var item in SaveGame.currentGame.map.locations) {
 			if (item.Value.characters.Contains(guid)) {
