@@ -95,10 +95,11 @@ public class GameManager : MonoBehaviour {
 	}
 	private float gameEndTime;
 
+	public readonly float SIMULATION_TICK = 2 * WorldTime.MINUTE;
 	private IEnumerator SimulateBackground() {
 		float lastSimulationTime = SaveGame.currentGame.time.worldTime;
 		while (true) {
-			yield return new WaitForSeconds(2f);
+			yield return new WaitForSeconds(SIMULATION_TICK);
 			float newTime = SaveGame.currentGame.time.worldTime;
 			Simulate(lastSimulationTime, newTime, true);
 			lastSimulationTime = newTime;
@@ -107,11 +108,13 @@ public class GameManager : MonoBehaviour {
 
 	// background - true if the player is in a loaded location (aka exclude simulating that location)
 	private void Simulate(float startTime, float endTime, bool background) {
-		foreach (Location l in SaveGame.currentGame.map.locations.Values) {
-			if (background && l == Map.CurrentLocation()) {
-				continue;
+		for (float t = startTime; t < endTime - SIMULATION_TICK; t += SIMULATION_TICK) {
+			foreach (Location l in SaveGame.currentGame.map.locations.Values) {
+				if (background && l == Map.CurrentLocation()) {
+					continue;
+				}
+				l.Simulate(t, t + SIMULATION_TICK, background);
 			}
-			l.Simulate(startTime, endTime, background);
 		}
 	}
 
