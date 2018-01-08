@@ -310,6 +310,9 @@ public class NPC : Character, Interactable {
 
 		private void SimulateTask(NPCTask task, float startTime, float endTime, bool background) {
 			Task.TaskDestination destination = task.GetLocation();
+			Location current = Map.LocationOfCharacter(guid);
+			float dist = Map.CurrentLocation().DistanceFrom(current);
+			float time = 4 /* minutes per distance unit */ * dist;  // TODO: clean up duplicated code in teleporter
 			// TODO: simulate going to destination
 		}
 	}
