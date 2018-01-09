@@ -115,6 +115,7 @@ public class Map {
 		return outGraph;
 	}
 
+	// Returns the list (excluding start), or null if there is no path
 	public List<System.Guid> BestPathFrom(System.Guid start, System.Guid destination) {
 		Location src = locations[start];
 		Location dst = locations[destination];
