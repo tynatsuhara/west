@@ -114,11 +114,18 @@ public class LevelBuilder : MonoBehaviour {
 
 	private void SpawnNPCs() {
 		foreach (System.Guid id in loadedLocation.characters) {
-			NPC.NPCSaveData data = SaveGame.currentGame.savedCharacters[id];
-			NPC npc = Instantiate(npcPrefab).GetComponent<NPC>();
-			npc.LoadSaveData(data);
+			SpawnNPC(id);
 		}
-	}	
+	}
+
+	public void SpawnNPC(System.Guid id) {
+		NPC.NPCSaveData data = SaveGame.currentGame.savedCharacters[id];
+		if (data.departed) {
+			return;
+		}
+		NPC npc = Instantiate(npcPrefab).GetComponent<NPC>();
+		npc.LoadSaveData(data);
+	}
 
 	private void SpawnHorses(bool spawnRiddenByPlayers) {
 		// we only want to spawn the horses ridden by players when they don't exist
