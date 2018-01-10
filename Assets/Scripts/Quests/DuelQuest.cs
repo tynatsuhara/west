@@ -45,13 +45,13 @@ public class DuelQuest : Quest, NPCTaskSource {
 	}
 
 	public NPCTask GetTask(System.Guid character, float time) {
-		// if (character != duelingOpponent) {
-		// 	Debug.Log("what the fuck?");
-		// 	return null;
-		// }
-		// if (playerLastReturnedTask == killTask) {
+		if (character != duelingOpponent) {
+			Debug.Log("what the fuck?");
+			return null;
+		}
+		if (playerLastReturnedTask == killTask) {
 			return new NPCKillTask();
-		// }
-		// return null;
+		}
+		return null;
 	}
 }
