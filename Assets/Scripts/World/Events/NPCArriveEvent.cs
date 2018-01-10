@@ -1,4 +1,5 @@
 using System.Linq;
+using UnityEngine;
 
 [System.Serializable]
 public class NPCArriveEvent : WorldEvent {
@@ -10,6 +11,11 @@ public class NPCArriveEvent : WorldEvent {
     public NPCArriveEvent(System.Guid character, System.Guid location, System.Guid from) {
         this.character = character;
         this.location = location;
+
+        string name = SaveGame.currentGame.savedCharacters[character].name;
+        string fname = Map.Location(from).name;
+        string lname = Map.Location(location).name;
+        Debug.Log(name + " is traveling from " + fname + " to " + lname);
     }
 
     public void Execute(bool hasLoadedLocation) {
