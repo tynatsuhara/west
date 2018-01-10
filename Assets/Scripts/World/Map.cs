@@ -26,7 +26,7 @@ public class Map {
 			List<TownLocation> ls = new List<TownLocation>();
 			for (int i = 0; i < MAX_LOCATION_AMOUNT; i++) {
 				display.text = "PLACING TOWN " + (i+1) + "/" + MAX_LOCATION_AMOUNT;
-				yield return new WaitForEndOfFrame();
+				yield return 0;
 				TownLocation l = new TownLocation(this, Random.Range(0, WORLD_COORD_SIZE), Random.Range(0, WORLD_COORD_SIZE));
 				for (int j = 0; j < 10 && TooClose(ls, l); j++) {
 					l = new TownLocation(this, Random.Range(0, WORLD_COORD_SIZE), Random.Range(0, WORLD_COORD_SIZE));
@@ -38,7 +38,7 @@ public class Map {
 
 			// connect locations together
 			display.text = "BUILDING ROADS";
-			yield return new WaitForEndOfFrame();
+			yield return 0;
 			var distances = ls.SelectMany(l1 => ls.Select(l2 => new {l1, l2, (l1.worldLocation.val - l2.worldLocation.val).magnitude}))
 					.OrderBy(x => x.magnitude)
 					.ToList();
@@ -54,13 +54,13 @@ public class Map {
 
 			// Find largest connected map
 			display.text = "PRUNING MAP";
-			yield return new WaitForEndOfFrame();
+			yield return 0;
 			List<Location> graph = null;
 			foreach (TownLocation l in ls) {
 				graph = DFS(l);
 				if (graph.Count >= MIN_LOCATION_AMOUNT)
 					break;
-				yield return new WaitForEndOfFrame();				
+				yield return 0;				
 			}
 			
 			locations.Clear();
@@ -88,7 +88,7 @@ public class Map {
 			TownLocation town = (TownLocation) locations[g];
 			town.Generate();
 			display.text = "GENERATING TOWN " + town.name.ToUpper();
-			yield return new WaitForEndOfFrame();
+			yield return 0;
 			currentLocation = g;
 		}
 		Debug.Log("Generated " + towns.Count + " towns, " + locations.Count + " locations total");
