@@ -12,7 +12,7 @@ public class DuelQuest : Quest, NPCTaskSource {
 
 	public DuelQuest(System.Guid duelingOpponent) {
 		this.duelingOpponent = duelingOpponent;
-		Location l = Map.LocationOfCharacter(duelingOpponent);
+		Location l = Map.Location(SaveGame.currentGame.savedCharacters[duelingOpponent].location);
 		centerOfRoad = new GoToTask(l.guid, l.RandomUnoccupiedTile(), false, "Start the duel");
 		sevenPaces = new GoToTask(l.guid, l.RandomUnoccupiedTile(), true, "Walk seven paces");
 		killTask = new KillTask(duelingOpponent);
@@ -45,13 +45,13 @@ public class DuelQuest : Quest, NPCTaskSource {
 	}
 
 	public NPCTask GetTask(System.Guid character, float time) {
-		if (character != duelingOpponent) {
-			Debug.Log("what the fuck?");
-			return null;
-		}
-		if (playerLastReturnedTask == killTask) {
+		// if (character != duelingOpponent) {
+		// 	Debug.Log("what the fuck?");
+		// 	return null;
+		// }
+		// if (playerLastReturnedTask == killTask) {
 			return new NPCKillTask();
-		}
-		return null;
+		// }
+		// return null;
 	}
 }

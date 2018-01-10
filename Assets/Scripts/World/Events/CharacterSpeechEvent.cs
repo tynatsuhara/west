@@ -10,7 +10,7 @@ public class CharacterSpeechEvent : WorldEvent {
         this.message = message;
     }
 
-    public override void Execute(bool hasLoadedLocation) {
+    public void Execute(bool hasLoadedLocation) {
         if (!hasLoadedLocation) {
             return;
         }

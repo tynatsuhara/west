@@ -17,8 +17,8 @@ public class NPCKillTask : NPCTask {
         if (target == System.Guid.Empty) {
             return new Task.TaskDestination(Map.CurrentLocation().guid, SaveGame.currentGame.savedPlayers[0].position.val);
         } else {
-            Character.CharacterSaveData c = SaveGame.currentGame.savedCharacters[target];
-            return new Task.TaskDestination(Map.LocationOfCharacter(c.guid).guid, c.position.val);
+            NPC.NPCSaveData c = SaveGame.currentGame.savedCharacters[target];
+            return new Task.TaskDestination(c.location, c.position.val);
         }
     }
     

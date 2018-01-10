@@ -157,6 +157,7 @@
      <Compile Include="Assets\Scripts\World\Crime.cs" />
      <Compile Include="Assets\Scripts\World\Events\CharacterSpeechEvent.cs" />
      <Compile Include="Assets\Scripts\World\Events\EventQueue.cs" />
+     <Compile Include="Assets\Scripts\World\Events\NPCArriveEvent.cs" />
      <Compile Include="Assets\Scripts\World\Events\WorldEvent.cs" />
      <Compile Include="Assets\Scripts\World\Exteriors\Building.cs" />
      <Compile Include="Assets\Scripts\World\LevelBuilder.cs" />

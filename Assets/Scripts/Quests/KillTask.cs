@@ -7,9 +7,13 @@ public class KillTask : Task {
 
     public override bool complete {
 		get { 
-            return Map.LocationOfCharacter(character) == Map.CurrentLocation() 
-                ? !GameManager.spawnedNPCs.Where(x => x.guid == character).First().isAlive
-                : !SaveGame.currentGame.savedCharacters[character].isAlive;
+            if (SaveGame.currentGame.savedCharacters[character].location == Map.CurrentLocation().guid) {
+                NPC npc = GameManager.spawnedNPCs.Where(x => x.guid == character).FirstOrDefault();
+                if (npc != null) {
+                    return !npc.isAlive;
+                }
+            }
+            return !SaveGame.currentGame.savedCharacters[character].isAlive;
         }
 	}
 

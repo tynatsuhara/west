@@ -116,11 +116,12 @@ public class TownLocation : Location {
 
 		// temp NPC spawning
 		int pplAmount = Random.Range(1, 5);
+		List<System.Guid> spawnedChars = new List<System.Guid>();
 		for (int i = 0; i < pplAmount; i++) {
-			NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE, Random.Range(0, 2) == 0);
+			NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE, guid, Random.Range(0, 2) == 0);
 			npc.position = new SerializableVector3(RandomUnoccupiedTile());
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
-			characters.Add(npc.guid);
+			spawnedChars.Add(npc.guid);
 
 			float eventTime = WorldTime.Future(minutes: Random.Range(3, 8));
 			SaveGame.currentGame.events.CreateEvent(eventTime, new CharacterSpeechEvent(npc.guid, "test speech!"));
@@ -129,7 +130,7 @@ public class TownLocation : Location {
 		// temp horse spawning
 		int horseAmount = pplAmount + Random.Range(1, 3);
 		for (int i = 0; i < horseAmount; i++) {
-			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < pplAmount ? characters[i] : System.Guid.Empty);
+			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < pplAmount ? spawnedChars[i] : System.Guid.Empty);
 			hsd.location = new SerializableVector3(RandomUnoccupiedTile());
 			SaveGame.currentGame.horses[hsd.guid] = hsd;
 			horses.Add(hsd.guid);

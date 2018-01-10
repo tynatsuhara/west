@@ -46,9 +46,7 @@ public class SaveGame {
 		// save local NPCs
 		foreach (NPC npc in GameManager.spawnedNPCs) {
 			NPC.NPCSaveData data = npc.SaveData();
-			if (Map.CurrentLocation().characters.Contains(data.guid)) {
-				currentGame.savedCharacters[data.guid] = data;
-			}
+			currentGame.savedCharacters[data.guid] = data;
 		}
 
 		// save any necessary things in the locations

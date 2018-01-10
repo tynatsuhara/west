@@ -146,7 +146,6 @@ public class NPC : Character, Interactable {
 	private NPCState stateToTransitionTo;
 	private bool resetTimeFlag;
 	public void TransitionState(NPCState newState, float time = 0f) {
-		Debug.Log(name + " transitioning to " + newState);
 		stateToTransitionTo = newState;
 		transitioningState = true;
 		if (time <= 0f) {
@@ -280,40 +279,83 @@ public class NPC : Character, Interactable {
 
 	[System.Serializable]
 	public class NPCSaveData : CharacterSaveData {
+		public System.Guid location;
 		public NPCType type;
 		public string name;
 		public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
 		public NPCState state = NPCState.PASSIVE;
 		public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
 
-		public NPCSaveData(NPCType type, bool female = false, string lastName = "") {
+		public NPCSaveData(NPCType type, System.Guid location, bool female = false, string lastName = "") {
 			this.type = type;
+			this.location = location;
 			this.female = female;
 			name = NameGen.CharacterName(female, lastName);
 		}
 
+		// try to do a task
 		public void Simulate(float startTime, float endTime, bool background) {
-			float simTime = startTime;
-			while (simTime < endTime) {
-				List<NPCTask> tasks = taskSources.Select(x => x.GetTask(guid, simTime)).Where(x => x != null).ToList();
-				if (tasks.Count == 0) {
-					simTime += WorldTime.MINUTE;
-					continue;
-				}
-				int maxPriority = tasks.Max(x => x.priority);
-				NPCTask task = tasks.Where(x => x.priority == maxPriority).First();
-				float minTimeLeft = task.GetTimeLeft();
-				SimulateTask(task, simTime, Mathf.Min(simTime + minTimeLeft, endTime), background);
-				simTime += minTimeLeft;
+			if (health <= 0 || departed) {
+				return;
 			}
+			List<NPCTask> tasks = taskSources.Select(x => x.GetTask(guid, startTime)).Where(x => x != null).ToList();
+			if (tasks.Count == 0) {
+				return;
+			}
+			int maxPriority = tasks.Max(x => x.priority);
+			NPCTask task = tasks.Where(x => x.priority == maxPriority).First();
+			float minTimeLeft = task.GetTimeLeft();
+			SimulateTask(task, startTime, Mathf.Min(startTime + minTimeLeft, endTime), background);
 		}
 
 		private void SimulateTask(NPCTask task, float startTime, float endTime, bool background) {
 			Task.TaskDestination destination = task.GetLocation();
-			Location current = Map.LocationOfCharacter(guid);
-			float dist = Map.CurrentLocation().DistanceFrom(current);
-			float time = 4 /* minutes per distance unit */ * dist;  // TODO: clean up duplicated code in teleporter
-			// TODO: simulate going to destination
+
+			if (GoToLocation(startTime, endTime, task.GetLocation())) {
+				if (destination.location != Map.CurrentLocation().guid) {
+					// TODO: simulate the thing
+				}
+			}
 		}
-	}
+
+		private float timeInCurrentLocation;
+		private float maxSimulatedTime;
+		private List<System.Guid> path;
+		private readonly float TIME_IN_LOCATION_BEFORE_TRAVEL = 10 * WorldTime.MINUTE;
+		public bool departed {
+			get { return timeInCurrentLocation >= TIME_IN_LOCATION_BEFORE_TRAVEL; }
+		}
+		
+		// returns true when they're in range
+		private bool GoToLocation(float startTime, float endTime, Task.TaskDestination destination) {
+			startTime = Mathf.Max(startTime, maxSimulatedTime);
+			maxSimulatedTime = startTime;
+			if (path == null || path.Last() != destination.location) {
+				path = SaveGame.currentGame.map.BestPathFrom(location, destination.location);
+			}
+			if (path.Count == 0) {
+				return true;
+			}
+
+			timeInCurrentLocation += (endTime - startTime);
+			float travelTime = 4 * Map.Location(location).DistanceFrom(Map.Location(path.First()));		
+
+			if (departed) {
+				NPCArriveEvent arrival = new NPCArriveEvent(guid, destination.location, location);
+			}
+
+			return false;
+		}
+
+		public void TravelToLocation(System.Guid l) {
+			location = l;
+			timeInCurrentLocation = 0;
+			if (path.First() == l) {
+				path.RemoveAt(0);
+			} else {
+				path = null;				
+			}
+		}
+
+ 	}
 }

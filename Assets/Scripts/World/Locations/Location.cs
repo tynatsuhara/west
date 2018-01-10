@@ -17,7 +17,14 @@ public abstract class Location {
 	public System.Guid guid = System.Guid.NewGuid();
 	public System.Guid[] connections;
 
-	public List<System.Guid> characters = new List<System.Guid>();
+	public List<System.Guid> characters {
+		get {
+			return SaveGame.currentGame.savedCharacters.Values
+				.Where(x => x.location == guid)
+				.Select(x => x.guid)
+				.ToList();
+		}
+	}
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
 	public Dictionary<int, Cactus.CactusSaveData> cacti = new Dictionary<int, Cactus.CactusSaveData>();  // maps tile to cactus
@@ -47,9 +54,9 @@ public abstract class Location {
 	}
 
 	public void Simulate(float startTime, float endTime, bool background) {
-		foreach (System.Guid id in characters) {
-			NPC.NPCSaveData npc = SaveGame.currentGame.savedCharacters[id];
-			npc.Simulate(startTime, endTime, background);
+		List<NPC.NPCSaveData> sims = characters.Select(id => SaveGame.currentGame.savedCharacters[id]).ToList();
+		foreach (NPC.NPCSaveData sim in sims) {
+			sim.Simulate(startTime, endTime, background);
 		}
 	}
 
