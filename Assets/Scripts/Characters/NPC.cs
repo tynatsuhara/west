@@ -27,7 +27,6 @@ public class NPC : Character, Interactable {
 
 	public NPCType type;
 	public NPCState currentState;
-	public List<NPCTaskSource> taskSources;
 
 	protected UnityEngine.AI.NavMeshAgent agent;
 	protected List<Character> enemies = new List<Character>();
@@ -262,7 +261,6 @@ public class NPC : Character, Interactable {
 		data.name = name;
 		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
 		data.state = currentState;
-		data.taskSources = taskSources;
 		return data;
 	}
 
@@ -273,7 +271,6 @@ public class NPC : Character, Interactable {
 		if (!isAlive)
 			SetDeathPhysics();
 		transform.rotation = Quaternion.Euler(data.rotation.val);
-		taskSources = data.taskSources;
 		TransitionState(data.state);
 	}
 
@@ -311,16 +308,21 @@ public class NPC : Character, Interactable {
 		private void SimulateTask(NPCTask task, float startTime, float endTime, bool background) {
 			Task.TaskDestination destination = task.GetLocation();
 
-			if (GoToLocation(startTime, endTime, task.GetLocation())) {
-				if (destination.location != Map.CurrentLocation().guid) {
-					// TODO: simulate the thing
+			try {
+				if (GoToLocation(startTime, endTime, task.GetLocation())) {
+					if (background || destination.location != Map.CurrentLocation().guid) {
+						// TODO: simulate the thing
+					}
 				}
+			} catch (System.Exception e) {
+				Debug.LogFormat("from {0} ({1}) to {2} ({3})", location, Map.Location(location).name, task.GetLocation().location, Map.Location(task.GetLocation().location).name);
+				throw e;
 			}
 		}
 
 		private float timeInCurrentLocation;
 		private float maxSimulatedTime;
-		private List<System.Guid> path;
+		private List<System.Guid> path = new List<System.Guid>();
 		private readonly float TIME_IN_LOCATION_BEFORE_TRAVEL = 10 * WorldTime.MINUTE;
 		public bool departed {
 			get { return timeInCurrentLocation >= TIME_IN_LOCATION_BEFORE_TRAVEL; }
@@ -328,9 +330,13 @@ public class NPC : Character, Interactable {
 		
 		// returns true when they're in range
 		private bool GoToLocation(float startTime, float endTime, Task.TaskDestination destination) {
+			if (location == destination.location) {
+				return true;
+			}
+
 			startTime = Mathf.Max(startTime, maxSimulatedTime);
 			maxSimulatedTime = startTime;
-			if (path == null || path.Last() != destination.location) {
+			if (path.Count == 0 || path.Last() != destination.location) {
 				path = SaveGame.currentGame.map.BestPathFrom(location, destination.location);
 			}
 			if (path.Count == 0) {
@@ -341,7 +347,11 @@ public class NPC : Character, Interactable {
 			float travelTime = 4 * Map.Location(location).DistanceFrom(Map.Location(path.First()));		
 
 			if (departed) {
-				NPCArriveEvent arrival = new NPCArriveEvent(guid, destination.location, location);
+				NPCArriveEvent arrival = new NPCArriveEvent(guid, path.First(), location);
+				SaveGame.currentGame.events.CreateEvent(SaveGame.currentGame.time.worldTime + travelTime, arrival);
+				string fname = Map.Location(location).name;
+				string lname = Map.Location(path.First()).name;
+				Debug.Log(name + " is traveling from " + fname + " to " + lname + " in " + travelTime + " seconds");
 			}
 
 			return false;
@@ -350,10 +360,10 @@ public class NPC : Character, Interactable {
 		public void TravelToLocation(System.Guid l) {
 			location = l;
 			timeInCurrentLocation = 0;
-			if (path.First() == l) {
+			if (path.Count > 0 && path.First() == l) {
 				path.RemoveAt(0);
 			} else {
-				path = null;				
+				path.Clear();
 			}
 		}
 

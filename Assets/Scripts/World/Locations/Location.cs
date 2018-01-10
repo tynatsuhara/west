@@ -53,13 +53,6 @@ public abstract class Location {
 		}
 	}
 
-	public void Simulate(float startTime, float endTime, bool background) {
-		List<NPC.NPCSaveData> sims = characters.Select(id => SaveGame.currentGame.savedCharacters[id]).ToList();
-		foreach (NPC.NPCSaveData sim in sims) {
-			sim.Simulate(startTime, endTime, background);
-		}
-	}
-
 	public float DistanceFrom(Location l) {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
 	}

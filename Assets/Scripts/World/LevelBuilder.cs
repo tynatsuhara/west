@@ -212,7 +212,7 @@ public class LevelBuilder : MonoBehaviour {
 				.Where(x => !markedDestinations.ContainsKey(x.ToString()))
 				.ToList();
 		List<Vector3> expiredDestinationMarkers = markedDestinations.Values
-				.Where(x => !destStrings.Contains(x.transform.position.ToString()))
+				.Where(x => x != null && !destStrings.Contains(x.transform.position.ToString()))
 				.Select(x => x.transform.position)
 				.ToList();
 		

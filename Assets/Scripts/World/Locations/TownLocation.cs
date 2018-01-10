@@ -122,6 +122,7 @@ public class TownLocation : Location {
 			npc.position = new SerializableVector3(RandomUnoccupiedTile());
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
 			spawnedChars.Add(npc.guid);
+			npc.taskSources.Add(new Schedule());
 
 			float eventTime = WorldTime.Future(minutes: Random.Range(3, 8));
 			SaveGame.currentGame.events.CreateEvent(eventTime, new CharacterSpeechEvent(npc.guid, "test speech!"));
