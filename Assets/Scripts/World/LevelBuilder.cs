@@ -181,7 +181,7 @@ public class LevelBuilder : MonoBehaviour {
 	// Called by quest manager
 	private Dictionary<string, GameObject> markedDestinations;
 	public void MarkQuestDestinations(List<Task.TaskDestination> destinations) {
-		// Quest teleporter destinations		
+		// Quest teleporter destinations
 		List<System.Guid> questTeleportDestinations = destinations
 				.Where(x => loadedLocation.guid != x.location)
 				.Select(x => SaveGame.currentGame.map.BestPathFrom(loadedLocation.guid, x.location)[0])

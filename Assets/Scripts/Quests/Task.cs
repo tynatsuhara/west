@@ -26,7 +26,7 @@ public abstract class Task {
 		}
 
 		public TaskDestination(System.Guid character) {
-			this.location = SaveGame.currentGame.savedCharacters[character].guid;
+			this.location = SaveGame.currentGame.savedCharacters[character].location;
 			this.character = character;
 		}
 	}
