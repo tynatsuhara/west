@@ -106,6 +106,11 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	public void FastForward(float time) {
+		GameManager.instance.loadReposition = players[0].transform.position;  // ugh
+		LoadLocation(Map.CurrentLocation().guid, time);
+	}
+
 	// background - true if the player is in a loaded location (aka exclude simulating that location)
 	private void Simulate(float startTime, float endTime, bool background) {
 		for (float t = startTime; t < endTime - SIMULATION_TICK; t += SIMULATION_TICK) {
@@ -155,6 +160,7 @@ public class GameManager : MonoBehaviour {
 		VisualMap.instance.Refresh();
 	}
 
+	// TODO: move to playersavedata, this is fucking stupid
 	public Vector3 loadReposition;
 
 	private IEnumerator CheckQuests() {
