@@ -99,25 +99,32 @@ public class GameManager : MonoBehaviour {
 	private IEnumerator SimulateBackground() {
 		float lastSimulationTime = SaveGame.currentGame.time.worldTime;
 		while (true) {
-			yield return new WaitForSeconds(SIMULATION_TICK);
+			float timePerChar = SIMULATION_TICK / SaveGame.currentGame.savedCharacters.Count;
 			float newTime = SaveGame.currentGame.time.worldTime;
-			Simulate(lastSimulationTime, newTime, true);
+			List<NPC.NPCSaveData> npcs = SaveGame.currentGame.savedCharacters.Values.ToList();
+			foreach (NPC.NPCSaveData npc in npcs) {
+				if (npc.location == Map.CurrentLocation().guid) {
+					continue;
+				}
+				npc.Simulate(lastSimulationTime, newTime, true);
+				yield return new WaitForSeconds(timePerChar);
+			}
 			lastSimulationTime = newTime;
+		}
+	}
+
+	// background - true if the player is in a loaded location (aka exclude simulating that location)
+	private void Simulate(float startTime, float endTime) {
+		for (float t = startTime; t < endTime - SIMULATION_TICK; t += SIMULATION_TICK) {
+			foreach (NPC.NPCSaveData npc in SaveGame.currentGame.savedCharacters.Values) {
+				npc.Simulate(t, t + SIMULATION_TICK, false);
+			}
 		}
 	}
 
 	public void FastForward(float time) {
 		GameManager.instance.loadReposition = players[0].transform.position;  // ugh
 		LoadLocation(Map.CurrentLocation().guid, time);
-	}
-
-	// background - true if the player is in a loaded location (aka exclude simulating that location)
-	private void Simulate(float startTime, float endTime, bool background) {
-		for (float t = startTime; t < endTime - SIMULATION_TICK; t += SIMULATION_TICK) {
-			foreach (NPC.NPCSaveData npc in SaveGame.currentGame.savedCharacters.Values) {
-				npc.Simulate(t, t + SIMULATION_TICK, background);
-			}
-		}
 	}
 
 	private IEnumerator SaveAfterNewGame() {
@@ -148,7 +155,7 @@ public class GameManager : MonoBehaviour {
 			SaveGame.Save(false);
 		}
 		if (timeChange > 0) {
-			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeChange, false);
+			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeChange);
 			SaveGame.currentGame.time.worldTime += timeChange;
 		}
 		SetPaused(false);
