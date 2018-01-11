@@ -35,6 +35,7 @@ public class Schedule : NPCTaskSource {
         return this;
     }
 
+    [System.Serializable]
     private class Block {
         public float duration;
         public NPCTask task;
