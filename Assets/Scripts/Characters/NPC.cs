@@ -311,7 +311,7 @@ public class NPC : Character, Interactable {
 			try {
 				if (GoToLocation(startTime, endTime, task.GetLocation())) {
 					if (background || destination.location != Map.CurrentLocation().guid) {
-						// TODO: simulate the thing
+						task.Simulate(this);
 					}
 				}
 			} catch (System.Exception e) {

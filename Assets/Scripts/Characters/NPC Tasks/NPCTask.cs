@@ -28,4 +28,8 @@ public abstract class NPCTask {
     
     // Lower bound on time left for a task -- If this is <= 0, the task is done.
     public abstract float GetTimeLeft();
+
+    // Some tasks can be simulated, some simply do nothing if simulated
+    public virtual void Simulate(NPC.NPCSaveData sim) {
+    }
 }

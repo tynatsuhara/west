@@ -30,4 +30,10 @@ public class NPCKillTask : NPCTask {
             return SaveGame.currentGame.savedCharacters[target].health > 0 ? WorldTime.MINUTE : 0;
         }
     }
+
+    public override void Simulate(NPC.NPCSaveData sim) {
+        /* TODO: how do we determine odds?
+            Cumulative threat level of this NPC + friends vs cumulative threat level of enemies
+        */
+    }
 }
