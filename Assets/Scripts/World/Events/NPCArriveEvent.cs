@@ -18,11 +18,11 @@ public class NPCArriveEvent : WorldEvent {
         NPC.NPCSaveData c = SaveGame.currentGame.savedCharacters[character];
         c.TravelToLocation(location);
         if (hasLoadedLocation && Map.CurrentLocation().guid == location) {
-            Debug.Log("(1) executing arrive event for " + c.name);
+            // Debug.Log("(1) executing arrive event for " + c.name);
             c.position = Map.CurrentLocation().teleporters.Where(x => x.toId == from).First().position;
             LevelBuilder.instance.SpawnNPC(c.guid);
         } else {
-            Debug.Log("(2) executing arrive event for " + c.name);
+            // Debug.Log("(2) executing arrive event for " + c.name);
             c.position = new SerializableVector3(Map.Location(location).RandomUnoccupiedTile());
         }
     }

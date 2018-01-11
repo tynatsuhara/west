@@ -349,9 +349,9 @@ public class NPC : Character, Interactable {
 			if (departed) {
 				NPCArriveEvent arrival = new NPCArriveEvent(guid, path.First(), location);
 				SaveGame.currentGame.events.CreateEvent(SaveGame.currentGame.time.worldTime + travelTime, arrival);
-				string fname = Map.Location(location).name;
-				string lname = Map.Location(path.First()).name;
-				Debug.Log(name + " is traveling from " + fname + " to " + lname + " in " + travelTime + " seconds");
+				// string fname = Map.Location(location).name;
+				// string lname = Map.Location(path.First()).name;
+				// Debug.Log(name + " is traveling from " + fname + " to " + lname + " in " + travelTime + " seconds");
 			}
 
 			return false;
