@@ -15,7 +15,7 @@ public class NPCArriveEvent : WorldEvent {
     }
 
     public void Execute(bool hasLoadedLocation) {
-        NPC.NPCData c = SaveGame.currentGame.savedCharacters[character];
+        NPCData c = SaveGame.currentGame.savedCharacters[character];
         c.TravelToLocation(location);
         if (hasLoadedLocation && Map.CurrentLocation().guid == location) {
             // Debug.Log("(1) executing arrive event for " + c.name);

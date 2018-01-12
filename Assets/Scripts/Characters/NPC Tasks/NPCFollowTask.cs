@@ -20,7 +20,7 @@ public class NPCFollowTask : NPCTask {
         if (target == System.Guid.Empty) {
             return new Task.TaskDestination(Map.CurrentLocation().guid, SaveGame.currentGame.savedPlayers[0].position.val);
         } else {
-            NPC.NPCData c = SaveGame.currentGame.savedCharacters[target];
+            NPCData c = SaveGame.currentGame.savedCharacters[target];
             return new Task.TaskDestination(c.location, c.position.val);
         }
     }

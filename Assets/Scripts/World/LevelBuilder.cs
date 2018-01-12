@@ -119,7 +119,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void SpawnNPC(System.Guid id) {
-		NPC.NPCData data = SaveGame.currentGame.savedCharacters[id];
+		NPCData data = SaveGame.currentGame.savedCharacters[id];
 		if (data.departed) {
 			return;
 		}
