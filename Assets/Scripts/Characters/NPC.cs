@@ -56,9 +56,6 @@ public class NPC : Character, Interactable {
 	}
 
 
-
-	// TODO: some of this can be removed
-
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
 		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0 && currentState != NPCState.DOWN_TIED)
 			arms.SetFrame(0);
@@ -78,55 +75,7 @@ public class NPC : Character, Interactable {
 			}
 		}
 	}
-
-	public WorldPoint[] pathToFollow;
-	private int currentPointIndex;
-	private float timeAtCurrentPoint;
-	protected void FollowPath() {
-		if (pathToFollow == null || pathToFollow.Length == 0)
-			return;
-		WorldPoint currentPoint = pathToFollow[currentPointIndex];
-		bool atPoint = (currentPoint.transform.position - transform.position).magnitude < 1f;
-		if (atPoint) {
-			timeAtCurrentPoint++;
-			if (currentPoint.faceDirection) {
-				LookAt(transform.position + currentPoint.lookDirection);
-			}
-			if (timeAtCurrentPoint > currentPoint.timeToStayHere && currentPoint.timeToStayHere >= 0) {
-				int oldIndex = currentPointIndex;
-				currentPointIndex = (currentPointIndex + 1) % pathToFollow.Length;
-				if (oldIndex != currentPointIndex)
-					agent.SetDestination(currentPoint.transform.position);
-			}
-		}
-		if (agent.destination != pathToFollow[currentPointIndex].transform.position)
-			agent.SetDestination(pathToFollow[currentPointIndex].transform.position);
-	}
-	protected void StopFollowingPath() {
-
-	}
-
-	protected bool transitioningState;
-	protected float timeInCurrentState;
-	private NPCState stateToTransitionTo;
-	private bool resetTimeFlag;
-	public void TransitionState(NPCState newState, float time = 0f) {
-		stateToTransitionTo = newState;
-		transitioningState = true;
-		if (time <= 0f) {
-			CompleteTransition();
-		} else {
-			Invoke("CompleteTransition", time);
-		}
-	}
-	private void CompleteTransition() {
-		if (currentState != stateToTransitionTo) {
-			resetTimeFlag = true;
-		}
-		currentState = stateToTransitionTo;
-		transitioningState = false;
-	}
-
+	
 	public void Interact(Character character) {
 		if (character.zipties > 0 && (currentState == NPCState.DOWN_UNTIED)) {
 			character.zipties--;
