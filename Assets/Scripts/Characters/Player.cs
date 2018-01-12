@@ -269,6 +269,6 @@ public class Player : Character {
 	}
 
 	[System.Serializable]
-	public class PlayerSaveData : CharacterSaveData {
+	public class PlayerSaveData : CharacterData {
 	}
 }

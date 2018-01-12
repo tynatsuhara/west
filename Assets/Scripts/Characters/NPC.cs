@@ -275,7 +275,7 @@ public class NPC : Character, Interactable {
 	}
 
 	[System.Serializable]
-	public class NPCSaveData : CharacterSaveData {
+	public class NPCSaveData : CharacterData {
 		public System.Guid location;
 		public NPCType type;
 		public string name;

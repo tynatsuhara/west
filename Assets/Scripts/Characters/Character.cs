@@ -571,7 +571,7 @@ public abstract class Character : LivingThing, Damageable {
 
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
-	public CharacterSaveData SaveData(CharacterSaveData data) {
+	public CharacterData SaveData(CharacterData data) {
 		data.voxelBlobs = SaveVoxelBytes();
 		data.position = new SerializableVector3(transform.position);
 		data.inv = inventory;
@@ -597,7 +597,7 @@ public abstract class Character : LivingThing, Damageable {
 		return data;
 	}
 
-	public void LoadSaveData(CharacterSaveData data) {
+	public void LoadSaveData(CharacterData data) {
 		guid = data.guid;
 		voxelBlobs = data.voxelBlobs;
 		if (data.position != null)
@@ -643,7 +643,7 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	[System.Serializable]
-	public class CharacterSaveData {
+	public class CharacterData {
 		public System.Guid guid = System.Guid.NewGuid();
 		public List<List<byte[]>> voxelBlobs;
 		public SerializableVector3 position;
