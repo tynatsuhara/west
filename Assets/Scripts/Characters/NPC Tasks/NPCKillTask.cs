@@ -17,7 +17,7 @@ public class NPCKillTask : NPCTask {
         if (target == System.Guid.Empty) {
             return new Task.TaskDestination(Map.CurrentLocation().guid, SaveGame.currentGame.savedPlayers[0].position.val);
         } else {
-            NPC.NPCSaveData c = SaveGame.currentGame.savedCharacters[target];
+            NPC.NPCData c = SaveGame.currentGame.savedCharacters[target];
             return new Task.TaskDestination(c.location, c.position.val);
         }
     }
@@ -31,7 +31,7 @@ public class NPCKillTask : NPCTask {
         }
     }
 
-    public override void Simulate(NPC.NPCSaveData sim) {
+    public override void Simulate(NPC.NPCData sim) {
         /* TODO: how do we determine odds?
             Cumulative threat level of this NPC + friends vs cumulative threat level of enemies
         */

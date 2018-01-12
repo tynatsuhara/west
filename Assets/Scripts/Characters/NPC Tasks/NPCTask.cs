@@ -30,6 +30,6 @@ public abstract class NPCTask {
     public abstract float GetTimeLeft();
 
     // Some tasks can be simulated, some simply do nothing if simulated
-    public virtual void Simulate(NPC.NPCSaveData sim) {
+    public virtual void Simulate(NPC.NPCData sim) {
     }
 }

@@ -255,8 +255,8 @@ public class NPC : Character, Interactable {
 
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
-	public NPCSaveData SaveData() {
-		NPCSaveData data = (NPCSaveData) base.SaveData(SaveGame.currentGame.savedCharacters[guid]);
+	public NPCData SaveData() {
+		NPCData data = (NPCData) base.SaveData(SaveGame.currentGame.savedCharacters[guid]);
 		data.type = type;
 		data.name = name;
 		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
@@ -264,7 +264,7 @@ public class NPC : Character, Interactable {
 		return data;
 	}
 
-	public void LoadSaveData(NPCSaveData data) {
+	public void LoadSaveData(NPCData data) {
 		base.LoadSaveData(data);
 		type = data.type;
 		name = data.name;
@@ -275,7 +275,7 @@ public class NPC : Character, Interactable {
 	}
 
 	[System.Serializable]
-	public class NPCSaveData : CharacterData {
+	public class NPCData : CharacterData {
 		public System.Guid location;
 		public NPCType type;
 		public string name;
@@ -283,7 +283,7 @@ public class NPC : Character, Interactable {
 		public NPCState state = NPCState.PASSIVE;
 		public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
 
-		public NPCSaveData(NPCType type, System.Guid location, bool female = false, string lastName = "") {
+		public NPCData(NPCType type, System.Guid location, bool female = false, string lastName = "") {
 			this.type = type;
 			this.location = location;
 			this.female = female;

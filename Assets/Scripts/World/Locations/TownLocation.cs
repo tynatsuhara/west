@@ -118,7 +118,7 @@ public class TownLocation : Location {
 		int pplAmount = Random.Range(1, 5);
 		List<System.Guid> spawnedChars = new List<System.Guid>();
 		for (int i = 0; i < pplAmount; i++) {
-			NPC.NPCSaveData npc = new NPC.NPCSaveData(NPC.NPCType.NORMIE, guid, Random.Range(0, 2) == 0);
+			NPC.NPCData npc = new NPC.NPCData(NPC.NPCType.NORMIE, guid, Random.Range(0, 2) == 0);
 			npc.position = new SerializableVector3(RandomUnoccupiedTile());
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
 			spawnedChars.Add(npc.guid);

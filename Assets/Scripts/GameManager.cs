@@ -101,8 +101,8 @@ public class GameManager : MonoBehaviour {
 		while (true) {
 			float timePerChar = SIMULATION_TICK / SaveGame.currentGame.savedCharacters.Count;
 			float newTime = SaveGame.currentGame.time.worldTime;
-			List<NPC.NPCSaveData> npcs = SaveGame.currentGame.savedCharacters.Values.ToList();
-			foreach (NPC.NPCSaveData npc in npcs) {
+			List<NPC.NPCData> npcs = SaveGame.currentGame.savedCharacters.Values.ToList();
+			foreach (NPC.NPCData npc in npcs) {
 				if (npc.location == Map.CurrentLocation().guid) {
 					continue;
 				}
@@ -116,7 +116,7 @@ public class GameManager : MonoBehaviour {
 	// background - true if the player is in a loaded location (aka exclude simulating that location)
 	private void Simulate(float startTime, float endTime) {
 		for (float t = startTime; t < endTime - SIMULATION_TICK; t += SIMULATION_TICK) {
-			foreach (NPC.NPCSaveData npc in SaveGame.currentGame.savedCharacters.Values) {
+			foreach (NPC.NPCData npc in SaveGame.currentGame.savedCharacters.Values) {
 				npc.Simulate(t, t + SIMULATION_TICK, false);
 			}
 		}

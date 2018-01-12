@@ -10,7 +10,7 @@ public class SaveGame {
 	public static SaveGame currentGame;
 
 	public bool gameOver;
-	public Dictionary<System.Guid, NPC.NPCSaveData> savedCharacters;
+	public Dictionary<System.Guid, NPC.NPCData> savedCharacters;
 	public Dictionary<string, Group> groups;
 	public Dictionary<System.Guid, Horse.HorseSaveData> horses;
 	public Player.PlayerSaveData[] savedPlayers;
@@ -25,7 +25,7 @@ public class SaveGame {
 	public static void NewGame() {
 		currentGame = new SaveGame();
 		currentGame.horses = new Dictionary<System.Guid, Horse.HorseSaveData>();
-		currentGame.savedCharacters = new Dictionary<System.Guid, NPC.NPCSaveData>();
+		currentGame.savedCharacters = new Dictionary<System.Guid, NPC.NPCData>();
 		currentGame.savedPlayers = new Player.PlayerSaveData[4];
 		for (int i = 0; i < 4; i++)
 			currentGame.savedPlayers[i] = new Player.PlayerSaveData();
@@ -45,7 +45,7 @@ public class SaveGame {
 
 		// save local NPCs
 		foreach (NPC npc in GameManager.spawnedNPCs) {
-			NPC.NPCSaveData data = npc.SaveData();
+			NPC.NPCData data = npc.SaveData();
 			currentGame.savedCharacters[data.guid] = data;
 		}
 
