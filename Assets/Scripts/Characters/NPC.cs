@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class NPC : Character, Interactable {
 
+	private NPCData data;
+	private NPCTask task;
+
 	public enum NPCState {
 		PASSIVE,                    // completing their scheduled tasks
 		CURIOUS,    			 	// they know something is up, but don't know of the player
@@ -43,50 +46,18 @@ public class NPC : Character, Interactable {
 		Rotate();
 		agent.speed = CalculateSpeed();
 
-		// Deal with race conditions with resetting timers
-		if (resetTimeFlag) {
-			resetTimeFlag = false;
+		timeInCurrentState += Time.deltaTime;
+
+		NPCTask newTask = data.GetTask();
+		if (newTask != task) {
 			timeInCurrentState = 0;
 		}
-
-		switch (currentState) {
-			case NPCState.PASSIVE:
-				StatePassive();
-				break;
-			case NPCState.CURIOUS:
-				StateCurious();
-				break;
-			case NPCState.SEARCHING:
-				StateSearching();
-				break;
-			case NPCState.ALERTING:
-				StateAlerting();
-				break;
-			case NPCState.FLEEING:
-				StateFleeing();
-				break;
-			case NPCState.DOWN_UNTIED:
-				StateDownUntied();
-				break;
-			case NPCState.DOWN_TIED:
-				StateDownTied();
-				break;
-			case NPCState.ATTACKING:
-				StateAttacking();
-				break;
-		}
-
-		timeInCurrentState += Time.deltaTime;
+		task = newTask;
 	}
 
-	protected virtual void StatePassive() {}
-	protected virtual void StateCurious() {}
-	protected virtual void StateSearching() {}
-	protected virtual void StateAlerting() {}
-	protected virtual void StateFleeing() {}
-	protected virtual void StateDownUntied() {}
-	protected virtual void StateDownTied() {}
-	protected virtual void StateAttacking() {}
+
+
+	// TODO: some of this can be removed
 
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
 		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0 && currentState != NPCState.DOWN_TIED)
@@ -251,13 +222,14 @@ public class NPC : Character, Interactable {
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public NPCData SaveData() {
-		NPCData data = (NPCData) base.SaveData(SaveGame.currentGame.savedCharacters[guid]);
+		NPCData data = (NPCData) base.SaveData(data);
 		data.name = name;
 		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
 		return data;
 	}
 
 	public void LoadSaveData(NPCData data) {
+		this.data = data;
 		base.LoadSaveData(data);
 		name = data.name;
 		if (!isAlive)
