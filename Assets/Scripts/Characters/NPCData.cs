@@ -29,6 +29,9 @@ public class NPCData : CharacterData {
             return;
         }
         NPCTask task = GetTask(startTime);
+        if (task == null) {
+            return;
+        }
         float minTimeLeft = task.GetTimeLeft();
         SimulateTask(task, startTime, Mathf.Min(startTime + minTimeLeft, endTime), background);
     }

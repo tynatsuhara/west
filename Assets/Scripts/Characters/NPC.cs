@@ -8,23 +8,11 @@ public class NPC : Character, Interactable {
 	private NPCData data;
 	private NPCTask task;
 
-	public enum NPCState {
-		PASSIVE,                    // completing their scheduled tasks
-		CURIOUS,    			 	// they know something is up, but don't know of the player
-		SEARCHING,   				// they are aware of the player, but don't know location
-		ALERTING,					// running to notify guards
-		FLEEING,					// running off the map
-		DOWN_UNTIED,
-		DOWN_TIED,
-		ATTACKING,
-		ATTACK_READY                // standoff
-	}
-
 	public bool firstStateIteration {
-		get { return timeInCurrentState == 0; }
+		get { return timeOnCurrentTask == 0; }
 	}
 
-	public NPCState currentState;
+	private float timeOnCurrentTask;
 
 	protected UnityEngine.AI.NavMeshAgent agent;
 	protected List<Character> enemies = new List<Character>();
@@ -46,18 +34,17 @@ public class NPC : Character, Interactable {
 		Rotate();
 		agent.speed = CalculateSpeed();
 
-		timeInCurrentState += Time.deltaTime;
+		timeOnCurrentTask += Time.deltaTime;
 
 		NPCTask newTask = data.GetTask();
 		if (newTask != task) {
-			timeInCurrentState = 0;
+			timeOnCurrentTask = 0;
 		}
 		task = newTask;
 	}
 
-
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
-		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0 && currentState != NPCState.DOWN_TIED)
+		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0/* && currentState != NPCState.DOWN_TIED*/)
 			arms.SetFrame(0);
 		base.Die(location, angle, attacker, type);
 	}
@@ -77,10 +64,10 @@ public class NPC : Character, Interactable {
 	}
 	
 	public void Interact(Character character) {
-		if (character.zipties > 0 && (currentState == NPCState.DOWN_UNTIED)) {
-			character.zipties--;
-			TransitionState(NPCState.DOWN_TIED);
-		}
+		// if (character.zipties > 0 && (currentState == NPCState.DOWN_UNTIED)) {
+		// 	character.zipties--;
+		// 	TransitionState(NPCState.DOWN_TIED);
+		// }
 	}
 	public void Uninteract(Character character) {}
 
@@ -115,9 +102,9 @@ public class NPC : Character, Interactable {
 	private Vector3? CorpsesInSight() {
 		foreach (NPC c in GameManager.spawnedNPCs) {
 			bool isEvidence = !c.isAlive;
-			isEvidence |= c.currentState == Civilian.NPCState.ALERTING;
-			isEvidence |= c.currentState == Civilian.NPCState.DOWN_TIED;
-			isEvidence |= c.currentState == Civilian.NPCState.DOWN_UNTIED;
+			// isEvidence |= c.currentState == Civilian.NPCState.ALERTING;
+			// isEvidence |= c.currentState == Civilian.NPCState.DOWN_TIED;
+			// isEvidence |= c.currentState == Civilian.NPCState.DOWN_UNTIED;
 			if (isEvidence && CanSee(c.gameObject)) {
 				return c.transform.position;
 			}
@@ -171,7 +158,7 @@ public class NPC : Character, Interactable {
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public NPCData SaveData() {
-		NPCData data = (NPCData) base.SaveData(data);
+		data = (NPCData) base.SaveData(data);
 		data.name = name;
 		data.rotation = new SerializableVector3(transform.rotation.eulerAngles);
 		return data;
