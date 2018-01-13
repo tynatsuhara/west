@@ -41,6 +41,19 @@ public class NPC : Character, Interactable {
 			timeOnCurrentTask = 0;
 		}
 		task = newTask;
+
+		ExecuteTask();
+	}
+
+	private void ExecuteTask() {
+		if (task is NPCFollowTask) {
+			ExecuteTask(task as NPCFollowTask);
+		}
+	}
+
+	private void ExecuteTask(NPCFollowTask followTask) {
+		agent.destination = followTask.GetLocation().position;
+		agent.stoppingDistance = followTask.distance;
 	}
 
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
