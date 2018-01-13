@@ -43,10 +43,4 @@ public class WorldBlood : MonoBehaviour {
 		byte gb = (byte)Random.Range(0, 30);
 		return new Color32((byte)(120 + Random.Range(0, 60)), gb, gb, 0);
 	}
-
-	private PicaVoxel.Volume BledOnVolume(Vector3 worldLocation, out RaycastHit hit) {
-		if (!Physics.Raycast(worldLocation, Vector3.down, out hit))
-			return null;
-		return hit.collider.GetComponentInParent<PicaVoxel.Volume>();
-	}
 }
