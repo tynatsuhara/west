@@ -7,6 +7,7 @@ using UnityEngine;
 public class Building {
     // TODO: these TDs should store relative positions to the center of the building?
     public List<Teleporter.TeleporterData> doors = new List<Teleporter.TeleporterData>();
+    public System.Guid guid;
 
     // predefined for each building type (later set with builder class)
     public int prefabIndex = 0;
@@ -17,6 +18,7 @@ public class Building {
     public int bottomLeftTile;
 
     public Building(InteriorLocation interior) {
+        this.guid = interior.guid;
         doors.Add(new Teleporter.TeleporterData(interior.guid, Vector3.one, "front door"));
     }
 

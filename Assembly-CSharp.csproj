@@ -102,6 +102,7 @@
      <Compile Include="Assets\Scripts\Characters\LivingThing.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCFollowTask.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCKillTask.cs" />
+     <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCNoOpTask.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCTask.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCTaskSource.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\Schedule.cs" />

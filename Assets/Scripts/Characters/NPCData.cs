@@ -56,7 +56,13 @@ public class NPCData : CharacterData {
                 }
             }
         } catch (System.Exception e) {
-            Debug.LogFormat("from {0} ({1}) to {2} ({3})", location, Map.Location(location).name, task.GetLocation().location, Map.Location(task.GetLocation().location).name);
+            Debug.LogFormat("from {0} ({1}, {4}) to {2} ({3}, {5})", 
+                    location, 
+                    Map.Location(location).name, 
+                    task.GetLocation().location, 
+                    Map.Location(task.GetLocation().location).name,
+                    SaveGame.currentGame.map.locations.ContainsKey(location),
+                    SaveGame.currentGame.map.locations.ContainsKey(task.GetLocation().location));
             throw e;
         }
     }

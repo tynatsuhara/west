@@ -22,8 +22,8 @@ public class InteriorBuilder {
         return this;
     }
 
-    public InteriorLocation Build(Map parent, System.Guid outside) {
-        return new InteriorLocation(parent, outside, grid);
+    public InteriorLocation Build(Map parent, System.Guid outside, string name) {
+        return new InteriorLocation(parent, outside, grid, name);
     }
 
     private bool TryAttachRoom(Room room, string on) {

@@ -15,7 +15,10 @@ public class TownLocation : Location {
 		icon = icons[Random.Range(0, icons.Length)];
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 		name = NameGen.townName.Generate("<name>");
-		connections = new System.Guid[Random.Range(1, 6)];
+		int townConnectionAmount = Random.Range(1, 6);
+		for (int i = 0; i < townConnectionAmount; i++) {
+			connections.Add(System.Guid.Empty);
+		}
 	}
 
 	public bool DoneConnecting() {
@@ -30,13 +33,12 @@ public class TownLocation : Location {
 	}
 
 	public void Connect(TownLocation l) {
-		int index = System.Array.IndexOf(connections, System.Guid.Empty);
-		connections[index] = l.guid;
+		connections[connections.IndexOf(System.Guid.Empty)] = l.guid;
 	}
 
 	// Build the street layout for a town
 	public void Generate() {
-		connections = connections.Where(x => x != System.Guid.Empty).ToArray();
+		connections = connections.Where(x => x != System.Guid.Empty).ToList();
 		List<Location> links = connections.Select(x => parent.locations[x]).ToList();
 		
 		List<Location> nLinks = links.Where(l => l.worldLocation.y > worldLocation.y && 
@@ -107,10 +109,6 @@ public class TownLocation : Location {
 
 		PlaceBuildingsAndRoads(exits);
 
-		// temp communal home/work to test schedules
-		System.Guid home = buildings[0].doors[0].toId;
-		System.Guid work = buildings[1].doors[0].toId;
-
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
 		for (int i = 0; i < cactiAmount; i++) {
@@ -129,8 +127,9 @@ public class TownLocation : Location {
 
 			// test schedule: follow for 5 minutes, chill for 5, repeat
 			Schedule schedule = new Schedule()
-				.AddBlock(5 * WorldTime.MINUTE, new NPCFollowTask(10f))
-				.AddBlock(5 * WorldTime.MINUTE);
+				// temp communal home/work to test schedules			
+				.AddBlock(WorldTime.HOUR, new NPCNoOpTask(buildings[0].guid, Vector3.one))
+				.AddBlock(WorldTime.HOUR, new NPCNoOpTask(buildings[1].guid, Vector3.one));
 
 			npc.taskSources.Add(schedule);
 		}
@@ -240,19 +239,22 @@ public class TownLocation : Location {
 	private void PlaceBuildingsAndRoads(List<int> exits) {		
 		// Place roads from all teleporters to first building
 		int buildingsToAttempt = Random.Range(5, 10);
-		Building nextBuilding = new Building(GetInterior());
+		InteriorLocation interior = GetInterior();
 		for (int i = 0; i < buildingsToAttempt; i++) {
-			int destination = TryPlaceBuilding(nextBuilding);
+			Building building = new Building(interior);
+			int destination = TryPlaceBuilding(building);
 			if (destination == -1)
 				continue;
+			parent.locations[interior.guid] = interior;
+			connections.Add(interior.guid);
 			foreach (int exit in exits) {
 				foreach (int path in BestPathFrom(exit, destination)) {
 					trails.Set(path, true);
 				}
 				// TODO: make roads form loops
 			}
-			teleporters.AddRange(nextBuilding.doors);
-			nextBuilding = new Building(GetInterior());
+			teleporters.AddRange(building.doors);
+			interior = GetInterior();
 		}
 	}
 
@@ -271,7 +273,7 @@ public class TownLocation : Location {
 			"############"
 		);
 
-		return new InteriorBuilder(room1).Attach("##", room2).Build(parent, guid);
+		return new InteriorBuilder(room1).Attach("##", room2).Build(parent, guid, "SOME BUILDING");
 	}
 
 	private int TryPlaceBuilding(Building b) {

@@ -15,7 +15,7 @@ public abstract class Location {
 	public Map parent;
 	public System.Guid town;
 	public System.Guid guid = System.Guid.NewGuid();
-	public System.Guid[] connections;
+	public List<System.Guid> connections = new List<System.Guid>();
 
 	public List<System.Guid> characters {
 		get {

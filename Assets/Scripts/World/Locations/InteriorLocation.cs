@@ -7,15 +7,14 @@ public class InteriorLocation : Location {
 
     private List<List<Room>> grid;
 
-    public InteriorLocation(Map parent, System.Guid town, List<List<Room>> grid) : base(parent, false) {
+    public InteriorLocation(Map parent, System.Guid town, List<List<Room>> grid, string name) : base(parent, false) {
         this.grid = grid;
-        parent.locations[guid] = this;  // register the guid with the map
         height = grid.Count;
         width = grid.First().Count;
-        name = "SOME BUILDING";
+        this.name = name;
         worldLocation = parent.locations[town].worldLocation;
         teleporters.Add(new Teleporter.TeleporterData(town, Vector3.one, "front door"));
-        connections = new System.Guid[]{ town };
+        connections.Add(town);
         this.town = town;
         discovered = true;
     }
