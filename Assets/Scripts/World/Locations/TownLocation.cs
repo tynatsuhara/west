@@ -107,6 +107,10 @@ public class TownLocation : Location {
 
 		PlaceBuildingsAndRoads(exits);
 
+		// temp communal home/work to test schedules
+		System.Guid home = buildings[0].doors[0].toId;
+		System.Guid work = buildings[1].doors[0].toId;
+
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
 		for (int i = 0; i < cactiAmount; i++) {
@@ -233,7 +237,7 @@ public class TownLocation : Location {
 
 	// ================= BUILDING STUFF ================= //
 
-	private void PlaceBuildingsAndRoads(List<int> exits) {
+	private void PlaceBuildingsAndRoads(List<int> exits) {		
 		// Place roads from all teleporters to first building
 		int buildingsToAttempt = Random.Range(5, 10);
 		Building nextBuilding = new Building(GetInterior());
