@@ -247,6 +247,7 @@ public class TownLocation : Location {
 				continue;
 			parent.locations[interior.guid] = interior;
 			connections.Add(interior.guid);
+			interior.PlaceAt(guid);
 			foreach (int exit in exits) {
 				foreach (int path in BestPathFrom(exit, destination)) {
 					trails.Set(path, true);

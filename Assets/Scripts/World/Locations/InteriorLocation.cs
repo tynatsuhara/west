@@ -9,14 +9,17 @@ public class InteriorLocation : Location {
 
     public InteriorLocation(Map parent, System.Guid town, List<List<Room>> grid, string name) : base(parent, false) {
         this.grid = grid;
+        this.town = town;   
+        worldLocation = parent.locations[town].worldLocation;        
         height = grid.Count;
         width = grid.First().Count;
         this.name = name;
-        worldLocation = parent.locations[town].worldLocation;
         teleporters.Add(new Teleporter.TeleporterData(town, Vector3.one, "front door"));
-        connections.Add(town);
-        this.town = town;
         discovered = true;
+    }
+
+    public void PlaceAt(System.Guid town) {
+        connections.Add(town);     
     }
 
 	public override GameObject PrefabAt(int x, int y) {

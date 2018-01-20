@@ -39,21 +39,49 @@ public class NPC : Character, Interactable {
 		NPCTask newTask = data.GetTask();
 		if (newTask != task) {
 			timeOnCurrentTask = 0;
+			task = newTask;
 		}
-		task = newTask;
 
 		ExecuteTask();
 	}
 
+	private Teleporter taskTeleporter;
 	private void ExecuteTask() {
+		System.Guid taskLocation = task.GetLocation().location;
+		if (taskLocation != Map.CurrentLocation().guid) {
+			GoToTeleporter(taskLocation);
+			return;
+		}
+		
 		if (task is NPCFollowTask) {
 			ExecuteTask(task as NPCFollowTask);
 		}
 	}
 
+	private void GoToTeleporter(System.Guid taskLocation) {
+		List<System.Guid> path = data.SetPathFor(taskLocation);
+		if (path.First() == data.location) {
+			path.RemoveAt(0);
+		}
+		System.Guid nextStop = path.First();
+		if (taskTeleporter == null || taskTeleporter.toId != nextStop) {
+			taskTeleporter = GameObject.FindObjectsOfType<Teleporter>().Where(x => x.toId == nextStop).First();
+		}
+		GoToPosition(taskTeleporter.transform.position);
+		if (Vector3.Distance(taskTeleporter.transform.position, transform.position) < 3f) {
+			// taskTeleporter.Teleport(this);  // maybe?
+			data.InitiateTravel(nextStop);
+			Destroy(gameObject);
+		}
+	}
+
 	private void ExecuteTask(NPCFollowTask followTask) {
-		agent.destination = followTask.GetLocation().position;
-		agent.stoppingDistance = followTask.distance;
+		GoToPosition(followTask.GetLocation().position, followTask.distance);
+	}
+
+	private void GoToPosition(Vector3 pos, float dist = 0) {
+		agent.destination = pos;
+		agent.stoppingDistance = dist;
 	}
 
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {

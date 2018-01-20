@@ -71,10 +71,15 @@ public class NPCData : CharacterData {
     private float maxSimulatedTime;
     private List<System.Guid> path = new List<System.Guid>();
     private readonly float TIME_IN_LOCATION_BEFORE_TRAVEL = 10 * WorldTime.MINUTE;
-    public bool departed {
-        get { return timeInCurrentLocation >= TIME_IN_LOCATION_BEFORE_TRAVEL; }
-    }
+    public bool departed;
     
+    public List<System.Guid> SetPathFor(System.Guid destination) {
+        if (path.Count == 0 || path.Last() != destination) {
+            path = SaveGame.currentGame.map.BestPathFrom(location, destination);
+        }
+        return path;
+    }
+
     // returns true when they're in range
     private bool GoToLocation(float startTime, float endTime, Task.TaskDestination destination) {
         if (location == destination.location) {
@@ -83,30 +88,37 @@ public class NPCData : CharacterData {
 
         startTime = Mathf.Max(startTime, maxSimulatedTime);
         maxSimulatedTime = startTime;
-        if (path.Count == 0 || path.Last() != destination.location) {
-            path = SaveGame.currentGame.map.BestPathFrom(location, destination.location);
-        }
+        SetPathFor(destination.location);
+
         if (path.Count == 0) {
             return true;
         }
 
         timeInCurrentLocation += (endTime - startTime);
-        float travelTime = 4 * Map.Location(location).DistanceFrom(Map.Location(path.First()));		
 
-        if (departed) {
-            NPCArriveEvent arrival = new NPCArriveEvent(guid, path.First(), location);
-            SaveGame.currentGame.events.CreateEvent(SaveGame.currentGame.time.worldTime + travelTime, arrival);
-            // string fname = Map.Location(location).name;
-            // string lname = Map.Location(path.First()).name;
-            // Debug.Log(name + " is traveling from " + fname + " to " + lname + " in " + travelTime + " seconds");
+        if (timeInCurrentLocation >= TIME_IN_LOCATION_BEFORE_TRAVEL) {
+            departed = true;
+            InitiateTravel(path.First());
         }
 
         return false;
     }
 
+    public void InitiateTravel(System.Guid destination) {
+        float travelTime = 4 * Map.Location(location).DistanceFrom(Map.Location(destination));
+        Debug.Log(travelTime);
+        NPCArriveEvent arrival = new NPCArriveEvent(guid, destination, location);
+        SaveGame.currentGame.events.CreateEvent(SaveGame.currentGame.time.worldTime + travelTime, arrival);
+        // string fname = Map.Location(location).name;
+        // string lname = Map.Location(path.First()).name;
+        // Debug.Log(name + " is traveling from " + fname + " to " + lname + " in " + travelTime + " seconds");
+    }
+
+    // called by NPCArriveEvent ONLY
     public void TravelToLocation(System.Guid l) {
         location = l;
         timeInCurrentLocation = 0;
+        departed = false;
         if (path.Count > 0 && path.First() == l) {
             path.RemoveAt(0);
         } else {

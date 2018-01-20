@@ -82,7 +82,7 @@ public class Teleporter : MonoBehaviour {
 		toId = td.toId;
 		destination = Map.Location(toId).name;
 		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
-				.Where(x => x.toId == currentLoc && x.tag == td.tag).First();
+				.Where(x => x.toId == currentLoc /* && x.tag == td.tag */).First();
 	}
 
 	private IEnumerator Delay() {
