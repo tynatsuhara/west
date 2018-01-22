@@ -118,7 +118,6 @@ public class NPCData : CharacterData {
 
     public void InitiateTravel(System.Guid destination) {
         float travelTime = 4 * Map.Location(location).DistanceFrom(Map.Location(destination));
-        Debug.Log(travelTime);
         NPCArriveEvent arrival = new NPCArriveEvent(guid, destination, location);
         SaveGame.currentGame.events.CreateEvent(SaveGame.currentGame.time.worldTime + travelTime, arrival);
         // string fname = Map.Location(location).name;

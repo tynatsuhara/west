@@ -128,8 +128,8 @@ public class TownLocation : Location {
 			// test schedule: follow for 5 minutes, chill for 5, repeat
 			Schedule schedule = new Schedule()
 				// temp communal home/work to test schedules			
-				.AddBlock(WorldTime.HOUR, new NPCNoOpTask(buildings[0].guid, Vector3.one))
-				.AddBlock(WorldTime.HOUR, new NPCNoOpTask(buildings[1].guid, Vector3.one));
+				.AddBlock(WorldTime.MINUTE * 10, new NPCNoOpTask(buildings[0].guid, Vector3.one))
+				.AddBlock(WorldTime.MINUTE * 10, new NPCNoOpTask(buildings[1].guid, Vector3.one));
 
 			npc.taskSources.Add(schedule);
 		}

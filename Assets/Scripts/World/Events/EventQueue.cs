@@ -9,7 +9,7 @@ public class EventQueue {
     public IEnumerator Tick() {
         while (true) {
             CheckQueue(true);
-            yield return new WaitForSeconds(WorldTime.MINUTE);
+            yield return new WaitForSeconds(.2f);
         }
     }
     public void CheckQueue(bool hasLoadedLocation) {
