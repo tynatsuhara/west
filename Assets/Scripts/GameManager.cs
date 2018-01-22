@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour {
 	}
 	private float gameEndTime;
 
-	public readonly float SIMULATION_TICK = 2 * WorldTime.MINUTE;
+	public readonly float SIMULATION_TICK = WorldTime.MINUTE;
 	private IEnumerator SimulateBackground() {
 		float lastSimulationTime = SaveGame.currentGame.time.worldTime;
 		while (true) {
@@ -154,13 +154,13 @@ public class GameManager : MonoBehaviour {
 		if (!firstLoadSinceStartup) {
 			SaveGame.Save(false);
 		}
+		SaveGame.currentGame.map.currentLocation = guid;
 		if (timeChange > 0) {
 			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeChange);
 			SaveGame.currentGame.time.worldTime += timeChange;
 		}
 		SetPaused(false);
 		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);
-		SaveGame.currentGame.map.currentLocation = guid;
 		VisualMap.instance.Refresh();
 	}
 

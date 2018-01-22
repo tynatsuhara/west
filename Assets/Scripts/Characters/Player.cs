@@ -127,7 +127,7 @@ public class Player : Character {
 		}
 
 		if (Input.GetKeyDown(KeyCode.L)) {
-			GameManager.instance.FastForward(WorldTime.HOUR);
+			GameManager.instance.FastForward(WorldTime.MINUTE * 10);
 		}
 	}
  

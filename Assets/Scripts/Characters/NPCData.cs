@@ -67,15 +67,19 @@ public class NPCData : CharacterData {
         }
     }
 
-    private float timeInCurrentLocation;
+    public float timeSimulatedInLocation;
     private float maxSimulatedTime;
     private List<System.Guid> path = new List<System.Guid>();
-    private readonly float TIME_IN_LOCATION_BEFORE_TRAVEL = 10 * WorldTime.MINUTE;
+    private float timeBeforeTravel = -1;
     public bool departed;
     
     public List<System.Guid> SetPathFor(System.Guid destination) {
         if (path.Count == 0 || path.Last() != destination) {
             path = SaveGame.currentGame.map.BestPathFrom(location, destination);
+            timeBeforeTravel = -1;
+        }
+        if (path.Count > 0) {
+
         }
         return path;
     }
@@ -94,9 +98,17 @@ public class NPCData : CharacterData {
             return true;
         }
 
-        timeInCurrentLocation += (endTime - startTime);
+        timeSimulatedInLocation += (endTime - startTime);
 
-        if (timeInCurrentLocation >= TIME_IN_LOCATION_BEFORE_TRAVEL) {
+        if (timeBeforeTravel < 0) {
+            Vector3 teleporterPos = Map.Location(location).teleporters
+                    .Where(x => x.toId == path.First())
+                    .OrderBy(x => (x.position.val-position.val).magnitude)
+                    .First().position.val;
+            timeBeforeTravel = (position.val - teleporterPos).magnitude / 10f;
+        }
+
+        if (timeSimulatedInLocation >= timeBeforeTravel) {
             departed = true;
             InitiateTravel(path.First());
         }
@@ -117,7 +129,7 @@ public class NPCData : CharacterData {
     // called by NPCArriveEvent ONLY
     public void TravelToLocation(System.Guid l) {
         location = l;
-        timeInCurrentLocation = 0;
+        timeSimulatedInLocation = 0;
         departed = false;
         if (path.Count > 0 && path.First() == l) {
             path.RemoveAt(0);
