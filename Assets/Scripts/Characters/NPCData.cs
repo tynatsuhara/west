@@ -16,9 +16,8 @@ public class NPCData : CharacterData {
     public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
     public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
 
-    public NPCData(NPCType type, System.Guid location, bool female = false, string lastName = "") {
+    public NPCData(NPCType type, bool female = false, string lastName = "") {
         this.type = type;
-        this.location = location;
         this.female = female;
         name = NameGen.CharacterName(female, lastName);
     }

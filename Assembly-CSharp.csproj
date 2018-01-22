@@ -108,6 +108,7 @@
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\Schedule.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC.cs" />
      <Compile Include="Assets\Scripts\Characters\NPCData.cs" />
+     <Compile Include="Assets\Scripts\Characters\NPCFactory.cs" />
      <Compile Include="Assets\Scripts\Characters\Player.cs" />
      <Compile Include="Assets\Scripts\Cheats.cs" />
      <Compile Include="Assets\Scripts\Damageable.cs" />

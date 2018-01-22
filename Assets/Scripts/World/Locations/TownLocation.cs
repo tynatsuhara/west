@@ -120,18 +120,11 @@ public class TownLocation : Location {
 		int pplAmount = Random.Range(1, 5);
 		List<System.Guid> spawnedChars = new List<System.Guid>();
 		for (int i = 0; i < pplAmount; i++) {
-			NPCData npc = new NPCData(NPCData.NPCType.NORMIE, guid, Random.Range(0, 2) == 0);
-			npc.position = new SerializableVector3(RandomUnoccupiedTile());
+			NPCData npc = new NPCFactory().MakeNormie(buildings[0].guid, buildings[1].guid);
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
+			npc.position = new SerializableVector3(RandomUnoccupiedTile());
+			npc.location = guid;
 			spawnedChars.Add(npc.guid);
-
-			// test schedule: follow for 5 minutes, chill for 5, repeat
-			Schedule schedule = new Schedule()
-				// temp communal home/work to test schedules			
-				.AddBlock(WorldTime.MINUTE * 10, new NPCNoOpTask(buildings[0].guid, Vector3.one))
-				.AddBlock(WorldTime.MINUTE * 10, new NPCNoOpTask(buildings[1].guid, Vector3.one));
-
-			npc.taskSources.Add(schedule);
 		}
 
 		// temp horse spawning
