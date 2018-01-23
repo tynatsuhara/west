@@ -25,13 +25,22 @@ public class DevConsole : MonoBehaviour {
 	private readonly int COMMANDS_SHOWN = 6;
 	public void EnterCommand(string cmd) {
 		inputField.text = "";
-		if (cmd == "`") {
+		if (cmd.EndsWith("`")) {
 			return;
 		}
 		textLog.Add(cmd);
 		string[] parts = Split(cmd);
 		if (parts.Length > 0) {
-			ExecuteCommand(parts[0], parts.Skip(1).ToArray());
+			string command = parts[0];
+			if (command.StartsWith("$")) {
+				if (parts.Length == 2) {
+					vars[command] = parts[1];
+				} else {
+					textLog.Add(vars.ContainsKey(command) ? vars[command] : "variable not found");
+				}
+			} else {
+				ExecuteCommand(command, parts.Select(x => vars.ContainsKey(x) ? vars[x] : x).Skip(1).ToArray());
+			}
 		}
 		UpdateLog();
 	}
@@ -64,7 +73,8 @@ public class DevConsole : MonoBehaviour {
 		return parts.ToArray();
 	}
 
-	private Object ExecuteCommand(string command, string[] args) {
+	private Dictionary<string, string> vars = new Dictionary<string, string>();
+	private void ExecuteCommand(string command, string[] args) {
 		switch (command) {
 			case "ff":
 				ff(args);
@@ -91,7 +101,6 @@ public class DevConsole : MonoBehaviour {
 				textLog.Add("unrecognized command: " + command);
 				break;
 		}
-		return null;
 	}
 
 	private void ff(string[] args) {
@@ -114,8 +123,11 @@ public class DevConsole : MonoBehaviour {
 				LevelBuilder.instance.SpawnNPC(npc.guid);
 			}
 		} catch (System.Exception e) {
-			textLog.Add("error: movetome expects 1 npc name");
-			throw e;
+			if (args.Length > 0) {
+				textLog.Add("error: could not find character \"" + args[0] + "\"");
+			} else {
+				textLog.Add("error: movetome expects 1 npc name");
+			}
 		}
 	}
 

@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour {
 			bool esc = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9");
 			bool m = Input.GetKeyDown(KeyCode.M);
 			if (Input.GetKeyDown(KeyCode.BackQuote)) {
-				SetPaused(false);
+				GameUI.instance.ShowPauseScreen(false);
 				SetPaused(GameUI.instance.ToggleConsole());
 			} else if (GameUI.instance.consoleShowing) {
 				// capture console input
