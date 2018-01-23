@@ -32,6 +32,9 @@ public class NPCData : CharacterData {
         if (task == null) {
             return;
         }
+        if (showSimDebug) {
+            Debug.Log("simulating " + name);
+        }
         float minTimeLeft = task.GetTimeLeft();
         SimulateTask(task, startTime, Mathf.Min(startTime + minTimeLeft, endTime), background);
     }
@@ -69,7 +72,7 @@ public class NPCData : CharacterData {
 
     public float timeSimulatedInLocation;
     private float maxSimulatedTime;
-    private List<System.Guid> path = new List<System.Guid>();
+    public List<System.Guid> path = new List<System.Guid>();
     private float timeBeforeTravel = -1;
     public bool departed;
     
@@ -108,6 +111,10 @@ public class NPCData : CharacterData {
             timeBeforeTravel = (position.val - teleporterPos).magnitude / 10f;
         }
 
+        if (showSimDebug) {
+            Debug.Log(name + " timeBeforeTravel = " + timeBeforeTravel);
+            Debug.Log(name + " timeSimulatedInLocation = " + timeSimulatedInLocation);
+        }
         if (timeSimulatedInLocation >= timeBeforeTravel) {
             departed = true;
             InitiateTravel(path.First());
@@ -117,15 +124,18 @@ public class NPCData : CharacterData {
     }
 
     public void InitiateTravel(System.Guid destination) {
-        float travelTime = 4 * Map.Location(location).DistanceFrom(Map.Location(destination));
+        float travelTime = 4.5f * Map.Location(location).DistanceFrom(Map.Location(destination));
         NPCArriveEvent arrival = new NPCArriveEvent(guid, destination, location);
-        SaveGame.currentGame.events.CreateEvent(SaveGame.currentGame.time.worldTime + travelTime, arrival);
-        // string fname = Map.Location(location).name;
-        // string lname = Map.Location(path.First()).name;
-        // Debug.Log(name + " is traveling from " + fname + " to " + lname + " in " + travelTime + " seconds");
+        float arrivalTime = SaveGame.currentGame.time.worldTime + travelTime;
+        SaveGame.currentGame.events.CreateEvent(arrivalTime, arrival);
+        if (showSimDebug) {
+            string lname = Map.Location(path.First()).name;
+            string arrivalTimeString = SaveGame.currentGame.time.DateStringForTime(arrivalTime);
+            Debug.Log(name + " will arrive in " + lname + " at " + arrivalTimeString);
+        }
     }
 
-    // called by NPCArriveEvent ONLY
+    // you should probably call InitiateTravel
     public void TravelToLocation(System.Guid l) {
         location = l;
         timeSimulatedInLocation = 0;

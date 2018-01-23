@@ -34,10 +34,14 @@ public class WorldTime {
     }
 
     public string DateString() {
-        int year = (int)(worldTime/YEAR) + startYear;
-        int day = (int)(worldTime_ % YEAR/DAY);
-        int hour = (int)(worldTime_ % DAY/HOUR);
-        int minute = (int)(worldTime_ % HOUR/MINUTE);
+        return DateStringForTime(worldTime);
+    }
+
+    public string DateStringForTime(float time) {
+        int year = (int)(time/YEAR) + startYear;
+        int day = (int)(time % YEAR/DAY);
+        int hour = (int)(time % DAY/HOUR);
+        int minute = (int)(time % HOUR/MINUTE);
 
         var months = new string[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         var dayAmounts = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};

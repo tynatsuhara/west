@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 public class DevConsole : MonoBehaviour {
 
@@ -15,8 +16,6 @@ public class DevConsole : MonoBehaviour {
 
 	void Start () {
 		tint.sizeDelta = new Vector2(Screen.width, tint.rect.height);
-
-		print(string.Join(", ", Split("movetome \"inez king\"")));
 	}
 
 	void Update() {
@@ -66,16 +65,31 @@ public class DevConsole : MonoBehaviour {
 	}
 
 	private Object ExecuteCommand(string command, string[] args) {
-		if (command == "ff") {
-			ff(args);
-		} else if (command == "movetome") {
-			movetome(args);
-		} else if (command == "kill") {
-			kill(args);
-		} else if (command == "simdebug") {
-			simdebug(args);
-		} else {
-			textLog.Add("unrecognized command: " + command);			
+		switch (command) {
+			case "ff":
+				ff(args);
+				break;
+			case "movetome":
+				movetome(args);
+				break;
+			case "kill":
+				kill(args);
+				break;
+			case "simdebug":
+				simdebug(args);
+				break;
+			case "locationof":
+				locationof(args);
+				break;
+			case "pathfor":
+				pathfor(args);
+				break;
+			case "npcfield":
+				npcfield(args);
+				break;
+			default:
+				textLog.Add("unrecognized command: " + command);
+				break;
 		}
 		return null;
 	}
@@ -94,7 +108,7 @@ public class DevConsole : MonoBehaviour {
 			if (npc.location == Map.CurrentLocation().guid) {
 				GameManager.instance.GetCharacter(npc.guid).transform.position = GameManager.players[0].transform.position;
 			} else {
-				npc.location = Map.CurrentLocation().guid;
+				npc.TravelToLocation(Map.CurrentLocation().guid);
 				npc.position = new SerializableVector3(GameManager.players[0].transform.position);
 				LevelBuilder.instance.SpawnNPC(npc.guid);
 			}
@@ -119,10 +133,44 @@ public class DevConsole : MonoBehaviour {
 	private void simdebug(string[] args) {
 		try {
 			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			if (args.Length == 1) {
+				textLog.Add(npc.showSimDebug ? "enabled" : "disabled");
+				return;
+			}
 			npc.showSimDebug = bool.Parse(args[1]);
 			textLog.Add((npc.showSimDebug ? "enabled" : "disabled") + " simdebug for " + npc.name);			
 		} catch (System.Exception e) {
-			textLog.Add("error: simdebug expects 1 npc name and 1 bool");
+			textLog.Add("error: simdebug expects 1 npc name and 1 optional bool");
+		}
+	}
+
+	private void locationof(string[] args) {
+		try {
+			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			textLog.Add(Map.Location(npc.location).name);			
+		} catch (System.Exception e) {
+			textLog.Add("error: locationof expects 1 npc name");
+		}
+	}
+
+	private void pathfor(string[] args) {
+		try {
+			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			textLog.Add(string.Join(" -> ", npc.path.Select(x => Map.Location(x).name).ToArray()));
+		} catch (System.Exception e) {
+			textLog.Add("error: locationof expects 1 npc name");
+		}
+	}
+
+	private void npcfield(string[] args) {
+		try {
+			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			string fieldName = args[1];
+			System.Type npcType = typeof(NPCData);
+			FieldInfo fieldInfo = npcType.GetField(fieldName);
+			textLog.Add(fieldInfo.GetValue(npc).ToString());
+		} catch (System.Exception e) {
+			textLog.Add("error: npcfield expects 1 npc name and 1 field name");
 		}
 	}
 }
