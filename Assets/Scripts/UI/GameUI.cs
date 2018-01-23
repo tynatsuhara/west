@@ -30,6 +30,9 @@ public class GameUI : MonoBehaviour {
 		pauseMenu.SetActive(paused);
 	}
 
+	public bool consoleShowing {
+		get { return devConsole.activeSelf; }
+	}
 	public bool ToggleConsole() {
 		devConsole.SetActive(!devConsole.activeSelf);
 		return devConsole.activeSelf;

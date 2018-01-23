@@ -56,6 +56,10 @@ public class PlayerCamera : MonoBehaviour {
 
 	private int lastDpadValue;
 	private void UpdatePosition() {
+		if (GameUI.instance.consoleShowing) {
+			return;
+		}
+		
 		if (!player.firstPersonCam.enabled) {
 			Vector3 cameraLookAtPosition = transform.position;
 			cam.transform.LookAt(transform.position);
