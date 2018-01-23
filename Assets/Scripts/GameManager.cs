@@ -82,12 +82,16 @@ public class GameManager : MonoBehaviour {
 		} else {
 			bool esc = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9");
 			bool m = Input.GetKeyDown(KeyCode.M);
-			if (paused && esc) {
+			if (Input.GetKeyDown(KeyCode.BackQuote)) {
+				SetPaused(GameUI.instance.ToggleConsole());
+			} else if (paused && esc) {
 				SetPaused(false);
+				GameUI.instance.ShowPauseScreen(false);				
 			} else if (VisualMap.instance.active && (esc || m)) {
 				VisualMap.instance.active = false;
 			} else if (!paused && esc) {
 				SetPaused(true);
+				GameUI.instance.ShowPauseScreen(true);				
 			} else if (m) {
 				VisualMap.instance.active = true;
 			}
@@ -140,7 +144,6 @@ public class GameManager : MonoBehaviour {
 		if (paused && !GameManager.paused)
 			currentTimeScale = Time.timeScale;
 		GameManager.paused = paused;
-		GameUI.instance.ShowPauseScreen(paused);
 		Time.timeScale = paused ? 0 : currentTimeScale;
 	}
 

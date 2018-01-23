@@ -19,6 +19,7 @@ public class GameUI : MonoBehaviour {
 	public TextObject topCenterText;
 	public GameObject pauseMenu;
 	public GameObject winScreen;
+	public GameObject devConsole;
 
 	void Awake () {
 		instance = this;
@@ -26,7 +27,12 @@ public class GameUI : MonoBehaviour {
 
 	public void ShowPauseScreen(bool paused) {
 		pauseMenu.GetComponent<PauseMenu>().Awaken();
-		pauseMenu.SetActive(GameManager.paused);
+		pauseMenu.SetActive(paused);
+	}
+
+	public bool ToggleConsole() {
+		devConsole.SetActive(!devConsole.activeSelf);
+		return devConsole.activeSelf;
 	}
 
 	public void ShowEndScreen() {
