@@ -125,10 +125,6 @@ public class Player : Character {
 		} else if (Input.GetKeyDown(KeyCode.F9)) {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
-
-		if (Input.GetKeyDown(KeyCode.L)) {
-			GameManager.instance.FastForward(WorldTime.MINUTE * 10);
-		}
 	}
  
 	void FixedUpdate () {

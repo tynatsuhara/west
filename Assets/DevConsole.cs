@@ -11,7 +11,7 @@ public class DevConsole : MonoBehaviour {
 	public InputField inputField;
 	public Text log;
 
-	private List<string> prevCommands = new List<string>();
+	private List<string> textLog = new List<string>();
 
 	void Start () {
 		tint.sizeDelta = new Vector2(Screen.width, tint.rect.height);
@@ -24,8 +24,55 @@ public class DevConsole : MonoBehaviour {
 	private readonly int COMMANDS_SHOWN = 6;
 	public void EnterCommand(string cmd) {
 		inputField.text = "";
-		prevCommands.Add(cmd);
-		int toShow = Mathf.Min(COMMANDS_SHOWN, prevCommands.Count);
-		log.text = string.Join("\n", prevCommands.Skip(prevCommands.Count-toShow).ToArray()) + "\n> ";
+		if (cmd == "`") {
+			return;
+		}
+		textLog.Add(cmd);
+		string[] parts = Split(cmd);
+		if (parts.Length > 0) {
+			ExecuteCommand(parts[0], parts.Skip(1).ToArray());
+		}
+		UpdateLog();
+	}
+
+	private void UpdateLog() {
+		int toShow = Mathf.Min(COMMANDS_SHOWN, textLog.Count);
+		log.text = string.Join("\n", textLog.Skip(textLog.Count-toShow).ToArray()) + "\n> ";
+	}
+
+	private string[] Split(string cmd) {
+		List<string> parts = new List<string>();
+		string word = "";
+		foreach (char ch in cmd) {
+			if (ch == ' ') {
+				if (word.Length > 0 && (!word.StartsWith("\"") || word.EndsWith("\""))) {
+					parts.Add(word.Trim());
+					word = "";
+				}
+			} else {
+				word += ch;
+			}
+		}
+		if (word.Length > 0) {
+			parts.Add(word.Trim());
+		}
+		return parts.ToArray();
+	}
+
+	private Object ExecuteCommand(string command, string[] args) {
+		if (command == "ff") {
+			ff(args);
+		} else {
+			textLog.Add("unrecognized command: " + command);			
+		}
+		return null;
+	}
+
+	private void ff(string[] args) {
+		try {
+			GameManager.instance.FastForward(WorldTime.MINUTE * int.Parse(args[0]));
+		} catch (System.Exception e) {
+			textLog.Add("error: ff expects 1 integer argument");
+		}
 	}
 }
