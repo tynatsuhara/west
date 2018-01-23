@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Linq;
 
 public class DevConsole : MonoBehaviour {
 
@@ -21,9 +21,11 @@ public class DevConsole : MonoBehaviour {
 		inputField.ActivateInputField();
     }
 
+	private readonly int COMMANDS_SHOWN = 6;
 	public void EnterCommand(string cmd) {
 		inputField.text = "";
 		prevCommands.Add(cmd);
-		log.text = string.Join("\n", prevCommands.ToArray()) + "\n> ";
+		int toShow = Mathf.Min(COMMANDS_SHOWN, prevCommands.Count);
+		log.text = string.Join("\n", prevCommands.Skip(prevCommands.Count-toShow).ToArray()) + "\n> ";
 	}
 }
