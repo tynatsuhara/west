@@ -13,26 +13,48 @@ public class DevConsole : MonoBehaviour {
 	public Text log;
 
 	private List<string> textLog = new List<string>();
+	private List<string> cmdLog = new List<string>();
 
 	void Start () {
 		tint.sizeDelta = new Vector2(Screen.width, tint.rect.height);
 	}
 
+	// will only run if the terminal is open
+	int goBackCommand = -1;
 	void Update() {
 		inputField.ActivateInputField();
+		inputField.text = inputField.text.Replace("`", "");
+		if (Input.GetKeyDown(KeyCode.Return)) {
+			EnterCommand(inputField.text);
+			inputField.text = "";
+			goBackCommand = -1;
+		}
+		if (Input.GetKeyDown(KeyCode.UpArrow) && goBackCommand < cmdLog.Count-1) {
+			if (goBackCommand == -1) {
+				currentCommand = inputField.text;
+			}
+			goBackCommand++;
+			LoadOldCommand(goBackCommand);
+		} else if (Input.GetKeyDown(KeyCode.DownArrow) && goBackCommand >= 0) {
+			goBackCommand--;
+			LoadOldCommand(goBackCommand);
+		}
     }
+
+	private string currentCommand = "";
+	private void LoadOldCommand(int commandIndex) {
+		inputField.text = commandIndex == -1 ? currentCommand : cmdLog[goBackCommand];
+	}
 
 	private readonly int COMMANDS_SHOWN = 6;
 	public void EnterCommand(string cmd) {
-		inputField.text = "";
-		if (cmd.EndsWith("`")) {
-			return;
-		}
+		cmd = cmd.Trim();
 		textLog.Add(cmd);
 		string[] parts = Split(cmd);
 		if (parts.Length > 0) {
+			cmdLog.Insert(0, cmd);
 			string command = parts[0];
-			if (command.StartsWith("$")) {
+			if (command.StartsWith("$")) {  // declaring a variable
 				if (parts.Length == 2) {
 					vars[command] = parts[1];
 				} else {

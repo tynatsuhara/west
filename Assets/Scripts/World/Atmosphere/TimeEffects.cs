@@ -10,12 +10,12 @@ public class TimeEffects : MonoBehaviour {
 	public Color nightColor;     // 9pm-6am
 
 	void Update() {
-		RenderSettings.ambientLight = getColorForTime();
+		RenderSettings.ambientLight = getColorForTime(SaveGame.currentGame.time.worldTime);
 	}
 
-	private Color getColorForTime() {
-		float hour = (SaveGame.currentGame.time.worldTime % WorldTime.DAY) / WorldTime.HOUR;
-		float timeSoFar = SaveGame.currentGame.time.worldTime % WorldTime.HOUR;
+	private Color getColorForTime(float time) {
+		float hour = (time % WorldTime.DAY) / WorldTime.HOUR;
+		float timeSoFar = time % WorldTime.HOUR;
 		float transitionTime = 45 * WorldTime.MINUTE;
 		// Debug.Log(timeSoFar + "/" + transitionTime + " = " + percentTransitioned);
 		if (hour >= 5 && hour < 6) {
