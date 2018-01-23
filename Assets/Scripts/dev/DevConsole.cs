@@ -106,6 +106,7 @@ public class DevConsole : MonoBehaviour {
 		try {
 			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
 			if (npc.location == Map.CurrentLocation().guid) {
+				npc.TravelToLocation(Map.CurrentLocation().guid);
 				GameManager.instance.GetCharacter(npc.guid).transform.position = GameManager.players[0].transform.position;
 			} else {
 				npc.TravelToLocation(Map.CurrentLocation().guid);
@@ -114,6 +115,7 @@ public class DevConsole : MonoBehaviour {
 			}
 		} catch (System.Exception e) {
 			textLog.Add("error: movetome expects 1 npc name");
+			throw e;
 		}
 	}
 
@@ -158,19 +160,27 @@ public class DevConsole : MonoBehaviour {
 			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
 			textLog.Add(string.Join(" -> ", npc.path.Select(x => Map.Location(x).name).ToArray()));
 		} catch (System.Exception e) {
-			textLog.Add("error: locationof expects 1 npc name");
+			textLog.Add("error: pathfor expects 1 npc name");
 		}
 	}
 
 	private void npcfield(string[] args) {
 		try {
 			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
-			string fieldName = args[1];
 			System.Type npcType = typeof(NPCData);
-			FieldInfo fieldInfo = npcType.GetField(fieldName);
-			textLog.Add(fieldInfo.GetValue(npc).ToString());
+			if (args[0] == "find") {
+				string[] fields = npcType.GetFields()
+						.Select(x => x.Name)
+						.Where(x => x.ToLower().StartsWith(args[1]))
+						.ToArray();
+				textLog.Add(string.Join(", ", fields));				
+			} else {
+				string fieldName = args[1];
+				FieldInfo fieldInfo = npcType.GetField(fieldName);
+				textLog.Add(fieldInfo.GetValue(npc).ToString());
+			}
 		} catch (System.Exception e) {
-			textLog.Add("error: npcfield expects 1 npc name and 1 field name");
+			textLog.Add("error: npcfield expects 1 npc name and 1 optional field name");
 		}
 	}
 }

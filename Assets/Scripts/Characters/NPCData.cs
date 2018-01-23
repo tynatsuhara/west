@@ -112,7 +112,6 @@ public class NPCData : CharacterData {
         }
 
         if (showSimDebug) {
-            Debug.Log(name + " timeBeforeTravel = " + timeBeforeTravel);
             Debug.Log(name + " timeSimulatedInLocation = " + timeSimulatedInLocation);
         }
         if (timeSimulatedInLocation >= timeBeforeTravel) {
@@ -124,7 +123,7 @@ public class NPCData : CharacterData {
     }
 
     public void InitiateTravel(System.Guid destination) {
-        float travelTime = 4.5f * Map.Location(location).DistanceFrom(Map.Location(destination));
+        float travelTime = 4.1f * Map.Location(location).DistanceFrom(Map.Location(destination));
         NPCArriveEvent arrival = new NPCArriveEvent(guid, destination, location);
         float arrivalTime = SaveGame.currentGame.time.worldTime + travelTime;
         SaveGame.currentGame.events.CreateEvent(arrivalTime, arrival);

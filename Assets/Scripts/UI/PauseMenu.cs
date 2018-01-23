@@ -20,6 +20,7 @@ public class PauseMenu : Menu {
 	public override void Enter(MenuNode node) {
 		if (node == resume) {
 			GameManager.instance.SetPaused(false);
+			GameUI.instance.ShowPauseScreen(false);
 		} else if (node == save) {
 			GameUI.instance.topCenterText.Say("GAME SAVED", showFlash: true);
 			SaveGame.Save(true);
