@@ -120,7 +120,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public void SpawnNPC(System.Guid id) {
 		NPCData data = SaveGame.currentGame.savedCharacters[id];
-		if (data.departed) {
+		if (data.departed || GameObject.FindObjectsOfType<NPC>().Where(x => x.guid == data.guid).Count() > 0) {
 			return;
 		}
 		NPC npc = Instantiate(npcPrefab).GetComponent<NPC>();
