@@ -120,7 +120,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	// background - true if the player is in a loaded location (aka exclude simulating that location)
 	private void Simulate(float startTime, float endTime) {
 		for (float t = startTime; t < endTime - SIMULATION_TICK; t += SIMULATION_TICK) {
 			foreach (NPCData npc in SaveGame.currentGame.savedCharacters.Values) {

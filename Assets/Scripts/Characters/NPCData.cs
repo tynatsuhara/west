@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class NPCData : CharacterData {
 
+    public bool showSimDebug;
     public enum NPCType {
 		NORMIE
 	}
@@ -22,7 +23,7 @@ public class NPCData : CharacterData {
         name = NameGen.CharacterName(female, lastName);
     }
 
-    // try to do a task
+	// background - true if the player is in a loaded location (aka exclude simulating that location)
     public void Simulate(float startTime, float endTime, bool background) {
         if (health <= 0 || departed) {
             return;
@@ -50,7 +51,7 @@ public class NPCData : CharacterData {
 
         try {
             if (GoToLocation(startTime, endTime, task.GetLocation())) {
-                if (background || destination.location != Map.CurrentLocation().guid) {
+                if (!background || destination.location != Map.CurrentLocation().guid) {
                     task.Simulate(this);
                 }
             }

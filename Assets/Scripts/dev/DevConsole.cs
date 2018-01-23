@@ -72,6 +72,8 @@ public class DevConsole : MonoBehaviour {
 			movetome(args);
 		} else if (command == "kill") {
 			kill(args);
+		} else if (command == "simdebug") {
+			simdebug(args);
 		} else {
 			textLog.Add("unrecognized command: " + command);			
 		}
@@ -83,6 +85,21 @@ public class DevConsole : MonoBehaviour {
 			GameManager.instance.FastForward(WorldTime.MINUTE * int.Parse(args[0]));
 		} catch (System.Exception e) {
 			textLog.Add("error: ff expects 1 integer argument");
+		}
+	}
+
+	private void movetome(string[] args) {
+		try {
+			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			if (npc.location == Map.CurrentLocation().guid) {
+				GameManager.instance.GetCharacter(npc.guid).transform.position = GameManager.players[0].transform.position;
+			} else {
+				npc.location = Map.CurrentLocation().guid;
+				npc.position = new SerializableVector3(GameManager.players[0].transform.position);
+				LevelBuilder.instance.SpawnNPC(npc.guid);
+			}
+		} catch (System.Exception e) {
+			textLog.Add("error: movetome expects 1 npc name");
 		}
 	}
 
@@ -99,18 +116,13 @@ public class DevConsole : MonoBehaviour {
 		}
 	}
 
-	private void movetome(string[] args) {
+	private void simdebug(string[] args) {
 		try {
 			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
-			if (npc.location == Map.CurrentLocation().guid) {
-				GameManager.instance.GetCharacter(npc.guid).transform.position = GameManager.players[0].transform.position;
-			} else {
-				npc.location = Map.CurrentLocation().guid;
-				npc.position = new SerializableVector3(GameManager.players[0].transform.position);
-				LevelBuilder.instance.SpawnNPC(npc.guid);
-			}
+			npc.showSimDebug = bool.Parse(args[1]);
+			textLog.Add((npc.showSimDebug ? "enabled" : "disabled") + " simdebug for " + npc.name);			
 		} catch (System.Exception e) {
-			textLog.Add("error: movetome expects 1 npc name");
+			textLog.Add("error: simdebug expects 1 npc name and 1 bool");
 		}
 	}
 }
