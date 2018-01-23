@@ -97,6 +97,9 @@ public class DevConsole : MonoBehaviour {
 			case "npcfield":
 				npcfield(args);
 				break;
+			case "gotochar":
+				gotochar(args);
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
@@ -193,6 +196,20 @@ public class DevConsole : MonoBehaviour {
 			}
 		} catch (System.Exception e) {
 			textLog.Add("error: npcfield expects 1 npc name and 1 optional field name");
+		}
+	}
+
+	private void gotochar(string[] args) {
+		try {
+			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			if (npc.location == Map.CurrentLocation().guid) {
+				GameManager.players[0].transform.position = GameManager.instance.GetCharacter(npc.guid).transform.position;
+			} else {
+				GameManager.instance.loadReposition = npc.position.val;
+				GameManager.instance.LoadLocation(npc.location);
+			}
+		} catch (System.Exception e) {
+			textLog.Add("error: gotochar expects 1 npc name");
 		}
 	}
 }
