@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/**
+  TODO: clean this all the fuck up
+ */
 public class TextObject : MonoBehaviour {
 
 	private Text[] text;
@@ -118,14 +121,19 @@ public class TextObject : MonoBehaviour {
 	}
 
 	// Dispaly a message in the text box
-	public void Say(string message, bool showFlash = false, float duration = 2f, string color = "white", bool permanent = false) {
+	// if player != 0, it will only display for that player
+	public void Say(string message, bool showFlash = false, float duration = 2f, string color = "white", bool permanent = false, int player=0) {
 		looping = false;
 		currentlyDisplaying = true;
 		SetColor(color);
 		wordQueue.Clear();
 		wordQueue.Add(message);
-		foreach (Text t in text)		
-			t.enabled = true;
+		if (player != 0) {
+			text[player-1].enabled = true;
+		} else {
+			foreach (Text t in text)		
+				t.enabled = true;
+		}
 		int flashTimes = 6;
 		lastSayTime = Time.realtimeSinceStartup;
 		cycling = false;

@@ -59,9 +59,22 @@ public class Teleporter : MonoBehaviour {
 		}
 	}
 
+	private bool mouseOver;
+	void OnMouseEnter() {
+		print("OnMouseEnter");
+        mouseOver = true;
+		UpdateText();
+    }
+
+    void OnMouseExit() {
+		print("OnMouseExit");
+        mouseOver = false;
+		UpdateText();
+    }
+
 	private void UpdateText() {
 		string str = "";
-		if (collidingWith.Count > 0) {
+		if (mouseOver || collidingWith.Count > 0) {
 			str += destination;
 		} else if (hasQuest) {
 			str = "*";

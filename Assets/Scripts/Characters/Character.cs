@@ -327,7 +327,7 @@ public abstract class Character : LivingThing, Damageable {
 			RaycastHit hit;
 			if (Physics.Raycast(transform.position, 
 								(transform.forward * (interactDist - i) - transform.up * i), 
-								out hit, (1 + i * .7f))) {
+								out hit, (1 + i * .7f), sightLayers)) {
 				currentInteractScript = hit.collider.GetComponentInParent<Interactable>();
 				if (currentInteractScript != null) {
 					currentInteractScript.Interact(this);
