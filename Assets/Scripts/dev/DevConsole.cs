@@ -122,6 +122,9 @@ public class DevConsole : MonoBehaviour {
 			case "gotochar":
 				gotochar(args);
 				break;
+			case "setspeed":
+				setspeed(args);
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
@@ -232,6 +235,15 @@ public class DevConsole : MonoBehaviour {
 			}
 		} catch (System.Exception e) {
 			textLog.Add("error: gotochar expects 1 npc name");
+		}
+	}
+
+	private void setspeed(string[] args) {
+		try {
+			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			GameManager.instance.GetCharacter(npc.guid).moveSpeed = float.Parse(args[0]);
+		} catch (System.Exception e) {
+			textLog.Add("error: freeze expects 1 local npc name and 1 float");
 		}
 	}
 }

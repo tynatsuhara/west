@@ -61,13 +61,11 @@ public class Teleporter : MonoBehaviour {
 
 	private bool mouseOver;
 	void OnMouseEnter() {
-		print("OnMouseEnter");
         mouseOver = true;
 		UpdateText();
     }
 
     void OnMouseExit() {
-		print("OnMouseExit");
         mouseOver = false;
 		UpdateText();
     }
@@ -81,6 +79,7 @@ public class Teleporter : MonoBehaviour {
 		} else {
 			str = "";
 		}
+		// todo: show this separately for each character
 		GetComponentInChildren<TextObject>().Say(str, color: hasQuest ? "red" : "white", permanent: true);
 	}
 
