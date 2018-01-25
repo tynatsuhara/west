@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour {
@@ -10,6 +11,7 @@ public class PlayerUI : MonoBehaviour {
 	public Text invText;
 	public Text ammoText;
 	public Text healthText;
+	public Text questMarker;
 
 	public Transform cursor;
 	private Vector3 lastMousePos;
@@ -25,6 +27,74 @@ public class PlayerUI : MonoBehaviour {
 	}
 
 	void Update() {
+		UpdateCursor();
+		Cursor.visible = false;
+
+		UpdateQuestMarkers();
+	}
+
+	private void UpdateQuestMarkers() {
+		// combine all into List<{transform: Transform}>
+		var positions = GameManager.spawnedNPCs
+				// get all marked npc positions
+				.Where(x => x.questMarker.activeSelf)
+				.Select(x => new {transform = x.questMarker.transform})
+				// get all non-pc marked destinations
+				.Union(LevelBuilder.instance.markedDestinations.Values.Select(x => new {transform = x.transform}))
+				// get all marked teleporters
+				.Union(LevelBuilder.instance.teleporters.Where(x => x.HasQuest()).Select(x => new {transform = x.transform}))
+				.Select(x => player.playerCamera.cam.WorldToViewportPoint(x.transform.position))
+				.Where(p => p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1)
+				.ToList();
+		print("off-screen objectives: " + positions.Count);
+		if (positions.Count > 0) {  // temp before object pooling + multiple points
+			Vector3 v = ViewportIntersectPoint(positions.First());
+			Debug.Log(v);
+			v += (new Vector3(.5f, .5f) - v).normalized * .03f;
+			questMarker.transform.position = player.playerCamera.cam.ViewportToWorldPoint(v);
+		}
+		questMarker.enabled = positions.Count > 0;
+	}
+
+	private Vector3 ViewportIntersectPoint(Vector3 outsidePoint) {
+		Vector3 midpoint = new Vector2(.5f, .5f);
+		List<Vector3?> pts = new List<Vector3?>();
+		if (outsidePoint.y > .5f) {
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.up, Vector2.one));
+		} else {
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero, Vector2.right));
+		}
+		if (outsidePoint.x < .5f) {
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero, Vector2.up));
+		} else {
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.right, Vector2.one));
+		}
+		return pts.Where(x => x.HasValue).OrderBy(x => (midpoint - x.Value).magnitude).First().Value;
+	}
+
+	// taken from https://gamedev.stackexchange.com/questions/111100/intersection-of-a-line-and-a-rectangle
+	private Vector3? LineIntersectPoint(Vector3 ps1, Vector3 pe1, Vector3 ps2, Vector3 pe2) {
+		// Get A,B of first line - points : ps1 to pe1
+		float A1 = pe1.y-ps1.y;
+		float B1 = ps1.x-pe1.x;
+		// Get A,B of second line - points : ps2 to pe2
+		float A2 = pe2.y-ps2.y;
+		float B2 = ps2.x-pe2.x;
+
+		// Get delta and check if the lines are parallel
+		float delta = A1*B2 - A2*B1;
+		if(delta == 0) return null;
+
+		// Get C of first and second lines
+		float C2 = A2*ps2.x+B2*ps2.y;
+		float C1 = A1*ps1.x+B1*ps1.y;
+		//invert delta to make division cheaper
+		float invdelta = 1/delta;
+		// now return the Vector2 intersection point
+		return new Vector3((B2*C1 - B1*C2)*invdelta, (A1*C2 - A2*C1)*invdelta);
+	}
+
+	private void UpdateCursor() {
 		if (player.id == 1) {
 			mousePos += Input.mousePosition - lastMousePos;
 			lastMousePos = Input.mousePosition;
@@ -39,7 +109,6 @@ public class PlayerUI : MonoBehaviour {
 			cursor.transform.position = player.playerCamera.cam.ScreenToWorldPoint(mousePos);
 			Cursor.lockState = CursorLockMode.None;			
 		}
-		Cursor.visible = false;
 	}
 
 	public void JoystickCursorMove(float dx, float dy) {

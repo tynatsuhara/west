@@ -39,6 +39,6 @@ public class GoToTask : Task {
 	}
 
 	public override TaskDestination[] GetLocations() {
-		return new TaskDestination[] { new TaskDestination(location, position.val) };
+		return new TaskDestination[] { new TaskDestination(location, position.val, Quest.QUEST_DEFAULT_ICON) };
 	}
 }

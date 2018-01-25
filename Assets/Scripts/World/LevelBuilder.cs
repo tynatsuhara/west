@@ -25,7 +25,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
-	private List<Teleporter> teleporters;
+	public List<Teleporter> teleporters;
 	private PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
 
@@ -179,7 +179,7 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	// Called by quest manager
-	private Dictionary<string, GameObject> markedDestinations;
+	public Dictionary<string, GameObject> markedDestinations;
 	public void MarkQuestDestinations(List<Task.TaskDestination> destinations) {
 		// Quest teleporter destinations
 		List<System.Guid> questTeleportDestinations = destinations
@@ -190,13 +190,12 @@ public class LevelBuilder : MonoBehaviour {
 			t.MarkQuest(questTeleportDestinations.Contains(t.toId));
 		}
 
-		List<System.Guid> markedCharacters = destinations
+		Dictionary<System.Guid, Task.TaskDestination> markedCharacters = destinations
 				.Where(x => x.location == loadedLocation.guid && x.character != System.Guid.Empty)
-				.Select(x => x.character)
-				.ToList();
+				.ToDictionary(x => x.character, x => x);
 		foreach (NPC npc in GameManager.spawnedNPCs) {
-			if (markedCharacters.Contains(npc.guid)) {
-				npc.MarkForQuest();
+			if (markedCharacters.ContainsKey(npc.guid)) {
+				npc.MarkForQuest(markedCharacters[npc.guid]);
 			} else {
 				npc.UnMarkForQuest();
 			}

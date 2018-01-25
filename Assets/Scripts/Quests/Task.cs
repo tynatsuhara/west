@@ -9,7 +9,7 @@ public abstract class Task {
 	public abstract string message {
 		get;
 	}
-
+	
 	public virtual TaskDestination[] GetLocations() {
 		return new TaskDestination[]{};
 	}
@@ -18,16 +18,19 @@ public abstract class Task {
 		public System.Guid location;
 		public Vector3 position;
 		public System.Guid character;
+		public string icon;
 
-		public TaskDestination(System.Guid location, Vector3 position) {
+		public TaskDestination(System.Guid location, Vector3 position, string icon) {
 			this.location = location;
 			this.position = position;
 			this.character = System.Guid.Empty;
+			this.icon = icon;
 		}
 
-		public TaskDestination(System.Guid character) {
+		public TaskDestination(System.Guid character, string icon) {
 			this.location = SaveGame.currentGame.savedCharacters[character].location;
 			this.character = character;
+			this.icon = icon;
 		}
 	}
 }

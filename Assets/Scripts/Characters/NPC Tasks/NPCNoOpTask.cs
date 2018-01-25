@@ -13,7 +13,7 @@ public class NPCNoOpTask : NPCTask {
     }
 
     public override Task.TaskDestination GetLocation() {
-        return new Task.TaskDestination(location, pos.val);
+        return new Task.TaskDestination(location, pos.val, "");
     }
     
     // Lower bound on time left for a task -- If this is <= 0, the task is done.

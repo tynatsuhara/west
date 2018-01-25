@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 
 /**
-  TODO: clean this all the fuck up
+  TODO: clean this all the fuck up into one simple coroutine
  */
 public class TextObject : MonoBehaviour {
 

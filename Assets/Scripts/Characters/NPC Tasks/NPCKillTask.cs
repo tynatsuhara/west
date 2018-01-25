@@ -15,10 +15,10 @@ public class NPCKillTask : NPCTask {
 
     public override Task.TaskDestination GetLocation() {
         if (target == System.Guid.Empty) {
-            return new Task.TaskDestination(Map.CurrentLocation().guid, SaveGame.currentGame.savedPlayers[0].position.val);
+            return new Task.TaskDestination(Map.CurrentLocation().guid, SaveGame.currentGame.savedPlayers[0].position.val, "");
         } else {
             NPCData c = SaveGame.currentGame.savedCharacters[target];
-            return new Task.TaskDestination(c.location, c.position.val);
+            return new Task.TaskDestination(c.location, c.position.val, "");
         }
     }
     

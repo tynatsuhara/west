@@ -75,12 +75,12 @@ public class Teleporter : MonoBehaviour {
 		if (mouseOver || collidingWith.Count > 0) {
 			str += destination;
 		} else if (hasQuest) {
-			str = "*";
+			str = Quest.QUEST_DEFAULT_ICON;
 		} else {
 			str = "";
 		}
 		// todo: show this separately for each character
-		GetComponentInChildren<TextObject>().Say(str, color: hasQuest ? "red" : "white", permanent: true);
+		GetComponentInChildren<TextObject>().Say(str, color: hasQuest ? Quest.QUEST_MARKER_COLOR : "white", permanent: true);
 	}
 
 	// Mark if the player should go this way for a quest
@@ -88,6 +88,9 @@ public class Teleporter : MonoBehaviour {
 	public void MarkQuest(bool hasQuest) {
 		this.hasQuest = hasQuest;
 		UpdateText();
+	}
+	public bool HasQuest() {
+		return hasQuest;
 	}
 
 	public void LoadSaveData(TeleporterData td, System.Guid currentLoc) {

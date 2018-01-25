@@ -558,9 +558,11 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	public GameObject questMarker;
-	public void MarkForQuest() {
-		if (questMarker != null)
+	public void MarkForQuest(Task.TaskDestination task) {
+		if (questMarker != null) {
 			questMarker.SetActive(true);
+			questMarker.GetComponent<TextObject>().Say(task.icon, color: Quest.QUEST_MARKER_COLOR, permanent: true);
+		}
 	}
 
 	public void UnMarkForQuest() {

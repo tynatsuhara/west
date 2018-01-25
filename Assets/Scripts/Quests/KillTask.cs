@@ -23,7 +23,7 @@ public class KillTask : Task {
 
     public override TaskDestination[] GetLocations() {
 		return new TaskDestination[]{
-            new TaskDestination(character)
+            new TaskDestination(character, Quest.QUEST_KILL_ICON)
         };
 	}
 
