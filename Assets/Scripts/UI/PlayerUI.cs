@@ -11,7 +11,7 @@ public class PlayerUI : MonoBehaviour {
 	public Text invText;
 	public Text ammoText;
 	public Text healthText;
-	public Text questMarker;
+	public OffScreenMarker questMarkerPrefab;
 
 	public Transform cursor;
 	private Vector3 lastMousePos;
@@ -33,10 +33,10 @@ public class PlayerUI : MonoBehaviour {
 		UpdateQuestMarkers();
 	}
 
-	public float markerDistFromEdge;
+	private List<OffScreenMarker> questMarkers = new List<OffScreenMarker>();
 	private void UpdateQuestMarkers() {
 		// combine all into List<Vector3 position>, account for x/y offsets that get fucky between objects
-		var positions = GameManager.spawnedNPCs
+		List<Vector3> positions = GameManager.spawnedNPCs
 				// get all marked npc positions
 				.Where(x => x.questMarker.activeSelf)
 				.Select(x => x.questMarker.transform.position + x.questMarker.transform.up * .4f)
@@ -47,59 +47,22 @@ public class PlayerUI : MonoBehaviour {
 				.Select(x => player.playerCamera.cam.WorldToViewportPoint(x))
 				.Where(p => p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1)
 				.ToList();
-				
-		if (positions.Count > 0) {  // temp before object pooling + multiple points
-			Vector3 p = positions.First();
-			Vector3 worldPoint = player.playerCamera.cam.ViewportToWorldPoint(ViewportIntersectPoint(p));
-			Vector3 worldCenter = player.playerCamera.cam.ViewportToWorldPoint(new Vector3(.5f, .5f));
-			// move it slightly towards the center
-			worldPoint += (worldCenter - worldPoint).normalized * markerDistFromEdge * player.playerCamera.cam.orthographicSize;
-			questMarker.transform.position = worldPoint;
 
-			Vector3 screenPoint = player.playerCamera.cam.ViewportToScreenPoint(p);
-			Vector3 screenCenter = player.playerCamera.cam.ViewportToScreenPoint(new Vector2(.5f, .5f));
-			float angle = Mathf.Atan2(screenPoint.y - screenCenter.y, screenPoint.x - screenCenter.x) * Mathf.Rad2Deg;
-			questMarker.transform.localEulerAngles = new Vector3(0, 0, angle);
+		while (questMarkers.Count < positions.Count) {
+			OffScreenMarker m = Instantiate(questMarkerPrefab);
+			m.transform.SetParent(transform);
+			m.transform.localScale = Vector3.one;
+			questMarkers.Add(m);
 		}
-		questMarker.enabled = positions.Count > 0;
-	}
 
-	private Vector3 ViewportIntersectPoint(Vector3 outsidePoint) {
-		Vector3 midpoint = new Vector2(.5f, .5f);
-		List<Vector3?> pts = new List<Vector3?>();
-		if (outsidePoint.y > .5f) {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.up, Vector2.one));
-		} else {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero, Vector2.right));
+		for (int i = 0; i < questMarkers.Count; i++) {
+			if (i < positions.Count) {
+				questMarkers[i].gameObject.SetActive(true);
+				questMarkers[i].Indicate(positions[i], player.playerCamera.cam);
+			} else {
+				questMarkers[i].gameObject.SetActive(false);
+			}
 		}
-		if (outsidePoint.x < .5f) {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero, Vector2.up));
-		} else {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.right, Vector2.one));
-		}
-		return pts.Where(x => x.HasValue).OrderBy(x => (midpoint - x.Value).magnitude).First().Value;
-	}
-
-	// taken from https://gamedev.stackexchange.com/questions/111100/intersection-of-a-line-and-a-rectangle
-	private Vector3? LineIntersectPoint(Vector3 ps1, Vector3 pe1, Vector3 ps2, Vector3 pe2) {
-		// Get A,B of first line - points : ps1 to pe1
-		float A1 = pe1.y-ps1.y;
-		float B1 = ps1.x-pe1.x;
-		// Get A,B of second line - points : ps2 to pe2
-		float A2 = pe2.y-ps2.y;
-		float B2 = ps2.x-pe2.x;
-
-		// Get delta and check if the lines are parallel
-		float delta = A1*B2 - A2*B1;
-		if(delta == 0) return null;
-
-		// Get C of first and second lines
-		float C2 = A2*ps2.x+B2*ps2.y;
-		float C1 = A1*ps1.x+B1*ps1.y;
-		//invert delta to make division cheaper
-		float invdelta = 1/delta;
-		// now return the Vector2 intersection point
-		return new Vector3((B2*C1 - B1*C2)*invdelta, (A1*C2 - A2*C1)*invdelta);
 	}
 
 	private void UpdateCursor() {
