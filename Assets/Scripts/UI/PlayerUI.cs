@@ -40,8 +40,8 @@ public class PlayerUI : MonoBehaviour {
 				// get all marked npc positions
 				.Where(x => x.questMarker.activeSelf)
 				.Select(x => x.questMarker.transform.position)
-				// get all non-pc marked destinations
-				.Union(LevelBuilder.instance.markedDestinations.Values.Where(x => x != null).Select(x => x.transform.position))
+				// get all non-npc marked destinations
+				.Union(LevelBuilder.instance.markedDestinations.Values.Where(x => x != null).Select(x => x.transform.position + 2.2f * Vector3.up))
 				// get all marked teleporters
 				.Union(LevelBuilder.instance.teleporters.Where(x => x.HasQuest()).Select(x => x.transform.position - Vector3.up))
 				.Select(x => player.playerCamera.cam.WorldToViewportPoint(x))
