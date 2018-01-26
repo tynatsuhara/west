@@ -125,6 +125,9 @@ public class DevConsole : MonoBehaviour {
 			case "setspeed":
 				setspeed(args);
 				break;
+			case "fpcam":
+				fpcam();
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
@@ -245,5 +248,9 @@ public class DevConsole : MonoBehaviour {
 		} catch (System.Exception e) {
 			textLog.Add("error: freeze expects 1 local npc name and 1 float");
 		}
+	}
+
+	private void fpcam() {
+		GameManager.players[0].SwitchCamera(!GameManager.players[0].firstPersonCam.enabled);
 	}
 }

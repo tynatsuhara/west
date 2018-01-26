@@ -109,10 +109,6 @@ public class Player : Character {
 			SelectGun(1);
 		}
 
-		if ((p1 && Input.GetKeyDown(KeyCode.P)) || Input.GetKeyDown("joystick " + id + " button 5")) {
-			SwitchCamera(!firstPersonCam.enabled);
-		}
-
 		playerUI.JoystickCursorMove(Input.GetAxis("RSX" + id), Input.GetAxis("RSY" + id));
 
 		if (Input.GetKeyDown(KeyCode.Alpha0)) {

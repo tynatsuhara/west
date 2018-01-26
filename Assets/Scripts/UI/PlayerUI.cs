@@ -33,6 +33,7 @@ public class PlayerUI : MonoBehaviour {
 		UpdateQuestMarkers();
 	}
 
+	public float markerDistFromEdge;
 	private void UpdateQuestMarkers() {
 		// combine all into List<{transform: Transform}>
 		var positions = GameManager.spawnedNPCs
@@ -50,7 +51,8 @@ public class PlayerUI : MonoBehaviour {
 			Vector3 p = positions.First();
 			Vector3 worldPoint = player.playerCamera.cam.ViewportToWorldPoint(ViewportIntersectPoint(p));
 			Vector3 worldCenter = player.playerCamera.cam.ViewportToWorldPoint(new Vector3(.5f, .5f));
-			worldPoint += (worldCenter - worldPoint).normalized * .8f;  // move it slightly towards the center
+			// move it slightly towards the center
+			worldPoint += (worldCenter - worldPoint).normalized * markerDistFromEdge * player.playerCamera.cam.orthographicSize;
 			questMarker.transform.position = worldPoint;
 
 			Vector3 screenPoint = player.playerCamera.cam.ViewportToScreenPoint(p);
