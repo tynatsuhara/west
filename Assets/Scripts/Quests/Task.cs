@@ -17,7 +17,7 @@ public abstract class Task {
 	// todo: make different classes inheriting TaskDestination
 	public class TaskDestination {
 		public System.Guid location {
-			get { return character == System.Guid.Empty ? location_ : SaveGame.currentGame.savedCharacters[character].guid; }
+			get { return character == System.Guid.Empty ? location_ : SaveGame.currentGame.savedCharacters[character].location; }
 		}
 		private System.Guid location_;
 		public Vector3 position;
