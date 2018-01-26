@@ -128,6 +128,12 @@ public class DevConsole : MonoBehaviour {
 			case "fpcam":
 				fpcam();
 				break;
+			case "quest":
+				quest(args);
+				break;
+			case "town":
+				town();
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
@@ -144,7 +150,7 @@ public class DevConsole : MonoBehaviour {
 
 	private void movetome(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			if (npc.location == Map.CurrentLocation().guid) {
 				npc.TravelToLocation(Map.CurrentLocation().guid);
 				GameManager.instance.GetCharacter(npc.guid).transform.position = GameManager.players[0].transform.position;
@@ -164,7 +170,7 @@ public class DevConsole : MonoBehaviour {
 
 	private void kill(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			if (npc.location == Map.CurrentLocation().guid) {
 				GameManager.instance.GetCharacter(npc.guid).Die();
 			} else {
@@ -177,7 +183,7 @@ public class DevConsole : MonoBehaviour {
 
 	private void simdebug(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			if (args.Length == 1) {
 				textLog.Add(npc.showSimDebug ? "enabled" : "disabled");
 				return;
@@ -191,7 +197,7 @@ public class DevConsole : MonoBehaviour {
 
 	private void locationof(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			textLog.Add(Map.Location(npc.location).name);			
 		} catch (System.Exception e) {
 			textLog.Add("error: locationof expects 1 npc name");
@@ -200,7 +206,7 @@ public class DevConsole : MonoBehaviour {
 
 	private void pathfor(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			textLog.Add(string.Join(" -> ", npc.path.Select(x => Map.Location(x).name).ToArray()));
 		} catch (System.Exception e) {
 			textLog.Add("error: pathfor expects 1 npc name");
@@ -209,7 +215,7 @@ public class DevConsole : MonoBehaviour {
 
 	private void npcfield(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			System.Type npcType = typeof(NPCData);
 			if (args[0] == "find") {
 				string[] fields = npcType.GetFields()
@@ -229,7 +235,7 @@ public class DevConsole : MonoBehaviour {
 
 	private void gotochar(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			if (npc.location == Map.CurrentLocation().guid) {
 				GameManager.players[0].transform.position = GameManager.instance.GetCharacter(npc.guid).transform.position;
 			} else {
@@ -243,14 +249,48 @@ public class DevConsole : MonoBehaviour {
 
 	private void setspeed(string[] args) {
 		try {
-			NPCData npc = SaveGame.currentGame.savedCharacters.Values.Where(x => x.name.ToLower() == args[0].ToLower()).First();
+			NPCData npc = NPCByName(args[0]);
 			GameManager.instance.GetCharacter(npc.guid).moveSpeed = float.Parse(args[0]);
 		} catch (System.Exception e) {
-			textLog.Add("error: freeze expects 1 local npc name and 1 float");
+			textLog.Add("error: setspeed expects 1 local npc name and 1 float");
 		}
 	}
 
 	private void fpcam() {
 		GameManager.players[0].SwitchCamera(!GameManager.players[0].firstPersonCam.enabled);
+	}
+
+	private void quest(string[] args) {
+		try {
+			switch (args[0]) {
+				case "add":
+					switch (args[1]) {
+						case "kill":
+						SaveGame.currentGame.quests.AddQuest(new KillQuest(NPCByName(args[2]).guid));
+						break;
+					}
+				break;
+			}
+		} catch (System.Exception e) {
+			textLog.Add("error: quest expects arguments <add> <kill>");
+		}
+	}
+
+	private void town() {
+		System.Guid town = Map.CurrentLocation().guid;
+		string characters = string.Join(", ", SaveGame.currentGame.savedCharacters.Values
+				.Where(x => Map.Location(x.location).town == town)
+				.Select(x => x.name)
+				.ToArray()
+		);
+		textLog.Add(characters);
+	}
+
+
+
+	private NPCData NPCByName(string name) {
+		return SaveGame.currentGame.savedCharacters.Values
+				.Where(x => x.name.Equals(name, System.StringComparison.InvariantCultureIgnoreCase))
+				.First();
 	}
 }

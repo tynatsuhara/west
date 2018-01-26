@@ -87,6 +87,7 @@ public class NPC : Character, Interactable {
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {
 		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0/* && currentState != NPCState.DOWN_TIED*/)
 			arms.SetFrame(0);
+		data.health = health;
 		base.Die(location, angle, attacker, type);
 	}
 
