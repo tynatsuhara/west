@@ -46,12 +46,17 @@ public class PlayerUI : MonoBehaviour {
 				.Select(x => player.playerCamera.cam.WorldToViewportPoint(x.transform.position))
 				.Where(p => p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1)
 				.ToList();
-		print("off-screen objectives: " + positions.Count);
 		if (positions.Count > 0) {  // temp before object pooling + multiple points
-			Vector3 v = ViewportIntersectPoint(positions.First());
-			Debug.Log(v);
-			v += (new Vector3(.5f, .5f) - v).normalized * .03f;
-			questMarker.transform.position = player.playerCamera.cam.ViewportToWorldPoint(v);
+			Vector3 p = positions.First();
+			Vector3 worldPoint = player.playerCamera.cam.ViewportToWorldPoint(ViewportIntersectPoint(p));
+			Vector3 worldCenter = player.playerCamera.cam.ViewportToWorldPoint(new Vector3(.5f, .5f));
+			worldPoint += (worldCenter - worldPoint).normalized * .8f;  // move it slightly towards the center
+			questMarker.transform.position = worldPoint;
+
+			Vector3 screenPoint = player.playerCamera.cam.ViewportToScreenPoint(p);
+			Vector3 screenCenter = player.playerCamera.cam.ViewportToScreenPoint(new Vector2(.5f, .5f));
+			float angle = Mathf.Atan2(screenPoint.y - screenCenter.y, screenPoint.x - screenCenter.x) * Mathf.Rad2Deg;
+			questMarker.transform.localEulerAngles = new Vector3(0, 0, angle);
 		}
 		questMarker.enabled = positions.Count > 0;
 	}
