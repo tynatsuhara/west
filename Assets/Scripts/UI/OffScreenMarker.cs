@@ -8,11 +8,9 @@ public class OffScreenMarker : MonoBehaviour {
 
     public void Indicate(Vector3 viewPortPoint, Camera cam) {
         Vector3 p = viewPortPoint;
-        Vector3 worldPoint = cam.ViewportToWorldPoint(ViewportIntersectPoint(p));
-        Vector3 worldCenter = cam.ViewportToWorldPoint(new Vector3(.5f, .5f));
+        Vector3 intersect = ViewportIntersectPoint(p, cam);
         // move it slightly towards the center
-        worldPoint += (worldCenter - worldPoint).normalized * markerDistFromEdge * cam.orthographicSize;
-        transform.position = worldPoint;
+        transform.position = cam.ViewportToWorldPoint(intersect);
 
         Vector3 screenPoint = cam.ViewportToScreenPoint(p);
         Vector3 screenCenter = cam.ViewportToScreenPoint(new Vector2(.5f, .5f));
@@ -20,18 +18,20 @@ public class OffScreenMarker : MonoBehaviour {
         transform.localEulerAngles = new Vector3(0, 0, angle);
     }
 
-	private Vector3 ViewportIntersectPoint(Vector3 outsidePoint) {
+	private Vector3 ViewportIntersectPoint(Vector3 outsidePoint, Camera cam) {
 		Vector3 midpoint = new Vector2(.5f, .5f);
+        Vector2 tbShift = new Vector3(0, markerDistFromEdge * cam.aspect);
+        Vector2 lrShift = new Vector3(markerDistFromEdge, 0);
 		List<Vector3?> pts = new List<Vector3?>();
-		if (outsidePoint.y > .5f) {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.up, Vector2.one));
-		} else {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero, Vector2.right));
+		if (outsidePoint.y > .5f) {  // top
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.up - tbShift, Vector2.one - tbShift));
+		} else {  // bottom
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero + tbShift, Vector2.right + tbShift));
 		}
-		if (outsidePoint.x < .5f) {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero, Vector2.up));
-		} else {
-			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.right, Vector2.one));
+		if (outsidePoint.x < .5f) {  // left
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.zero + lrShift, Vector2.up + lrShift));
+		} else {  // right
+			pts.Add(LineIntersectPoint(midpoint, outsidePoint, Vector2.right - lrShift, Vector2.one - lrShift));
 		}
 		return pts.Where(x => x.HasValue).OrderBy(x => (midpoint - x.Value).magnitude).First().Value;
 	}
