@@ -9,11 +9,12 @@ public abstract class Quest {
 	public static readonly string QUEST_KILL_ICON = "x";
 
 	public System.Guid guid = System.Guid.NewGuid();
-	public bool active;
-	public bool complete;
 	public bool failed;
 	public string title;
-	protected List<string> completedTaskMessages = new List<string>();
+	
+	// set by QuestManager
+	public bool active;
+	public bool complete;
 
 	// returns null if the quest is complete
 	public abstract Task UpdateQuest();

@@ -19,7 +19,6 @@ public class QuestManager {
 			Task task = q.UpdateQuest();
 			if (q.failed) {
 				Debug.Log("quest failed: " + q.title);
-				q.active = true;
 				q.active = false;			
 			} else if (task == null) {
 				Debug.Log("quest complete: " + q.title);
