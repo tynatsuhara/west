@@ -35,16 +35,16 @@ public class PlayerUI : MonoBehaviour {
 
 	public float markerDistFromEdge;
 	private void UpdateQuestMarkers() {
-		// combine all into List<{transform: Transform}>
+		// combine all into List<Vector3 position>, account for x/y offsets that get fucky between objects
 		var positions = GameManager.spawnedNPCs
 				// get all marked npc positions
 				.Where(x => x.questMarker.activeSelf)
-				.Select(x => new {transform = x.questMarker.transform})
+				.Select(x => x.questMarker.transform.position)
 				// get all non-pc marked destinations
-				.Union(LevelBuilder.instance.markedDestinations.Values.Select(x => new {transform = x.transform}))
+				.Union(LevelBuilder.instance.markedDestinations.Values.Where(x => x != null).Select(x => x.transform.position))
 				// get all marked teleporters
-				.Union(LevelBuilder.instance.teleporters.Where(x => x.HasQuest()).Select(x => new {transform = x.transform}))
-				.Select(x => player.playerCamera.cam.WorldToViewportPoint(x.transform.position))
+				.Union(LevelBuilder.instance.teleporters.Where(x => x.HasQuest()).Select(x => x.transform.position - Vector3.up))
+				.Select(x => player.playerCamera.cam.WorldToViewportPoint(x))
 				.Where(p => p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1)
 				.ToList();
 		if (positions.Count > 0) {  // temp before object pooling + multiple points
