@@ -14,21 +14,24 @@ public abstract class Task {
 		return new TaskDestination[]{};
 	}
 
+	// todo: make different classes inheriting TaskDestination
 	public class TaskDestination {
-		public System.Guid location;
+		public System.Guid location {
+			get { return character == System.Guid.Empty ? location_ : SaveGame.currentGame.savedCharacters[character].guid; }
+		}
+		private System.Guid location_;
 		public Vector3 position;
 		public System.Guid character;
 		public string icon;
 
 		public TaskDestination(System.Guid location, Vector3 position, string icon) {
-			this.location = location;
+			this.location_ = location;
 			this.position = position;
 			this.character = System.Guid.Empty;
 			this.icon = icon;
 		}
 
 		public TaskDestination(System.Guid character, string icon) {
-			this.location = SaveGame.currentGame.savedCharacters[character].location;
 			this.character = character;
 			this.icon = icon;
 		}
