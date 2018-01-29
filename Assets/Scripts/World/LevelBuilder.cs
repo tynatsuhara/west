@@ -56,6 +56,7 @@ public class LevelBuilder : MonoBehaviour {
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
 		teleporters = new List<Teleporter>();
 		SpawnBuildings();
+		SpawnInterior();
 		SpawnNPCs();
 		SpawnHorses(firstLoadSinceStartup);
 		SpawnAtmospherics();
@@ -68,19 +69,7 @@ public class LevelBuilder : MonoBehaviour {
 
 		GameUI.instance.topCenterText.Say(greeting, duration:4);
 
-		GameObject floorHolder = new GameObject();
-		floorHolder.name = "Ground";
-		for (int i = 0; i < l.width; i++) {
-			for (int j = 0; j < l.height; j++) {
-				GameObject tilePrefab = l.PrefabAt(i, j);
-				if (tilePrefab == null)
-					continue;
-				GameObject tile = Instantiate(tilePrefab, new Vector3(i * TILE_SIZE, -.2f, j * TILE_SIZE), 
-											  Quaternion.identity) as GameObject;
-				tile.transform.parent = floorHolder.transform;
-				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
-			}
-		}
+		SpawnFloor();
 		PositionWalls();
 	}
 
@@ -162,6 +151,47 @@ public class LevelBuilder : MonoBehaviour {
 		foreach (int tile in loadedLocation.headstones.Keys) {
 			GameObject h = Instantiate(headstonePrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
 			h.GetComponent<Headstone>().LoadSaveData(loadedLocation.headstones[tile]);
+		}
+	}
+
+	private void SpawnFloor() {
+		GameObject floorHolder = new GameObject();
+		floorHolder.name = "Ground";
+		for (int i = 0; i < loadedLocation.width; i++) {
+			for (int j = 0; j < loadedLocation.height; j++) {
+				GameObject tilePrefab = loadedLocation.PrefabAt(i, j);
+				if (tilePrefab == null)
+					continue;
+				GameObject tile = Instantiate(tilePrefab, new Vector3(i * TILE_SIZE, -.2f, j * TILE_SIZE), 
+											  Quaternion.identity) as GameObject;
+				tile.transform.parent = floorHolder.transform;
+				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
+			}
+		}
+	}
+
+	private void SpawnInterior() {
+		if (!(loadedLocation is InteriorLocation)) {
+			return;
+		}
+		InteriorLocation l = loadedLocation as InteriorLocation;
+		
+		GameObject floorHolder = new GameObject();
+		floorHolder.name = "Interior";
+
+		for (int r = 0; r <= l.height; r++) {
+			for (int c = 0; c <= l.width; c++) {
+				Room.Square sq = l.SquareAt(r, c);
+				Room.Square sqLeft = l.SquareAt(r, c-1);
+				Room.Square sqTop = l.SquareAt(r-1, c);
+				if ((sq != null && sq.wallLeft) || (sqLeft != null && sqLeft.wallRight)) {
+					Instantiate(wallPrefab, new Vector3(TILE_SIZE * (l.width-c), .8f, TILE_SIZE * r + 1), Quaternion.identity);
+				}
+				if ((sq != null && sq.wallTop) || (sqTop != null && sqTop.wallBottom)) {
+					Instantiate(wallPrefab, new Vector3(TILE_SIZE * (l.width-c) - 1, .8f, TILE_SIZE * r), Quaternion.Euler(0, 90, 0));
+				}
+				// bool spawnWallBottom = sq.wallBottom || (j > 0 && l.SquareAt(i, j-1).wallTop);
+			}
 		}
 	}
 

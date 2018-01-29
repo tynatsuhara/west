@@ -28,7 +28,14 @@ public class InteriorLocation : Location {
 
 	public override bool TileOccupied(int x, int y) {
         // TODO: allow for multiple chars
-        return grid[y][width-x-1] != null && grid[y][width-x-1] != null;
+        return grid[y][width-x-1] != null;
+    }
+
+    public Room.Square SquareAt(int row, int col) {
+        if (row < 0 || row >= height || col < 0 || col >= width || grid[row][col] == null) {
+            return null;
+        }
+        return grid[row][col].SquareAt(row, col);
     }
 
     public override string ToString() {

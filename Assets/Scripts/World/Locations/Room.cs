@@ -35,6 +35,10 @@ public class Room {
         return squares[row - this.row][col - this.col].ch != ' ';
     }
 
+    public Square SquareAt(int row, int col) {
+        return squares[row - this.row][col - this.col];
+    }
+
     public override string ToString() {
         return string.Join("\n", squares.Select(x => string.Join("", x.Select(ch => "" + ch.ch).ToArray())).ToArray());
     }
@@ -107,18 +111,18 @@ public class Room {
                 if (!Occupied(r, c)) {
                     continue;
                 }
-                squares[r][c].doorTop = r == 0 || !Occupied(r-1, c);
-                squares[r][c].doorBottom = r == squares.Count-1 || !Occupied(r+1, c);
-                squares[r][c].doorLeft = c == 0 || !Occupied(r, c-1);
-                squares[r][c].doorRight = c == squares[r].Count-1 || !Occupied(r, c+1);
+                squares[r][c].wallTop = r == 0 || !Occupied(r-1, c);
+                squares[r][c].wallBottom = r == squares.Count-1 || !Occupied(r+1, c);
+                squares[r][c].wallLeft = c == 0 || !Occupied(r, c-1);
+                squares[r][c].wallRight = c == squares[r].Count-1 || !Occupied(r, c+1);
             }
         }
     }
 
     [System.Serializable]
-    private class Square {
+    public class Square {
         public char ch;
-        public bool doorRight, doorBottom, doorLeft, doorTop;
+        public bool wallRight, wallBottom, wallLeft, wallTop;
 
         public Square(char ch) {
             this.ch = ch;
@@ -126,15 +130,15 @@ public class Room {
 
         // rotate clockwise
         public void Rotate() {
-            bool oldRight = doorRight;
-            doorRight = doorTop;
-            doorTop = doorLeft;
-            doorLeft = doorBottom;
-            doorBottom = oldRight;
+            bool oldRight = wallRight;
+            wallRight = wallTop;
+            wallTop = wallLeft;
+            wallLeft = wallBottom;
+            wallBottom = oldRight;
         }
 
         public void RemoveWalls() {
-            doorRight = doorLeft = doorBottom = doorTop = false;
+            wallRight = wallLeft = wallBottom = wallTop = false;
         }
     }
 }
