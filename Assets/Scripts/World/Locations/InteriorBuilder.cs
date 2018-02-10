@@ -6,25 +6,42 @@ using UnityEngine;
 public class InteriorBuilder {
 
     private Dictionary<char, Room> rooms = new Dictionary<char, Room>();
-    private List<List<Room>> grid;
+    private Grid<Room> grid;
 
     public InteriorBuilder(Room root) {
         rooms.Add(root.charKey, root);
-        grid = Enumerable.Range(0, root.height)
-                .Select(r => Enumerable.Range(0, root.width).Select(c => (root.Occupied(r, c) ? root : null)).ToList())
-                .ToList();
+        grid = new Grid<Room>(root.width, root.height);
+        for (int x = 0; x < grid.width; x++) {
+            for (int y = 0; y < grid.height; y++) {
+                grid.Set(x, y, root.Occupied(x, y) ? root : null);
+            }
+        }
     }
 
     // rooms should be attached in order of importance (building out from the root room)
     // todo: additional parameters? (optional, etc)
     public InteriorBuilder Attach(string on, Room room) {
-        TryAttachRoom(room, on);
+        if (!TryAttachRoom(room, on)) {
+            Debug.Log("failed to attach room");
+        }
         return this;
     }
 
     public InteriorLocation Build(Map parent, System.Guid outside, string name) {
         return new InteriorLocation(parent, outside, grid, name);
     }
+
+    // public InteriorBuilder ReplaceWithFloor(string toReplace) {
+    //     for (int x = 0; x < grid.width; x++) {
+    //         for (int y = 0; y < grid.height; y++) {
+    //             Room rm = grid.Get(x, y);
+    //             if (rm != null) {
+    //                 rm.SquareAt(x, y).ch = rm.floor;
+    //             }
+    //         }
+    //     }
+    //     return this;
+    // }
 
     private bool TryAttachRoom(Room room, string on) {
         int initialRotation = UnityEngine.Random.Range(0, 4);
@@ -75,28 +92,26 @@ public class InteriorBuilder {
 
     public List<FindResult> Find(string on) {
         List<FindResult> result = new List<FindResult>();
-        for (int r = 0; r < grid.Count; r++) {
-            for (int i = 0; i < grid[r].Count - on.Length + 1; i++) {
-                // track all the hits in the row
-                if (RowStartsWith(r, on, i)) {
-                    bool spaceAbove = r == 0 || EmptyX(r-1, i, on.Length);
-                    bool spaceBelow = r == grid.Count-1 || EmptyX(r+1, i, on.Length);
-                    result.Add(new FindResult(r, i, spaceAbove, spaceBelow));
+        for (int x = 0; x < grid.width; x++) {
+            for (int y = 0; y < grid.height; y++) {
+                if (Matches(x, y, on)) {
+                    bool spaceAbove = y == grid.height-1 || EmptyX(x, y+1, on.Length);
+                    bool spaceBelow = y == 0 || EmptyX(x, y-1, on.Length);
+                    result.Add(new FindResult(x, y, spaceAbove, spaceBelow));
                 }
             }
         }
         return result;
     }
 
-    private bool EmptyX(int row, int col, int x) {
-        return grid[row].Skip(col).Take(x).All(r => r == null);
+    private bool EmptyX(int x, int y, int count) {
+        return Enumerable.Range(x, count).All(xi => grid.Get(xi, y) == null);
     }
 
-    private bool RowStartsWith(int rowIndex, string match, int startIndex) {
-        List<Room> row = grid[rowIndex];
+    private bool Matches(int x, int y, string match) {
         for (int i = 0; i < match.Length; i++) {
-            int col = startIndex + i;
-            if ((row[col] == null && match[i] != ' ' ) || (row[col] != null && row[col].CharAt(rowIndex, col) != match[i])) {
+            Room rm = grid.Get(x + i, y);
+            if ((rm == null && match[i] != ' ') || (rm != null && rm.CharAt(x + i, y) != match[i])) {
                 return false;
             }
         }
@@ -105,110 +120,103 @@ public class InteriorBuilder {
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
     private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string on, bool placeOtherAbove) {
-        int minRow = 0, maxRow = 0, minCol = 0, maxCol = 0;
-        int shift = placeOtherAbove ? -1 : 1;
+        int minX = 0, maxX = 0, minY = 0, maxY = 0;
+        int shift = placeOtherAbove ? 1 : -1;
 
         // the coordinates in this grid for placing other
-        int topLeftRow = thisPos.row - otherPos.row + shift;
-        int topLeftCol = thisPos.col - otherPos.col;
+        int bottomLeftX = thisPos.x - otherPos.x;
+        int bottomLeftY = thisPos.y - otherPos.y + shift;
 
         // make sure all overlapping is safe and account for padding
-        for (int r = 0; r < other.height; r++) {
-            for (int c = 0; c < other.width; c++) {
-                int overlapRow = topLeftRow + r;
-                bool outsideRow = overlapRow < 0 || overlapRow >= grid.Count;
-                minRow = Mathf.Min(minRow, overlapRow);
-                maxRow = Mathf.Max(maxRow, overlapRow);
+        for (int y = 0; y < other.height; y++) {
+            for (int x = 0; x < other.width; x++) {
+                int overlapX = bottomLeftX + x;
+                bool outsideX = overlapX < 0 || overlapX >= grid.width;
+                minX = Mathf.Min(minX, overlapX);
+                maxX = Mathf.Max(maxX, overlapX);
 
-                int overlapCol = topLeftCol + c;
-                bool outsideCol = overlapCol < 0 || overlapCol >= grid.First().Count;
-                minCol = Mathf.Min(minCol, overlapCol);
-                maxCol = Mathf.Max(maxCol, overlapCol);
+                int overlapY = bottomLeftY + y;
+                bool outsideY = overlapY < 0 || overlapY >= grid.height;
+                minY = Mathf.Min(minY, overlapY);
+                maxY = Mathf.Max(maxY, overlapY);
                 
-                if (!outsideCol && !outsideRow && other.Occupied(r, c) && grid[overlapRow][overlapCol] != null) {
+                if (!outsideX && !outsideY && other.Occupied(x, y) && grid.Get(overlapX, overlapY) != null) {
                     return false;
                 }
             }
         }
 
-        int bottomPad = Mathf.Max(-minRow, 0);
-        int topPad = Mathf.Max(maxRow - grid.Count + 1, 0);
-        int leftPad = Mathf.Max(-minCol, 0);
-        int rightPad = Mathf.Max(maxCol - grid.First().Count + 1, 0);
+        int bottomPad = Mathf.Max(-minY, 0);
+        int topPad = Mathf.Max(maxY + 1 - grid.height, 0);
+        int leftPad = Mathf.Max(-minX, 0);
+        int rightPad = Mathf.Max(maxX + 1 - grid.width, 0);
 
         // adjust the size of the grid
-        topLeftRow += bottomPad;
-        topLeftCol += leftPad;
-        int originalLength = grid.First().Count;
+        bottomLeftY += bottomPad;
+        bottomLeftX += leftPad;
+        int originalLength = grid.width;
 
-        for (int i = 0; i < bottomPad; i++) {
-            grid.Insert(0, new List<Room>());
-        }
-        for (int i = 0; i < topPad; i++) {
-            grid.Add(new List<Room>());
-        }
-        for (int i = 0; i < grid.Count; i++) {
-            grid[i].InsertRange(0, Enumerable.Repeat((Room) null, originalLength + leftPad - grid[i].Count));
-            grid[i].AddRange(Enumerable.Repeat((Room) null, originalLength + leftPad + rightPad - grid[i].Count));
-        }
+        grid = grid.Expanded(topPad, bottomPad, leftPad, rightPad);
+
         foreach (Room movedRoom in rooms.Values) {
-            movedRoom.IncrementOffset(bottomPad, leftPad);
+            movedRoom.IncrementOffset(leftPad, bottomPad);
         }
 
         // place references in grid for occupied spaces
-        for (int r = 0; r < other.height; r++) {
-            for (int c = 0; c < other.width; c++) {
-                if (other.Occupied(r, c)) {
-                    grid[topLeftRow + r][topLeftCol + c] = other;
+        for (int x = 0; x < other.width; x++) {
+            for (int y = 0; y < other.height; y++) {
+                if (other.Occupied(x, y)) {
+                    grid.Set(bottomLeftX + x, bottomLeftY + y, other);                    
                 }
             }
         }
 
-        other.IncrementOffset(topLeftRow, topLeftCol);
-        other.MakeDoorway(otherPos, on);
+        other.IncrementOffset(bottomLeftX, bottomLeftY);
+        otherPos.x = bottomLeftX;
+        otherPos.y = bottomLeftY;
+
+        MakeDoorway(thisPos, on);
+        MakeDoorway(otherPos, on);
+
         rooms.Add(other.charKey, other);
 
-        // TODO: put doorway on connecting room
-
         return true;
+    }
+
+    public void MakeDoorway(InteriorBuilder.FindResult place, string door) {
+        for (int i = 0; i < door.Length; i++) {
+            Room rm = grid.Get(place.x, place.y);
+            if (rm != null) {
+                rm.SquareAt(place.x, place.y).RemoveWalls(rm.floor);
+            }
+        }
     }
 
     // rotate clockwise
     private void Rotate() {
         foreach (Room room in rooms.Values) {
-            room.RotatePlaced(grid.Count);
+            room.RotatePlaced(grid.width);
         }
-        List<List<Room>> result = new List<List<Room>>();
-        for (int i = 0; i < grid.First().Count; i++) {
-            result.Add(grid.Select(x => x[i]).Reverse().ToList());
-        }
-        grid = result;
+        grid = grid.RotatedClockwise();
     }
 
     public override string ToString() {
-        string result = "";
-        for (int r = 0; r < grid.Count; r++) {
-            for (int c = 0; c < grid[r].Count; c++) {
-                result += grid[r][c] != null ? grid[r][c].CharAt(r, c) : ' ';
-            }
-            result += '\n';
-        }
-        return result.Substring(0, result.Length - 1);
+        return grid.ToString((room, x, y) => room == null ? ' ' : room.CharAt(x, y));
     }
 
     public class FindResult {
-        public int row, col;
+        public int x, y;
         public bool spaceAbove, spaceBelow;
 
-        public FindResult(int row, int col, bool spaceAbove, bool spaceBelow) {
-            this.row = row;
-            this.col = col;
+        public FindResult(int x, int y, bool spaceAbove, bool spaceBelow) {
+            this.x = x;
+            this.y = y;
             this.spaceAbove = spaceAbove;
             this.spaceBelow = spaceBelow;
         }
 
         public override string ToString() {
-            return "[" + string.Join(", ", new string[]{row.ToString(), col.ToString(), spaceAbove.ToString(), spaceBelow.ToString()}) + "]";
+            return "[" + string.Join(", ", new string[]{x.ToString(), y.ToString(), spaceAbove.ToString(), spaceBelow.ToString()}) + "]";
         }
     }
 

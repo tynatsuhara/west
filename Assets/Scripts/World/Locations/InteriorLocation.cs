@@ -5,14 +5,14 @@ using System.Linq;
 [System.Serializable]
 public class InteriorLocation : Location {
 
-    private List<List<Room>> grid;
+    private Grid<Room> grid;
 
-    public InteriorLocation(Map parent, System.Guid town, List<List<Room>> grid, string name) : base(parent, false) {
+    public InteriorLocation(Map parent, System.Guid town, Grid<Room> grid, string name) : base(parent, false) {
         this.grid = grid;
         this.town = town;   
         worldLocation = parent.locations[town].worldLocation;        
-        height = grid.Count;
-        width = grid.First().Count;
+        height = grid.height;
+        width = grid.width;
         this.name = name;
         teleporters.Add(new Teleporter.TeleporterData(town, Vector3.one, "front door"));
         discovered = true;
@@ -23,29 +23,19 @@ public class InteriorLocation : Location {
     }
 
 	public override GameObject PrefabAt(int x, int y) {
-        return grid[y][width-x-1] != null ? LevelBuilder.instance.floorPrefab : null;
+        return grid.Get(x, y) != null ? LevelBuilder.instance.floorPrefab : null;
     }
 
 	public override bool TileOccupied(int x, int y) {
-        // TODO: allow for multiple chars
-        return grid[y][width-x-1] != null;
+        return grid.Get(x, y) != null;
     }
 
-    public Room.Square SquareAt(int row, int col) {
-        if (row < 0 || row >= height || col < 0 || col >= width || grid[row][col] == null) {
-            return null;
-        }
-        return grid[row][col].SquareAt(row, col);
+    public Room.Square SquareAt(int x, int y) {
+        Room rm = grid.Get(x, y);
+        return rm == null ? null : rm.SquareAt(x, y);
     }
 
     public override string ToString() {
-        string result = "";
-        for (int r = 0; r < height; r++) {
-            for (int c = 0; c < width; c++) {
-                result += grid[r][c] != null ? grid[r][c].CharAt(r, c) : ' ';
-            }
-            result += '\n';
-        }
-        return result.Substring(0, result.Length - 1);
+        return grid.ToString((room, x, y) => room == null ? ' ' : room.CharAt(x, y));
     }
 }

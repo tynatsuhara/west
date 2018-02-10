@@ -267,7 +267,10 @@ public class TownLocation : Location {
 			"############"
 		);
 
-		return new InteriorBuilder(room1).Attach("##", room2).Build(parent, guid, "SOME BUILDING");
+		return new InteriorBuilder(room1)
+				.Attach("##", room2)
+				// .ReplaceWithFloor("#")
+				.Build(parent, guid, "SOME BUILDING");
 	}
 
 	private int TryPlaceBuilding(Building b) {
