@@ -154,7 +154,6 @@ public class InteriorBuilder {
         // adjust the size of the grid
         bottomLeftY += bottomPad;
         bottomLeftX += leftPad;
-        int originalLength = grid.width;
 
         grid = grid.Expanded(topPad, bottomPad, leftPad, rightPad);
 
@@ -172,22 +171,20 @@ public class InteriorBuilder {
         }
 
         other.IncrementOffset(bottomLeftX, bottomLeftY);
-        otherPos.x = bottomLeftX;
-        otherPos.y = bottomLeftY;
 
-        MakeDoorway(thisPos, on);
-        MakeDoorway(otherPos, on);
+        MakeDoorway(bottomLeftX, bottomLeftY, on);
+        MakeDoorway(bottomLeftX, bottomLeftY - shift, on);
 
         rooms.Add(other.charKey, other);
 
         return true;
     }
 
-    public void MakeDoorway(InteriorBuilder.FindResult place, string door) {
+    public void MakeDoorway(int x, int y, string door) {
         for (int i = 0; i < door.Length; i++) {
-            Room rm = grid.Get(place.x, place.y);
+            Room rm = grid.Get(x + i, y);
             if (rm != null) {
-                rm.SquareAt(place.x, place.y).RemoveWalls(rm.floor);
+                rm.SquareAt(x + i, y).RemoveWalls(rm.floor);
             }
         }
     }

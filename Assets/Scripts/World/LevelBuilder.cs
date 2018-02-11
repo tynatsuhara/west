@@ -176,19 +176,21 @@ public class LevelBuilder : MonoBehaviour {
 		}
 		InteriorLocation l = loadedLocation as InteriorLocation;
 		
-		GameObject floorHolder = new GameObject();
-		floorHolder.name = "Interior";
+		GameObject interiorObjectHolder = new GameObject();
+		interiorObjectHolder.name = "Interior";
 
-		for (int y = 0; y <= l.height; y++) {
-			for (int x = 0; x <= l.width; x++) {
+		for (int y = -1; y <= l.height; y++) {
+			for (int x = -1; x <= l.width; x++) {
 				Room.Square sq = l.SquareAt(x, y);
 				Room.Square sqLeft = l.SquareAt(x-1, y);
 				Room.Square sqTop = l.SquareAt(x, y+1);
-				if ((sq != null && sq.wallLeft) || (sqLeft != null && sqLeft.wallRight)) {
-					Instantiate(wallPrefab, new Vector3(TILE_SIZE * x, .8f, TILE_SIZE * y + 1), Quaternion.identity);
+				if ((sq != null && (sq.wallLeft || sqLeft == null)) || (sqLeft != null && (sqLeft.wallRight || sq == null))) {
+					GameObject wall = Instantiate(wallPrefab, new Vector3(TILE_SIZE * x, .8f, TILE_SIZE * y + 1), Quaternion.identity);
+					wall.transform.SetParent(interiorObjectHolder.transform);
 				}
-				if ((sq != null && sq.wallTop) || (sqTop != null && sqTop.wallBottom)) {
-					Instantiate(wallPrefab, new Vector3(TILE_SIZE * x + 1, .8f, TILE_SIZE * y + 2), Quaternion.Euler(0, 90, 0));
+				if ((sq != null && (sq.wallTop || sqTop == null)) || (sqTop != null && (sqTop.wallBottom || sq == null))) {
+					GameObject wall = Instantiate(wallPrefab, new Vector3(TILE_SIZE * x + 1, .8f, TILE_SIZE * y + 2), Quaternion.Euler(0, 90, 0));
+					wall.transform.SetParent(interiorObjectHolder.transform);
 				}
 			}
 		}
