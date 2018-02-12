@@ -287,7 +287,6 @@ public class DevConsole : MonoBehaviour {
 	}
 
 
-
 	private NPCData NPCByName(string name) {
 		return SaveGame.currentGame.savedCharacters.Values
 				.Where(x => x.name.Equals(name, System.StringComparison.InvariantCultureIgnoreCase))
