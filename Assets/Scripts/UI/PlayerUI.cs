@@ -8,7 +8,7 @@ public class PlayerUI : MonoBehaviour {
 
 	public Player player;
 
-	public Text invText;
+	public Text objectiveText;
 	public Text ammoText;
 	public Text healthText;
 	public OffScreenMarker questMarkerPrefab;
@@ -95,23 +95,8 @@ public class PlayerUI : MonoBehaviour {
 		}
 	}
 
-	public void UpdateInventory(Dictionary<string, int> dict) {
-		if (!displayedInventories.Contains(dict))
-			displayedInventories.Add(dict);
-
-		Dictionary<string, int> mergedInventories = new Dictionary<string, int>();
-		foreach (Dictionary<string, int> d in displayedInventories) {
-			foreach (string s in d.Keys) {
-				if (!mergedInventories.ContainsKey(s))
-					mergedInventories.Add(s, 0);
-				mergedInventories[s] += d[s];
-			}
-		}
-		string result = "";
-		foreach (string s in mergedInventories.Keys) {
-			result += s + (mergedInventories[s] > 1 ? " × " + mergedInventories[s] + "\n" : "\n");
-		}
-		invText.text = result.ToUpper();
+	public void UpdateObjectives(List<string> messages) {
+		objectiveText.text = string.Join("\n", messages.Select(x => x.Trim('\n')).ToArray()).ToUpper();
 	}
 
 	public void UpdateAmmo(string weaponName, int ammo, int clipSize) {

@@ -15,6 +15,8 @@ public class QuestManager {
 
 	public void UpdateQuests() {
 		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
+		List<string> messages = new List<string>();
+
 		foreach (Quest q in quests.Values.Where(x => !x.complete)) {
 			Task task = q.UpdateQuest();
 			if (q.failed) {
@@ -25,12 +27,14 @@ public class QuestManager {
 				q.complete = true;
 				q.active = false;
 			} else {
-				Debug.Log(q.title + ": " + task.message);
 				destinations.AddRange(task.GetLocations());
+				messages.Add(task.message);
 			}
 		}
+
 		LevelBuilder.instance.MarkQuestDestinations(destinations);
 		VisualMap.instance.MarkQuestDestinations(destinations);
+		GameManager.players.ForEach(x => x.playerUI.UpdateObjectives(messages));
 	}
 
 	public void AddQuest(Quest q) {
