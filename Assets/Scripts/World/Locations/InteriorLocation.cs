@@ -7,6 +7,10 @@ public class InteriorLocation : Location {
 
     private Grid<Room> grid;
 
+    public override string greeting {
+		get { return name; }
+	}
+
     public InteriorLocation(Map parent, System.Guid town, Grid<Room> grid, string name) : base(parent, false) {
         this.grid = grid;
         this.town = town;   

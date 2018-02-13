@@ -10,6 +10,16 @@ public class TownLocation : Location {
 	private BitArray trails;
 	private BitArray buildingSpaces;
 
+	public override string greeting {
+		get { 
+			int bounty = SaveGame.currentGame.savedPlayers
+					.Select(x => SaveGame.currentGame.crime.CharacterLocationBounty(x.guid, guid))
+					.Aggregate((x, y) => x + y);
+			string gr = name + ", population " + characters.Count;
+			return bounty > 0 ? gr + "\nbounty $" + bounty : gr;
+		}
+	}
+
 	public TownLocation(Map parent, float x, float y) : base(parent, true) {
 		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};
 		icon = icons[Random.Range(0, icons.Length)];

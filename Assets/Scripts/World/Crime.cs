@@ -25,7 +25,7 @@ public class Crime {
         Debug.Log("Committed crime of " + crime.ToUpper() + ", bounty += " + bounty);
     }
 
-    public int Bounty(System.Guid character) {
+    public int CharacterBounty(System.Guid character) {
         if (!committed.ContainsKey(character)) {
             return 0;
         }
@@ -36,7 +36,7 @@ public class Crime {
         return result;
     }
 
-    public int Bounty(System.Guid character, System.Guid location) {
+    public int CharacterLocationBounty(System.Guid character, System.Guid location) {
         if (!committed.ContainsKey(character) || !committed[character].ContainsKey(location))
             return 0;
         return committed[character][location].Select(x => x.bounty).Aggregate((x, y) => x + y);

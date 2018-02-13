@@ -11,6 +11,7 @@ public abstract class Location {
 	public bool onMap = true;
 	public bool discovered;  // discovered only matters for onMap and the future purpose of fast travel
 	public string name = "DEFAULT_NAME";
+	public abstract string greeting { get; }
 	public string icon;  // bull head in pixel western font
 	public Map parent;
 	public System.Guid town;

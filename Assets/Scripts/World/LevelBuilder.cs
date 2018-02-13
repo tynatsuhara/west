@@ -61,16 +61,11 @@ public class LevelBuilder : MonoBehaviour {
 		SpawnHorses(firstLoadSinceStartup);
 		SpawnAtmospherics();
 		SpawnTeleporters();
-		string greeting = l.name + ", population " + l.characters.Count;
-		int bounty = SaveGame.currentGame.savedPlayers.Select(x => SaveGame.currentGame.crime.Bounty(x.guid, guid)).Aggregate((x, y) => x + y);
-		greeting = bounty > 0 ? greeting + "\nbounty $" + bounty : greeting;
-		greeting = loadedLocation.discovered ? greeting : "New location discovered\n" + greeting;
-		loadedLocation.discovered = true;
-
-		GameUI.instance.topCenterText.Say(greeting, duration:4);
-
+		ShowGreeting();
 		SpawnFloor();
 		PositionWalls();
+
+		loadedLocation.discovered = true;
 	}
 
 	public void Clean(bool removePlayers=false) {
@@ -274,6 +269,12 @@ public class LevelBuilder : MonoBehaviour {
 			porter.LoadSaveData(b.doors[0], loadedLocation.guid);
 			teleporters.Add(porter);
 		}
+	}
+
+	private void ShowGreeting() {
+		string greeting = loadedLocation.greeting;
+		greeting = loadedLocation.discovered ? greeting : "New location discovered\n" + greeting;
+		GameUI.instance.topCenterText.Say(greeting, duration:4);
 	}
 
 	private void PositionWalls() {
