@@ -11,14 +11,20 @@ public class InteriorLocation : Location {
 		get { return name; }
 	}
 
-    public InteriorLocation(Map parent, System.Guid town, Grid<Room> grid, string name) : base(parent, false) {
+    public InteriorLocation(
+            Map parent, 
+            System.Guid town, 
+            Grid<Room> grid, 
+            string name, 
+            List<Teleporter.TeleporterData> teleporters
+    ) : base(parent, false) {
         this.grid = grid;
         this.town = town;   
         worldLocation = parent.locations[town].worldLocation;        
         height = grid.height;
         width = grid.width;
         this.name = name;
-        teleporters.Add(new Teleporter.TeleporterData(town, Vector3.one, "front door"));
+        this.teleporters.AddRange(teleporters);
         discovered = true;
     }
 

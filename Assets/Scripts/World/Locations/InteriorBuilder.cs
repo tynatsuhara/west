@@ -28,7 +28,15 @@ public class InteriorBuilder {
     }
 
     public InteriorLocation Build(Map parent, System.Guid outside, string name) {
-        return new InteriorLocation(parent, outside, grid, name);
+        return new InteriorLocation(parent, outside, grid, name, teleporters);
+    }
+
+    private List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
+    public InteriorBuilder AddTeleporter(char gridIcon, System.Guid town, string tag) {
+        FindResult fr = Find("" + gridIcon).First();
+        Vector3 pos = new Vector3((fr.x + .5f) * LevelBuilder.TILE_SIZE, 1f, (fr.y + .5f) * LevelBuilder.TILE_SIZE);
+        teleporters.Add(new Teleporter.TeleporterData(town, pos, tag));
+        return this;
     }
 
     // public InteriorBuilder ReplaceWithFloor(string toReplace) {

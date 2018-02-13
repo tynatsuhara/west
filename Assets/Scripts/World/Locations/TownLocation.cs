@@ -268,9 +268,10 @@ public class TownLocation : Location {
 		}
 	}
 
+	// todo: all this should be moved to BuildingFactory or something
 	private InteriorLocation GetInterior() {
 		Room room1 = new Room('a', '/',
-			"      #////#",
+			"      #//T/#",
 			"      #////#",
 			"//####/////#",
 			"///////#####"
@@ -282,10 +283,10 @@ public class TownLocation : Location {
 			"///////////#",
 			"############"
 		);
-
+		
 		return new InteriorBuilder(room1)
 				.Attach("##", room2)
-				// .ReplaceWithFloor("#")
+				.AddTeleporter('T', guid, "front door")
 				.Build(parent, guid, "SOME BUILDING");
 	}
 
