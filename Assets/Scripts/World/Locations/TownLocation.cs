@@ -168,7 +168,7 @@ public class TownLocation : Location {
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return true;
 		int val = Val(x, y);
-		return buildingSpaces.Get(val) || trails.Get(val) || cacti.ContainsKey(val);
+		return buildingSpaces.Get(val) || trails.Get(val) || cacti.ContainsKey(val);  // todo: this is fucking stupid
 	}
 
 	public List<int> BestPathFrom(int start, int end) {
@@ -251,12 +251,18 @@ public class TownLocation : Location {
 			parent.locations[interior.guid] = interior;
 			connections.Add(interior.guid);
 			interior.PlaceAt(guid);
+
+			// TODO: different buildings can have multiple entrances 
+			// that can attach or not attach to roads			
+			buildingSpaces.Set(destination, false);
 			foreach (int exit in exits) {
 				foreach (int path in BestPathFrom(exit, destination)) {
 					trails.Set(path, true);
 				}
 				// TODO: make roads form loops
 			}
+			buildingSpaces.Set(destination, true);
+
 			teleporters.AddRange(building.doors);
 			interior = GetInterior();
 		}

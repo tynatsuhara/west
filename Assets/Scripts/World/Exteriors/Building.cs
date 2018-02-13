@@ -23,7 +23,7 @@ public class Building {
     }
 
     private int doorOffsetX_ = 1;
-    private int doorOffsetY_ = -1;
+    private int doorOffsetY_ = 0;
 
     public int angle {
         get { return rotation * 90; }
