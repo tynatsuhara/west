@@ -40,6 +40,12 @@ public class InteriorLocation : Location {
     }
 
     public override string ToString() {
-        return grid.ToString((room, x, y) => room == null ? ' ' : room.CharAt(x, y));
+        return grid.ToString((room, x, y) => {
+            if (room == null) {
+                return ' ';
+            }
+            Room.Square sq = room.SquareAt(x, y);
+            return (sq.wallTop || sq.wallBottom || sq.wallLeft || sq.wallRight) ? '#' : '/';
+        });
     }
 }

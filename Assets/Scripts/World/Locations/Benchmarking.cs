@@ -8,7 +8,7 @@ public class Benchmarking : MonoBehaviour {
 	void Start () {
 		Stopwatch timer = Stopwatch.StartNew();	
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1; i++) {
 			Room room1 = new Room('a', '/',
 				"      #////#",
 				"      #////#",
@@ -23,8 +23,8 @@ public class Benchmarking : MonoBehaviour {
 				"############"
 			);
 
-			InteriorBuilder ib = new InteriorBuilder(room1)
-					.Attach("##", room2);
+			InteriorBuilder ib = new InteriorBuilder(room1).Attach("##", room2);
+			
 			UnityEngine.Debug.Log(ib);
 		}
 

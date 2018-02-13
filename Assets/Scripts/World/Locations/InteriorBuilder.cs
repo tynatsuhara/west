@@ -61,6 +61,7 @@ public class InteriorBuilder {
                     List<FindResult> spaceAboveDoors = thisDoors.Where(x => x.spaceAbove).OrderBy(x => System.Guid.NewGuid()).ToList();
                     List<FindResult> spaceBelowDoors = thisDoors.Where(x => x.spaceBelow).OrderBy(x => System.Guid.NewGuid()).ToList();
 
+                    // weird ass shit to randomize looking above/below first
                     List<FindResult>[] sides;
                     bool checkAbove = UnityEngine.Random.Range(0, 2) == 0;
                     if (checkAbove) {
@@ -116,7 +117,7 @@ public class InteriorBuilder {
             }
         }
         return true;
-    } 
+    }
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
     private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string on, bool placeOtherAbove) {
@@ -172,8 +173,8 @@ public class InteriorBuilder {
 
         other.IncrementOffset(bottomLeftX, bottomLeftY);
 
-        MakeDoorway(bottomLeftX, bottomLeftY, on);
-        MakeDoorway(bottomLeftX, bottomLeftY - shift, on);
+        MakeDoorway(bottomLeftX + otherPos.x, bottomLeftY + otherPos.y, on);
+        MakeDoorway(leftPad + thisPos.x, bottomPad + thisPos.y, on);
 
         rooms.Add(other.charKey, other);
 
@@ -198,7 +199,13 @@ public class InteriorBuilder {
     }
 
     public override string ToString() {
-        return grid.ToString((room, x, y) => room == null ? ' ' : room.CharAt(x, y));
+        return grid.ToString((room, x, y) => {
+            if (room == null) {
+                return ' ';
+            }
+            Room.Square sq = room.SquareAt(x, y);
+            return (sq.wallTop || sq.wallBottom || sq.wallLeft || sq.wallRight) ? '#' : '/';
+        });
     }
 
     public class FindResult {

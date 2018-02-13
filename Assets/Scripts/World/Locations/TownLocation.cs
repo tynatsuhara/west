@@ -253,7 +253,7 @@ public class TownLocation : Location {
 			interior.PlaceAt(guid);
 
 			// TODO: different buildings can have multiple entrances 
-			// that can attach or not attach to roads			
+			// that can attach or not attach to roads 
 			buildingSpaces.Set(destination, false);
 			foreach (int exit in exits) {
 				foreach (int path in BestPathFrom(exit, destination)) {
