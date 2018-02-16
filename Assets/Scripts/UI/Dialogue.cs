@@ -55,4 +55,8 @@ public class Dialogue : MonoBehaviour {
 
 		tint.gameObject.SetActive(true);
 	}
+
+	public bool IsShowing() {
+		return tint.gameObject.activeSelf;
+	}
 }

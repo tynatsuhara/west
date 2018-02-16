@@ -91,11 +91,13 @@ public class GameManager : MonoBehaviour {
 				SetPaused(false);
 				GameUI.instance.ShowPauseScreen(false);				
 			} else if (VisualMap.instance.active && (esc || m)) {
+				SetPaused(false);
 				VisualMap.instance.active = false;
 			} else if (!paused && esc) {
 				SetPaused(true);
 				GameUI.instance.ShowPauseScreen(true);				
 			} else if (m) {
+				SetPaused(true);				
 				VisualMap.instance.active = true;
 			}
 		}

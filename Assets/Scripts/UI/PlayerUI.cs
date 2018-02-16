@@ -131,4 +131,8 @@ public class PlayerUI : MonoBehaviour {
 	public void HideDialogue() {
 		dialogue.Hide();
 	}
+
+	public bool IsDialogueShowing() {
+		return dialogue.IsShowing();
+	}
 }

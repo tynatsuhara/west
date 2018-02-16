@@ -24,12 +24,27 @@ public class Player : Character {
 		if (!isAlive || GameManager.paused)
 			return;
 
-		GetInput();
-		if (currentGun != null)
-			currentGun.UpdateUI();
+		if (!playerUI.IsDialogueShowing()) {
+			GetInput();
+			if (currentGun != null)
+				currentGun.UpdateUI();
+		}
+
 		LookAtMouse();
 		Rotate();
 	}
+
+	void FixedUpdate () {
+		if (!isAlive || GameManager.paused)
+			return;
+
+		if (playerUI.IsDialogueShowing()) {
+			Move(0, 0);
+		} else {
+			Walk();
+			Drag();
+		}
+    }
 
 	private float interactHoldTime;
 	private bool interactWasHeld;
@@ -122,13 +137,6 @@ public class Player : Character {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 	}
- 
-	void FixedUpdate () {
-		if (!isAlive || GameManager.paused)
-			return;
-		Walk();		
-		Drag();
-    }
 
 	private void InitFirstPersonCamera() {
 		List<Transform> transforms = new List<Transform>();
