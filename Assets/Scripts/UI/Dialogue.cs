@@ -17,20 +17,23 @@ public class Dialogue : MonoBehaviour {
 	public RectTransform tint;
 	public float tintPadding;
 	public float tintShift;
-
+	
+	private bool onScreen;
 	private GameObject displayedCharacter;
+	private OffScreenSlide slide;
 
 	public void Start() {
-		Hide();
+		slide = GetComponent<OffScreenSlide>();
 	}
 
 	public void Hide() {
-		tint.gameObject.SetActive(false);
-		if (displayedCharacter != null)
-			Destroy(displayedCharacter);
+		// tint.gameObject.SetActive(false);
+		onScreen = false;
+		slide.MoveOffScreen();		
 	}
 
 	public void ShowDialogue(Player p, bool onRight) {
+		onScreen = true;
 		if (displayedCharacter != null)
 			Destroy(displayedCharacter);
 
@@ -48,10 +51,12 @@ public class Dialogue : MonoBehaviour {
 		rect.localEulerAngles = rotation;
 		rect.transform.RotateAround(rect.transform.position, rect.transform.up, (onRight ? 1 : -1) * leftRightRotation);
 
-		tint.gameObject.SetActive(true);
+		// tint.gameObject.SetActive(true);
+		slide.MoveOnScreen();
 	}
 
 	public bool IsShowing() {
-		return tint.gameObject.activeSelf;
+		return onScreen;
+		// return tint.gameObject.activeSelf;
 	}
 }

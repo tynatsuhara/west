@@ -125,10 +125,20 @@ public class PlayerUI : MonoBehaviour {
 	}
 
 	public void ShowDialogue(bool onRight) {
+		foreach (OffScreenSlide slide in GetComponentsInChildren<OffScreenSlide>()) {
+			if (slide.gameObject != dialogue.gameObject) {
+				slide.MoveOffScreen();
+			}
+		}
 		dialogue.ShowDialogue(player, onRight);
 	}
 
 	public void HideDialogue() {
+		foreach (OffScreenSlide slide in GetComponentsInChildren<OffScreenSlide>()) {
+			if (slide.gameObject != dialogue.gameObject) {
+				slide.MoveOnScreen();
+			}
+		}
 		dialogue.Hide();
 	}
 

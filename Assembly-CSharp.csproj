@@ -143,6 +143,7 @@
      <Compile Include="Assets\Scripts\UI\Menu.cs" />
      <Compile Include="Assets\Scripts\UI\MenuNode.cs" />
      <Compile Include="Assets\Scripts\UI\OffScreenMarker.cs" />
+     <Compile Include="Assets\Scripts\UI\OffScreenSlide.cs" />
      <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\UI\PlayerUI.cs" />
      <Compile Include="Assets\Scripts\UI\WeaponSelection.cs" />
