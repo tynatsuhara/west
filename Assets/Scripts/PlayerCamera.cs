@@ -23,7 +23,7 @@ public class PlayerCamera : MonoBehaviour {
 
 	private float startTime;
 
-	void Start () {
+	void Start() {
 		rotationGoal = transform.rotation;
 		diff = transform.localPosition;
 		cam.cullingMask |= (1 << LayerMask.NameToLayer("textCam" + (player.id - 1)));
@@ -43,7 +43,7 @@ public class PlayerCamera : MonoBehaviour {
 		UpdatePosition();
 	}
 	
-	void FixedUpdate () {
+	void FixedUpdate() {
 		transform.localPosition = diff;
 		transform.position = Vector3.Lerp(transform.position, AveragePointBetweenTargets(), followSpeed);
 		diff = transform.localPosition;		

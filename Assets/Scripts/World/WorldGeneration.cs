@@ -9,7 +9,7 @@ public class WorldGeneration : MonoBehaviour {
 	public Text loading;
 	public Text display;  // details
 
-	void Start () {
+	void Start() {
 		StartCoroutine(GenerateWorld());
 	}
 	

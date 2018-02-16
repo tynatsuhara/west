@@ -7,6 +7,7 @@ public class NPC : Character, Interactable {
 
 	private NPCData data;
 	private NPCTask task;
+	public CharacterIndicator characterIndicator;
 
 	public bool firstStateIteration {
 		get { return timeOnCurrentTask == 0; }
@@ -43,6 +44,7 @@ public class NPC : Character, Interactable {
 		}
 
 		ExecuteTask();
+		characterIndicator.UpdateQuestsToGive(data.questsToGive.Count > 0);
 	}
 
 	private Teleporter taskTeleporter;

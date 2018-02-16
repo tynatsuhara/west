@@ -18,7 +18,7 @@ public class GunAnimation : MonoBehaviour {
 		playing = true;
 	}
 
-	void Update () {
+	void Update() {
 		if (GameManager.paused || !playing || volume.CurrentFrame == 1)
 			return;
 

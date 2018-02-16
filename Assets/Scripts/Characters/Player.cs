@@ -34,7 +34,7 @@ public class Player : Character {
 		Rotate();
 	}
 
-	void FixedUpdate () {
+	void FixedUpdate() {
 		if (!isAlive || GameManager.paused)
 			return;
 

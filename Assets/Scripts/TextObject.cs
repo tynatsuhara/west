@@ -102,8 +102,6 @@ public class TextObject : MonoBehaviour {
 		if (shouldClear && Time.realtimeSinceStartup >= timeToClear) {
 			shouldClear = false;
 			Clear();
-			currentlyDisplaying = false;
-			wordQueue.Clear();
 		}
 	}
 
@@ -170,6 +168,8 @@ public class TextObject : MonoBehaviour {
 
 	// Remove any displayed text
 	public void Clear() {
+		foreach (Text t in text)
+			t.text = "";
 		currentlyDisplaying = false;
 		wordQueue.Clear();
 	}

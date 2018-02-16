@@ -221,9 +221,9 @@ public class LevelBuilder : MonoBehaviour {
 				.ToDictionary(x => x.character, x => x);
 		foreach (NPC npc in GameManager.spawnedNPCs) {
 			if (markedCharacters.ContainsKey(npc.guid)) {
-				npc.MarkForQuest(markedCharacters[npc.guid]);
+				npc.characterIndicator.MarkForQuest(markedCharacters[npc.guid]);
 			} else {
-				npc.UnMarkForQuest();
+				npc.characterIndicator.UnmarkForQuest();
 			}
 		}
 

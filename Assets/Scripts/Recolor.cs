@@ -6,7 +6,7 @@ public class Recolor : MonoBehaviour {
 
 	private PicaVoxel.Volume volume;
 
-	void Start () {
+	void Start() {
 		volume = GetComponent<PicaVoxel.Volume>();
 	}
 

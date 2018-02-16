@@ -96,6 +96,7 @@
      <Compile Include="Assets\Scripts\CharacterOptionsManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\Characters\CharacterData.cs" />
+     <Compile Include="Assets\Scripts\Characters\CharacterIndicator.cs" />
      <Compile Include="Assets\Scripts\Characters\Civilian.cs" />
      <Compile Include="Assets\Scripts\Characters\Group.cs" />
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />

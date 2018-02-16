@@ -33,12 +33,13 @@ public class PlayerUI : MonoBehaviour {
 	}
 
 	private List<OffScreenMarker> questMarkers = new List<OffScreenMarker>();
+	// points to offscreen markers
 	private void UpdateQuestMarkers() {
 		// combine all into List<Vector3 position>, account for x/y offsets that get fucky between objects
 		List<Vector3> positions = GameManager.spawnedNPCs
 				// get all marked npc positions
-				.Where(x => x.questMarker.activeSelf)
-				.Select(x => x.questMarker.transform.position + x.questMarker.transform.up * .4f)
+				.Where(x => x.characterIndicator.ShowOffScreenMarker())
+				.Select(x => x.characterIndicator.transform.position + x.characterIndicator.transform.up * .4f)
 				// get all non-npc marked destinations
 				.Union(LevelBuilder.instance.markedDestinations.Values.Where(x => x != null).Select(x => x.transform.position + 1.6f * Vector3.up))
 				// get all marked teleporters

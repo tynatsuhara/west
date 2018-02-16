@@ -50,7 +50,7 @@ public class WalkCycle : MonoBehaviour {
 		volume.SetFrame(ridingFrame);
 	}
 	
-	void Update () {
+	void Update() {
 		if (GameManager.paused || volume.CurrentFrame == sittingFrame || volume.CurrentFrame == ridingFrame) {
 			return;
 		}

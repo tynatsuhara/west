@@ -557,18 +557,7 @@ public abstract class Character : LivingThing, Damageable {
 		return FacingObstruction(out hit, distance);
 	}
 
-	public GameObject questMarker;
-	public void MarkForQuest(Task.TaskDestination task) {
-		if (questMarker != null) {
-			questMarker.SetActive(true);
-			questMarker.GetComponent<TextObject>().Say(task.icon, color: Quest.QUEST_MARKER_COLOR, permanent: true);
-		}
-	}
-
-	public void UnMarkForQuest() {
-		if (questMarker != null)
-			questMarker.SetActive(false);
-	}
+	private void UnMarkForQuest() {}
 
 
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////

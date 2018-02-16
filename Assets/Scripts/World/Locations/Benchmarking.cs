@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Benchmarking : MonoBehaviour {
 
-	void Start () {
+	void Start() {
 		Stopwatch timer = Stopwatch.StartNew();	
 
 		for (int i = 0; i < 1; i++) {

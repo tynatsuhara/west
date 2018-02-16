@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour {
 		instance = this;
 	}
 
-	void Start () {
+	void Start() {
 		// needs to happen in start so that instances are set up
 		bool isNewGame = newGame;
 		if (newGame) {
@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	
-	void Update () {
+	void Update() {
 		if (!paused) {
 			SaveGame.currentGame.time.worldTime += Time.deltaTime;
 			SaveGame.currentGame.stats.timePlayed += Time.deltaTime;
