@@ -134,6 +134,9 @@ public class DevConsole : MonoBehaviour {
 			case "town":
 				town();
 				break;
+			case "dialogue":
+				dialogue(args);
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
@@ -284,6 +287,23 @@ public class DevConsole : MonoBehaviour {
 				.ToArray()
 		);
 		textLog.Add(characters);
+	}
+
+	private void dialogue(string[] args) {
+		try {
+			Player p = GameManager.players.First();
+			switch (args[0]) {
+				case "show":
+					bool onRight = args.Length > 1 && args[1].Equals("right");
+					p.playerUI.ShowDialogue(onRight);
+					break;
+				case "hide":
+					p.playerUI.HideDialogue();
+					break;
+			}
+		} catch (System.Exception e) {
+			textLog.Add("error: dialogue expects argument <show|hide>");
+		}
 	}
 
 

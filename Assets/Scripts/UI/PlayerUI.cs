@@ -17,10 +17,9 @@ public class PlayerUI : MonoBehaviour {
 	private Vector3 lastMousePos;
 	public Vector3 mousePos;
 
-	private List<Dictionary<string, int>> displayedInventories;
+	public Dialogue dialogue;
 
 	void Start() {
-		displayedInventories = new List<Dictionary<string, int>>();
 		lastMousePos = mousePos = player.id == 1 
 				? Input.mousePosition
 				: player.playerCamera.cam.WorldToScreenPoint(player.transform.position);
@@ -123,5 +122,13 @@ public class PlayerUI : MonoBehaviour {
 
 	private void UnHitMarker() {
 		cursor.GetComponent<RawImage>().material = GameUI.instance.textWhite;
+	}
+
+	public void ShowDialogue(bool onRight) {
+		dialogue.ShowDialogue(player, onRight);
+	}
+
+	public void HideDialogue() {
+		dialogue.Hide();
 	}
 }
