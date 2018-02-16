@@ -38,12 +38,10 @@ public class CharacterOptionsManager : MonoBehaviour {
 		float dist = 500f;
 		cams = new Camera[] { Camera.main, null, null, null };
 		for (int i = 1; i < players.Length; i++) {
-			players[i] = (Instantiate(players[0].gameObject, 
-								      players[0].transform.position + Vector3.right * dist * i, 
-									  players[0].transform.rotation) as GameObject).GetComponent<Player>();
-			players[i].id = i + 1;
 			cams[i] = (Instantiate(cams[0].gameObject, cams[0].transform.position + Vector3.right * dist * i, 
 								   cams[0].transform.rotation) as GameObject).GetComponent<Camera>();
+			players[i] = cams[i].GetComponentInChildren<Player>();
+			players[i].id = i + 1;
 			cams[i].gameObject.SetActive(false);
 			cams[i].GetComponentInChildren<WeaponSelection>().playerId = players[i].id;
 		}
