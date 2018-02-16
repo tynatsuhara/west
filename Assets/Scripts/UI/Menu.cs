@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Menu : MonoBehaviour {
 
-	public RectTransform tint;
 	public Transform cursor;
 	public bool perPerson = false;
 	public int playerId;
@@ -11,8 +10,6 @@ public class Menu : MonoBehaviour {
 	public MenuNode selectedNode;
 
 	void Update () {
-		if (tint != null)
-			tint.sizeDelta = new Vector2(Screen.width, Screen.height);
 		GetInput();
 		if (selectedNode != null)
 			selectedNode.Select();

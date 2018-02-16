@@ -15,10 +15,6 @@ public class DevConsole : MonoBehaviour {
 	private List<string> textLog = new List<string>();
 	private List<string> cmdLog = new List<string>();
 
-	void Start () {
-		tint.sizeDelta = new Vector2(Screen.width, tint.rect.height);
-	}
-
 	// will only run if the terminal is open
 	int goBackCommand = -1;
 	void Update() {
