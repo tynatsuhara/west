@@ -278,7 +278,7 @@ public class DevConsole : MonoBehaviour {
 	private void town() {
 		System.Guid town = Map.CurrentTown().guid;
 		string characters = string.Join(", ", SaveGame.currentGame.savedCharacters.Values
-				.Where(x => Map.Location(x.location).town == town)
+				.Where(x => Map.Location(x.location).town == town || Map.Location(x.location).guid == town)
 				.Select(x => x.name)
 				.ToArray()
 		);

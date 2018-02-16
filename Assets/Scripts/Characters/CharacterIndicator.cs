@@ -7,7 +7,7 @@ public class CharacterIndicator : MonoBehaviour {
 	private TextObject text;
 
 	private Task.TaskDestination taskMarker;
-	private bool hasQuestsToGive;
+	public bool hasQuestsToGive;
 
 	public void Awake() {
 		text = GetComponent<TextObject>();
@@ -37,10 +37,11 @@ public class CharacterIndicator : MonoBehaviour {
 	public void UpdateDisplay() {
 		if (taskMarker != null) {  // no current task for a quest
 			text.Say(taskMarker.icon, color: Quest.QUEST_MARKER_COLOR, permanent: true);
+			print("Marked for a task: " + taskMarker);			
 		} else if (hasQuestsToGive) {
 			text.Say("!", color: Quest.QUEST_MARKER_COLOR, permanent: true);				
+			print("I have a quest!");
 		} else {
-			print("clear");
 			text.Clear();
 		}
 	}
