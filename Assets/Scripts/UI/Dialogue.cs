@@ -24,11 +24,6 @@ public class Dialogue : MonoBehaviour {
 		Hide();
 	}
 
-	public void Update() {
-		tint.sizeDelta = new Vector2(Screen.width - tintPadding, tint.rect.height);
-		tint.transform.localPosition = new Vector3(tintShift, tint.localPosition.y, tint.localPosition.z);
-	}
-
 	public void Hide() {
 		tint.gameObject.SetActive(false);
 		if (displayedCharacter != null)
@@ -43,7 +38,7 @@ public class Dialogue : MonoBehaviour {
 		Destroy(clone.GetComponent<Character>());
 		Destroy(clone.GetComponent<Rigidbody>());
 		Destroy(clone.GetComponentInChildren<AudioListener>());
-		clone.transform.SetParent(p.playerUI.transform);
+		clone.transform.SetParent(transform);
 
 		// position clone
 		RectTransform rect = clone.AddComponent(typeof(RectTransform)) as RectTransform;
