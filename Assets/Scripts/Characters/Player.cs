@@ -39,7 +39,7 @@ public class Player : Character {
 			return;
 
 		if (playerUI.IsDialogueShowing()) {
-			Move(0, 0);
+			Move(0, 0);  // stand still
 		} else {
 			Walk();
 			Drag();
