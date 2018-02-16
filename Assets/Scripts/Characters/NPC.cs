@@ -27,6 +27,8 @@ public class NPC : Character, Interactable {
 	}
 
 	void Update() {
+		characterIndicator.UpdateQuestsToGive(data.questsToGive.Count > 0 && isAlive);
+
 		if (!isAlive || GameManager.paused)
 			return;
 
@@ -44,7 +46,6 @@ public class NPC : Character, Interactable {
 		}
 
 		ExecuteTask();
-		characterIndicator.UpdateQuestsToGive(data.questsToGive.Count > 0);
 	}
 
 	private Teleporter taskTeleporter;
