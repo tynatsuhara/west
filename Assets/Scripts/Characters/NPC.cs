@@ -109,6 +109,16 @@ public class NPC : Character, Interactable {
 	}
 	
 	public void Interact(Character character) {
+		if (!isAlive)
+			return;
+
+		if (data.questsToGive.Count > 0 && character is Player) {
+			Player p = character as Player;
+			Quest q = data.questsToGive.First();
+			p.playerUI.ShowDialogue(true);
+			SaveGame.currentGame.quests.AddQuest(q);
+		}
+		
 		// if (character.zipties > 0 && (currentState == NPCState.DOWN_UNTIED)) {
 		// 	character.zipties--;
 		// 	TransitionState(NPCState.DOWN_TIED);

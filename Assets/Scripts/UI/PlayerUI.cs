@@ -30,6 +30,11 @@ public class PlayerUI : MonoBehaviour {
 		Cursor.visible = false;
 
 		UpdateQuestMarkers();
+
+		bool esc = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9");
+		if (esc) {
+			HideDialogue();
+		}
 	}
 
 	private List<OffScreenMarker> questMarkers = new List<OffScreenMarker>();

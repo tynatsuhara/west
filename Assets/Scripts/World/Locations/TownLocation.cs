@@ -133,7 +133,7 @@ public class TownLocation : Location {
 			NPCData npc = new NPCFactory().MakeNormie(buildings[0].guid, buildings[1].guid);
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
 			npc.position = new SerializableVector3(RandomUnoccupiedTile());
-			// npc.questsToGive.Add(new KillQuest(npc.guid));
+			npc.questsToGive.Add(new KillQuest(npc.guid));
 			npc.location = guid;
 			spawnedChars.Add(npc.guid);
 		}

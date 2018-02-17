@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.BackQuote)) {
 				GameUI.instance.ShowPauseScreen(false);
 				SetPaused(GameUI.instance.ToggleConsole());
-			} else if (GameUI.instance.consoleShowing) {
+			} else if (GameUI.instance.consoleShowing || players.First().playerUI.IsDialogueShowing()) {
 				// capture console input
 			} else if (paused && esc) {
 				SetPaused(false);
