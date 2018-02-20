@@ -141,9 +141,22 @@ public class DevConsole : MonoBehaviour {
 
 	private void ff(string[] args) {
 		try {
-			GameManager.instance.FastForward(WorldTime.MINUTE * int.Parse(args[0]));
+			float unit = 0;
+			char unitString = args[1].ToLower()[0];
+			switch (unitString) {
+				case 'm':
+					unit = WorldTime.MINUTE;
+					break;
+				case 'h':
+					unit = WorldTime.MINUTE;
+					break;
+				case 'd':
+					unit = WorldTime.DAY;
+					break;
+			}
+			GameManager.instance.FastForward(unit * int.Parse(args[0]));
 		} catch (System.Exception e) {
-			textLog.Add("error: ff expects 1 integer argument");
+			textLog.Add("error: ff expects <integer> <minutes|hours|days>");
 		}
 	}
 
