@@ -37,10 +37,8 @@ public class CharacterIndicator : MonoBehaviour {
 	public void UpdateDisplay() {
 		if (taskMarker != null) {  // no current task for a quest
 			text.Say(taskMarker.icon, color: Quest.QUEST_MARKER_COLOR, permanent: true);
-			print("Marked for a task: " + taskMarker);			
 		} else if (hasQuestsToGive) {
-			text.Say("!", color: Quest.QUEST_MARKER_COLOR, permanent: true);				
-			print("I have a quest!");
+			text.Say("!", color: "yellow", permanent: true);				
 		} else {
 			text.Clear();
 		}
