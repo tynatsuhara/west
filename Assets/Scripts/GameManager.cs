@@ -45,6 +45,9 @@ public class GameManager : MonoBehaviour {
 		bool isNewGame = newGame;
 		if (newGame) {
 			newGame = false;
+			float timeOfDay = Random.Range(8, 12) * WorldTime.HOUR +  // between 8AM-12PM
+							  Random.Range(0, 60) * WorldTime.MINUTE;
+			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeOfDay);
 		} else {
 			SaveGame.Load();
 		}
