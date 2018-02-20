@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine.AI;
 
 public class NPC : Character, Interactable {
 
@@ -18,12 +19,15 @@ public class NPC : Character, Interactable {
 	protected UnityEngine.AI.NavMeshAgent agent;
 	protected List<Character> enemies = new List<Character>();
 
+	public void Awake() {
+		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+	}
+
 	public override void Start() {
 		StartCoroutine(UpdateEvidenceInSight(.5f));
 		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
 
 		base.Start();
-		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 	}
 
 	void Update() {
@@ -209,6 +213,36 @@ public class NPC : Character, Interactable {
 	}
 
 	public override void Alert(Reaction importance, Vector3 position) {}
+
+	/*
+	 * When a character is spawned, they're put at the location of the teleporter.
+	 * We should fast forward their position to wherever they would be if we simulated position.
+	 */
+	public void FastForwardPosition() {
+		Vector3 pos = data.GetTask().GetLocation().position;
+		NavMeshPath path = new NavMeshPath();
+		agent.CalculatePath(pos, path);
+		float pathLen = 0;
+		for (int i = 1; i < path.corners.Length; i++) {
+			pathLen += (path.corners[i] - path.corners[i-1]).magnitude;
+		}
+
+		float distTraveled = data.timeSimulatedInLocation * CalculateSpeed();
+		if (distTraveled > pathLen) {
+			transform.position = pos;
+			return;
+		}
+
+		float dist = 0;			
+		for (int i = 1; i < path.corners.Length; i++) {
+			float lineLen = (path.corners[i] - path.corners[i-1]).magnitude;
+			if (lineLen > distTraveled - dist) {
+				float percentDownLine = Mathf.Clamp01((distTraveled - dist) / lineLen);
+				transform.position = path.corners[i-1] + (path.corners[i] - path.corners[i-1]) * percentDownLine;
+				return;
+			}
+		}
+	}
 
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 

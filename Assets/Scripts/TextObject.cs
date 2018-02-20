@@ -168,7 +168,6 @@ public class TextObject : MonoBehaviour {
 
 	// Remove any displayed text
 	public void Clear() {
-		print("clear()");
 		foreach (Text t in text)
 			t.text = "";
 		currentlyDisplaying = false;

@@ -54,7 +54,7 @@ public class NPCData : CharacterData {
         Task.TaskDestination destination = task.GetLocation();
 
         try {
-            if (GoToLocation(startTime, endTime, task.GetLocation())) {
+            if (GoToLocation(startTime, endTime, destination)) {
                 if (!background || destination.location != Map.CurrentLocation().guid) {
                     task.Simulate(this);
                 }

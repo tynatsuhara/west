@@ -130,7 +130,9 @@ public class TownLocation : Location {
 		int pplAmount = Random.Range(1, 5);
 		List<System.Guid> spawnedChars = new List<System.Guid>();
 		for (int i = 0; i < pplAmount; i++) {
-			NPCData npc = new NPCFactory().MakeNormie(buildings[0].guid, buildings[1].guid);
+			Location work = Map.Location(buildings[0].guid);
+			Location home = Map.Location(buildings[1].guid);
+			NPCData npc = new NPCFactory().MakeNormie(work, home);
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
 			npc.position = new SerializableVector3(RandomUnoccupiedTile());
 			npc.questsToGive.Add(new KillQuest(npc.guid));

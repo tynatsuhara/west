@@ -98,17 +98,19 @@ public class LevelBuilder : MonoBehaviour {
 
 	private void SpawnNPCs() {
 		foreach (System.Guid id in loadedLocation.characters) {
-			SpawnNPC(id);
+			NPC npc = SpawnNPC(id);
+			npc.FastForwardPosition();
 		}
 	}
 
-	public void SpawnNPC(System.Guid id) {
+	public NPC SpawnNPC(System.Guid id) {
 		NPCData data = SaveGame.currentGame.savedCharacters[id];
 		if (data.departed || GameObject.FindObjectsOfType<NPC>().Where(x => x.guid == data.guid).Count() > 0) {
-			return;
+			return null;
 		}
 		NPC npc = Instantiate(npcPrefab).GetComponent<NPC>();
 		npc.LoadSaveData(data);
+		return npc;
 	}
 
 	private void SpawnHorses(bool spawnRiddenByPlayers) {
@@ -152,15 +154,15 @@ public class LevelBuilder : MonoBehaviour {
 	private void SpawnFloor() {
 		GameObject floorHolder = new GameObject();
 		floorHolder.name = "Ground";
-		for (int i = 0; i < loadedLocation.width; i++) {
-			for (int j = 0; j < loadedLocation.height; j++) {
-				GameObject tilePrefab = loadedLocation.PrefabAt(i, j);
+		for (int x = 0; x < loadedLocation.width; x++) {
+			for (int y = 0; y < loadedLocation.height; y++) {
+				GameObject tilePrefab = loadedLocation.PrefabAt(x, y);
 				if (tilePrefab == null)
 					continue;
-				GameObject tile = Instantiate(tilePrefab, new Vector3(i * TILE_SIZE, -.2f, j * TILE_SIZE), 
+				GameObject tile = Instantiate(tilePrefab, new Vector3(x * TILE_SIZE, -.2f, y * TILE_SIZE), 
 											  Quaternion.identity) as GameObject;
 				tile.transform.parent = floorHolder.transform;
-				floorTiles[i, j] = tile.GetComponent<PicaVoxel.Volume>();
+				floorTiles[x, y] = tile.GetComponent<PicaVoxel.Volume>();
 			}
 		}
 	}
