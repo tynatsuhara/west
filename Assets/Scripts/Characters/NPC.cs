@@ -119,6 +119,7 @@ public class NPC : Character, Interactable {
 		if (data.questsToGive.Count > 0 && character is Player) {
 			Player p = character as Player;
 			Quest q = data.questsToGive.First();
+			data.questsToGive.RemoveAt(0);
 			p.playerUI.ShowDialogue(true);
 			SaveGame.currentGame.quests.AddQuest(q);
 		}
