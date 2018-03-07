@@ -148,7 +148,7 @@ public class DevConsole : MonoBehaviour {
 					unit = WorldTime.MINUTE;
 					break;
 				case 'h':
-					unit = WorldTime.MINUTE;
+					unit = WorldTime.HOUR;
 					break;
 				case 'd':
 					unit = WorldTime.DAY;
