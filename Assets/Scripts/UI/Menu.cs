@@ -9,7 +9,7 @@ public class Menu : MonoBehaviour {
 
 	public MenuNode selectedNode;
 
-	public virtual void Update() {
+	public void Update() {
 		GetInput();
 		if (selectedNode != null)
 			selectedNode.Select();

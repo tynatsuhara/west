@@ -17,13 +17,12 @@ public class MainMenu : Menu {
 	private Vector2 baseOffset;
 
 	public MenuNode[] saveSlots;
-	private Dictionary<MenuNode, FileInfo> saveFiles = new Dictionary<MenuNode, FileInfo>();	
+	private Dictionary<MenuNode, FileInfo> saveFiles = new Dictionary<MenuNode, FileInfo>();
+	private MenuNode backFromSaves;
 
 	private static readonly float TEXT_SPACING = 40f;
 
-	public override void Update() {
-		base.Update();
-
+	void FixedUpdate() {
 		Vector2 selectedOffset = nodeOffsets[selectedNode.GetComponent<RectTransform>()];
 		foreach (RectTransform rt in nodeOffsets.Keys) {
 			Vector2 pos = nodeOffsets[rt] - selectedOffset + baseOffset;
@@ -36,6 +35,8 @@ public class MainMenu : Menu {
 	}
 
 	void Awake() {
+		Time.timeScale = 1;  // gets stuck on pause when exiting game scene
+
 		List<FileInfo> saves = SaveGame.GetSaves();
 		if (saves.Count == 0) {
 			quitGame.down = newGame;
@@ -59,6 +60,7 @@ public class MainMenu : Menu {
 
 		saveSlots = new MenuNode[saves.Count];
 
+		// spawn save slots
 		for (int i = 0; i < saves.Count; i++) {
 			string name = saves[i].Name.Replace("save", "").Replace(".wst", "");
 			string time = saves[i].LastAccessTime.ToShortDateString();
@@ -72,10 +74,20 @@ public class MainMenu : Menu {
 			saveFiles.Add(saveSlots[i], saves[i]);
 		}
 
+		// link nodes
 		for (int i = 1; i < saves.Count; i++) {
 			saveSlots[i-1].down = saveSlots[i];
 		}
-		saveSlots.Last().down = saveSlots.First();		
+
+		// spawn back button
+		backFromSaves = Instantiate(prefab);
+		backFromSaves.transform.SetParent(transform);
+		RectTransform brt = backFromSaves.GetComponent<RectTransform>();
+		brt.anchoredPosition = prefabRect.anchoredPosition;
+		brt.Translate(transform.up * TEXT_SPACING * -saves.Count);
+		brt.GetComponent<Text>().text = "BACK";
+		saveSlots.Last().down = backFromSaves;
+		backFromSaves.down = saveSlots.First();
 
 		DestroyImmediate(prefab.gameObject);
 	}
@@ -90,6 +102,8 @@ public class MainMenu : Menu {
 		} else if (saveSlots.Contains(node)) {
 			SaveGame.Load(saveFiles[node]);
 			SceneManager.LoadScene("game");
+		} else if (node == backFromSaves) {
+			NewSelect(loadGame);
 		}
 	}
 
