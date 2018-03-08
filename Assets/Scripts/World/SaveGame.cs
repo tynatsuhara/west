@@ -20,10 +20,12 @@ public class SaveGame {
 	public Statistics stats;
 	public Crime crime;
 	public EventQueue events;
+	public int saveId;
 
 	// Establishes a new game with data for the player(s)
 	public static void NewGame() {
 		currentGame = new SaveGame();
+		currentGame.saveId = NextSaveId();
 		currentGame.horses = new Dictionary<System.Guid, Horse.HorseSaveData>();
 		currentGame.savedCharacters = new Dictionary<System.Guid, NPCData>();
 		currentGame.savedPlayers = new Player.PlayerSaveData[4];
@@ -56,19 +58,19 @@ public class SaveGame {
 			if (!Directory.Exists(DirPath()))
 				Directory.CreateDirectory(DirPath());
 			BinaryFormatter formatter = new BinaryFormatter();
-			FileStream saveFile = File.Create(SavePath());
+			FileStream saveFile = File.Create(SavePath(SaveGame.currentGame.saveId));
 			formatter.Serialize(saveFile, currentGame);
 			saveFile.Close();
 		}
 
-		Debug.Log("game saved at " + SavePath());		
+		Debug.Log("game saved at " + SavePath(SaveGame.currentGame.saveId));		
 	}
 
-	public static void Load() {
+	public static void Load(FileInfo saveFile) {
 		BinaryFormatter formatter = new BinaryFormatter();
-		FileStream saveFile = File.Open(SavePath(), FileMode.Open);
-		currentGame = (SaveGame)formatter.Deserialize(saveFile);
-		saveFile.Close();
+		FileStream stream = saveFile.Open(FileMode.Open);
+		currentGame = (SaveGame)formatter.Deserialize(stream);
+		stream.Close();
 
 		// Debug.Log("game loaded from " + SavePath());	
 	}
@@ -77,16 +79,24 @@ public class SaveGame {
 		return Application.persistentDataPath + "/saves";
 	}
 
-	private static string SavePath() {
-		return Application.persistentDataPath + "/saves/save0.wst";
+	private static string SavePath(int id) {
+		return Application.persistentDataPath + "/saves/save" + id + ".wst";
 	}
 
-	public static bool SaveGameExists() {
-		return File.Exists(SavePath());
+	public static List<FileInfo> GetSaves() {
+		DirectoryInfo dir = new DirectoryInfo(DirPath());
+		return dir.GetFiles("*.wst").ToList();
 	}
 
-	public static void DeleteSave() {
-		if (SaveGameExists())
-			File.Delete(SavePath());
+	public static void DeleteSave(int id) {
+		File.Delete(SavePath(id));
+	}
+
+	public static int NextSaveId() {
+		for (int i = 0; ; i++) {
+			if (!File.Exists(SavePath(i))) {
+				return i;
+			}
+		}
 	}
 }

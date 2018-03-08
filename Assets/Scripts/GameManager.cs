@@ -48,8 +48,6 @@ public class GameManager : MonoBehaviour {
 			float timeOfDay = Random.Range(8, 12) * WorldTime.HOUR +  // between 8AM-12PM
 							  Random.Range(0, 60) * WorldTime.MINUTE;
 			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeOfDay);
-		} else {
-			SaveGame.Load();
 		}
 
 		LoadLocation(SaveGame.currentGame.map.currentLocation, firstLoadSinceStartup:true);
@@ -76,7 +74,7 @@ public class GameManager : MonoBehaviour {
 		if (players.All(x => !x.isAlive)) {
 			if (!SaveGame.currentGame.gameOver) {
 				SaveGame.currentGame.gameOver = true;
-				SaveGame.DeleteSave();
+				SaveGame.DeleteSave(SaveGame.currentGame.saveId);
 				GameUI.instance.ShowEndScreen();
 				gameEndTime = Time.time;
 			} else if (Input.anyKeyDown && Time.time - gameEndTime >= 2.5f) {
