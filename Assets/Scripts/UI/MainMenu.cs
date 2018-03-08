@@ -63,14 +63,14 @@ public class MainMenu : Menu {
 		// spawn save slots
 		for (int i = 0; i < saves.Count; i++) {
 			string name = saves[i].Name.Replace("save", "").Replace(".wst", "");
-			string time = saves[i].LastAccessTime.ToShortDateString();
+			string time = saves[i].LastAccessTime.ToShortDateString() + " " + saves[i].LastAccessTime.ToLocalTime();
 
 			saveSlots[i] = Instantiate(prefab);
 			saveSlots[i].transform.SetParent(transform);
 			RectTransform rt = saveSlots[i].GetComponent<RectTransform>();
 			rt.anchoredPosition = prefabRect.anchoredPosition;
 			rt.Translate(transform.up * TEXT_SPACING * -i);
-			saveSlots[i].GetComponent<Text>().text = "SAVE #" + name + " (" + time + ")";
+			saveSlots[i].GetComponent<Text>().text = "SAVE #" + name + "  (" + time + ")";
 			saveFiles.Add(saveSlots[i], saves[i]);
 		}
 
