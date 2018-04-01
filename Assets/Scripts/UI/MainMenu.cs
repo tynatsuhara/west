@@ -17,6 +17,7 @@ public class MainMenu : Menu {
 	private Vector2 baseOffset;
 
 	public MenuNode[] saveSlots;
+	public OffScreenSlide xForDelete;
 	private Dictionary<MenuNode, FileInfo> saveFiles = new Dictionary<MenuNode, FileInfo>();
 	private MenuNode backFromSaves;
 
@@ -50,10 +51,12 @@ public class MainMenu : Menu {
 
 		baseOffset = selectedNode.GetComponent<RectTransform>().anchoredPosition;
 		nodeOffsets = GetComponentsInChildren<RectTransform>()
+				.Where(x => x.gameObject == title || x.GetComponent<MenuNode>() != null)
 				.ToDictionary(x => x, x => x.anchoredPosition - baseOffset);
 	}
 
 	private void SpawnSaveSlots(List<FileInfo> saves) {
+		saves = saves.OrderBy(x => x.LastAccessTime).Reverse().ToList();
 		MenuNode prefab = saveSlots[0];
 		RectTransform prefabRect = prefab.GetComponent<RectTransform>();
 		prefabRect.anchoredPosition = new Vector2(Screen.width * 2, prefabRect.anchoredPosition.y);
@@ -63,7 +66,7 @@ public class MainMenu : Menu {
 		// spawn save slots
 		for (int i = 0; i < saves.Count; i++) {
 			string name = saves[i].Name.Replace("save", "").Replace(".wst", "");
-			string time = saves[i].LastAccessTime.ToShortDateString() + " " + saves[i].LastAccessTime.ToLocalTime();
+			string time = saves[i].LastAccessTime.ToLocalTime().ToString();
 
 			saveSlots[i] = Instantiate(prefab);
 			saveSlots[i].transform.SetParent(transform);
@@ -96,6 +99,7 @@ public class MainMenu : Menu {
 		if (node == newGame) {
 			SceneManager.LoadScene("world creation");
 		} else if (node == loadGame) {
+			xForDelete.MoveOnScreen();
 			NewSelect(saveSlots[0]);
 		} else if (node == quitGame) {
 			Application.Quit();			
@@ -103,12 +107,13 @@ public class MainMenu : Menu {
 			SaveGame.Load(saveFiles[node]);
 			SceneManager.LoadScene("game");
 		} else if (node == backFromSaves) {
-			NewSelect(loadGame);
+			Back(backFromSaves);
 		}
 	}
 
 	public override void Back(MenuNode node) {
-		if (saveSlots.Contains(node)) {
+		if (saveSlots.Contains(node) || node == backFromSaves) {
+			xForDelete.MoveOffScreen();
 			NewSelect(loadGame);
 			return;
 		}

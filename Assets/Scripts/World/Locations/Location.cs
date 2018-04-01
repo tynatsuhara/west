@@ -72,17 +72,17 @@ public abstract class Location {
 	public Vector3 TileVectorPosition(int val, bool center = true) {
 		float xPos = X(val) * LevelBuilder.TILE_SIZE;
 		float zPos = Y(val) * LevelBuilder.TILE_SIZE;
-		return new Vector3(xPos, 0, zPos) + (center ? new Vector3(LevelBuilder.TILE_SIZE/2f, 0, LevelBuilder.TILE_SIZE/2f) : Vector3.zero);
+		return new Vector3(xPos, 0, zPos) + (center ? LevelBuilder.TILE_SIZE : 0) * new Vector3(.5f, 0, .5f);
 	}
 
+	// TODO: get the fuck rid of this
 	protected int RandomUnoccupiedTileInt() {
 		List<int> all = Enumerable.Range(0, width * height).Where(val => !TileOccupied(X(val), Y(val))).ToList();
 		return all[Random.Range(0, all.Count)];
 	}
 
 	public Vector3 RandomUnoccupiedTile() {
-		List<int> all = Enumerable.Range(0, width * height).Where(val => !TileOccupied(X(val), Y(val))).ToList();
-		return TileVectorPosition(all[Random.Range(0, all.Count)]);
+		return TileVectorPosition(RandomUnoccupiedTileInt());
 	}
 
 	public int Val(int x, int y) {

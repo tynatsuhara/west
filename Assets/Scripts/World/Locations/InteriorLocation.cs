@@ -37,7 +37,11 @@ public class InteriorLocation : Location {
     }
 
 	public override bool TileOccupied(int x, int y) {
-        return grid.Get(x, y) != null;
+        Room r = grid.Get(x, y);
+        if (r == null) {
+            return true;
+        }
+        return r.SquareAt(x, y).occupied;
     }
 
     public Room.Square SquareAt(int x, int y) {

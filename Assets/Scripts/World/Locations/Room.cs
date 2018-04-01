@@ -116,6 +116,7 @@ public class Room {
 
     [System.Serializable]
     public class Square {
+        public bool occupied;
         public char ch;
         public bool wallRight, wallBottom, wallLeft, wallTop;
 

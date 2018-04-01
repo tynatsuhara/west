@@ -47,7 +47,11 @@ public class NPCData : CharacterData {
             return null;
         }
         int maxPriority = tasks.Max(x => x.priority);
-        return tasks.Where(x => x.priority == maxPriority).First();
+        NPCTask task = tasks.Where(x => x.priority == maxPriority).First();
+        if (showSimDebug) {
+            Debug.Log(task.GetLocation().position);
+        }
+        return task;
     }
 
     private void SimulateTask(NPCTask task, float startTime, float endTime, bool background) {

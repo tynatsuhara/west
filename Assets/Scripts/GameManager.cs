@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour {
 			newGame = false;
 			float timeOfDay = Random.Range(8, 12) * WorldTime.HOUR +  // between 8AM-12PM
 							  Random.Range(0, 60) * WorldTime.MINUTE;
-			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeOfDay);
+			SimulateWorld(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeOfDay);
 		}
 
 		LoadLocation(SaveGame.currentGame.map.currentLocation, firstLoadSinceStartup:true);
@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour {
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());
-		StartCoroutine(SimulateBackground());
+		StartCoroutine(SimulateWorldDuringPlay());
 
 		if (isNewGame) {
 			StartCoroutine(SaveAfterNewGame());
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour {
 	private float gameEndTime;
 
 	public readonly float SIMULATION_TICK = WorldTime.MINUTE;
-	private IEnumerator SimulateBackground() {
+	private IEnumerator SimulateWorldDuringPlay() {
 		float lastSimulationTime = SaveGame.currentGame.time.worldTime;
 		while (true) {
 			float timePerChar = SIMULATION_TICK / SaveGame.currentGame.savedCharacters.Count;
@@ -123,11 +123,14 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	private void Simulate(float startTime, float endTime) {
+	// simulates in time increments of SIMULATION_TICK
+	private void SimulateWorld(float startTime, float endTime) {
 		for (float t = startTime; t < endTime - SIMULATION_TICK; t += SIMULATION_TICK) {
 			foreach (NPCData npc in SaveGame.currentGame.savedCharacters.Values) {
 				npc.Simulate(t, t + SIMULATION_TICK, false);
 			}
+			SaveGame.currentGame.events.Tick();  // to help with traveling & other events
+			SaveGame.currentGame.time.worldTime += SIMULATION_TICK;
 		}
 	}
 
@@ -164,8 +167,7 @@ public class GameManager : MonoBehaviour {
 		}
 		SaveGame.currentGame.map.currentLocation = guid;
 		if (timeChange > 0) {
-			Simulate(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeChange);
-			SaveGame.currentGame.time.worldTime += timeChange;
+			SimulateWorld(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeChange);
 		}
 		SetPaused(false);
 		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);
