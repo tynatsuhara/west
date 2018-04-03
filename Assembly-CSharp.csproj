@@ -183,6 +183,7 @@
      <Compile Include="Assets\Scripts\World\SaveGame.cs" />
      <Compile Include="Assets\Scripts\World\Tiles\Cactus.cs" />
      <Compile Include="Assets\Scripts\World\Tiles\FloorTile.cs" />
+     <Compile Include="Assets\Scripts\World\Tiles\GroundTile.cs" />
      <Compile Include="Assets\Scripts\World\Tiles\Headstone.cs" />
      <Compile Include="Assets\Scripts\World\Tiles\TileElement.cs" />
      <Compile Include="Assets\Scripts\World\VisualMap.cs" />

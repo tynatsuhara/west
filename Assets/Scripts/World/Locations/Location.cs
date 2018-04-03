@@ -58,14 +58,6 @@ public abstract class Location {
 		return stack == null || stack.Count == 0 || stack.Any(el => el.occupied);
 	}
 
-	protected List<int> Subset(List<int> lst, int size) {
-		List<int> newList = lst.ToList();
-		while (newList.Count > size) {
-			newList.RemoveAt(Random.Range(0, newList.Count));
-		}
-		return newList;
-	}
-
 	public Vector3 TileVectorPosition(int x, int y, bool center = true) {
 		return new Vector3(x * LevelBuilder.TILE_SIZE, 0, y * LevelBuilder.TILE_SIZE)
 				+ (center ? LevelBuilder.TILE_SIZE : 0) * new Vector3(.5f, 0, .5f);

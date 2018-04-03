@@ -9,10 +9,6 @@ using World;
 [System.Serializable]
 public class TownLocation : Location {
 
-	// Things contained locally
-	private BitArray trails;
-	private BitArray buildingSpaces;
-
 	public override string greeting {
 		get { 
 			int bounty = SaveGame.currentGame.savedPlayers
@@ -99,9 +95,10 @@ public class TownLocation : Location {
 		height = Mathf.Max(p, height);
 
 		// initialize the tile element grid
+		// guarantee that the first element in each stack is the ground tile
 		tiles = new Grid<List<TileElement>>(width, height, () => {
 			List<TileElement> lst = new List<TileElement>();
-			lst.Add(new FloorTile('?'));
+			lst.Add(new GroundTile());
 			return lst;
 		});
 
@@ -132,10 +129,8 @@ public class TownLocation : Location {
 			teleporters.Add(new Teleporter.TeleporterData(wLinks[i].guid, new Vector3(0, 1, wPlaces[i] + LevelBuilder.TILE_SIZE/4f) * LevelBuilder.TILE_SIZE));
 		}
 
-		trails = new BitArray(width * height);
-		buildingSpaces = new BitArray(width * height);
-
 		PlaceBuildingsAndRoads(exits);
+		// TODO: make trails "occupied" after placing buildings to prevent cacti etc on the trails
 
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
@@ -176,7 +171,7 @@ public class TownLocation : Location {
 		return newList;
 	}
 
-	public List<int> BestPathFrom(int start, int end) {
+	private List<int> BestPathFrom(int start, int end) {
 		Dictionary<int, float> dist = new Dictionary<int, float>();
 		for (int i = 0; i < width * height; i++)
 			dist.Add(i, float.MaxValue);
@@ -204,11 +199,12 @@ public class TownLocation : Location {
 				float alt = dist[u];
 				int valX = X(v);
 				int valY = Y(v);
-				if (buildingSpaces.Get(v)) {
+				GroundTile ground = GroundTileAt(v);
+				if (ground.occupied) {
 					continue;
 				} else if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1 || AdjacentToBuilding(v)) {  // don't travel right on edges
 					alt += 2;
-				} else if (trails.Get(v)) {
+				} else if (ground.type == GroundTile.GroundType.TRAIL) {
 					alt += .1f;
 				} else {
 					alt += Random.Range(.5f, 1f);
@@ -236,15 +232,13 @@ public class TownLocation : Location {
 	private bool AdjacentToBuilding(int tile) {
 		List<int> ns = TileNeighbors(tile);
 		foreach (int n in ns) {
-			if (buildingSpaces.Get(n))
+			if (GroundTileAt(tile).occupied)
 				return true;
 		}
 		return false;
 	}
 
 	// ================= BUILDING STUFF ================= //
-
-	// TODO: Buildings and trails should just be TileElements
 	
 	private void PlaceBuildingsAndRoads(List<int> exits) {		
 		// Place roads from all teleporters to first building
@@ -255,25 +249,30 @@ public class TownLocation : Location {
 			int destination = TryPlaceBuilding(building);
 			if (destination == -1)
 				continue;
-			Debug.Log("building placed");
+
 			parent.locations[interior.guid] = interior;
 			connections.Add(interior.guid);
 			interior.PlaceAt(guid);
 
 			// TODO: different buildings can have multiple entrances 
 			// that can attach or not attach to roads 
-			buildingSpaces.Set(destination, false);
+			GroundTile gt = GroundTileAt(destination);
+			gt.occupied = false;
 			foreach (int exit in exits) {
 				foreach (int path in BestPathFrom(exit, destination)) {
-					trails.Set(path, true);
+					GroundTileAt(path).type = GroundTile.GroundType.TRAIL;
 				}
 				// TODO: make roads form loops
 			}
-			buildingSpaces.Set(destination, true);
+			gt.occupied = true;
 
 			teleporters.AddRange(building.doors);
 			interior = GetInterior();
 		}
+	}
+
+	private GroundTile GroundTileAt(int val) {
+		return tiles.Get(X(val), Y(val)).First() as GroundTile;
 	}
 
 	// todo: all this should be moved to BuildingFactory or something
@@ -311,7 +310,7 @@ public class TownLocation : Location {
 			int y = Y(place);
 			for (int xi = x; xi < x + b.width; xi++) {
 				for (int yi = y; yi < y + b.height; yi++) {
-					buildingSpaces.Set(Val(xi, yi), true);
+					GroundTileAt(Val(xi, yi)).occupied = true;
 				}
 			}
 

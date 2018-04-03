@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Represents an interior floor tile
+
 namespace World {
     [System.Serializable]
     public class FloorTile : TileElement {
