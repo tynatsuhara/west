@@ -26,6 +26,9 @@ public class MainMenu : Menu {
 	void FixedUpdate() {
 		Vector2 selectedOffset = nodeOffsets[selectedNode.GetComponent<RectTransform>()];
 		foreach (RectTransform rt in nodeOffsets.Keys) {
+			if (rt == null)
+				continue;
+
 			Vector2 pos = nodeOffsets[rt] - selectedOffset + baseOffset;
 			rt.anchoredPosition = Vector2.Lerp(rt.anchoredPosition, pos, .2f);
 

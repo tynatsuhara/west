@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using World;
+
+// TODO: Move stuff into TownBuilder, make this just store data
 
 [System.Serializable]
 public class TownLocation : Location {
@@ -20,7 +23,11 @@ public class TownLocation : Location {
 		}
 	}
 
-	public TownLocation(Map parent, float x, float y) : base(parent, true) {
+	public TownLocation(
+		Map parent,
+		float x, 
+		float y
+	) : base(parent, true) {
 		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};
 		icon = icons[Random.Range(0, icons.Length)];
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
@@ -48,6 +55,10 @@ public class TownLocation : Location {
 
 	// Build the street layout for a town
 	public void Generate() {
+		// default minimum heights
+		int width = 20;
+		int height = 20;
+
 		connections = connections.Where(x => x != System.Guid.Empty).ToList();
 		List<Location> links = connections.Select(x => parent.locations[x]).ToList();
 		
@@ -87,6 +98,13 @@ public class TownLocation : Location {
 		}
 		height = Mathf.Max(p, height);
 
+		// initialize the tile element grid
+		tiles = new Grid<List<TileElement>>(width, height, () => {
+			List<TileElement> lst = new List<TileElement>();
+			lst.Add(new FloorTile('?'));
+			return lst;
+		});
+
 		// Place teleporters
 		List<int> exits = new List<int>();
 
@@ -122,8 +140,8 @@ public class TownLocation : Location {
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
 		for (int i = 0; i < cactiAmount; i++) {
-			int tile = RandomUnoccupiedTileInt();
-			cacti[tile] = new Cactus.CactusSaveData(tile);
+			Vector2 xy = RandomUnoccupiedXY();
+			tiles.Get((int)xy.x, (int)xy.y, () => new List<TileElement>()).Add(new Cactus());
 		}
 
 		// temp NPC spawning
@@ -156,22 +174,6 @@ public class TownLocation : Location {
 			newList.RemoveAt(Random.Range(0, newList.Count));
 		}
 		return newList;
-	}
-
-	public override GameObject PrefabAt(int x, int y) {
-		int val = Val(x, y);
-		if (trails.Get(val)) {
-			return LevelBuilder.instance.trailPrefab;
-		} else {
-			return LevelBuilder.instance.floorPrefab;
-		}
-	}
-
-	public override bool TileOccupied(int x, int y) {
-		if (x < 0 || x >= width || y < 0 || y >= height)
-			return true;
-		int val = Val(x, y);
-		return buildingSpaces.Get(val) || trails.Get(val) || cacti.ContainsKey(val);  // todo: this is fucking stupid
 	}
 
 	public List<int> BestPathFrom(int start, int end) {
@@ -242,6 +244,8 @@ public class TownLocation : Location {
 
 	// ================= BUILDING STUFF ================= //
 
+	// TODO: Buildings and trails should just be TileElements
+	
 	private void PlaceBuildingsAndRoads(List<int> exits) {		
 		// Place roads from all teleporters to first building
 		int buildingsToAttempt = Random.Range(5, 10);
@@ -251,6 +255,7 @@ public class TownLocation : Location {
 			int destination = TryPlaceBuilding(building);
 			if (destination == -1)
 				continue;
+			Debug.Log("building placed");
 			parent.locations[interior.guid] = interior;
 			connections.Add(interior.guid);
 			interior.PlaceAt(guid);
@@ -320,13 +325,16 @@ public class TownLocation : Location {
 	// returns Val(x, y) where (x, y) is the bottom left corner
 	// if a spot cannot easily be found, returns -1
 	private int RandomBuildingPos(Building b) {
-		int padding = 3;  // amount of spaces from edge to building
-		for (int i = 0; i < 20; i++) {
-			int paddedW = b.width + 2;
-			int paddedH = b.height + 2;
-			int x = Random.Range(padding, width - b.width + 1 - padding);
-			int y = Random.Range(padding, height - b.height + 1 - padding);
-			bool obstructed = false;
+		int edgePadding = 3;  // amount of spaces from edge to building
+		int buildingPadding = 2;
+		int paddedW = b.width + buildingPadding;
+		int paddedH = b.height + buildingPadding;
+		int attempts = 20;
+
+		for (int i = 0; i < attempts; i++) {
+			int x = Random.Range(edgePadding, width - b.width + 1 - edgePadding);
+			int y = Random.Range(edgePadding, height - b.height + 1 - edgePadding);
+			bool obstructed = false;  // TODO: better heuristic (check corners first)
 			for (int xi = x; xi < x + paddedW && !obstructed; xi++) {
 				for (int yi = y; yi < y + paddedH && !obstructed; yi++) {
 					obstructed = TileOccupied(xi, yi);
@@ -336,6 +344,7 @@ public class TownLocation : Location {
 				return Val(x+1, y+1);
 			}
 		}
+		
 		return -1;
 	}
 }

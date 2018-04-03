@@ -26,7 +26,7 @@ public class LevelBuilder : MonoBehaviour {
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
 	public List<Teleporter> teleporters;
-	private PicaVoxel.Volume[,] floorTiles;
+	public PicaVoxel.Volume[,] floorTiles;
 	private Location loadedLocation;
 
 	public static int TILE_SIZE = 2;  // in-game units
@@ -55,14 +55,16 @@ public class LevelBuilder : MonoBehaviour {
 		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
 		floorTiles = new PicaVoxel.Volume[l.width, l.height];
 		teleporters = new List<Teleporter>();
+
 		SpawnBuildings();
-		SpawnInterior();
+		SpawnTileElements();
+		SpawnWallsHackily();
 		SpawnNPCs();
 		SpawnHorses(firstLoadSinceStartup);
 		SpawnAtmospherics();
+		GroupFloor();
 		SpawnTeleporters();
 		ShowGreeting();
-		SpawnFloor();
 		PositionWalls();
 
 		loadedLocation.discovered = true;
@@ -83,6 +85,7 @@ public class LevelBuilder : MonoBehaviour {
 		}
 	}
 
+	// floor tiles are stored in cache for fast lookup
 	public PicaVoxel.Volume FloorTileAt(Vector3 pos) {
 		int x = (int)(pos.x / TILE_SIZE);
 		int z = (int)(pos.z /  TILE_SIZE);
@@ -129,58 +132,42 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnAtmospherics() {
-		if (!(loadedLocation is TownLocation))
-			return;
-
-		// cacti
-		foreach (int tile in loadedLocation.cacti.Keys) {
-			GameObject c = Instantiate(cactusPrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
-			c.GetComponent<Cactus>().LoadSaveData(loadedLocation.cacti[tile]);
-		}
-
 		// tumbly weedos
 		int tumbleweeds = Random.Range(0, 2);
 		for (int i = 0; i < tumbleweeds; i++) {
 			Instantiate(tumbleweedPrefab, loadedLocation.RandomUnoccupiedTile(), Quaternion.identity);
 		}
-
-		// headstones
-		foreach (int tile in loadedLocation.headstones.Keys) {
-			GameObject h = Instantiate(headstonePrefab, loadedLocation.TileVectorPosition(tile), Quaternion.identity);
-			h.GetComponent<Headstone>().LoadSaveData(loadedLocation.headstones[tile]);
-		}
 	}
 
-	private void SpawnFloor() {
-		GameObject floorHolder = new GameObject();
+	private void SpawnTileElements() {
+		loadedLocation.tiles.ForEach((lst, x, y) => lst.ForEach(el => el.Spawn(this, loadedLocation, x, y)));
+	}
+
+	// Just to keep our heirarchy cleaner
+	private void GroupFloor() {
+		Transform floorHolder = new GameObject().transform;
 		floorHolder.name = "Ground";
 		for (int x = 0; x < loadedLocation.width; x++) {
 			for (int y = 0; y < loadedLocation.height; y++) {
-				GameObject tilePrefab = loadedLocation.PrefabAt(x, y);
-				if (tilePrefab == null)
-					continue;
-				GameObject tile = Instantiate(tilePrefab, new Vector3(x * TILE_SIZE, -.2f, y * TILE_SIZE), 
-											  Quaternion.identity) as GameObject;
-				tile.transform.parent = floorHolder.transform;
-				floorTiles[x, y] = tile.GetComponent<PicaVoxel.Volume>();
+				if (floorTiles[x, y] != null) {
+					floorTiles[x, y].transform.SetParent(floorHolder);
+				}
 			}
 		}
 	}
 
-	private void SpawnInterior() {
-		if (!(loadedLocation is InteriorLocation)) {
-			return;
-		}
-		InteriorLocation l = loadedLocation as InteriorLocation;
+	// TODO: How do we change this to make walls spawn following the TileElement design pattern?
+	private void SpawnWallsHackily() {
+		Location l = loadedLocation;
 		
 		GameObject interiorObjectHolder = new GameObject();
-		interiorObjectHolder.name = "Interior";
+		interiorObjectHolder.name = "Walls";
 
 		for (int y = -1; y <= l.height; y++) {
 			for (int x = -1; x <= l.width; x++) {
-				Room.Square sq = l.SquareAt(x, y);
-				Room.Square sqLeft = l.SquareAt(x-1, y);
-				Room.Square sqTop = l.SquareAt(x, y+1);
+				World.FloorTile sq = l.TileElementsAt(x, y).Where(el => el is World.FloorTile).FirstOrDefault(null) as World.FloorTile;
+				World.FloorTile sqLeft = l.TileElementsAt(x-1, y).Where(el => el is World.FloorTile).FirstOrDefault(null) as World.FloorTile;
+				World.FloorTile sqTop = l.TileElementsAt(x, y+1).Where(el => el is World.FloorTile).FirstOrDefault(null) as World.FloorTile;
 				if ((sq != null && (sq.wallLeft || sqLeft == null)) || (sqLeft != null && (sqLeft.wallRight || sq == null))) {
 					GameObject wall = Instantiate(wallPrefab, new Vector3(TILE_SIZE * x, .8f, TILE_SIZE * y + 1), Quaternion.identity);
 					wall.transform.SetParent(interiorObjectHolder.transform);
@@ -263,8 +250,10 @@ public class LevelBuilder : MonoBehaviour {
 	private void SpawnBuildings() {
 		foreach (Building b in loadedLocation.buildings) {
 			int t = b.bottomLeftTile;
+			int x = loadedLocation.X(b.bottomLeftTile);
+			int y = loadedLocation.Y(b.bottomLeftTile);
 			GameObject spawnedBuilding = Instantiate(buildingPrefabs[b.prefabIndex],
-						loadedLocation.TileVectorPosition(b.bottomLeftTile, false) + new Vector3(b.width/2f, 0, b.height/2f) * TILE_SIZE, 
+						loadedLocation.TileVectorPosition(x, y, false) + new Vector3(b.width/2f, 0, b.height/2f) * TILE_SIZE, 
 						Quaternion.Euler(0, b.angle, 0));
 			Teleporter porter = spawnedBuilding.GetComponentInChildren<Teleporter>();
 			b.doors[0].position = new SerializableVector3(porter.transform.position);

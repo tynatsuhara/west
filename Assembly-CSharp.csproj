@@ -176,10 +176,15 @@
      <Compile Include="Assets\Scripts\World\Locations\InteriorLocation.cs" />
      <Compile Include="Assets\Scripts\World\Locations\Location.cs" />
      <Compile Include="Assets\Scripts\World\Locations\Room.cs" />
+     <Compile Include="Assets\Scripts\World\Locations\TownBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Locations\TownLocation.cs" />
      <Compile Include="Assets\Scripts\World\Map.cs" />
      <Compile Include="Assets\Scripts\World\NameGen.cs" />
      <Compile Include="Assets\Scripts\World\SaveGame.cs" />
+     <Compile Include="Assets\Scripts\World\Tiles\Cactus.cs" />
+     <Compile Include="Assets\Scripts\World\Tiles\FloorTile.cs" />
+     <Compile Include="Assets\Scripts\World\Tiles\Headstone.cs" />
+     <Compile Include="Assets\Scripts\World\Tiles\TileElement.cs" />
      <Compile Include="Assets\Scripts\World\VisualMap.cs" />
      <Compile Include="Assets\Scripts\World\VisualMapLocation.cs" />
      <Compile Include="Assets\Scripts\World\WorldGeneration.cs" />

@@ -167,10 +167,4 @@ public class Map {
 	public static TownLocation CurrentTown() {
 		return (TownLocation)(CurrentLocation() is TownLocation ? CurrentLocation() : Location(CurrentLocation().town));
 	}
-
-	public void Save() {
-		foreach (Location l in locations.Values) {
-			l.Save();
-		}
-	}
  }

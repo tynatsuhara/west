@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using World;
 
 public class InteriorBuilder {
 
@@ -28,7 +29,17 @@ public class InteriorBuilder {
     }
 
     public InteriorLocation Build(Map parent, System.Guid outside, string name) {
-        return new InteriorLocation(parent, outside, grid, name, teleporters);
+        return new InteriorLocation(parent, outside, TilesFromRoomGrid(), grid, name, teleporters);
+    }
+
+    private Grid<List<TileElement>> TilesFromRoomGrid() {
+        Grid<List<TileElement>> tiles = new Grid<List<TileElement>>(grid.width, grid.height);
+        grid.ForEach((room, x, y) => {
+            if (room != null) {
+                tiles.Set(x, y, room.TileElementsAt(x, y));
+            }
+        });
+        return tiles;
     }
 
     private List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
@@ -193,7 +204,10 @@ public class InteriorBuilder {
         for (int i = 0; i < door.Length; i++) {
             Room rm = grid.Get(x + i, y);
             if (rm != null) {
-                rm.SquareAt(x + i, y).RemoveWalls(rm.floor);
+                rm.TileElementsAt(x + i, y)
+                        .Where(el => el is FloorTile)
+                        .ToList()
+                        .ForEach(el => (el as FloorTile).RemoveWalls(rm.floor));
             }
         }
     }
@@ -211,7 +225,7 @@ public class InteriorBuilder {
             if (room == null) {
                 return ' ';
             }
-            Room.Square sq = room.SquareAt(x, y);
+            World.FloorTile sq = room.TileElementsAt(x, y).Where(el => el is FloorTile).First() as World.FloorTile;
             return (sq.wallTop || sq.wallBottom || sq.wallLeft || sq.wallRight) ? '#' : '/';
         });
     }

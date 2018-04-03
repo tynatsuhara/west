@@ -20,6 +20,7 @@ public class NPCArriveEvent : WorldEvent {
         c.position = Map.Location(location).teleporters.Where(x => x.toId == from).First().position;            
         if (hasLoadedLocation && Map.CurrentLocation().guid == location) {
             LevelBuilder.instance.SpawnNPC(c.guid);
+            Debug.Log("spawning NPC");
         }
     }
 }

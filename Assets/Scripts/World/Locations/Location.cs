@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using World;
 
 [System.Serializable]
 public abstract class Location {
@@ -28,38 +29,34 @@ public abstract class Location {
 	}
 	public List<System.Guid> horses = new List<System.Guid>();
 	public List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
-	public Dictionary<int, Cactus.CactusSaveData> cacti = new Dictionary<int, Cactus.CactusSaveData>();  // maps tile to cactus
-	public Dictionary<int, Headstone.HeadstoneSaveData> headstones = new Dictionary<int, Headstone.HeadstoneSaveData>();  // tile to headstone frame
 	public List<Building> buildings = new List<Building>();
+	public Grid<List<TileElement>> tiles;
 	public SerializableVector3 worldLocation;
 
 	public int biomeColor = LevelBuilder.instance == null ? 0 : Random.Range(0, LevelBuilder.instance.biomeColors.Length);
-	public int width = 20;  // minimums, w and h might be changed later by Generate()!
-	public int height = 20;
-
-	public Location(Map parent, bool onMap) {
-		this.parent = parent;
-		this.onMap = onMap;
+	public int width {
+		get { return tiles.width; }	
+	}
+	public int height {
+		get { return tiles.height; }
 	}
 
-	// Save things local to this location (ie updates to environment)
-	public void Save() {
-		if (Map.CurrentLocation() == this) {
-			foreach (Cactus c in Object.FindObjectsOfType<Cactus>()) {
-				cacti[c.SaveData().tile] = c.SaveData();
-			}
-			foreach (Headstone h in Object.FindObjectsOfType<Headstone>()) {
-				headstones[h.SaveData().tile] = h.SaveData();
-			}
-		}
+	public Location(
+		Map parent, 
+		bool onMap
+	) {
+		this.parent = parent;
+		this.onMap = onMap;
 	}
 
 	public float DistanceFrom(Location l) {
 		return (l.worldLocation.val - worldLocation.val).magnitude;
 	}
 
-	public abstract GameObject PrefabAt(int x, int y);
-	public abstract bool TileOccupied(int x, int y);
+	public bool TileOccupied(int x, int y) {
+		List<TileElement> stack = tiles.Get(x, y);
+		return stack == null || stack.Count == 0 || stack.Any(el => el.occupied);
+	}
 
 	protected List<int> Subset(List<int> lst, int size) {
 		List<int> newList = lst.ToList();
@@ -69,20 +66,31 @@ public abstract class Location {
 		return newList;
 	}
 
-	public Vector3 TileVectorPosition(int val, bool center = true) {
-		float xPos = X(val) * LevelBuilder.TILE_SIZE;
-		float zPos = Y(val) * LevelBuilder.TILE_SIZE;
-		return new Vector3(xPos, 0, zPos) + (center ? LevelBuilder.TILE_SIZE : 0) * new Vector3(.5f, 0, .5f);
+	public Vector3 TileVectorPosition(int x, int y, bool center = true) {
+		return new Vector3(x * LevelBuilder.TILE_SIZE, 0, y * LevelBuilder.TILE_SIZE)
+				+ (center ? LevelBuilder.TILE_SIZE : 0) * new Vector3(.5f, 0, .5f);
 	}
 
-	// TODO: get the fuck rid of this
-	protected int RandomUnoccupiedTileInt() {
-		List<int> all = Enumerable.Range(0, width * height).Where(val => !TileOccupied(X(val), Y(val))).ToList();
-		return all[Random.Range(0, all.Count)];
+	// Returns the X/Y coords in the grid of an unoccupied tile
+	public Vector2 RandomUnoccupiedXY() {
+		List<Vector2> possibilities = new List<Vector2>();
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				possibilities.Add(new Vector2(x, y));
+			}
+		}
+		return possibilities[Random.Range(0, possibilities.Count)];
 	}
 
+	// Returns the world position of the tile
 	public Vector3 RandomUnoccupiedTile() {
-		return TileVectorPosition(RandomUnoccupiedTileInt());
+		Vector2 xy = RandomUnoccupiedXY();
+		return TileVectorPosition((int)xy.x, (int)xy.y);
+	}
+
+	public List<World.TileElement> TileElementsAt(int x, int y) {
+        List<TileElement> t = tiles.Get(x, y);
+        return t == null ? new List<World.TileElement>() : t;
 	}
 
 	public int Val(int x, int y) {

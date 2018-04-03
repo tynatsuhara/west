@@ -51,9 +51,6 @@ public class SaveGame {
 			currentGame.savedCharacters[data.guid] = data;
 		}
 
-		// save any necessary things in the locations
-		currentGame.map.Save();
-
 		if (writeToDisk) {
 			if (!Directory.Exists(DirPath()))
 				Directory.CreateDirectory(DirPath());
@@ -72,7 +69,7 @@ public class SaveGame {
 		currentGame = (SaveGame)formatter.Deserialize(stream);
 		stream.Close();
 
-		// Debug.Log("game loaded from " + SavePath());	
+		Debug.Log("game loaded from " + saveFile);	
 	}
 
 	private static string DirPath() {
@@ -85,6 +82,7 @@ public class SaveGame {
 
 	public static List<FileInfo> GetSaves() {
 		DirectoryInfo dir = new DirectoryInfo(DirPath());
+		Debug.Log("game saves stored at " + dir);		
 		return dir.GetFiles("*.wst").ToList();
 	}
 

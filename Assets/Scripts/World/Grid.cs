@@ -12,10 +12,18 @@ public class Grid<T> {
     private Dictionary<int, Dictionary<int, T>> grid = new Dictionary<int, Dictionary<int, T>>();
     public readonly int width, height;
 
-
-    public Grid(int width, int height) {
+    // If supplier is not null, fills each value in the grid using the supplier
+    public Grid(int width, int height, Func<T> supplier = null) {
         this.width = width;
         this.height = height;
+
+        if (supplier != null) {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    Set(x, y, supplier());
+                }
+            }
+        }
     }
 
     public bool WithinBounds(int x, int y) {
@@ -32,14 +40,20 @@ public class Grid<T> {
         grid[x][y] = val;
     }
 
-    public T Get(int x, int y) {
+    // If the element is not found, the notFoundSupplier will set the value
+    public T Get(int x, int y, Func<T> notFoundSupplier = null) {
         if (grid.ContainsKey(x) && grid[x].ContainsKey(y)) {
+            return grid[x][y];
+        }
+        if (notFoundSupplier != null) {
+            Set(x, y, notFoundSupplier());
             return grid[x][y];
         }
         return default(T);
     }
 
     // NOT GUARANTEED ANY ORDER
+    // Runs on each inserted val, not every x/y
     public void ForEach(Action<T> lambda) {
         foreach (var col in grid.Values) {
             foreach (var pt in col.Values) {
@@ -50,6 +64,7 @@ public class Grid<T> {
 
     // Takes a lambda with params <T, int x, int y>
     // NOT GUARANTEED ANY ORDER
+    // Runs on each inserted val, not every x/y
     public void ForEach(Action<T, int, int> lambda) {
         foreach (int x in grid.Keys) {
             foreach (int y in grid[x].Keys) {

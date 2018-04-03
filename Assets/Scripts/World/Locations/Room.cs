@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using System.Linq;
 using UnityEngine;
+using World;
 
 [System.Serializable]
 public class Room {
@@ -10,15 +11,15 @@ public class Room {
     private int xOffset, yOffset;
 
     public int width {
-        get { return squares.width; }
+        get { return tiles.width; }
     }
     public int height {
-        get { return squares.height; }
+        get { return tiles.height; }
     }
 
     public readonly char charKey;
     public readonly char floor;
-    private Grid<Square> squares;
+    private Grid<List<TileElement>> tiles;
 
     public Room(char charKey, char floor, params string[] grid) {
         this.charKey = charKey;
@@ -26,15 +27,15 @@ public class Room {
         PlaceSquares(grid);
     }
 
-    public Square SquareAt(int x, int y) {
-        return squares.Get(x - xOffset, y - yOffset);
+    public List<TileElement> TileElementsAt(int x, int y) {
+        return tiles.Get(x - xOffset, y - yOffset);
     }
     
     public char CharAt(int x, int y) {
-        if (SquareAt(x, y) == null) {
+        if (TileElementsAt(x, y) == null) {
             Debug.Log("yo wtf x=" + x + " y=" + y + " width=" + width + " height=" + height);
         }
-        return SquareAt(x, y).ch;
+        return TileElementsAt(x, y).Last().ch;
     }
 
     public bool Occupied(int x, int y) {
@@ -42,7 +43,7 @@ public class Room {
     }
 
     public override string ToString() {
-        return squares.ToString(x => x.ch);
+        return tiles.ToString(x => x.Last().ch);
     }
 
     // change offset in interior grid
@@ -54,11 +55,11 @@ public class Room {
     // TODO: move this to grid?
     public List<InteriorBuilder.FindResult> Find(string on) {
         List<InteriorBuilder.FindResult> result = new List<InteriorBuilder.FindResult>();
-        for (int y = 0; y < squares.height; y++) {
-            for (int x = 0; x < squares.width - on.Length + 1; x++) {
+        for (int y = 0; y < tiles.height; y++) {
+            for (int x = 0; x < tiles.width - on.Length + 1; x++) {
                 // track all the hits in the row
                 if (Matches(x, y, on)) {
-                    bool spaceAbove = y == squares.height-1 || EmptyX(x, y+1, on.Length);
+                    bool spaceAbove = y == tiles.height-1 || EmptyX(x, y+1, on.Length);
                     bool spaceBelow = y == 0 || EmptyX(x, y-1, on.Length);
                     result.Add(new InteriorBuilder.FindResult(x, y, spaceAbove, spaceBelow));
                 }
@@ -68,12 +69,12 @@ public class Room {
     }
 
     private bool EmptyX(int x, int y, int count) {
-        return Enumerable.Range(x, count).All(xi => SquareAt(xi, y).ch == ' ');
+        return Enumerable.Range(x, count).All(xi => TileElementsAt(xi, y) == null || TileElementsAt(xi, y).All(tile => !tile.occupied));
     }
 
     private bool Matches(int x, int y, string match) {
         for (int i = 0; i < match.Length; i++) {
-            if (SquareAt(x + i, y).ch != match[i]) {
+            if (TileElementsAt(x + i, y).Last().ch != match[i]) {
                 return false;
             }
         }
@@ -90,52 +91,27 @@ public class Room {
 
     // rotate clockwise
     public void Rotate() {
-        squares = squares.RotatedClockwise();
-        squares.ForEach(sq => sq.Rotate());
+        tiles = tiles.RotatedClockwise();
+        tiles.ForEach(stack => stack.ForEach(x => x.Rotate()));
     }
 
     private void PlaceSquares(string[] grid) {
-        squares = new Grid<Square>(grid[0].Length, grid.Length);
+        tiles = new Grid<List<TileElement>>(grid[0].Length, grid.Length);
         // separate empty from non-empty spaces with walls
-        for (int x = 0; x < squares.width; x++) {
-            for (int y = 0; y < squares.height; y++) {
-                char ch = grid[squares.height-y-1][x];
-                Square sq = new Square(ch);
-                squares.Set(x, y, sq);
+        for (int x = 0; x < tiles.width; x++) {
+            for (int y = 0; y < tiles.height; y++) {
+                char ch = grid[tiles.height-y-1][x];
+                TileElement sq = new FloorTile(ch);
+                tiles.Get(x, y, () => new List<TileElement>()).Add(sq);
             }
         }
 
-        squares.ForEach((sq, x, y) => {
-            sq.wallTop = y == squares.height-1 || !Occupied(x, y+1);
-            sq.wallBottom = y == 0 || !Occupied(x, y-1);
-            sq.wallLeft = x == 0 || !Occupied(x-1, y);
-            sq.wallRight = x == squares.width-1 || !Occupied(x+1, y);
+        tiles.ForEach((stack, x, y) => {
+            FloorTile ft = stack.First() as FloorTile;
+            ft.wallTop = y == tiles.height-1 || !Occupied(x, y+1);
+            ft.wallBottom = y == 0 || !Occupied(x, y-1);
+            ft.wallLeft = x == 0 || !Occupied(x-1, y);
+            ft.wallRight = x == tiles.width-1 || !Occupied(x+1, y);
         });
-    }
-
-
-    [System.Serializable]
-    public class Square {
-        public bool occupied;
-        public char ch;
-        public bool wallRight, wallBottom, wallLeft, wallTop;
-
-        public Square(char ch) {
-            this.ch = ch;
-        }
-
-        // rotate clockwise
-        public void Rotate() {
-            bool oldRight = wallRight;
-            wallRight = wallTop;
-            wallTop = wallLeft;
-            wallLeft = wallBottom;
-            wallBottom = oldRight;
-        }
-
-        public void RemoveWalls(char newFloor) {
-            ch = newFloor;
-            wallRight = wallLeft = wallBottom = wallTop = false;
-        }
     }
 }
