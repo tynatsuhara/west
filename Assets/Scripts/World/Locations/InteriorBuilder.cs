@@ -192,22 +192,28 @@ public class InteriorBuilder {
 
         other.IncrementOffset(bottomLeftX, bottomLeftY);
 
-        MakeDoorway(bottomLeftX + otherPos.x, bottomLeftY + otherPos.y, on);
-        MakeDoorway(leftPad + thisPos.x, bottomPad + thisPos.y, on);
+        MakeDoorway(bottomLeftX + otherPos.x, bottomLeftY + otherPos.y, on, !placeOtherAbove);
+        MakeDoorway(leftPad + thisPos.x, bottomPad + thisPos.y, on, placeOtherAbove);
 
         rooms.Add(other.charKey, other);
 
         return true;
     }
 
-    public void MakeDoorway(int x, int y, string door) {
+    public void MakeDoorway(int x, int y, string door, bool removeTopDoor) {
         for (int i = 0; i < door.Length; i++) {
             Room rm = grid.Get(x + i, y);
             if (rm != null) {
                 rm.TileElementsAt(x + i, y)
                         .Where(el => el is FloorTile)
                         .ToList()
-                        .ForEach(el => (el as FloorTile).RemoveWalls(rm.floor));
+                        .ForEach(el => {
+                            if (removeTopDoor) {
+                                (el as FloorTile).RemoveWallTop(rm.floor);
+                            } else {
+                                (el as FloorTile).RemoveWallBottom(rm.floor);
+                            }
+                        });
             }
         }
     }

@@ -18,9 +18,13 @@ namespace World {
             wallBottom = oldRight;
         }
 
-        public void RemoveWalls(char newFloor) {
+        public void RemoveWallTop(char newFloor) {
             ch = newFloor;
-            wallRight = wallLeft = wallBottom = wallTop = false;
+            wallTop = false;
+        }
+        public void RemoveWallBottom(char newFloor) {
+            ch = newFloor;
+            wallBottom = false;
         }
 
         public override void Spawn(LevelBuilder lb, Location location, int x, int y) {

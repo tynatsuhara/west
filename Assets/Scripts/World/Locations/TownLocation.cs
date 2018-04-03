@@ -334,7 +334,12 @@ public class TownLocation : Location {
 		for (int i = 0; i < attempts; i++) {
 			int x = Random.Range(edgePadding, width - b.width + 1 - edgePadding);
 			int y = Random.Range(edgePadding, height - b.height + 1 - edgePadding);
-			bool obstructed = false;  // TODO: better heuristic (check corners first)
+
+			// check corners first
+			bool obstructed = TileOccupied(x + paddedW - 1, y) || 
+							  TileOccupied(x, y + paddedH - 1) ||
+			                  TileOccupied(x + paddedW - 1, y + paddedH - 1);
+
 			for (int xi = x; xi < x + paddedW && !obstructed; xi++) {
 				for (int yi = y; yi < y + paddedH && !obstructed; yi++) {
 					obstructed = TileOccupied(xi, yi);
