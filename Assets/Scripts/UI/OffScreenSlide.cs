@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * For future debugging: using an overlay canvas might be fucky if something moves fully offscreen
+ */
+
 public class OffScreenSlide : MonoBehaviour {
 
 	public Vector2 offScreenPos;

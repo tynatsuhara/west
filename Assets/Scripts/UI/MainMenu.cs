@@ -24,6 +24,15 @@ public class MainMenu : Menu {
 	private static readonly float TEXT_SPACING = 40f;
 
 	void FixedUpdate() {
+
+		if (Input.GetKeyDown(KeyCode.Alpha7)) {
+			xForDelete.MoveOnScreen();
+		} else if (Input.GetKeyDown(KeyCode.Alpha8)) {
+			xForDelete.MoveOffScreen();			
+		}
+
+
+
 		Vector2 selectedOffset = nodeOffsets[selectedNode.GetComponent<RectTransform>()];
 		foreach (RectTransform rt in nodeOffsets.Keys) {
 			if (rt == null)
@@ -32,6 +41,7 @@ public class MainMenu : Menu {
 			Vector2 pos = nodeOffsets[rt] - selectedOffset + baseOffset;
 			rt.anchoredPosition = Vector2.Lerp(rt.anchoredPosition, pos, .2f);
 
+			// keep the title centered
 			if (rt.gameObject == title) {
 				rt.anchoredPosition = new Vector2(0, rt.anchoredPosition.y);
 			}
