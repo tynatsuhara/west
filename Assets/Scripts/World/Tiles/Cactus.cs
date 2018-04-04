@@ -27,7 +27,7 @@ namespace World {
             flower = Random.Range(0, 3) == 0;
         }
 
-        public void Spawn(LevelBuilder lb, Location location, int x, int y) {
+        public override void Spawn(LevelBuilder lb, Location location, int x, int y) {
             GameObject c = GameObject.Instantiate(lb.cactusPrefab, location.TileVectorPosition(x, y), Quaternion.identity);
 			c.GetComponent<WorldGameObject.Cactus>().LoadSaveData(this);
         }

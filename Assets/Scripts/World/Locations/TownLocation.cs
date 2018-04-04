@@ -136,7 +136,7 @@ public class TownLocation : Location {
 		int cactiAmount = Random.Range(2, 8);
 		for (int i = 0; i < cactiAmount; i++) {
 			Vector2 xy = RandomUnoccupiedXY();
-			tiles.Get((int)xy.x, (int)xy.y, () => new List<TileElement>()).Add(new Cactus());
+			tiles.Get((int)xy.x, (int)xy.y).Add(new Cactus());
 		}
 
 		// temp NPC spawning

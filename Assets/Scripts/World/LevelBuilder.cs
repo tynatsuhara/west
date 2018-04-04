@@ -161,19 +161,17 @@ public class LevelBuilder : MonoBehaviour {
 		Location l = loadedLocation;
 		
 		GameObject interiorObjectHolder = new GameObject();
-		interiorObjectHolder.name = "Walls";
+		interiorObjectHolder.name = "Building Walls";
 
 		for (int y = -1; y <= l.height; y++) {
 			for (int x = -1; x <= l.width; x++) {
 				World.FloorTile sq = l.TileElementsAt(x, y).Where(el => el is World.FloorTile).FirstOrDefault() as World.FloorTile;
 				World.FloorTile sqLeft = l.TileElementsAt(x-1, y).Where(el => el is World.FloorTile).FirstOrDefault() as World.FloorTile;
 				World.FloorTile sqTop = l.TileElementsAt(x, y+1).Where(el => el is World.FloorTile).FirstOrDefault() as World.FloorTile;
-				// if ((sq != null && (sq.wallLeft || sqLeft == null)) || (sqLeft != null && (sqLeft.wallRight || sq == null))) {
 				if ((sq != null && sq.wallLeft) || (sqLeft != null && sqLeft.wallRight)) {
 					GameObject wall = Instantiate(wallPrefab, new Vector3(TILE_SIZE * x, .8f, TILE_SIZE * y + 1), Quaternion.identity);
 					wall.transform.SetParent(interiorObjectHolder.transform);
 				}
-				// if ((sq != null && (sq.wallTop || sqTop == null)) || (sqTop != null && (sqTop.wallBottom || sq == null))) {
 				if ((sq != null && sq.wallTop) || (sqTop != null && sqTop.wallBottom)) {
 					GameObject wall = Instantiate(wallPrefab, new Vector3(TILE_SIZE * x + 1, .8f, TILE_SIZE * y + 2), Quaternion.Euler(0, 90, 0));
 					wall.transform.SetParent(interiorObjectHolder.transform);
