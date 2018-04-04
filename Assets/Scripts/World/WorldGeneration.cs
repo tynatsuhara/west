@@ -14,8 +14,6 @@ public class WorldGeneration : MonoBehaviour {
 	}
 	
 	private IEnumerator GenerateWorld() {
-		GameManager.newGame = true;
-		SaveGame.NewGame();
 		SaveGame.currentGame.time = new WorldTime();
 		SaveGame.currentGame.events = new EventQueue();
 		SaveGame.currentGame.groups = DefaultGroups();
@@ -24,7 +22,7 @@ public class WorldGeneration : MonoBehaviour {
 		SaveGame.currentGame.quests = new QuestManager();	
 		SaveGame.currentGame.stats = new Statistics();
 		SaveGame.currentGame.crime = new Crime();
-		SceneManager.LoadScene("customization");
+		SceneManager.LoadScene("game");
 	}
 
 	private Dictionary<string, Group> DefaultGroups() {

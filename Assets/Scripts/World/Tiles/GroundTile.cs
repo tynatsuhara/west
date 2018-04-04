@@ -1,6 +1,7 @@
 using UnityEngine;
 
 // Represents an exterior ground tile
+// If occupied, that means there's a building on it
 
 namespace World {
     [System.Serializable]

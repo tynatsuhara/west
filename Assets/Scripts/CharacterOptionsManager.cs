@@ -13,7 +13,6 @@ public class CharacterOptionsManager : MonoBehaviour {
 
 	public static CharacterOptionsManager instance;
 
-	public string nextScene;
 	public Player[] players;
 	public Camera[] cams;
 	private List<int> playingPlayers;
@@ -68,7 +67,7 @@ public class CharacterOptionsManager : MonoBehaviour {
 		// 	}
 		// }
 		if (!readyPlayers[0] && Input.GetKeyDown("joystick 1 button 2")) {
-			// TODO: close lobby
+			SceneManager.LoadScene("main menu");
 		}
 	}
 
@@ -96,7 +95,7 @@ public class CharacterOptionsManager : MonoBehaviour {
 
 	private void StartGame() {
 		GameManager.playersToSpawn = playingPlayers.ToArray();
-		SceneManager.LoadScene(nextScene);
+		SceneManager.LoadScene("world creation");
 	}
 
 	private void UpdateCameras() {

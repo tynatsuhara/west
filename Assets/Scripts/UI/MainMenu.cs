@@ -100,7 +100,9 @@ public class MainMenu : Menu {
 
 	public override void Enter(MenuNode node) {
 		if (node == newGame) {
-			SceneManager.LoadScene("world creation");
+			GameManager.newGame = true;
+			SaveGame.NewGame();
+			SceneManager.LoadScene("customization");
 		} else if (node == loadGame) {
 			xForDelete.MoveOnScreen();
 			NewSelect(saveSlots[0]);
