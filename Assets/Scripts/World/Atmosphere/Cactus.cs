@@ -26,6 +26,10 @@ namespace WorldGameObject {
         }
 
         public void LoadSaveData(World.Cactus csd) {
+            if (csd.uninitialized) {
+                csd.InitalizeDefaults();
+            }
+
             data = csd;
             for (int i = 0; i < 8; i++) {
                 if (data.arms.Get(i)) {

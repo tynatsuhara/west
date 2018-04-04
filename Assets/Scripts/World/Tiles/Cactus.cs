@@ -10,7 +10,11 @@ namespace World {
         public int rotation;
         public bool flower;
 
-        public Cactus() {
+        public bool uninitialized {
+            get { return offsets == null; }
+        }
+
+        public void InitalizeDefaults() {
             offsets = new float[4];            
             for (int i = 0; i < 4; i++) {  // 4 possible arms
                 if (Random.Range(0, 3) == 1) {  // put an arm on this side
