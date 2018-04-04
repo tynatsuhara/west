@@ -32,6 +32,7 @@ namespace World {
         public override void Spawn(LevelBuilder lb, Location location, int x, int y) {
             GameObject tile = GameObject.Instantiate(lb.floorPrefab, new Vector3(x * LevelBuilder.TILE_SIZE, -.2f, 
                     y * LevelBuilder.TILE_SIZE), Quaternion.identity) as GameObject;
+            tile.GetComponent<Floor>().kickUpDirt = false;  // TODO: change the floor and biome color shit
             lb.floorTiles[x,y] = tile.GetComponent<PicaVoxel.Volume>();
         }        
     }    
