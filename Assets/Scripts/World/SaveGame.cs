@@ -91,7 +91,7 @@ public class SaveGame {
 	}
 
 	public static int NextSaveId() {
-		for (int i = 0; ; i++) {
+		for (int i = 1; ; i++) {
 			if (!File.Exists(SavePath(i))) {
 				return i;
 			}
