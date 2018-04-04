@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour {
 			foreach (NPCData npc in SaveGame.currentGame.savedCharacters.Values) {
 				npc.Simulate(t, t + SIMULATION_TICK, false);
 			}
-			SaveGame.currentGame.events.Tick();  // to help with traveling & other events
+			SaveGame.currentGame.events.CheckQueue(false);  // to help with traveling & other events
 			SaveGame.currentGame.time.worldTime += SIMULATION_TICK;
 		}
 	}
