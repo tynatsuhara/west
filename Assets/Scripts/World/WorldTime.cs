@@ -31,6 +31,17 @@ public class WorldTime {
         return SaveGame.currentGame.time.worldTime + MINUTE * minutes + HOUR * hours + DAY * days + YEAR * years;
     }
 
+    // future timestamp using 24 hour clock
+    public static float FutureTimeStamp(int hour, int minute) {
+        float timeThisDay = SaveGame.currentGame.time.worldTime % DAY;
+        float minuteGoal = (hour * 60 + minute) * MINUTE;
+        if (minuteGoal < timeThisDay) {
+            return SaveGame.currentGame.time.worldTime - timeThisDay + DAY + minuteGoal;            
+        } else {
+            return SaveGame.currentGame.time.worldTime - timeThisDay + minuteGoal;
+        }
+    }
+
     public string DateString() {
         return DateStringForTime(worldTime);
     }

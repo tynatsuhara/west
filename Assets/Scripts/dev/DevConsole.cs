@@ -141,22 +141,30 @@ public class DevConsole : MonoBehaviour {
 
 	private void ff(string[] args) {
 		try {
-			float unit = 0;
-			char unitString = args[1].ToLower()[0];
-			switch (unitString) {
-				case 'm':
-					unit = WorldTime.MINUTE;
-					break;
-				case 'h':
-					unit = WorldTime.HOUR;
-					break;
-				case 'd':
-					unit = WorldTime.DAY;
-					break;
+			if (args.Length == 1) {
+				string[] parts = args[0].Split(':');
+				int hour = int.Parse(parts[0]);
+				int min = int.Parse(parts[1]);
+				float timeToFF = WorldTime.FutureTimeStamp(hour, min) - SaveGame.currentGame.time.worldTime;
+				GameManager.instance.FastForward(timeToFF);
+			} else {
+				float unit = 0;
+				char unitString = args[1].ToLower()[0];
+				switch (unitString) {
+					case 'm':
+						unit = WorldTime.MINUTE;
+						break;
+					case 'h':
+						unit = WorldTime.HOUR;
+						break;
+					case 'd':
+						unit = WorldTime.DAY;
+						break;
+				}
+				GameManager.instance.FastForward(unit * int.Parse(args[0]));
 			}
-			GameManager.instance.FastForward(unit * int.Parse(args[0]));
 		} catch (System.Exception e) {
-			textLog.Add("error: ff expects <integer> <minutes|hours|days>");
+			textLog.Add("error: ff expects <integer> <minutes|hours|days> or (0-23):(0-59)");
 		}
 	}
 
