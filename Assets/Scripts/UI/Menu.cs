@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+ * TODO: REDO MENU SYSTEM COMPLETELY
+ *  - have one listener function on each menu node that can operate as it wants from input, if it's selected
+ *  - different types of MenuNodes for different purposes
+ *  - interact with mouse as well as console-esque input?
+ */
+
 public class Menu : MonoBehaviour {
 
 	public Transform cursor;
@@ -45,6 +52,9 @@ public class Menu : MonoBehaviour {
 		}
 		if (GetEsc()) {
 			Back(selectedNode);
+		}
+		if (Input.GetKeyDown(KeyCode.X)) {
+			X(selectedNode);
 		}
 	}
 
@@ -98,4 +108,5 @@ public class Menu : MonoBehaviour {
 	public virtual void Carousel(MenuNode node, int dir) {}
 	public virtual void Enter(MenuNode node) {}
 	public virtual void Back(MenuNode node) {}
+	public virtual void X(MenuNode node) {}
 }
