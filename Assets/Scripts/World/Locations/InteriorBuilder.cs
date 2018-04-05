@@ -71,14 +71,14 @@ public class InteriorBuilder {
         for (int i = 0; i < 2; i++) {
             // get all "on" strings in the other grid with space above/below them
             List<FindResult> thatDoors = room.Find(on);
-            List<FindResult> thatSpaceAboveDoors = thatDoors.Where(x => x.spaceAbove).OrderBy(x => System.Guid.NewGuid()).ToList();
-            List<FindResult> thatSpaceBelowDoors = thatDoors.Where(x => x.spaceBelow).OrderBy(x => System.Guid.NewGuid()).ToList();
+            List<FindResult> thatSpaceAboveDoors = thatDoors.Where(x => x.spaceAbove).OrderBy(x => Random.Range(0f, 1f)).ToList();
+            List<FindResult> thatSpaceBelowDoors = thatDoors.Where(x => x.spaceBelow).OrderBy(x => Random.Range(0f, 1f)).ToList();
             
             if (thatSpaceAboveDoors.Count + thatSpaceBelowDoors.Count > 0) {
                 for (int j = 0; j < 4; j++) {
                     List<FindResult> thisDoors = Find(on);
-                    List<FindResult> spaceAboveDoors = thisDoors.Where(x => x.spaceAbove).OrderBy(x => System.Guid.NewGuid()).ToList();
-                    List<FindResult> spaceBelowDoors = thisDoors.Where(x => x.spaceBelow).OrderBy(x => System.Guid.NewGuid()).ToList();
+                    List<FindResult> spaceAboveDoors = thisDoors.Where(x => x.spaceAbove).OrderBy(x => Random.Range(0f, 1f)).ToList();
+                    List<FindResult> spaceBelowDoors = thisDoors.Where(x => x.spaceBelow).OrderBy(x => Random.Range(0f, 1f)).ToList();
 
                     // weird ass shit to randomize looking above/below first
                     List<FindResult>[] sides;
