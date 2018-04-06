@@ -22,13 +22,4 @@ public class EventQueue {
     public void CreateEvent(float time, WorldEvent e) {
         events.Add(time, e);
     }
-
-
-    [System.Serializable]
-    public class DuplicateKeyComparer<TKey> : IComparer<TKey> where TKey : System.IComparable {
-        public int Compare(TKey x, TKey y) {
-            int result = x.CompareTo(y);
-            return result == 0 ? 1 : result;
-        }
-    }
 }

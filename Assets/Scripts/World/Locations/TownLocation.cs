@@ -225,8 +225,6 @@ public class TownLocation : Location {
 
 	// A*
 	private List<int> BestPathFrom2(int start, int end) {
-	    // SortedList<float, int> closedSet = new SortedList<float, int>(new EventQueue.DuplicateKeyComparer<float>());
-	    // SortedList<float, int> openSet = new SortedList<float, int>(new EventQueue.DuplicateKeyComparer<float>());
 		HashSet<int> closedSet = new HashSet<int>();
 		HashSet<int> openSet = new HashSet<int>();
 
