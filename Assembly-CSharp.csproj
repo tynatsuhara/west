@@ -192,7 +192,7 @@
      <Compile Include="Assets\Scripts\World\WorldTime.cs" />
      <Compile Include="Assets\Scripts\WorldBlood.cs" />
      <Compile Include="Assets\Scripts\WorldPoint.cs" />
-     <Compile Include="Assets\Scripts\dev\DevConsole.cs" />
+     <Compile Include="Assets\Scripts\util\DevConsole.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderRGB.shader" />
