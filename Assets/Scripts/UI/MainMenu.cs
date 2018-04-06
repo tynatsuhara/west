@@ -51,8 +51,8 @@ public class MainMenu : Menu {
 			quitGame.down = newGame;
 			Destroy(loadGame.gameObject);
 			selectedNode = newGame;
-			newGame.transform.Translate(transform.up * TEXT_SPACING);
-			quitGame.transform.Translate(transform.up * TEXT_SPACING);
+			AnchoredPositionShift(newGame, TEXT_SPACING);
+			AnchoredPositionShift(quitGame, TEXT_SPACING);
 		} else {
 			SpawnSaveSlots(saves);
 		}
@@ -65,6 +65,11 @@ public class MainMenu : Menu {
 		nodeOffsets = GetComponentsInChildren<RectTransform>()
 				.Where(x => x.gameObject == title || x.GetComponent<MenuNode>() != null)
 				.ToDictionary(x => x, x => x.anchoredPosition - baseOffset);
+	}
+
+	private void AnchoredPositionShift(MenuNode node, float verticalShift, float horizontalShift = 0f) {
+		RectTransform rt = node.GetComponent<RectTransform>();
+		rt.anchoredPosition = rt.anchoredPosition + new Vector2(horizontalShift, verticalShift);
 	}
 
 	private void MoveToPanel(MenuNode node, int tileID) {
@@ -94,7 +99,7 @@ public class MainMenu : Menu {
 			saveSlots[i].transform.localScale = Vector3.one;
 			RectTransform rt = saveSlots[i].GetComponent<RectTransform>();
 			rt.anchoredPosition = prefabRect.anchoredPosition;
-			rt.Translate(transform.up * TEXT_SPACING * -i);
+			AnchoredPositionShift(saveSlots[i], TEXT_SPACING * -i);
 			saveSlots[i].GetComponent<Text>().text = "SAVE #" + name + "  (" + time + ")";
 			saveFiles.Add(saveSlots[i], saves[i]);
 		}
@@ -110,7 +115,7 @@ public class MainMenu : Menu {
 		backFromSaves.transform.localScale = Vector3.one;		
 		RectTransform brt = backFromSaves.GetComponent<RectTransform>();
 		brt.anchoredPosition = prefabRect.anchoredPosition;
-		brt.Translate(transform.up * TEXT_SPACING * -saves.Count);
+		AnchoredPositionShift(backFromSaves, TEXT_SPACING * -saves.Count);		
 		brt.GetComponent<Text>().text = "BACK";
 		saveSlots.Last().down = backFromSaves;
 		backFromSaves.down = saveSlots.First();
