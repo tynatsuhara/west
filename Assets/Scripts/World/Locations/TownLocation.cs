@@ -52,8 +52,8 @@ public class TownLocation : Location {
 	// Build the street layout for a town
 	public void Generate() {
 		// default minimum heights
-		int width = 20;
-		int height = 20;
+		int width = 30;
+		int height = width;
 
 		connections = connections.Where(x => x != System.Guid.Empty).ToList();
 		List<Location> links = connections.Select(x => parent.locations[x]).ToList();
@@ -171,6 +171,9 @@ public class TownLocation : Location {
 		return newList;
 	}
 
+	// ================= PATHFINDING STUFF ================= //
+
+	// Djikstra's
 	private List<int> BestPathFrom(int start, int end) {
 		Dictionary<int, float> dist = new Dictionary<int, float>();
 		for (int i = 0; i < width * height; i++)
@@ -217,6 +220,81 @@ public class TownLocation : Location {
 		}
 		return null;
 	}
+
+	// A*
+	private List<int> BestPathFrom2(int start, int end) {
+	    // SortedList<float, int> closedSet = new SortedList<float, int>(new EventQueue.DuplicateKeyComparer<float>());
+	    // SortedList<float, int> openSet = new SortedList<float, int>(new EventQueue.DuplicateKeyComparer<float>());
+		HashSet<int> closedSet = new HashSet<int>();
+		HashSet<int> openSet = new HashSet<int>();
+
+		openSet.Add(start);
+		Dictionary<int, int> cameFrom = new Dictionary<int, int>();
+		Dictionary<int, float> gScore = Enumerable.Range(0, width * height)
+				.ToDictionary(x => x, x => float.MaxValue);
+		gScore[start] = 0;
+		Dictionary<int, float> fScore = Enumerable.Range(0, width * height)
+				.ToDictionary(x => x, x => float.MaxValue);
+		fScore[start] = HeuristicCostEstimate(start, end);
+		
+		while (openSet.Count > 0) {
+			int current = openSet.OrderBy(x => fScore[x]).First();
+			if (current == end) {
+				List<int> result = new List<int>();
+				result.Add(current);
+				while (cameFrom.Keys.Contains(current)) {
+					current = cameFrom[current];
+					result.Insert(0, current);
+				}
+				return result;
+			}
+			openSet.Remove(current);
+			closedSet.Add(current);
+			foreach (int neighbor in TileNeighbors(current)) {
+				if (closedSet.Contains(neighbor))
+					continue;
+				if (!openSet.Contains(neighbor))
+					openSet.Add(neighbor);
+
+				GroundTile ground = GroundTileAt(neighbor);
+				int valX = X(neighbor);
+				int valY = Y(neighbor);
+				float gScoreTentative = gScore[current];
+
+				if (ground.occupied) {
+					openSet.Remove(neighbor);
+					closedSet.Add(neighbor);
+					continue;
+				} else if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1 || AdjacentToBuilding(current)) {  // don't travel right on edges
+					gScoreTentative += 2f;
+				} else if (ground.type == GroundTile.GroundType.TRAIL) {
+					gScoreTentative += .1f;
+				} else {
+					gScoreTentative += Random.Range(.5f, 1f);
+				}
+
+				if (gScoreTentative >= gScore[neighbor])
+					continue;
+
+				cameFrom[neighbor] = current;
+				gScore[neighbor] = gScoreTentative;
+				fScore[neighbor] = gScore[neighbor] + HeuristicCostEstimate(neighbor, end);
+			}
+		}
+
+		return null;
+	}
+
+	private float HeuristicCostEstimate(int start, int end) {
+		int startX = X(start);
+		int startY = Y(start);
+		int endX = X(end);
+		int endY = Y(end);
+		float diffX = startX - endX;
+		float diffY = startY - endY;
+		return Mathf.Sqrt(diffX * diffX + diffY * diffY)/2;
+	}
+
 	private List<int> TileNeighbors(int tile) {
 		List<int> lst = new List<int>();
 		if (tile >= width)               // not on the bottom row, so add tile below
@@ -229,6 +307,7 @@ public class TownLocation : Location {
 			lst.Add(tile + 1);
 		return lst;
 	}
+
 	private bool AdjacentToBuilding(int tile) {
 		List<int> ns = TileNeighbors(tile);
 		foreach (int n in ns) {
@@ -259,7 +338,7 @@ public class TownLocation : Location {
 			GroundTile gt = GroundTileAt(destination);
 			gt.occupied = false;
 			foreach (int exit in exits) {
-				foreach (int path in BestPathFrom(exit, destination)) {
+				foreach (int path in BestPathFrom2(exit, destination)) {
 					GroundTileAt(path).type = GroundTile.GroundType.TRAIL;
 				}
 				// TODO: make roads form loops
