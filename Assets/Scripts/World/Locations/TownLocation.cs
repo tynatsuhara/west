@@ -144,7 +144,9 @@ public class TownLocation : Location {
 		List<System.Guid> spawnedChars = new List<System.Guid>();
 		for (int i = 0; i < pplAmount; i++) {
 			Location work = Map.Location(buildings[0].guid);
+			work.name = "WORK";
 			Location home = Map.Location(buildings[1].guid);
+			home.name = "HOME";
 			NPCData npc = new NPCFactory().MakeNormie(work, home);
 			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
 			npc.position = new SerializableVector3(RandomUnoccupiedTile());
