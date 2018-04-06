@@ -12,7 +12,7 @@ public class Teleporter : MonoBehaviour {
 		get { return GetComponent<SphereCollider>().radius; }
 	}
 
-	private bool ignore = true;
+	private bool ignore = false;
 	private HashSet<Character> collidingWith = new HashSet<Character>();
 
 	void Awake() {
@@ -48,7 +48,7 @@ public class Teleporter : MonoBehaviour {
 			float dist = Map.CurrentLocation().DistanceFrom(Map.Location(toId));
 			// loading location autosaves before transport, so make sure to do any save modification (eg moving horses) after location load
 			GameManager.instance.LoadLocation(toId, 4 /* minutes per distance unit */ * dist * character.moveSpeed / character.CalculateSpeed());
-			ignore = true;
+			// ignore = true;
 		} else {
 			// TODO: save character to the other location
 		}
@@ -101,7 +101,7 @@ public class Teleporter : MonoBehaviour {
 	}
 
 	private IEnumerator Delay() {
-		yield return new WaitForSeconds(1f);
+		// yield return new WaitForSeconds(1f);
 		GetComponent<SphereCollider>().enabled = true;
 		yield return new WaitForSeconds(.2f);
 		ignore = false;
