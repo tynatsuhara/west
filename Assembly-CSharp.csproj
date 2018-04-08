@@ -98,6 +98,10 @@
      <Compile Include="Assets\Scripts\Characters\CharacterData.cs" />
      <Compile Include="Assets\Scripts\Characters\CharacterIndicator.cs" />
      <Compile Include="Assets\Scripts\Characters\Civilian.cs" />
+     <Compile Include="Assets\Scripts\Characters\Dialogue\AcceptQuestDialogueOption.cs" />
+     <Compile Include="Assets\Scripts\Characters\Dialogue\Dialogue.cs" />
+     <Compile Include="Assets\Scripts\Characters\Dialogue\DialogueOption.cs" />
+     <Compile Include="Assets\Scripts\Characters\Dialogue\GoToFrameDialogueOption.cs" />
      <Compile Include="Assets\Scripts\Characters\Group.cs" />
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />
      <Compile Include="Assets\Scripts\Characters\LivingThing.cs" />
@@ -138,7 +142,7 @@
      <Compile Include="Assets\Scripts\Statistics.cs" />
      <Compile Include="Assets\Scripts\Teleporter.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
-     <Compile Include="Assets\Scripts\UI\Dialogue.cs" />
+     <Compile Include="Assets\Scripts\UI\DialogueDisplay.cs" />
      <Compile Include="Assets\Scripts\UI\GameUI.cs" />
      <Compile Include="Assets\Scripts\UI\MainMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Menu.cs" />
@@ -193,6 +197,7 @@
      <Compile Include="Assets\Scripts\WorldBlood.cs" />
      <Compile Include="Assets\Scripts\WorldPoint.cs" />
      <Compile Include="Assets\Scripts\util\DevConsole.cs" />
+     <Compile Include="Assets\Scripts\util\DuplicateKeyComparer.cs" />
      <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderRGB.shader" />

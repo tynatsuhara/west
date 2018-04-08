@@ -16,7 +16,7 @@ public class NPCData : CharacterData {
     public string name;
     public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
     public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
-    public List<Quest> questsToGive = new List<Quest>();
+    public SortedList<int, Dialogue> dialogues = new SortedList<int, Dialogue>(new DuplicateKeyComparer<int>());
 
     public NPCData(NPCType type, bool female = false, string lastName = "") {
         this.type = type;

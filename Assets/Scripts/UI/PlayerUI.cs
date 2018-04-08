@@ -17,7 +17,7 @@ public class PlayerUI : MonoBehaviour {
 	private Vector3 lastMousePos;
 	public Vector3 mousePos;
 
-	public Dialogue dialogue;
+	public DialogueDisplay dialogue;
 
 	void Start() {
 		lastMousePos = mousePos = player.id == 1 

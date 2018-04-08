@@ -7,7 +7,7 @@ public class CharacterIndicator : MonoBehaviour {
 	private TextObject text;
 
 	private Task.TaskDestination taskMarker;
-	public bool hasQuestsToGive;
+	public Dialogue highestPriorityDialogue;
 
 	public void Awake() {
 		text = GetComponent<TextObject>();
@@ -27,9 +27,10 @@ public class CharacterIndicator : MonoBehaviour {
 		UpdateDisplay();
 	}
 
-	public void UpdateQuestsToGive(bool hasQuestsToGive) {
-		if (this.hasQuestsToGive != hasQuestsToGive) {
-			this.hasQuestsToGive = hasQuestsToGive;
+	public void UpdateDialogueIndicator(SortedList<int, Dialogue> dialogues) {
+		Dialogue d = dialogues.Count > 0 ? dialogues.Values[0] : null;
+		if (highestPriorityDialogue != d) {
+			highestPriorityDialogue = d;
 			UpdateDisplay();
 		}
 	}
@@ -37,8 +38,8 @@ public class CharacterIndicator : MonoBehaviour {
 	public void UpdateDisplay() {
 		if (taskMarker != null) {  // no current task for a quest
 			text.Say(taskMarker.icon, color: Quest.QUEST_MARKER_COLOR, permanent: true);
-		} else if (hasQuestsToGive) {
-			text.Say("!", color: "yellow", permanent: true);				
+		} else if (highestPriorityDialogue != null) {
+			text.Say(highestPriorityDialogue.icon, color: highestPriorityDialogue.color, permanent: true);				
 		} else {
 			text.Clear();
 		}

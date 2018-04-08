@@ -31,7 +31,7 @@ public class NPC : Character, Interactable {
 	}
 
 	void Update() {
-		characterIndicator.UpdateQuestsToGive(data.questsToGive.Count > 0 && isAlive);
+		characterIndicator.UpdateDialogueIndicator(data.dialogues);
 
 		if (!isAlive || GameManager.paused)
 			return;
@@ -116,12 +116,10 @@ public class NPC : Character, Interactable {
 		if (!isAlive)
 			return;
 
-		if (data.questsToGive.Count > 0 && character is Player) {
+		if (data.dialogues.Count > 0 && character is Player) {
 			Player p = character as Player;
-			Quest q = data.questsToGive.First();
-			data.questsToGive.RemoveAt(0);
+			Dialogue d = data.dialogues.First().Value;
 			p.playerUI.ShowDialogue(true);
-			SaveGame.currentGame.quests.AddQuest(q);
 		}
 		
 		// if (character.zipties > 0 && (currentState == NPCState.DOWN_UNTIED)) {

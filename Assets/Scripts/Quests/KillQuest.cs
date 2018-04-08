@@ -9,6 +9,13 @@ public class KillQuest : Quest {
         this.character = character;
         this.killTask = new KillTask(character);
         this.title = "Kill " + SaveGame.currentGame.savedCharacters[character].name;
+
+        Dialogue d = new Dialogue("yellow", "!")
+                .AddFrame("intro", false, "Can you help me?",
+                    new AcceptQuestDialogueOption(this)
+                );
+
+        SaveGame.currentGame.savedCharacters[character].dialogues.Add((int) Dialogue.Priority.OFFERING_QUEST, d);
     }
 
 	public override Task UpdateQuest() {
