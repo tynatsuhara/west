@@ -33,8 +33,16 @@ public class CharacterOptionsManager : MonoBehaviour {
 		return SaveGame.currentGame.savedPlayers[id - 1].sidearmId;
 	}
 
+	public void SetSidearmId(int id, byte val) {
+		SaveGame.currentGame.savedPlayers[id - 1].sidearmId = val;
+	}
+
 	public int CurrentWeaponId(int id) {
 		return SaveGame.currentGame.savedPlayers[id - 1].weaponId;
+	}
+
+	public void SetWeaponId(int id, byte val) {
+		SaveGame.currentGame.savedPlayers[id - 1].weaponId = val;
 	}
 	
 	public string LoadOutfitName(int id) {

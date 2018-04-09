@@ -12,9 +12,9 @@ public abstract class Weapon : MonoBehaviour {
 	public Collider droppedCollider;
 
 	public Character owner;	
-	protected PicaVoxel.Volume volume;	
+	public PicaVoxel.Volume volume;	
+	public GunAnimation anim;
 	protected bool enqueuedReload = false;
-	protected GunAnimation anim;	
 
 	// Gun frames
 	public const int GUN_BASE_FRAME = 0;

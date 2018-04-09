@@ -18,10 +18,6 @@ public class BasicGun : Weapon {
 	private bool reloading;
 	private int bulletsFired = 0;	
 
-	public override void Awake() {
-		base.Awake();
-	}
-
 	public override bool Shoot(Vector3 target) {
 		if (delayed || shooting || reloading || bulletsFired == clipSize || owner == null)
 			return false;

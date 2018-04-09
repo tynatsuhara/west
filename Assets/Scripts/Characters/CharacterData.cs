@@ -10,8 +10,8 @@ public class CharacterData {
     public SerializableVector3 position;
     public Inventory inv = new Inventory();
     public float health = float.NaN;
-    public byte weaponId = 1;  // start with revolver
-    public byte sidearmId = 0;
+    public byte weaponId = 1;   // default main: ak47
+    public byte sidearmId = 1;  // default sidearm: revolver
     public byte equippedWeapon = 0;  // start wielding primary
     public System.Object[] gunSaves;		
     public bool isWeaponDrawn;
