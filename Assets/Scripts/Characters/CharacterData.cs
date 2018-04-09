@@ -10,16 +10,16 @@ public class CharacterData {
     public SerializableVector3 position;
     public Inventory inv = new Inventory();
     public float health = float.NaN;
-    public int weaponId = 0;  // start with revolver
-    public int sidearmId = -1;
-    public int equippedWeapon = 0;  // start wielding primary
+    public byte weaponId = 1;  // start with revolver
+    public byte sidearmId = 0;
+    public byte equippedWeapon = 0;  // start wielding primary
     public System.Object[] gunSaves;		
     public bool isWeaponDrawn;
     public string outfit = "default";
-    public int skinColor;
-    public int hairColor;
-    public int hairStyle;
-    public int accessory;
+    public byte skinColor;
+    public byte hairColor;
+    public byte hairStyle;
+    public byte accessory;
     public bool female;
     public bool ridingHorse;
     public System.Guid mountGuid;

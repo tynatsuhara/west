@@ -95,6 +95,7 @@ public class CharacterCustomization : MonoBehaviour {
 				continue;
 			GameObject go = Instantiate(a.gameObject) as GameObject;
 			go.transform.parent = GetComponent<Character>().transform;
+			go.transform.localScale = Vector3.one;
 			go.transform.localPosition = a.positionOffset;
 			go.transform.localEulerAngles = Vector3.up * 180;
 			if (a.headParent)

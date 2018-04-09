@@ -7,7 +7,7 @@ public class Civilian : NPC {
 
 	public override void Start() {
 		base.Start();
-		hasGun = sidearmId != -1 || weaponId != -1;
+		hasGun = sidearmId > 0 || weaponId > 0;
 	}
 
 	//=================== STATE FUNCTIONS ===================//

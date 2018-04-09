@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 /*
-	The menu for weapon selection and character customization.
+	The menu for weapon selection, character customization, and lobby functionality.
 */
 
 public class WeaponSelection : Menu {
@@ -37,7 +37,7 @@ public class WeaponSelection : Menu {
 		} else if (node.name == "Accessory") {
 			ccm.SetAccessory(playerId, ccm.LoadAccessory(playerId) + dir);
 		}
-		ccm.CustomizeFromSave(ccm.players[playerId - 1]);
+		ccm.CustomizeFromSave(Lobby.instance.players[playerId - 1]);
 	}
 
 	private string LoadWeapon(GameObject[] arr, int currentIndex, int dir, string prefString) {
@@ -49,7 +49,7 @@ public class WeaponSelection : Menu {
 
 	public override void Enter(MenuNode node) {
 		if (node.name == "Ready") {
-			bool nowReady = ccm.ToggleReady(playerId);
+			bool nowReady = Lobby.instance.ToggleReady(playerId);
 			if (nowReady) {
 				node.SetText("READY");
 			} else {

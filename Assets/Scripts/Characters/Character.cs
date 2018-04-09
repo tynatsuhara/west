@@ -32,10 +32,10 @@ public abstract class Character : LivingThing, Damageable {
 	// customization stuff
 	private bool female;
 	private string outfit;
-	private int skinColor;
-	private int hairColor;
-	private int hairStyle;
-	private int accessory;
+	private byte skinColor;
+	private byte hairColor;
+	private byte hairStyle;
+	private byte accessory;
 
 	public PicaVoxel.Volume head;
 	public PicaVoxel.Volume body {
@@ -56,12 +56,12 @@ public abstract class Character : LivingThing, Damageable {
 
 	public GameObject[] guns;
 	protected Weapon currentGun;
-	public int sidearmId;
-	public int weaponId;
-	protected int gunIndex = 0;
+	public byte sidearmId;
+	public byte weaponId;
+	protected byte gunIndex = 0;
 	public PicaVoxel.Exploder exploder;
 	public Explosive explosive;
-	public int zipties;
+	public byte zipties;
 	protected bool weaponDrawn_;
 	public bool weaponDrawn {
 		get { return weaponDrawn_; }
@@ -375,13 +375,13 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	public void SpawnGuns() {
-		if (weaponId == -1 && sidearmId == -1)
+		if (weaponId == 0 && sidearmId == 0)
 			return;
 
 		if (guns == null || guns.Length == 0) {
 			guns = new GameObject[] {
-				weaponId >= 0 ? CharacterOptionsManager.instance.weapons[weaponId] : null,
-				sidearmId >= 0 ? CharacterOptionsManager.instance.sidearms[sidearmId] : null,
+				weaponId > 0 ? CharacterOptionsManager.instance.weapons[weaponId] : null,
+				sidearmId > 0 ? CharacterOptionsManager.instance.sidearms[sidearmId] : null,
 			};
 		}
 		
@@ -412,8 +412,8 @@ public abstract class Character : LivingThing, Damageable {
 		SelectGun(gunIndex);
 	}
 
-	public void SelectGun(int index) {
-		index = Mathf.Clamp(index, 0, guns.Length);
+	public void SelectGun(byte index) {
+		index = (byte) Mathf.Clamp(index, 0, guns.Length);
 		if (guns[index] == null)
 			return;
 		if (this is Player)

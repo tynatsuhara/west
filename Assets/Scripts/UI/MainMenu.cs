@@ -125,8 +125,6 @@ public class MainMenu : Menu {
 
 	public override void Enter(MenuNode node) {
 		if (node == newGame) {
-			GameManager.newGame = true;
-			SaveGame.NewGame();
 			SceneManager.LoadScene("customization");
 		} else if (node == loadGame) {
 			xForDelete.MoveOnScreen();
