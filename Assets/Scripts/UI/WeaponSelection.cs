@@ -44,7 +44,6 @@ public class WeaponSelection : Menu {
 	}
 
 	private byte LoadWeapon(GameObject[] arr, int currentIndex, int dir, MenuNode node) {
-		int oldIndex = 0;
 		if (currentIndex == 1 && dir == -1) {
 			currentIndex = arr.Length-1;
 		} else if (currentIndex == arr.Length-1 && dir == 1) {
@@ -52,7 +51,6 @@ public class WeaponSelection : Menu {
 		} else {
 			currentIndex += dir;
 		}
-		Debug.Log(oldIndex + " => " + currentIndex);
 		node.SetText(arr[currentIndex].name.ToUpper());
 		return (byte)currentIndex;
 	}
