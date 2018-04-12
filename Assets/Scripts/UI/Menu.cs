@@ -11,7 +11,9 @@ using System.Collections;
 public class Menu : MonoBehaviour {
 
 	public Transform cursor;
-	public bool perPerson = false;
+	public bool perPerson {
+		get { return playerId != 0; }
+	}
 	public int playerId;
 
 	public MenuNode selectedNode;
