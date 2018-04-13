@@ -1,4 +1,3 @@
-
 [System.Serializable]
 public class KillQuest : Quest {
     
@@ -12,8 +11,12 @@ public class KillQuest : Quest {
 
         Dialogue d = new Dialogue("yellow", "!")
                 .AddFrame("intro", false, "Can you help me?",
-                    new AcceptQuestDialogueOption(this)
-                );
+                    new AcceptQuestDialogueOption(this),
+                    new GoToFrameDialogueOption("reply")
+                ).AddFrame("reply", false, "Can you help me?",
+                    new AcceptQuestDialogueOption(this),
+                    new GoToFrameDialogueOption("getmad")
+                ).AddFrame("getmad", false, "Fine, dick!");
 
         SaveGame.currentGame.savedCharacters[character].dialogues.Add((int) Dialogue.Priority.OFFERING_QUEST, d);
     }

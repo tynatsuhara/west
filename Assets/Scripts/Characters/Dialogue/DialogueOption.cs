@@ -1,11 +1,11 @@
 [System.Serializable]
 public abstract class DialogueOption {
 
-    public string name = "DEFAULT OPTION";
+    public string text = "DEFAULT OPTION";
 
-    public DialogueOption(string name) {
-        this.name = name.ToUpper();
+    public DialogueOption(string text) {
+        this.text = text.ToUpper();
     }
 
-    public abstract void Select(Dialogue parent);
+    public abstract void Select(Dialogue parent, DialogueDisplay display);
 }

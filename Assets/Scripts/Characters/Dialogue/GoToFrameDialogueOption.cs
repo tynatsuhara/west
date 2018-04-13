@@ -7,7 +7,8 @@ public class GoToFrameDialogueOption : DialogueOption {
         this.frameTag = frameTag;
     }
 
-    public override void Select(Dialogue parent) {
+    public override void Select(Dialogue parent, DialogueDisplay display) {
         parent.GoToFrame(frameTag);
+        display.Refresh();
     }
 }

@@ -112,14 +112,14 @@ public class NPC : Character, Interactable {
 		}
 	}
 	
+	private Player playerInteractingWith;
 	public void Interact(Character character) {
 		if (!isAlive)
 			return;
 
-		if (data.dialogues.Count > 0 && character is Player) {
-			Player p = character as Player;
-			Dialogue d = data.dialogues.First().Value;
-			p.playerUI.ShowDialogue(true);
+		if (data.dialogues.Count > 0 && character is Player && playerInteractingWith == null) {
+			playerInteractingWith = character as Player;
+			playerInteractingWith.playerUI.ShowDialogue(data.dialogues.First().Value, this);
 		}
 		
 		// if (character.zipties > 0 && (currentState == NPCState.DOWN_UNTIED)) {
@@ -128,6 +128,21 @@ public class NPC : Character, Interactable {
 		// }
 	}
 	public void Uninteract(Character character) {}
+
+	public void CancelDialogue() {
+		playerInteractingWith = null;
+	}
+
+	public void FinishDialogue() {
+		bool startNextDialogue = false;
+		data.dialogues.RemoveAt(0);
+		if (startNextDialogue && data.dialogues.Count > 0) {
+			playerInteractingWith.playerUI.ShowDialogue(data.dialogues.First().Value, this);
+		} else {
+			playerInteractingWith.playerUI.HideDialogue();
+			playerInteractingWith = null;
+		}
+	}
 
 	public bool seesEvidence;
 	public Vector3? evidencePoint;

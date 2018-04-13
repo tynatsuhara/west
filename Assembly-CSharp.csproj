@@ -101,6 +101,7 @@
      <Compile Include="Assets\Scripts\Characters\Dialogue\AcceptQuestDialogueOption.cs" />
      <Compile Include="Assets\Scripts\Characters\Dialogue\Dialogue.cs" />
      <Compile Include="Assets\Scripts\Characters\Dialogue\DialogueOption.cs" />
+     <Compile Include="Assets\Scripts\Characters\Dialogue\EndDialogueOption.cs" />
      <Compile Include="Assets\Scripts\Characters\Dialogue\GoToFrameDialogueOption.cs" />
      <Compile Include="Assets\Scripts\Characters\Group.cs" />
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />
@@ -144,6 +145,7 @@
      <Compile Include="Assets\Scripts\Teleporter.cs" />
      <Compile Include="Assets\Scripts\TextObject.cs" />
      <Compile Include="Assets\Scripts\UI\DialogueDisplay.cs" />
+     <Compile Include="Assets\Scripts\UI\DialogueMenu.cs" />
      <Compile Include="Assets\Scripts\UI\GameUI.cs" />
      <Compile Include="Assets\Scripts\UI\MainMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Menu.cs" />

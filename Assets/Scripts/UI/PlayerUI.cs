@@ -17,7 +17,7 @@ public class PlayerUI : MonoBehaviour {
 	private Vector3 lastMousePos;
 	public Vector3 mousePos;
 
-	public DialogueDisplay dialogue;
+	public DialogueDisplay dialogueDisplay;
 
 	void Start() {
 		lastMousePos = mousePos = player.id == 1 
@@ -130,25 +130,25 @@ public class PlayerUI : MonoBehaviour {
 		cursor.GetComponent<RawImage>().material = GameUI.instance.textWhite;
 	}
 
-	public void ShowDialogue(bool onRight) {
+	public void ShowDialogue(Dialogue d, NPC npc) {
 		foreach (OffScreenSlide slide in GetComponentsInChildren<OffScreenSlide>()) {
-			if (slide.gameObject != dialogue.gameObject) {
+			if (slide.gameObject != dialogueDisplay.gameObject) {
 				slide.MoveOffScreen();
 			}
 		}
-		dialogue.ShowDialogue(player, onRight);
+		dialogueDisplay.StartDialogue(d, player, npc);
 	}
 
 	public void HideDialogue() {
 		foreach (OffScreenSlide slide in GetComponentsInChildren<OffScreenSlide>()) {
-			if (slide.gameObject != dialogue.gameObject) {
+			if (slide.gameObject != dialogueDisplay.gameObject) {
 				slide.MoveOnScreen();
 			}
 		}
-		dialogue.Hide();
+		dialogueDisplay.Hide();
 	}
 
 	public bool IsDialogueShowing() {
-		return dialogue.IsShowing();
+		return dialogueDisplay.IsShowing();
 	}
 }

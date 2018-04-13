@@ -7,7 +7,8 @@ public class AcceptQuestDialogueOption : DialogueOption {
         this.q = q;
     }
 
-    public override void Select(Dialogue parent) {
+    public override void Select(Dialogue parent, DialogueDisplay display) {
         SaveGame.currentGame.quests.AddQuest(q);
+        display.FinishConvo();
     }
 }
