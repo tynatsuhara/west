@@ -64,19 +64,21 @@ public abstract class Location {
 	}
 
 	// Returns the X/Y coords in the grid of an unoccupied tile
-	public Vector2 RandomUnoccupiedXY() {
+	public Vector2 RandomUnoccupiedXY(bool excludeTrails = false) {
 		List<Vector2> possibilities = new List<Vector2>();
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				possibilities.Add(new Vector2(x, y));
+				if (!TileOccupied(x, y) && (!excludeTrails || ((GroundTile)tiles.Get(x, y).First()).type != GroundTile.GroundType.TRAIL)) {
+					possibilities.Add(new Vector2(x, y));
+				}
 			}
 		}
 		return possibilities[Random.Range(0, possibilities.Count)];
 	}
 
 	// Returns the world position of the tile
-	public Vector3 RandomUnoccupiedTile() {
-		Vector2 xy = RandomUnoccupiedXY();
+	public Vector3 RandomUnoccupiedTile(bool excludeTrails = false) {
+		Vector2 xy = RandomUnoccupiedXY(excludeTrails);
 		return TileVectorPosition((int)xy.x, (int)xy.y);
 	}
 

@@ -98,7 +98,7 @@ public class TownLocation : Location {
 		// guarantee that the first element in each stack is the ground tile
 		tiles = new Grid<List<TileElement>>(width, height, () => {
 			List<TileElement> lst = new List<TileElement>();
-			lst.Add(new GroundTile());
+			lst.Add(new GroundTile(GroundTile.GroundType.GRASS));
 			return lst;
 		});
 
@@ -135,7 +135,7 @@ public class TownLocation : Location {
 		// add foliage
 		int cactiAmount = Random.Range(2, 8);
 		for (int i = 0; i < cactiAmount; i++) {
-			Vector2 xy = RandomUnoccupiedXY();
+			Vector2 xy = RandomUnoccupiedXY(excludeTrails: true);
 			tiles.Get((int)xy.x, (int)xy.y).Add(new Cactus());
 		}
 

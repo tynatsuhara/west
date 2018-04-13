@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace World {
     [System.Serializable]
-    public class FloorTile : TileElement {
+    public class FloorTile : GroundTile {
         public bool wallRight, wallBottom, wallLeft, wallTop;
 
         // TODO: get rid of ch???
-        public FloorTile(char ch) {
+        public FloorTile(char ch) : base(GroundType.FLOOR) {
             this.ch = ch;
         }
 
@@ -34,6 +34,6 @@ namespace World {
                     y * LevelBuilder.TILE_SIZE), Quaternion.identity) as GameObject;
             tile.GetComponent<Floor>().kickUpDirt = false;  // TODO: change the floor and biome color shit
             lb.floorTiles[x,y] = tile.GetComponent<PicaVoxel.Volume>();
-        }        
-    }    
+        }
+    }
 }

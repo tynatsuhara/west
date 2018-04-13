@@ -9,10 +9,14 @@ namespace World {
 
         public enum GroundType {
             GRASS,
-            TRAIL
+            TRAIL,
+            FLOOR
         }
-
         public GroundType type;
+
+        public GroundTile(GroundType type) {
+            this.type = type;
+        }
 
         public override void Spawn(LevelBuilder lb, Location location, int x, int y) {
             GameObject prefab = type == GroundType.GRASS ? lb.floorPrefab : lb.trailPrefab;
