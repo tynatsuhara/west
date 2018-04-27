@@ -28,10 +28,6 @@ public class InteriorLocation : Location {
         discovered = true;
     }
 
-    public void PlaceAt(System.Guid town) {
-        connections.Add(town);     
-    }
-
     public override string ToString() {
         return grid.ToString((room, x, y) => {
             if (room == null) {

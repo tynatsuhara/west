@@ -179,11 +179,13 @@
      <Compile Include="Assets\Scripts\World\Grid.cs" />
      <Compile Include="Assets\Scripts\World\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Locations\Benchmarking.cs" />
+     <Compile Include="Assets\Scripts\World\Locations\BuildingFactory.cs" />
      <Compile Include="Assets\Scripts\World\Locations\InteriorBuilder.cs" />
+     <Compile Include="Assets\Scripts\World\Locations\InteriorFactory.cs" />
      <Compile Include="Assets\Scripts\World\Locations\InteriorLocation.cs" />
      <Compile Include="Assets\Scripts\World\Locations\Location.cs" />
      <Compile Include="Assets\Scripts\World\Locations\Room.cs" />
-     <Compile Include="Assets\Scripts\World\Locations\TownBuilder.cs" />
+     <Compile Include="Assets\Scripts\World\Locations\TownFactory.cs" />
      <Compile Include="Assets\Scripts\World\Locations\TownLocation.cs" />
      <Compile Include="Assets\Scripts\World\Map.cs" />
      <Compile Include="Assets\Scripts\World\NameGen.cs" />

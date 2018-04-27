@@ -87,6 +87,7 @@ public abstract class Location {
         return t == null ? new List<World.TileElement>() : t;
 	}
 
+	// TODO: get rid of these nasty shits
 	public int Val(int x, int y) {
 		return x + y * width;
 	}

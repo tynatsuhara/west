@@ -9,6 +9,9 @@ using World;
 [System.Serializable]
 public class TownLocation : Location {
 
+	[System.NonSerializedAttribute]
+	private int buildingsToAttempt;
+
 	public override string greeting {
 		get { 
 			int bounty = SaveGame.currentGame.savedPlayers
@@ -20,18 +23,27 @@ public class TownLocation : Location {
 	}
 
 	public TownLocation(
-		Map parent,
-		float x, 
-		float y
-	) : base(parent, true) {
-		var icons = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};
-		icon = icons[Random.Range(0, icons.Length)];
+		Map map,
+		float x,
+		float y,
+		string icon,
+		List<System.Guid> setConnections = null,
+		int additionalPossibleConnections = 0,
+		int buildingsToAttempt = 0
+	) : base(map, true) {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
+		this.icon = icon;
 		name = NameGen.townName.Generate("<name>");
-		int townConnectionAmount = Random.Range(1, 6);
-		for (int i = 0; i < townConnectionAmount; i++) {
+
+		if (setConnections != null) {
+			connections.AddRange(setConnections);
+		}
+		
+		for (int i = 0; i < additionalPossibleConnections; i++) {
 			connections.Add(System.Guid.Empty);
 		}
+
+		this.buildingsToAttempt = buildingsToAttempt;
 	}
 
 	public bool DoneConnecting() {
@@ -51,6 +63,45 @@ public class TownLocation : Location {
 
 	// Build the street layout for a town
 	public void Generate() {
+		List<int> exits = PlaceExits();
+		PlaceBuildingsAndRoads(exits);
+
+		// add foliage
+		int cactiAmount = Random.Range(2, 8);
+		for (int i = 0; i < cactiAmount; i++) {
+			Vector2 xy = RandomUnoccupiedXY(excludeTrails: true);
+			tiles.Get((int)xy.x, (int)xy.y).Add(new Cactus());
+		}
+
+		// temp NPC spawning
+		List<System.Guid> spawnedChars = new List<System.Guid>();
+		int pplAmount = Random.Range(1, 5);
+		for (int i = 0; i < pplAmount && buildings.Count >= 2; i++) {
+			Location work = Map.Location(buildings[0].guid);
+			work.name = "WORK";
+			Location home = Map.Location(buildings[1].guid);
+			home.name = "HOME";
+			NPCData npc = new NPCFactory().MakeNormie(work, home);
+			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
+			npc.position = new SerializableVector3(RandomUnoccupiedTile());
+			// create quest, which will register the dialogue with them
+			new KillQuest(npc.guid);
+			npc.location = guid;
+			spawnedChars.Add(npc.guid);
+		}
+
+		// temp horse spawning
+		int horseAmount = spawnedChars.Count + Random.Range(1, 3);
+		for (int i = 0; i < horseAmount; i++) {
+			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < spawnedChars.Count ? spawnedChars[i] : System.Guid.Empty);
+			hsd.location = new SerializableVector3(RandomUnoccupiedTile());
+			SaveGame.currentGame.horses[hsd.guid] = hsd;
+			horses.Add(hsd.guid);
+		}
+	}
+
+	// Places exits according to the connections, and grows the width/height if necessary
+	private List<int> PlaceExits() {
 		// default minimum heights
 		int width = 30;
 		int height = width;
@@ -129,41 +180,7 @@ public class TownLocation : Location {
 			teleporters.Add(new Teleporter.TeleporterData(wLinks[i].guid, new Vector3(0, 1, wPlaces[i] + LevelBuilder.TILE_SIZE/4f) * LevelBuilder.TILE_SIZE));
 		}
 
-		PlaceBuildingsAndRoads(exits);
-		// TODO: make trails "occupied" after placing buildings to prevent cacti etc on the trails
-
-		// add foliage
-		int cactiAmount = Random.Range(2, 8);
-		for (int i = 0; i < cactiAmount; i++) {
-			Vector2 xy = RandomUnoccupiedXY(excludeTrails: true);
-			tiles.Get((int)xy.x, (int)xy.y).Add(new Cactus());
-		}
-
-		// temp NPC spawning
-		int pplAmount = Random.Range(1, 5);
-		List<System.Guid> spawnedChars = new List<System.Guid>();
-		for (int i = 0; i < pplAmount; i++) {
-			Location work = Map.Location(buildings[0].guid);
-			work.name = "WORK";
-			Location home = Map.Location(buildings[1].guid);
-			home.name = "HOME";
-			NPCData npc = new NPCFactory().MakeNormie(work, home);
-			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
-			npc.position = new SerializableVector3(RandomUnoccupiedTile());
-			// create quest, which will register the dialogue with them
-			new KillQuest(npc.guid);
-			npc.location = guid;
-			spawnedChars.Add(npc.guid);
-		}
-
-		// temp horse spawning
-		int horseAmount = pplAmount + Random.Range(1, 3);
-		for (int i = 0; i < horseAmount; i++) {
-			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < pplAmount ? spawnedChars[i] : System.Guid.Empty);
-			hsd.location = new SerializableVector3(RandomUnoccupiedTile());
-			SaveGame.currentGame.horses[hsd.guid] = hsd;
-			horses.Add(hsd.guid);
-		}
+		return exits;
 	}
 
 	private List<int> Subset(List<int> lst, int size) {
@@ -286,6 +303,7 @@ public class TownLocation : Location {
 		return null;
 	}
 
+	// Used by A*
 	private float HeuristicCostEstimate(int start, int end) {
 		int startX = X(start);
 		int startY = Y(start);
@@ -320,24 +338,23 @@ public class TownLocation : Location {
 
 	// ================= BUILDING STUFF ================= //
 	
-	private void PlaceBuildingsAndRoads(List<int> exits) {		
+	private void PlaceBuildingsAndRoads(List<int> exits) {	
+		BuildingFactory BuildingFactory = new BuildingFactory();
+
 		// Place roads from all teleporters to first building
-		int buildingsToAttempt = Random.Range(5, 10);
-		InteriorLocation interior = GetInterior();
 		for (int i = 0; i < buildingsToAttempt; i++) {
-			Building building = new Building(interior);
+			Building building = BuildingFactory.NewGenericBuilding();
 			int destination = TryPlaceBuilding(building);
 			if (destination == -1)
-				continue;
+				continue;				
 
-			parent.locations[interior.guid] = interior;
-			connections.Add(interior.guid);
-			interior.PlaceAt(guid);
+			buildings.Add(building);
+			building.GenerateInterior(parent, this);
 
 			// TODO: different buildings can have multiple entrances 
 			// that can attach or not attach to roads 
 			GroundTile gt = GroundTileAt(destination);
-			gt.occupied = false;
+			gt.occupied = false;  // set gt to unoccupied so pathfinding works
 			foreach (int exit in exits) {
 				foreach (int path in BestPathFrom2(exit, destination)) {
 					GroundTileAt(path).type = GroundTile.GroundType.TRAIL;
@@ -347,34 +364,11 @@ public class TownLocation : Location {
 			gt.occupied = true;
 
 			teleporters.AddRange(building.doors);
-			interior = GetInterior();
 		}
 	}
 
 	private GroundTile GroundTileAt(int val) {
 		return tiles.Get(X(val), Y(val)).First() as GroundTile;
-	}
-
-	// todo: all this should be moved to BuildingFactory or something
-	private InteriorLocation GetInterior() {
-		Room room1 = new Room('a', '/',
-			"      #//T/#",
-			"      #////#",
-			"//####/////#",
-			"///////#####"
-		);
-
-		Room room2 = new Room('b', '/',
-			"///////////#",
-			"///////////#",
-			"///////////#",
-			"############"
-		);
-		
-		return new InteriorBuilder(room1)
-				.Attach("##", room2)
-				.AddTeleporter('T', guid, "front door")
-				.Build(parent, guid, "SOME BUILDING");
 	}
 
 	private int TryPlaceBuilding(Building b) {
@@ -395,7 +389,6 @@ public class TownLocation : Location {
 			}
 
 			b.bottomLeftTile = place;
-			buildings.Add(b);
 			return Val(x + b.doorOffsetX, y + b.doorOffsetY);
 		}
 		return -1;

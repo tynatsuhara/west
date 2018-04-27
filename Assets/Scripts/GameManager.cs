@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour {
 		LoadLocation(SaveGame.currentGame.map.currentLocation, firstLoadSinceStartup:true);
 		players = SpawnPlayers(playersToSpawn);
 		SetTimeScale(1f);
-		GameObject.Find("Map").GetComponent<VisualMap>().SpawnIcons();		
+		VisualMap.instance.SpawnIcons();
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());

@@ -5,6 +5,14 @@ using UnityEngine;
 
 [System.Serializable]
 public class Building {
+
+    public enum BuildingType {
+        HOME,
+        SALOON
+    }
+
+    public readonly BuildingType type;
+
     // TODO: these TDs should store relative positions to the center of the building?
     public List<Teleporter.TeleporterData> doors = new List<Teleporter.TeleporterData>();
     public System.Guid guid;
@@ -17,10 +25,28 @@ public class Building {
     // set in TownLocation.cs
     public int bottomLeftTile;
 
-    public Building(InteriorLocation interior) {
-        this.guid = interior.guid;
+    public Building(BuildingType type) {
+        this.type = type;
+    }
+
+    public void GenerateInterior(Map map, TownLocation town) {
+        InteriorFactory factory = new InteriorFactory(map, town);
+        InteriorLocation interior = factory.InteriorFor(type);
+        
+        // set the interior
+        guid = interior.guid;
+        map.locations[guid] = interior;
+
+        // link the town to the interior
+        map.locations[guid].connections.Add(town.guid);
+        map.locations[town.guid].connections.Add(guid);
+
+        // add teleporters
         doors.Add(new Teleporter.TeleporterData(interior.guid, Vector3.one, "front door"));
     }
+
+
+    // !!!! Everything below here is trash and will be rewritten later !!!! //
 
     private int doorOffsetX_ = 1;
     private int doorOffsetY_ = 0;

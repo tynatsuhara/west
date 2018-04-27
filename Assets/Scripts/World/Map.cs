@@ -19,6 +19,8 @@ public class Map {
 
 	public IEnumerator MakeMap(Text display) {
 		locations = new Dictionary<System.Guid, Location>();	
+		TownFactory tf = new TownFactory(this);
+
 		while (locations.Count < MIN_LOCATION_AMOUNT) {
 			locations.Clear();
 
@@ -26,14 +28,14 @@ public class Map {
 			List<TownLocation> ls = new List<TownLocation>();
 			for (int i = 0; i < MAX_LOCATION_AMOUNT; i++) {
 				display.text = "PLACING TOWN " + (i+1) + "/" + MAX_LOCATION_AMOUNT;
-				yield return 0;
-				TownLocation l = new TownLocation(this, Random.Range(0, WORLD_COORD_SIZE), Random.Range(0, WORLD_COORD_SIZE));
+				TownLocation l = tf.NewLargeTown();
 				for (int j = 0; j < 10 && TooClose(ls, l); j++) {
-					l = new TownLocation(this, Random.Range(0, WORLD_COORD_SIZE), Random.Range(0, WORLD_COORD_SIZE));
+					l = tf.NewLargeTown();
 				}
 				if (!TooClose(ls, l)) {
 					ls.Add(l);
 				}
+				yield return 0;
 			}
 
 			// connect locations together
@@ -56,7 +58,7 @@ public class Map {
 			display.text = "PRUNING MAP";
 			yield return 0;
 			List<Location> graph = null;
-			foreach (TownLocation l in ls) {
+			foreach (TownLocation l in locations.Values) {
 				graph = DFS(l);
 				if (graph.Count >= MIN_LOCATION_AMOUNT)
 					break;
