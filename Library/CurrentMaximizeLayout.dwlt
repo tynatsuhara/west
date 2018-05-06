@@ -201,9 +201,9 @@ MonoBehaviour:
     height: 622
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: fc500000
-    m_LastClickedID: 20732
-    m_ExpandedIDs: e695feff209afeffba9dfeffeaa7feff68f4ffff4ef8ffffe4fbffff00000000
+    m_SelectedIDs: 122fd8ff
+    m_LastClickedID: -2609390
+    m_ExpandedIDs: 1e2fd8ff3e33d9ff1250dbff4a53dbff9261dbff6297ddffc69bddffdeb9deffc0eddfff9a02e0ffe60fe0ff2882e3ffa48de4ffe2b7e5ff5ebee6ffecd1e6ff42d8e7ffbaf0e7ff36f7e8ff0205e9ff680beaff6840eaff6052ebffe073ebffa87eecffa094ecff529fedff0cafedff22f0edff1607efffbe16efff1820efff7425efff3a27efff6662f0ffc466f0ff56b4f2ffaeb5f2ff20f1f4ff9235f7ffca38f7ffca43f7ff0247f7ff6055f7ff2a7df8ff109ff8ffd2b0f8ff9403f9ff1020faff2262fcffa49afdffeaa1fdfff0c7feff4edafeffeee5ffff66f8ffffe4fbffff00000000267c00004e7c0000d67c00005cbe0000eebe00005ac1000082c1000014c200001ccd0000a4cd00003ace000062ce0000eace00001ad90000acd900007adc00000cdd0000eae600007ce700004aed0000dced0000aaf000003cf100000af400009cf400006af70000fcf700003a050100cc050100441b0100d61b0100bc3901004e3a0100
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -280,14 +280,14 @@ MonoBehaviour:
     width: 989
     height: 622
   m_SceneLighting: 1
-  lastFramingTime: 132.0606710910797
+  lastFramingTime: 452787.13200616837
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -1007.66876, y: -0.8666086, z: 9.043573}
+    m_Target: {x: -1003.36, y: 1.1, z: 7.1200027}
     speed: 2
-    m_Value: {x: -1007.66876, y: -0.8666086, z: 9.043573}
+    m_Value: {x: -1003.36, y: 1.1, z: 7.1200027}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -310,13 +310,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: -0.3728637, y: -0.056825012, z: 0.022881368, w: -0.9258618}
+    m_Target: {x: -0.23906706, y: -0.16059524, z: 0.04012377, w: -0.9567895}
     speed: 2
-    m_Value: {x: -0.37286368, y: -0.05682501, z: 0.022881368, w: -0.9258617}
+    m_Value: {x: -0.23906706, y: -0.16059524, z: 0.04012377, w: -0.9567895}
   m_Size:
-    m_Target: 13.357141
+    m_Target: 2.8578944
     speed: 2
-    m_Value: 13.357141
+    m_Value: 2.8578944
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -446,8 +446,8 @@ MonoBehaviour:
     y: 643
     width: 1680
     height: 312
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 100, y: 121}
+  m_MaxSize: {x: 4000, y: 4021}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 13}
@@ -492,18 +492,18 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Scenes
+    - Assets
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets
   m_LastFoldersGridSize: -1
   m_LastProjectPath: /Users/Tyler/Documents/Unity/west
   m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 46}
-    m_SelectedIDs: 2a2f0000
-    m_LastClickedID: 12074
+    scrollPos: {x: 0, y: 31}
+    m_SelectedIDs: 60270000
+    m_LastClickedID: 10080
     m_ExpandedIDs: 000000001c2400007c260000882600008c260000aa260000cc2600000a270000602700007027000086270000b6270000ee2700002e2800006428000072280000bc280000fe2800003c29000072290000e2290000da2a0000262b0000422b0000542b0000762b0000802b0000e62b0000f62b0000fc2b0000122c0000202c0000542c0000782c00007a2c00009c2c0000ac2c0000d42c0000d62c0000d82c0000182d00002e2d0000342d00003a2d0000482d0000582d0000942d0000ac2d0000ae2d0000d02d0000ec2d0000082e0000322e0000562e0000722e0000742e0000762e00008a2e00008e2e0000ae2e0000b22e0000ba2e0000d62e0000f82e00001e2f0000662f00008a2f0000b02f0000cc2f0000f22f00001c300000323000005c300000903000009c300000fe310000163200001832000086320000b43200003033000084330000c8330000ca330000cc330000ce330000d0330000d2330000d4330000d6330000d8330000da330000dc330000de330000e0330000ffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -557,10 +557,10 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 402a0000
-    m_LastClickedInstanceID: 10816
+    m_SelectedInstanceIDs: 122fd8ff
+    m_LastClickedInstanceID: -2609390
     m_HadKeyboardFocusLastEvent: 1
-    m_ExpandedInstanceIDs: b6060000f4040000803afeffaa1b0000361f00006c1f0000901d0000bc1d00002c1e0000ce1d0000561e000032dadeff848bf6ff00000000ea0600003c1f00005620000084210000fe200000ee1d0000961f00003c1e0000080800009e1e0000b21f0000001e0000f61d0000d0220000dc1e0000747dfbff282c0000aa2b0000b8290000bc290000
+    m_ExpandedInstanceIDs: b6060000f4040000803afeffaa1b0000361f00006c1f0000901d0000bc1d00002c1e0000ce1d0000561e000032dadeff848bf6ffea0600003c1f00005620000084210000fe200000ee1d0000961f00003c1e0000080800009e1e0000b21f0000001e0000f61d0000d0220000dc1e0000747dfbff282c0000aa2b0000b8290000bc29000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

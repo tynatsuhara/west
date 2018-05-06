@@ -21,6 +21,10 @@ public class GameUI : MonoBehaviour {
 	public GameObject winScreen;
 	public GameObject devConsole;
 
+	public bool pauseScreenShowing {
+		get { return pauseMenu.activeInHierarchy; }
+	}
+
 	void Awake () {
 		instance = this;
 	}

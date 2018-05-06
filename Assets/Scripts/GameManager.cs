@@ -92,16 +92,16 @@ public class GameManager : MonoBehaviour {
 				// capture console input
 			} else if (!onMap && !onPauseMenu && esc) {  // game -> pause
 				SetPaused(true);
-				GameUI.instance.ShowPauseScreen(true);				
+				GameUI.instance.ShowPauseScreen(true);
 			} else if (!onMap && !onPauseMenu && m) {    // game -> map
 				SetPaused(true);
 				VisualMap.instance.active = true;
 			} else if (onMap && (esc || m)) {            // map -> game
 				SetPaused(false);
-				VisualMap.instance.active = false;			
+				VisualMap.instance.active = false;
 			} else if (onPauseMenu && esc) {             // pause -> game
 				SetPaused(false);
-				GameUI.instance.ShowPauseScreen(false);				
+				GameUI.instance.ShowPauseScreen(false);
 			}
 		}
 	}

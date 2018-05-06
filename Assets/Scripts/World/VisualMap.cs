@@ -45,8 +45,9 @@ public class VisualMap : MonoBehaviour {
 			return;
 		}
 		foreach (var kv in icons) {
-			kv.Value.RefreshText(Map.Location(kv.Key));
-			kv.Value.RefreshBirdsEyeView(Map.Location(kv.Key).mapRender);
+			Location l = Map.Location(kv.Key);
+			kv.Value.RefreshText(l);
+			kv.Value.RefreshBirdsEyeView(l);
 		}
 	}
 

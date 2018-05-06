@@ -23,15 +23,15 @@ public class VisualMapLocation : MonoBehaviour {
 		GetComponent<Text>().text = str;
 	}
 
-	public void RefreshBirdsEyeView(byte[] tex) {
-		if (tex == null)
-			return;
-		RenderTexture ogRender = LevelBuilder.instance.townRenderCam.targetTexture;
-		Texture2D t = new Texture2D(ogRender.width, ogRender.height);
-		t.LoadRawTextureData(tex);
-		t.Apply();
-		birdsEyeRender.material.mainTexture = t;
-		Debug.Log("loaded tex data for " + name);
+	public void RefreshBirdsEyeView(Location l) {
+		// if (l.mapRender == null)
+		// 	return;
+		// RenderTexture ogRender = LevelBuilder.instance.townRenderCam.targetTexture;
+		// Texture2D t = new Texture2D(LevelBuilder.instance.townRenderCam.pixelWidth, LevelBuilder.instance.townRenderCam.pixelHeight);
+		// t.LoadRawTextureData(l.mapRender);
+		// t.Apply();
+		// birdsEyeRender.material.mainTexture = t;
+		// Debug.Log("loaded tex data for " + name);
 	}
 
 	public void MarkQuest() {

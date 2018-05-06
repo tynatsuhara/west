@@ -36,10 +36,6 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void LoadLocation(System.Guid guid, bool firstLoadSinceStartup) {
-		StartCoroutine(LoadLocationCoroutine(guid, firstLoadSinceStartup));
-	}
-
-	private IEnumerator LoadLocationCoroutine(System.Guid guid, bool firstLoadSinceStartup) {
 		markedDestinations = new Dictionary<string, GameObject>();
 
 		if (!firstLoadSinceStartup) {
@@ -66,17 +62,24 @@ public class LevelBuilder : MonoBehaviour {
 		ShowGreeting();
 		PositionWalls();
 
-		if (!loadedLocation.discovered && loadedLocation.onMap) {
+		/*if (!loadedLocation.discovered && loadedLocation.onMap) {
 			townRenderCam.enabled = true;
-			yield return new WaitForEndOfFrame();
-			RenderTexture rt = townRenderCam.targetTexture;
-			Debug.Log("w = " + rt.width + ", h = " + rt.height);
-			Texture2D tex = new Texture2D(rt.width, rt.height);
-			tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0, true);
-			tex.Apply();
-			loadedLocation.mapRender = tex.GetRawTextureData();
+
+			// setup cam, texture, and rendertexture
+			RenderTexture rt = new RenderTexture(loadedLocation.width, loadedLocation.height, 24);
+			Texture2D screenshot = new Texture2D(townRenderCam.pixelWidth, townRenderCam.pixelHeight);
+
+			// render to rendertexture
+			townRenderCam.targetTexture = rt;
+			townRenderCam.Render();
+
+			// read pictures to texture
+			RenderTexture.active = rt;
+			screenshot.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0, true);
+
+			loadedLocation.mapRender = screenshot.GetRawTextureData();
 			townRenderCam.enabled = false;
-		}
+		}*/
 
 		loadedLocation.discovered = true;
 		VisualMap.instance.Refresh();		
