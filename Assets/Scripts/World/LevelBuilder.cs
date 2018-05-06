@@ -6,7 +6,7 @@ using System.Linq;
 public class LevelBuilder : MonoBehaviour {
 
 	public static LevelBuilder instance;
-
+	public Camera townRenderCam;
 	public GameObject floorPrefab;
 	public GameObject trailPrefab;
 	public GameObject wallPrefab;
@@ -36,6 +36,10 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	public void LoadLocation(System.Guid guid, bool firstLoadSinceStartup) {
+		StartCoroutine(LoadLocationCoroutine(guid, firstLoadSinceStartup));
+	}
+
+	private IEnumerator LoadLocationCoroutine(System.Guid guid, bool firstLoadSinceStartup) {
 		markedDestinations = new Dictionary<string, GameObject>();
 
 		if (!firstLoadSinceStartup) {
@@ -45,29 +49,37 @@ public class LevelBuilder : MonoBehaviour {
 		}
 
 		SaveGame.currentGame.events.CheckQueue(false);
-		Location l = Map.Location(guid);
+		loadedLocation = Map.Location(guid);
 
-		if (l is InteriorLocation) {
-			Debug.Log(l);
-		}
-
-		loadedLocation = l;
-		mat.SetColor("_Tint", biomeColors[l.biomeColor]);
-		floorTiles = new PicaVoxel.Volume[l.width, l.height];
+		mat.SetColor("_Tint", biomeColors[loadedLocation.biomeColor]);
+		floorTiles = new PicaVoxel.Volume[loadedLocation.width, loadedLocation.height];
 		teleporters = new List<Teleporter>();
 
 		SpawnBuildings();
 		SpawnTileElements();
+		SpawnAtmospherics();
 		SpawnWallsHackily();
 		SpawnNPCs();
 		SpawnHorses(firstLoadSinceStartup);
-		SpawnAtmospherics();
 		GroupFloor();
 		SpawnTeleporters();
 		ShowGreeting();
 		PositionWalls();
 
+		if (!loadedLocation.discovered && loadedLocation.onMap) {
+			townRenderCam.enabled = true;
+			yield return new WaitForEndOfFrame();
+			RenderTexture rt = townRenderCam.targetTexture;
+			Debug.Log("w = " + rt.width + ", h = " + rt.height);
+			Texture2D tex = new Texture2D(rt.width, rt.height);
+			tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0, true);
+			tex.Apply();
+			loadedLocation.mapRender = tex.GetRawTextureData();
+			townRenderCam.enabled = false;
+		}
+
 		loadedLocation.discovered = true;
+		VisualMap.instance.Refresh();		
 	}
 
 	public void Clean(bool removePlayers=false) {

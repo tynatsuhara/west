@@ -171,7 +171,6 @@ public class GameManager : MonoBehaviour {
 		}
 		SetPaused(false);
 		LevelBuilder.instance.LoadLocation(guid, firstLoadSinceStartup);
-		VisualMap.instance.Refresh();
 	}
 
 	// TODO: move to playersavedata, this is fucking stupid

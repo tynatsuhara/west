@@ -9,6 +9,7 @@ public class VisualMapLocation : MonoBehaviour {
 	public Color currentLocationColor;
 	public Color questDestinationColor;
 	private bool questMarked;
+	public MeshRenderer birdsEyeRender;
 
 	public void RefreshText(Location l) {
 		string str;
@@ -20,6 +21,17 @@ public class VisualMapLocation : MonoBehaviour {
 			str = "";
 		}
 		GetComponent<Text>().text = str;
+	}
+
+	public void RefreshBirdsEyeView(byte[] tex) {
+		if (tex == null)
+			return;
+		RenderTexture ogRender = LevelBuilder.instance.townRenderCam.targetTexture;
+		Texture2D t = new Texture2D(ogRender.width, ogRender.height);
+		t.LoadRawTextureData(tex);
+		t.Apply();
+		birdsEyeRender.material.mainTexture = t;
+		Debug.Log("loaded tex data for " + name);
 	}
 
 	public void MarkQuest() {

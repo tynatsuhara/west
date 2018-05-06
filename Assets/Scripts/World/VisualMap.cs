@@ -32,8 +32,10 @@ public class VisualMap : MonoBehaviour {
 			newIcon.name = kv.Value.name;
 			newIcon.transform.localPosition = kv.Value.worldLocation.val * scale;
 			newIcon.transform.position -= offset;
-			newIcon.GetComponent<VisualMapLocation>().RefreshText(kv.Value);
-			icons.Add(kv.Key, newIcon.GetComponent<VisualMapLocation>());
+
+			VisualMapLocation vml = newIcon.GetComponent<VisualMapLocation>();
+			vml.RefreshText(kv.Value);
+			icons.Add(kv.Key, vml);
 		}
 		Destroy(iconPrefab);
 	}
@@ -44,6 +46,7 @@ public class VisualMap : MonoBehaviour {
 		}
 		foreach (var kv in icons) {
 			kv.Value.RefreshText(Map.Location(kv.Key));
+			kv.Value.RefreshBirdsEyeView(Map.Location(kv.Key).mapRender);
 		}
 	}
 

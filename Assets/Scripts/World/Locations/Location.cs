@@ -14,6 +14,7 @@ public abstract class Location {
 	public string name = "DEFAULT_NAME";
 	public abstract string greeting { get; }
 	public string icon;  // bull head in pixel western font
+	public byte[] mapRender;
 	public Map parent;
 	public System.Guid town;
 	public System.Guid guid = System.Guid.NewGuid();

@@ -32,7 +32,7 @@ public class PlayerUI : MonoBehaviour {
 		UpdateQuestMarkers();
 
 		bool esc = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9");
-		if (esc) {
+		if (esc && dialogueDisplay.IsShowing()) {
 			HideDialogue();
 		}
 	}
