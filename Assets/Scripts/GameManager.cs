@@ -83,23 +83,25 @@ public class GameManager : MonoBehaviour {
 		} else {
 			bool esc = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9");
 			bool m = Input.GetKeyDown(KeyCode.M);
+			bool onMap = VisualMap.instance.active;
+			bool onPauseMenu = GameUI.instance.pauseScreenShowing;
 			if (Input.GetKeyDown(KeyCode.BackQuote)) {
 				GameUI.instance.ShowPauseScreen(false);
 				SetPaused(GameUI.instance.ToggleConsole());
 			} else if (GameUI.instance.consoleShowing || players.First().playerUI.IsDialogueShowing()) {
 				// capture console input
-			} else if (paused && esc) {
-				SetPaused(false);
-				GameUI.instance.ShowPauseScreen(false);				
-			} else if (VisualMap.instance.active && (esc || m)) {
-				SetPaused(false);
-				VisualMap.instance.active = false;
-			} else if (!paused && esc) {
+			} else if (!onMap && !onPauseMenu && esc) {  // game -> pause
 				SetPaused(true);
 				GameUI.instance.ShowPauseScreen(true);				
-			} else if (m) {
-				SetPaused(true);				
+			} else if (!onMap && !onPauseMenu && m) {    // game -> map
+				SetPaused(true);
 				VisualMap.instance.active = true;
+			} else if (onMap && (esc || m)) {            // map -> game
+				SetPaused(false);
+				VisualMap.instance.active = false;			
+			} else if (onPauseMenu && esc) {             // pause -> game
+				SetPaused(false);
+				GameUI.instance.ShowPauseScreen(false);				
 			}
 		}
 	}
