@@ -82,7 +82,6 @@ public class MainMenu : Menu {
 	}
 
 	private void SpawnSaveSlots(List<FileInfo> saves) {
-		saves = saves.OrderBy(x => x.LastAccessTime).Reverse().ToList();
 		MenuNode prefab = saveSlots[0];
 		MoveToPanel(prefab, 1);
 		RectTransform prefabRect = prefab.GetComponent<RectTransform>();

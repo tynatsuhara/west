@@ -72,6 +72,10 @@ public class SaveGame {
 		Debug.Log("game loaded from " + saveFile);	
 	}
 
+	public static void LoadLastSave() {
+		Load(GetSaves().First());
+	}
+
 	private static string DirPath() {
 		return Application.persistentDataPath + "/saves";
 	}
@@ -83,7 +87,7 @@ public class SaveGame {
 	public static List<FileInfo> GetSaves() {
 		DirectoryInfo dir = new DirectoryInfo(DirPath());
 		Debug.Log("game saves stored at " + dir);		
-		return dir.GetFiles("*.wst").ToList();
+		return dir.GetFiles("*.wst").ToList().OrderBy(x => x.LastAccessTime).Reverse().ToList();
 	}
 
 	public static void DeleteSave(int id) {
