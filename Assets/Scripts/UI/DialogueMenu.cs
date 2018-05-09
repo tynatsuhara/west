@@ -16,7 +16,7 @@ public class DialogueMenu : Menu {
 
     public void Start() {
         playerId = GetComponentInParent<PlayerUI>().player.id;
-        nodes = new MenuNode[10];
+        nodes = new MenuNode[4];
         nodes[0] = nodesPrefab;
         for (int i = 1; i < nodes.Length; i++) {
             nodes[i] = Instantiate(nodesPrefab, nodesPrefab.transform.parent);
