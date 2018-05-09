@@ -3,7 +3,7 @@ public class GoToFrameDialogueOption : DialogueOption {
 
     private string frameTag;
 
-    public GoToFrameDialogueOption(string frameTag) : base("NEXT") {
+    public GoToFrameDialogueOption(string s, string frameTag) : base(s) {
         this.frameTag = frameTag;
     }
 

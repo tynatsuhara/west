@@ -8,15 +8,15 @@ public class KillQuest : Quest {
         this.character = character;
         this.killTask = new KillTask(character);
         this.title = "Kill " + SaveGame.currentGame.savedCharacters[character].name;
-
+        
         Dialogue d = new Dialogue("yellow", "!")
-                .AddFrame("intro", false, "Can you help me?",
-                    new AcceptQuestDialogueOption(this),
-                    new GoToFrameDialogueOption("reply")
-                ).AddFrame("reply", false, "Can you help me?",
-                    new AcceptQuestDialogueOption(this),
-                    new GoToFrameDialogueOption("getmad")
-                ).AddFrame("getmad", false, "Fine, dick!");
+                .AddFrame("intro", "I hate my life. Can you help me?",
+                    new AcceptQuestDialogueOption("Sure!", this),
+                    new GoToFrameDialogueOption("Tell me more", "2")
+                ).AddFrame("2", "Can you just shoot me right in the face?",
+                    new AcceptQuestDialogueOption("Okie-dokey", this),
+                    new EndDialogueOption("Maybe later", "intro", reply: "Thanks, dick!")
+                );
 
         SaveGame.currentGame.savedCharacters[character].dialogues.Add((int) Dialogue.Priority.OFFERING_QUEST, d);
     }

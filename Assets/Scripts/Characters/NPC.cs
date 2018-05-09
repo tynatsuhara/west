@@ -52,6 +52,10 @@ public class NPC : Character, Interactable {
 		ExecuteTask();
 	}
 
+	void LateUpdate() {
+		characterIndicator.UpdateVerticalPositioning(speech.currentlyDisplaying);
+	}
+
 	private Teleporter taskTeleporter;
 	private void ExecuteTask() {
 		System.Guid taskLocation = task.GetLocation().location;
@@ -133,9 +137,11 @@ public class NPC : Character, Interactable {
 		playerInteractingWith = null;
 	}
 
-	public void FinishDialogue() {
+	public void FinishDialogue(bool removeDialogue) {
 		bool startNextDialogue = false;
-		data.dialogues.RemoveAt(0);
+		if (removeDialogue) {
+			data.dialogues.RemoveAt(0);
+		}
 		if (startNextDialogue && data.dialogues.Count > 0) {
 			playerInteractingWith.playerUI.ShowDialogue(data.dialogues.First().Value, this);
 		} else {

@@ -22,7 +22,7 @@ public class DialogueDisplay : MonoBehaviour {
 	
 	// ui
 	private bool onScreen;
-	private GameObject displayedCharacter;
+	private GameObject[] displayedCharacters = new GameObject[2];
 	private OffScreenSlide slide;
 
 	// dialogue
@@ -51,7 +51,10 @@ public class DialogueDisplay : MonoBehaviour {
 
 	public void Refresh() {
 		Dialogue.DialogueFrame frame = dialogue.GetCurrentFrame();
-		DisplayCharacter(frame.player ? player as Character : npc, !frame.player);
+		Destroy(displayedCharacters[0]);
+		Destroy(displayedCharacters[1]);
+		displayedCharacters[0] = DisplayCharacter(player, false);
+		displayedCharacters[1] = DisplayCharacter(npc, true);
 		DisplayText(frame.text);
 		DisplayOptions(frame.options);
 	}
@@ -61,34 +64,43 @@ public class DialogueDisplay : MonoBehaviour {
 	}
 
 	private void DisplayOptions(List<DialogueOption> options) {
+		tint.transform.parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 360 + (options.Count-1) * DialogueMenu.PER_OPTION_SHIFT);
 		GetComponent<DialogueMenu>().LoadDialogue(dialogue, this, options);
 	}
 
-	private void DisplayCharacter(Character c, bool onRight) {
-		if (displayedCharacter != null)
-			Destroy(displayedCharacter);
-
-		GameObject clone = displayedCharacter = Instantiate(c.gameObject, c.transform.position, c.transform.rotation);
+	private GameObject DisplayCharacter(Character c, bool onRight) {
+		GameObject clone = Instantiate(c.gameObject, c.transform.position, c.transform.rotation);
 		Destroy(clone.GetComponent<Character>());
 		Destroy(clone.GetComponent<Rigidbody>());
 		Destroy(clone.GetComponentInChildren<AudioListener>());
 		clone.transform.SetParent(transform);
 
 		// position clone
-		clone.GetComponent<NavMeshAgent>().enabled = false;
+		NavMeshAgent agent = clone.GetComponent<NavMeshAgent>();
+		if (agent != null) {
+			agent.enabled = false;
+		}
 		RectTransform rect = clone.AddComponent(typeof(RectTransform)) as RectTransform;
 		rect.anchorMin = rect.anchorMax = rect.pivot = onRight ? Vector2.right : Vector2.zero;
 		rect.anchoredPosition3D = new Vector3((onRight ? -1 : 1) * sidePadding, bottomPadding, playerDepth);
 		rect.localScale = Vector3.one * scale;
 		rect.localEulerAngles = rotation;
 		rect.transform.RotateAround(rect.transform.position, rect.transform.up, (onRight ? 1 : -1) * leftRightRotation);
+
+		return clone;
 	}
 
 	public bool IsShowing() {
 		return onScreen;
 	}
 
-	public void FinishConvo() {
-		npc.FinishDialogue();
+	public void FinishConvo(bool removeDialogue, string resumeFrameTag = "") {
+		if (resumeFrameTag.Length > 0)
+			dialogue.GoToFrame(resumeFrameTag);
+		npc.FinishDialogue(removeDialogue);
+	}
+
+	public void NPCReply(string s) {
+		npc.speech.Say(s);
 	}
 }

@@ -85,7 +85,6 @@ public abstract class Character : LivingThing, Damageable {
 		separateBodyParts.Add(body);
 		bodyParts.Add(body);
 		bodyParts.Add(head);
-		speech = GetComponentInChildren<TextObject>();
 
 		Accessory[] accs = new Accessory[] {		
 			CharacterOptionsManager.instance.hairstyles[hairStyle],

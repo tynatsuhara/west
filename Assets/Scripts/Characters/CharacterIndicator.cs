@@ -8,9 +8,11 @@ public class CharacterIndicator : MonoBehaviour {
 
 	private Task.TaskDestination taskMarker;
 	public Dialogue highestPriorityDialogue;
+	private Vector3 startPos;
 
 	public void Awake() {
 		text = GetComponent<TextObject>();
+		startPos = transform.localPosition;
 	}
 
 	public void Start() {
@@ -25,6 +27,10 @@ public class CharacterIndicator : MonoBehaviour {
 	public void UnmarkForQuest() {
 		this.taskMarker = null;
 		UpdateDisplay();
+	}
+
+	public void UpdateVerticalPositioning(bool displayingSpeech) {
+		transform.localPosition = startPos + new Vector3(0, displayingSpeech ? 1 : 0, 0);
 	}
 
 	public void UpdateDialogueIndicator(SortedList<int, Dialogue> dialogues) {
