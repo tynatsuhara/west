@@ -60,7 +60,7 @@ public class DialogueDisplay : MonoBehaviour {
 	}
 
 	private void DisplayText(string text) {
-		
+		this.textDisplay.text = text;
 	}
 
 	private void DisplayOptions(List<DialogueOption> options) {
