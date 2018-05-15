@@ -115,8 +115,10 @@ public class LevelBuilder : MonoBehaviour {
 	}
 
 	private void SpawnNPCs() {
+		GameManager.spawnedNPCs = new List<NPC>();
 		foreach (System.Guid id in loadedLocation.characters) {
 			NPC npc = SpawnNPC(id);
+			GameManager.spawnedNPCs.Add(npc);
 			npc.FastForwardPosition();
 		}
 	}
