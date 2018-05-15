@@ -130,6 +130,9 @@ public class DevConsole : MonoBehaviour {
 			case "town":
 				town();
 				break;
+			case "blood":
+				LivingThing.bloodMultiplier = float.Parse(args[0]);
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
