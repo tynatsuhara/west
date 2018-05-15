@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // TODO: probably rewrite all of this when exterior generation is a thing
@@ -12,6 +13,34 @@ public class Building {
     }
 
     public readonly BuildingType type;
+    public Dictionary<NPCData.NPCType, int> npcHousingSlots = new Dictionary<NPCData.NPCType, int>();
+    public List<NPCData> npcs = new List<NPCData>();
+
+    private string name;
+
+    public Building(BuildingType type, string name) {
+        this.type = type;
+        this.name = name;
+    }
+
+    public Building AddHousingSlot(NPCData.NPCType type, int count) {
+        npcHousingSlots.Add(type, count);
+        return this;
+    }
+
+    public Building AddNPCs(System.Func<NPCData> supplier, int count) {
+        for (int i = 0; i < count; i++) {
+            npcs.Add(supplier());
+        }
+        return this;
+    }
+
+    public Building AddNPC(NPCData npc) {
+        npcs.Add(npc);
+        return this;
+    }
+
+    // all this shit is disgusting
 
     // TODO: these TDs should store relative positions to the center of the building?
     public List<Teleporter.TeleporterData> doors = new List<Teleporter.TeleporterData>();
@@ -25,13 +54,10 @@ public class Building {
     // set in TownLocation.cs
     public int bottomLeftTile;
 
-    public Building(BuildingType type) {
-        this.type = type;
-    }
-
     public void GenerateInterior(Map map, TownLocation town) {
         InteriorFactory factory = new InteriorFactory(map, town);
         InteriorLocation interior = factory.InteriorFor(type);
+        interior.name = name;
         
         // set the interior
         guid = interior.guid;

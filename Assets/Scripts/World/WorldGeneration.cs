@@ -32,7 +32,7 @@ public class WorldGeneration : MonoBehaviour {
 
 	private Dictionary<string, Group> DefaultGroups() {
 		Dictionary<string, Group> result = new Dictionary<string, Group>();
-		result.Add(Group.CRIMINALS, new Group(Group.CRIMINALS));
+		result.Add(Group.LAW_ENFORCEMENT, new Group(Group.LAW_ENFORCEMENT));
 		return result;
 	}
 }

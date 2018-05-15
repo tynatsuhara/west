@@ -77,8 +77,7 @@ public abstract class Character : LivingThing, Damageable {
 	}
 
 	public System.Guid killedBy;
-	public List<System.Guid> groups = new List<System.Guid>();
-	public List<System.Guid> enemyGroups = new List<System.Guid>();
+	public List<string> groups = new List<string>();
 
 	public virtual void Start() {
 		rb = GetComponent<Rigidbody>();
@@ -582,7 +581,6 @@ public abstract class Character : LivingThing, Damageable {
 		data.hairStyle = hairStyle;
 		data.accessory = accessory;
 		data.groups = groups;
-		data.enemyGroups = enemyGroups;
 		data.killedBy = killedBy;
 		return data;
 	}
@@ -620,7 +618,6 @@ public abstract class Character : LivingThing, Damageable {
 		hairStyle = data.hairStyle;
 		accessory = data.accessory;
 		groups = data.groups;
-		enemyGroups = data.enemyGroups;
 		killedBy = data.killedBy;
 	}
 

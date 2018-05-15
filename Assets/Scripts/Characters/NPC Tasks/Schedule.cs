@@ -22,6 +22,12 @@ public class Schedule : NPCTaskSource {
         return null;
     }
 
+    public Schedule Clear() {
+        blocks.Clear();
+        scheduleDuration = 0;
+        return this;
+    }
+
     // starts from 00:00 (midnight)
     // if task is null, don't do anything for the duration of that block 
     // (TODO: task should never actually be null)

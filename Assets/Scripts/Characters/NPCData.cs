@@ -8,20 +8,24 @@ public class NPCData : CharacterData {
 
     public bool showSimDebug;
     public enum NPCType {
-		NORMIE
+		NORMIE,
+        GOON,
+        GANG_LEADER,
+        SHERIFF,
+        US_MARSHAL
 	}
 
     public System.Guid location;
     public NPCType type;
     public string name;
     public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
-    public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
     public SortedList<int, Dialogue> dialogues = new SortedList<int, Dialogue>(new DuplicateKeyComparer<int>());
+    public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
 
-    public NPCData(NPCType type, bool female = false, string lastName = "") {
+    public NPCData(NPCType type, bool female = false) {
         this.type = type;
         this.female = female;
-        name = NameGen.CharacterName(female, lastName);
+        name = NameGen.CharacterFirstName(female) + " " + NameGen.CharacterLastName();
     }
 
 	// background - true if the player is in a loaded location (aka exclude simulating that location)

@@ -23,8 +23,7 @@ public class CharacterData {
     public bool female;
     public bool ridingHorse;
     public System.Guid mountGuid;
-    public List<System.Guid> groups = new List<System.Guid>();
-    public List<System.Guid> enemyGroups = new List<System.Guid>();
+    public List<string> groups = new List<string>();
     public System.Guid killedBy;
 
     public bool isAlive {

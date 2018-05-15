@@ -103,7 +103,8 @@
      <Compile Include="Assets\Scripts\Characters\Dialogue\DialogueOption.cs" />
      <Compile Include="Assets\Scripts\Characters\Dialogue\EndDialogueOption.cs" />
      <Compile Include="Assets\Scripts\Characters\Dialogue\GoToFrameDialogueOption.cs" />
-     <Compile Include="Assets\Scripts\Characters\Group.cs" />
+     <Compile Include="Assets\Scripts\Characters\Groups\Group.cs" />
+     <Compile Include="Assets\Scripts\Characters\Groups\ReputationWithGroup.cs" />
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />
      <Compile Include="Assets\Scripts\Characters\LivingThing.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCFollowTask.cs" />
@@ -176,10 +177,10 @@
      <Compile Include="Assets\Scripts\World\Events\NPCArriveEvent.cs" />
      <Compile Include="Assets\Scripts\World\Events\WorldEvent.cs" />
      <Compile Include="Assets\Scripts\World\Exteriors\Building.cs" />
+     <Compile Include="Assets\Scripts\World\Exteriors\BuildingFactory.cs" />
      <Compile Include="Assets\Scripts\World\Grid.cs" />
      <Compile Include="Assets\Scripts\World\LevelBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Locations\Benchmarking.cs" />
-     <Compile Include="Assets\Scripts\World\Locations\BuildingFactory.cs" />
      <Compile Include="Assets\Scripts\World\Locations\InteriorBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Locations\InteriorFactory.cs" />
      <Compile Include="Assets\Scripts\World\Locations\InteriorLocation.cs" />

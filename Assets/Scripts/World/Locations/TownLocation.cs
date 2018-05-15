@@ -9,8 +9,10 @@ using World;
 [System.Serializable]
 public class TownLocation : Location {
 
+	private string controllingGroup;
+
 	[System.NonSerializedAttribute]
-	private int buildingsToAttempt;
+	private List<Building> buildingsToAttempt = new List<Building>();
 
 	public override string greeting {
 		get { 
@@ -27,12 +29,18 @@ public class TownLocation : Location {
 		float x,
 		float y,
 		string icon,
+		string controllingGroup = Group.LAW_ENFORCEMENT,
 		List<System.Guid> setConnections = null,
 		int additionalPossibleConnections = 0,
-		int buildingsToAttempt = 0
+		int homeCount = 0,
+		int saloonCount = 0,
+		int sheriffOfficeCount = 0,
+		int gangBarracksCount = 0,
+		int gangHeadquartersCount = 0
 	) : base(map, true) {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 		this.icon = icon;
+		this.controllingGroup = controllingGroup;
 		name = NameGen.townName.Generate("<name>");
 
 		if (setConnections != null) {
@@ -43,7 +51,18 @@ public class TownLocation : Location {
 			connections.Add(System.Guid.Empty);
 		}
 
-		this.buildingsToAttempt = buildingsToAttempt;
+		NPCFactory npcFactory = new NPCFactory();
+		BuildingFactory bf = new BuildingFactory(this, npcFactory);
+
+		AddBuildings(homeCount, () => bf.NewHome());
+		AddBuildings(saloonCount, () => bf.NewSaloon());
+		AddBuildings(sheriffOfficeCount, () => bf.NewSheriffsOffice());
+		AddBuildings(gangBarracksCount, () => bf.NewGangBarracks(controllingGroup));
+		AddBuildings(gangHeadquartersCount, () => bf.NewGangHeadquarters(controllingGroup));
+	}
+
+	private void AddBuildings(int count, System.Func<Building> supplier) {
+		buildingsToAttempt.AddRange(Enumerable.Range(0, count).Select(b => supplier()).ToList());		
 	}
 
 	public bool DoneConnecting() {
@@ -65,39 +84,48 @@ public class TownLocation : Location {
 	public void Generate() {
 		List<int> exits = PlaceExits();
 		PlaceBuildingsAndRoads(exits);
-
-		// add foliage
-		int cactiAmount = Random.Range(2, 8);
-		for (int i = 0; i < cactiAmount; i++) {
-			Vector2 xy = RandomUnoccupiedXY(excludeTrails: true);
-			tiles.Get((int)xy.x, (int)xy.y).Add(new Cactus());
-		}
-
-		// temp NPC spawning
-		List<System.Guid> spawnedChars = new List<System.Guid>();
-		int pplAmount = Random.Range(1, 5);
-		for (int i = 0; i < pplAmount && buildings.Count >= 2; i++) {
-			Location work = Map.Location(buildings[0].guid);
-			work.name = "WORK";
-			Location home = Map.Location(buildings[1].guid);
-			home.name = "HOME";
-			NPCData npc = new NPCFactory().MakeNormie(work, home);
-			SaveGame.currentGame.savedCharacters[npc.guid] = npc;
-			npc.position = new SerializableVector3(RandomUnoccupiedTile());
-			// create quest, which will register the dialogue with them
-			new KillQuest(npc.guid);
-			npc.location = guid;
-			spawnedChars.Add(npc.guid);
-		}
+		PlaceFoliage();
+		List<NPCData> townNPCs = PlaceNPCs();
 
 		// temp horse spawning
-		int horseAmount = spawnedChars.Count + Random.Range(1, 3);
+		int horseAmount = townNPCs.Count + Random.Range(1, 3);
 		for (int i = 0; i < horseAmount; i++) {
-			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < spawnedChars.Count ? spawnedChars[i] : System.Guid.Empty);
+			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < townNPCs.Count ? townNPCs[i].guid : System.Guid.Empty);
 			hsd.location = new SerializableVector3(RandomUnoccupiedTile());
 			SaveGame.currentGame.horses[hsd.guid] = hsd;
 			horses.Add(hsd.guid);
 		}
+	}
+
+	private List<NPCData> PlaceNPCs() {
+		/*
+			Spawning NPCs
+				- Each building has a list of NPCs that it spawns.
+				- Each building has a list of housing spots available for different NPC types to live there.
+				- Once the game starts, NPCs will find homes/schedules
+		 */
+
+		List<NPCData> townNPCs = new List<NPCData>();
+
+		// for each npc, mark them as available for a job
+		foreach (Building b in buildings) {
+			foreach (NPCData npc in b.npcs) {
+				townNPCs.Add(npc);
+				
+				SaveGame.currentGame.savedCharacters[npc.guid] = npc;
+				npc.location = guid;
+				npc.position = new SerializableVector3(RandomUnoccupiedTile());
+
+				// TEMP add a suicide quest
+				new KillQuest(npc.guid);
+			}
+		}
+
+		// TODO: make their schedules (should this be dynamic?)
+
+		/* TODO: Spawn other non-townspeople */	
+
+		return townNPCs;
 	}
 
 	// Places exits according to the connections, and grows the width/height if necessary
@@ -339,11 +367,9 @@ public class TownLocation : Location {
 	// ================= BUILDING STUFF ================= //
 	
 	private void PlaceBuildingsAndRoads(List<int> exits) {	
-		BuildingFactory BuildingFactory = new BuildingFactory();
-
 		// Place roads from all teleporters to first building
-		for (int i = 0; i < buildingsToAttempt; i++) {
-			Building building = BuildingFactory.NewGenericBuilding();
+		for (int i = 0; i < buildingsToAttempt.Count; i++) {
+			Building building = buildingsToAttempt[i];
 			int destination = TryPlaceBuilding(building);
 			if (destination == -1)
 				continue;				
@@ -423,5 +449,14 @@ public class TownLocation : Location {
 		}
 		
 		return -1;
+	}
+
+	private void PlaceFoliage() {
+		// add foliage
+		int cactiAmount = Random.Range(2, 8);
+		for (int i = 0; i < cactiAmount; i++) {
+			Vector2 xy = RandomUnoccupiedXY(excludeTrails: true);
+			tiles.Get((int)xy.x, (int)xy.y).Add(new Cactus());
+		}
 	}
 }
