@@ -24,8 +24,8 @@ public class NPC : Character, Interactable {
 	}
 
 	public override void Start() {
-		StartCoroutine(UpdateEvidenceInSight(.5f));
-		StartCoroutine(UpdateEquippedPlayersInSight(.1f));
+		// StartCoroutine(UpdateEvidenceInSight(.5f));
+		// StartCoroutine(UpdateEquippedPlayersInSight(.1f));
 
 		base.Start();
 	}
@@ -58,6 +58,9 @@ public class NPC : Character, Interactable {
 
 	private Teleporter taskTeleporter;
 	private void ExecuteTask() {
+		if (task == null) {
+			return;
+		}
 		System.Guid taskLocation = task.GetLocation().location;
 		if (taskLocation != Map.CurrentLocation().guid) {
 			GoToTeleporter(taskLocation);
@@ -82,6 +85,7 @@ public class NPC : Character, Interactable {
 		if (Vector3.Distance(taskTeleporter.transform.position, transform.position) < 3f) {
 			// taskTeleporter.Teleport(this);  // maybe?
 			data.InitiateTravel(nextStop);
+			GameManager.spawnedNPCs.Remove(this);
 			Destroy(gameObject);
 		}
 	}
@@ -149,6 +153,9 @@ public class NPC : Character, Interactable {
 			playerInteractingWith = null;
 		}
 	}
+
+
+	// TODO: rewrite this shit so it isn't garbage
 
 	public bool seesEvidence;
 	public Vector3? evidencePoint;
@@ -239,7 +246,11 @@ public class NPC : Character, Interactable {
 	 * We should fast forward their position to wherever they would be if we simulated position.
 	 */
 	public void FastForwardPosition() {
-		Vector3 pos = data.GetTask().GetLocation().position;
+		NPCTask task = data.GetTask();
+		if (task == null) {
+			return;
+		}
+		Vector3 pos = task.GetLocation().position;
 		NavMeshPath path = new NavMeshPath();
 		agent.CalculatePath(pos, path);
 		float pathLen = 0;

@@ -17,9 +17,7 @@ public class GameManager : MonoBehaviour {
 	
 	public bool objectivesComplete;
 
-	public static List<NPC> spawnedNPCs {
-		get { return Object.FindObjectsOfType<NPC>().ToList(); }	
-	}
+	public static List<NPC> spawnedNPCs;
 	public static List<Player> players;
 	public static List<Character> allCharacters {
 		get {
