@@ -4,6 +4,7 @@ using System.Collections;
 public class WorldBlood : MonoBehaviour {
 
 	public static WorldBlood instance;
+	public static float bloodMultiplier = 1f;
 
 	private Color32[] options = {
 		new Color32(255, 94, 94, 255),
@@ -19,6 +20,8 @@ public class WorldBlood : MonoBehaviour {
 	}
 	
 	public void BleedFrom(GameObject bleeder, Vector3 worldLocation, bool randomizePosition = true) {
+		if (bloodMultiplier == 0)
+			return;
 		Vector3 circlePos = Random.insideUnitCircle * (randomizePosition ? Random.Range(.3f, .5f) : 0);
 		worldLocation.y = -.05f;
 		Vector3 pos = worldLocation - new Vector3(circlePos.x, 0f, circlePos.y);

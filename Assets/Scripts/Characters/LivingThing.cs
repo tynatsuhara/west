@@ -5,8 +5,6 @@ using System.Linq;
 
 public abstract class LivingThing : MonoBehaviour {
 
-	public static float bloodMultiplier = 1f;
-
 	public bool isAlive {
 		get { return health > 0; }
 	}
@@ -86,8 +84,8 @@ public abstract class LivingThing : MonoBehaviour {
 	}
 
 	protected void Bleed(Vector3 position, int amount, Vector3 velocity) {
-		for (int i = 0; i < amount * bloodMultiplier; i++) {
-			Vector3 spawnPos = position + Random.insideUnitSphere * .1f * bloodMultiplier;
+		for (int i = 0; i < amount * WorldBlood.bloodMultiplier; i++) {
+			Vector3 spawnPos = position + Random.insideUnitSphere * .1f;
 			foreach (PicaVoxel.Volume volume in bodyParts) {			
 				PicaVoxel.PicaVoxelPoint pos = volume.GetVoxelArrayPosition(spawnPos);
 				PicaVoxel.Voxel? hit = volume.GetVoxelAtArrayPosition(pos.X, pos.Y, pos.Z);

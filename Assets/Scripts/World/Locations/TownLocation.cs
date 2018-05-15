@@ -59,6 +59,8 @@ public class TownLocation : Location {
 		AddBuildings(sheriffOfficeCount, () => bf.NewSheriffsOffice());
 		AddBuildings(gangBarracksCount, () => bf.NewGangBarracks(controllingGroup));
 		AddBuildings(gangHeadquartersCount, () => bf.NewGangHeadquarters(controllingGroup));
+
+		buildingsToAttempt = buildingsToAttempt.OrderBy(_ => Random.Range(0f, 1f)).ToList();
 	}
 
 	private void AddBuildings(int count, System.Func<Building> supplier) {
