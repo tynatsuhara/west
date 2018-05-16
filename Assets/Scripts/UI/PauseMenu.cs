@@ -22,8 +22,8 @@ public class PauseMenu : Menu {
 			GameManager.instance.SetPaused(false);
 			GameUI.instance.ShowPauseScreen(false);
 		} else if (node == save) {
-			GameUI.instance.topCenterText.Say("GAME SAVED", showFlash: true);
 			SaveGame.Save(true);
+			GameUI.instance.topCenterText.Say("GAME SAVED", showFlash: true);
 		} else if (node == quit) {
 			LevelBuilder.instance.Clean(removePlayers: true);
 			SceneManager.LoadScene("main menu");
