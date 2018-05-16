@@ -93,6 +93,7 @@ public class Map {
 			yield return 0;
 			currentLocation = g;
 		}
+		display.text = "LOADING " + ((TownLocation) locations[currentLocation]).name.ToUpper();
 		Debug.Log("Generated " + towns.Count + " towns, " + locations.Count + " locations total");
 	}
 
