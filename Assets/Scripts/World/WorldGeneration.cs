@@ -15,10 +15,10 @@ public class WorldGeneration : MonoBehaviour {
 	
 	private IEnumerator GenerateWorld() {
 		// Random.InitState(5);  // TODO: make seed work
-
-		Debug.Log(Random.Range(0, 10));
-		Debug.Log(Random.Range(0, 10));
-		Debug.Log(Random.Range(0, 10));
+		// Debug.Log(Random.Range(0, 10));
+		// Debug.Log(Random.Range(0, 10));
+		// Debug.Log(Random.Range(0, 10));
+		
 		SaveGame.currentGame.time = new WorldTime();
 		SaveGame.currentGame.events = new EventQueue();
 		SaveGame.currentGame.groups = DefaultGroups();
