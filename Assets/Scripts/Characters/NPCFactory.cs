@@ -21,4 +21,25 @@ public class NPCFactory {
         npc.groups.Add(group);
         return npc;
     }
+
+    public NPCData MakeGangLeader(string group) {
+        NPCData npc = new NPCData(NPCData.NPCType.GOON, UnityEngine.Random.Range(0, 2) == 0);
+        npc.outfit = "cop1";
+        npc.groups.Add(group);
+        return npc;
+    }
+
+    public NPCData MakeSheriff() {
+        NPCData npc = new NPCData(NPCData.NPCType.GOON, UnityEngine.Random.Range(0, 2) == 0);
+        npc.outfit = "cop1";
+        npc.groups.Add(Group.LAW_ENFORCEMENT);
+        return npc;
+    }
+
+    public NPCData MakeMarshal() {
+        NPCData npc = new NPCData(NPCData.NPCType.GOON, UnityEngine.Random.Range(0, 2) == 0);
+        npc.outfit = "cop1";
+        npc.groups.Add(Group.LAW_ENFORCEMENT);
+        return npc;
+    }
 }
