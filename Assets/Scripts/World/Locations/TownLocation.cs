@@ -455,11 +455,6 @@ public class TownLocation : Location {
 
 	private int TryPlaceBuildingRandom(Building b) {
 		b.Rotate(Random.Range(0, 4));
-		// int place = -1;
-		// for (int i = 0; i < 3 && place == -1; i++) {
-		// 	place = RandomBuildingPos(b);
-		// }
-		// return place;
 
 		for (int i = 0; i < 10; i++) {
 			int x = Random.Range(EDGE_PADDING, width - b.width + 1 - EDGE_PADDING);
@@ -495,20 +490,6 @@ public class TownLocation : Location {
 			}
 		}
 		return !obstructed && !TileOccupied(x + b.doorOffsetX, y + b.doorOffsetY);
-	}
-
-	// returns Val(x, y) where (x, y) is the bottom left corner
-	// if a spot cannot easily be found, returns -1
-	private int RandomBuildingPos(Building b) {
-		int attempts = 10;
-		for (int i = 0; i < attempts; i++) {
-			int x = Random.Range(EDGE_PADDING, width - b.width + 1 - EDGE_PADDING);
-			int y = Random.Range(EDGE_PADDING, height - b.height + 1 - EDGE_PADDING);
-			if (CanPlaceBuilding(b, x, y)) {
-				return Val(x, y);
-			}
-		}
-		return -1;
 	}
 
 	private void PlaceFoliage() {

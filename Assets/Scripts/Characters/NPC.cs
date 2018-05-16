@@ -31,11 +31,10 @@ public class NPC : Character, Interactable {
 	}
 
 	void Update() {
-		characterIndicator.UpdateDialogueIndicator(data.dialogues);
-
 		if (!isAlive || GameManager.paused)
 			return;
 
+		characterIndicator.UpdateDialogueIndicator(data.dialogues.Count > 0 ? data.dialogues.Values[0] : null);
 		LegAnimation();
 		walking = agent.enabled && agent.velocity != Vector3.zero;
 		Rotate();
@@ -103,6 +102,8 @@ public class NPC : Character, Interactable {
 		if (arms.CurrentFrame != 0 && Random.Range(0, 2) == 0/* && currentState != NPCState.DOWN_TIED*/)
 			arms.SetFrame(0);
 		data.health = health;
+		data.dialogues.Clear();
+		characterIndicator.UpdateDialogueIndicator(null);
 		base.Die(location, angle, attacker, type);
 	}
 

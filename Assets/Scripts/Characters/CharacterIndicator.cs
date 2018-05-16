@@ -33,8 +33,8 @@ public class CharacterIndicator : MonoBehaviour {
 		transform.localPosition = startPos + new Vector3(0, displayingSpeech ? 1 : 0, 0);
 	}
 
-	public void UpdateDialogueIndicator(SortedList<int, Dialogue> dialogues) {
-		Dialogue d = dialogues.Count > 0 ? dialogues.Values[0] : null;
+	// d should be the highest priority dialogue or null to clear
+	public void UpdateDialogueIndicator(Dialogue d) {
 		if (highestPriorityDialogue != d) {
 			highestPriorityDialogue = d;
 			UpdateDisplay();
