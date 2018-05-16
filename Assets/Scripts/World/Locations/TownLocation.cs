@@ -400,56 +400,114 @@ public class TownLocation : Location {
 	}
 
 	private int TryPlaceBuilding(Building b) {
-		b.Rotate(Random.Range(0, 4));
+		bool placeAdjacent = Random.Range(0f, 1f) < .6f;
+		int place;
+		if (placeAdjacent) {
+			place = TryPlaceBuildingAdjacent(b);
+			if (place == -1) {
+				place = TryPlaceBuildingRandom(b);
+			}
+		} else {
+			place = TryPlaceBuildingRandom(b);
+			if (place == -1) {
+				place = TryPlaceBuildingAdjacent(b);
+			}
+		}
 
-		for (int i = 0; i < 3; i++) {
-			int place = RandomBuildingPos(b);
-			if (place == -1)
-				continue;  // rotate and try again
-			
-			// mark spaces as occupied by building
-			int x = X(place);
-			int y = Y(place);
-			for (int xi = x; xi < x + b.width; xi++) {
-				for (int yi = y; yi < y + b.height; yi++) {
-					GroundTileAt(Val(xi, yi)).occupied = true;
+		if (place == -1) {
+			return place;
+		}
+
+		// mark spaces as occupied by building
+		int x = X(place);
+		int y = Y(place);
+		for (int xi = x; xi < x + b.width; xi++) {
+			for (int yi = y; yi < y + b.height; yi++) {
+				GroundTileAt(Val(xi, yi)).occupied = true;
+			}
+		}
+
+		b.bottomLeftTile = place;
+		return Val(x + b.doorOffsetX, y + b.doorOffsetY);
+	}
+
+	private int TryPlaceBuildingAdjacent(Building b) {
+		foreach (Building adjacent in buildings.OrderBy(_ => Random.Range(0f, 1f)).ToList()) {
+			int adjacentX = X(adjacent.bottomLeftTile);
+			int adjacentY = Y(adjacent.bottomLeftTile);
+			b.rotation = adjacent.rotation;
+			if (b.rotation % 2 == 0) {  // shift left-right
+				if (CanPlaceBuilding(b, adjacentX + adjacent.width + BUILDING_PADDING, adjacentY)) {
+					return Val(adjacentX + adjacent.width + BUILDING_PADDING, adjacentY);
+				} else if (CanPlaceBuilding(b, adjacentX - b.width - BUILDING_PADDING, adjacentY)) {
+					return Val(adjacentX - b.width - BUILDING_PADDING, adjacentY);
+				}
+			} else {  // shift up-down
+				if (CanPlaceBuilding(b, adjacentX, adjacentY + adjacent.height + BUILDING_PADDING)) {
+					return Val(adjacentX, adjacentY + adjacent.height + BUILDING_PADDING);
+				} else if (CanPlaceBuilding(b, adjacentX, adjacentY - adjacent.height - BUILDING_PADDING)) {
+					return Val(adjacentX, adjacentY - adjacent.height - BUILDING_PADDING);
 				}
 			}
-
-			b.bottomLeftTile = place;
-			return Val(x + b.doorOffsetX, y + b.doorOffsetY);
 		}
 		return -1;
+	}
+
+	private int TryPlaceBuildingRandom(Building b) {
+		b.Rotate(Random.Range(0, 4));
+		// int place = -1;
+		// for (int i = 0; i < 3 && place == -1; i++) {
+		// 	place = RandomBuildingPos(b);
+		// }
+		// return place;
+
+		for (int i = 0; i < 10; i++) {
+			int x = Random.Range(EDGE_PADDING, width - b.width + 1 - EDGE_PADDING);
+			int y = Random.Range(EDGE_PADDING, height - b.height + 1 - EDGE_PADDING);
+			// TODO determine rotation
+			if (CanPlaceBuilding(b, x, y)) {
+				return Val(x, y);
+			}
+			b.Rotate();
+		}
+		return -1;
+	}
+
+	private const int BUILDING_PADDING = 2;
+	private const int EDGE_PADDING = 3;
+
+	private bool CanPlaceBuilding(Building b, int x, int y) {
+		int paddedW = b.width + BUILDING_PADDING;
+		int paddedH = b.height + BUILDING_PADDING;
+		bool nearEdge = x < EDGE_PADDING 
+		             || y < EDGE_PADDING 
+					 || x + b.width - 1 >= width - EDGE_PADDING
+					 || y + b.height - 1 >= height - EDGE_PADDING;
+		// check corners first
+		bool obstructed = nearEdge
+		               || TileOccupied(x + paddedW - 1, y - BUILDING_PADDING) // bottom right
+					   || TileOccupied(x - BUILDING_PADDING, y + paddedH - 1) // top left
+					   || TileOccupied(x + paddedW - 1, y + paddedH - 1);     // top right
+
+		for (int xi = x - BUILDING_PADDING; xi < x + paddedW && !obstructed; xi++) {
+			for (int yi = y - BUILDING_PADDING; yi < y + paddedH && !obstructed; yi++) {
+				obstructed = TileOccupied(xi, yi);
+			}
+		}
+		return !obstructed && !TileOccupied(x + b.doorOffsetX, y + b.doorOffsetY);
 	}
 
 	// returns Val(x, y) where (x, y) is the bottom left corner
 	// if a spot cannot easily be found, returns -1
 	private int RandomBuildingPos(Building b) {
-		int edgePadding = 3;  // amount of spaces from edge to building
-		int buildingPadding = 2;
-		int paddedW = b.width + buildingPadding;
-		int paddedH = b.height + buildingPadding;
-		int attempts = 20;
-
+		int attempts = 10;
 		for (int i = 0; i < attempts; i++) {
-			int x = Random.Range(edgePadding, width - b.width + 1 - edgePadding);
-			int y = Random.Range(edgePadding, height - b.height + 1 - edgePadding);
-
-			// check corners first
-			bool obstructed = TileOccupied(x + paddedW - 1, y) || 
-							  TileOccupied(x, y + paddedH - 1) ||
-			                  TileOccupied(x + paddedW - 1, y + paddedH - 1);
-
-			for (int xi = x; xi < x + paddedW && !obstructed; xi++) {
-				for (int yi = y; yi < y + paddedH && !obstructed; yi++) {
-					obstructed = TileOccupied(xi, yi);
-				}
-			}
-			if (!obstructed && !TileOccupied(x + b.doorOffsetX, y + b.doorOffsetY)) {
-				return Val(x+1, y+1);
+			int x = Random.Range(EDGE_PADDING, width - b.width + 1 - EDGE_PADDING);
+			int y = Random.Range(EDGE_PADDING, height - b.height + 1 - EDGE_PADDING);
+			if (CanPlaceBuilding(b, x, y)) {
+				return Val(x, y);
 			}
 		}
-		
 		return -1;
 	}
 

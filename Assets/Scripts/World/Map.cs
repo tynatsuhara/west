@@ -57,7 +57,7 @@ public class Map {
 			// Find largest connected map
 			display.text = "PRUNING MAP";
 			yield return 0;
-			List<Location> graph = null;
+			HashSet<Location> graph = null;
 			foreach (TownLocation l in locations.Values) {
 				graph = DFS(l);
 				if (graph.Count >= MIN_LOCATION_AMOUNT)
@@ -106,9 +106,9 @@ public class Map {
 		return false;
 	}
 
-	private List<Location> DFS(Location l, List<Location> outGraph = null) {
+	private HashSet<Location> DFS(Location l, HashSet<Location> outGraph = null) {
 		if (outGraph == null)
-			outGraph = new List<Location>();
+			outGraph = new HashSet<Location>();
 		outGraph.Add(l);
 		foreach (System.Guid l2 in l.connections) {
 			if (l2 == System.Guid.Empty || outGraph.Contains(locations[l2]))
