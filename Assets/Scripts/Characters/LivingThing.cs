@@ -83,6 +83,7 @@ public abstract class LivingThing : MonoBehaviour {
 		Bleed(separateBodyParts[Random.Range(0, separateBodyParts.Count)].transform.position, Random.Range(5, 10), Vector3.up);
 	}
 
+	// puts blood on the NPC
 	protected void Bleed(Vector3 position, int amount, Vector3 velocity) {
 		for (int i = 0; i < amount * WorldBlood.bloodMultiplier; i++) {
 			Vector3 spawnPos = position + Random.insideUnitSphere * .1f;
