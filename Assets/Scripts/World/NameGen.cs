@@ -34,14 +34,16 @@ public class NameGen {
 		return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
 	}
 
-
-	public static NameGen townName = new NameGen(new string[] {
+	private static NameGen townName = new NameGen(new string[] {
 		"<name>:<prefix><suffix>|<firstword> <lastword>",
 		"<prefix>:Plain|Stag|High|Dirt|Dread|Stark|Yellow|Red|Dead|Long|Dark|Black|Deer|Maple|Steel|Dry|Glum|Grim|Crook|Ragged|White|Cattle|Low|Squirrel|Mud",
 		"<suffix>:brook|vale|cliff|ridge|canyon|port|crag|worth|reach|range|stone|water|river|bend|hollow|hill|run|hole|burrow|wood|valley",
 		"<firstword>:Old|Windy|Silent|Lawless|Death's|Hangman's|Wolf's|Grizzly|Scorpion's|Yellow|Red|Black|Dead|Glum|Depressing|Grim|Desert|Dead Man's|Meme",
 		"<lastword>:Landing|Canyon|Ridge|Ranch|Hollow|Stead|Stream|Spring|Gorge|Gulch|Post|Outpost|Corral|Hole|Valley"
 	});
+	public static string TownName() {
+		return townName.Generate("<name>");
+	}
 
 	private static NameGen personNameGen = new NameGen(new string[] {
 		"<male-first>:John|William|James|George|Charles|Robert|Joseph|Frank|Edward|Thomas|Henry|Walter|Harry|Willie|Arthur|Albert|Clarence|Fred|Harold|Paul|Raymond|Richard|Roy|Joe|Louis|Carl|Ralph|Earl|Jack|Ernest|David|Samuel|Howard|Charlie|Francis|Herbert|Lawrence|Theodore|Alfred|Andrew|Sam|Elmer|Eugene|Leo|Michael|Lee|Herman|Anthony|Daniel|Leonard|Floyd|Donald|Kenneth|Jesse|Russell|Clyde|Oscar|Peter|Lester|Leroy|Ray|Stanley|Clifford|Lewis|Benjamin|Edwin|Frederick|Chester|Claude|Eddie|Cecil|Lloyd|Jessie|Martin|Bernard|Tom|Will|Norman|Edgar|Harvey|Ben|Homer|Luther|Leon|Melvin|Philip|Johnnie|Jim|Milton|Everett|Allen|Leslie|Alvin|Victor|Marvin|Stephen|Alexander|Jacob|Hugh|Patrick|Virgil|Horace|Glenn|Oliver|Morris|Vernon|Archie|Julius|Gerald|Sidney|Maurice|Marion|Otis|Vincent|Guy|Earnest|Wilbur|Gilbert|Willard|Ed|Roosevelt|Hubert|Manuel|Warren|Otto|Alex|Ira|Wesley|Curtis|Wallace|Lonnie|Gordon|Jerry|Issac|Charley|Jose|Nathan|Max|Mack|Rufus|Arnold|Irving|Percy|Bill|Dan|Willis|Bernie|Jimmie|Orville|Sylvester|Rudolph|Glen|Nicholas|Dewey|Emil|Roland|Steve|Calvin|Mike|Johnie|Bert|August|Franklin|Clifton|Matthew|Emmett|Phillip|Wayne|Edmund|Abraham|Nathaniel|Dave|Marshall|Elbert|Clinton|Felix|Alton|Ellis|Nelson|Amos|Clayton|Aaron|Perry|Tony|Adam|Irvin|Dennis|Jake|Mark|Jerome|Cornelius|Douglas|Ollie|Pete|Ted|Adolph|Roger|Jay|Roscoe|Juan|Forrest|Jess|Ervin|Antonio|Gus|Owen|Moses|Bruce|Sherman|Ivan|Reuben|Don|Johnny|Claud|Booker|Alonzo|Ross|Tommie|Julian|Karl|Simon|Laurence|Wilfred|Leland|Wilson|Grady|Preston|Elijah|Wilbert|Monroe|Austin|Jasper|Harley|Marv|Bob|Delbert|Dale|Lyle|Carroll|Levi|Merle|Millard|Timothy|Loyd|Larry|Grant|Aubrey|Louie|Grover|Noah",
