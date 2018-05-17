@@ -41,7 +41,7 @@ public class TownLocation : Location {
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 		this.icon = icon;
 		this.controllingGroup = controllingGroup;
-		name = NameGen.townName.Generate("<name>");
+		name = NameGen.TownName();
 
 		if (setConnections != null) {
 			connections.AddRange(setConnections);
