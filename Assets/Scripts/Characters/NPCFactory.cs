@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class NPCFactory {
@@ -16,28 +15,28 @@ public class NPCFactory {
     }
 
     public NPCData MakeGoon(string group) {
-        NPCData npc = new NPCData(NPCData.NPCType.GOON, UnityEngine.Random.Range(0, 2) == 0);
-        npc.outfit = "cop1";
+        NPCData npc = new NPCData(NPCData.NPCType.GOON, Random.Range(0, 2) == 0);
+        npc.outfit = "default";
         npc.groups.Add(group);
         return npc;
     }
 
     public NPCData MakeGangLeader(string group) {
-        NPCData npc = new NPCData(NPCData.NPCType.GOON, UnityEngine.Random.Range(0, 2) == 0);
-        npc.outfit = "cop1";
+        NPCData npc = new NPCData(NPCData.NPCType.GANG_LEADER, Random.Range(0, 2) == 0);
+        npc.outfit = "default";
         npc.groups.Add(group);
         return npc;
     }
 
     public NPCData MakeSheriff() {
-        NPCData npc = new NPCData(NPCData.NPCType.GOON, UnityEngine.Random.Range(0, 2) == 0);
+        NPCData npc = new NPCData(NPCData.NPCType.SHERIFF, Random.Range(0, 2) == 0);
         npc.outfit = "cop1";
         npc.groups.Add(Group.LAW_ENFORCEMENT);
         return npc;
     }
 
     public NPCData MakeMarshal() {
-        NPCData npc = new NPCData(NPCData.NPCType.GOON, UnityEngine.Random.Range(0, 2) == 0);
+        NPCData npc = new NPCData(NPCData.NPCType.US_MARSHAL, Random.Range(0, 2) == 0);
         npc.outfit = "cop1";
         npc.groups.Add(Group.LAW_ENFORCEMENT);
         return npc;

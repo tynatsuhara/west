@@ -9,7 +9,7 @@ using World;
 [System.Serializable]
 public class TownLocation : Location {
 
-	private string controllingGroup;
+	public string controllingGroup;
 
 	[System.NonSerializedAttribute]
 	private List<Building> buildingsToAttempt = new List<Building>();
@@ -25,6 +25,7 @@ public class TownLocation : Location {
 	}
 
 	public TownLocation(
+		string name,
 		Map map,
 		float x,
 		float y,
@@ -32,16 +33,12 @@ public class TownLocation : Location {
 		string controllingGroup = Group.LAW_ENFORCEMENT,
 		List<System.Guid> setConnections = null,
 		int additionalPossibleConnections = 0,
-		int homeCount = 0,
-		int saloonCount = 0,
-		int sheriffOfficeCount = 0,
-		int gangBarracksCount = 0,
-		int gangHeadquartersCount = 0
+		List<Building>[] buildingsToAttempt = null
 	) : base(map, true) {
+		this.name = name;
 		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 		this.icon = icon;
 		this.controllingGroup = controllingGroup;
-		name = NameGen.TownName();
 
 		if (setConnections != null) {
 			connections.AddRange(setConnections);
@@ -51,16 +48,9 @@ public class TownLocation : Location {
 			connections.Add(System.Guid.Empty);
 		}
 
-		NPCFactory npcFactory = new NPCFactory();
-		BuildingFactory bf = new BuildingFactory(this, npcFactory);
-
-		AddBuildings(homeCount, () => bf.NewHome());
-		AddBuildings(saloonCount, () => bf.NewSaloon());
-		AddBuildings(sheriffOfficeCount, () => bf.NewSheriffsOffice());
-		AddBuildings(gangBarracksCount, () => bf.NewGangBarracks(controllingGroup));
-		AddBuildings(gangHeadquartersCount, () => bf.NewGangHeadquarters(controllingGroup));
-
-		buildingsToAttempt = buildingsToAttempt.OrderBy(_ => Random.Range(0f, 1f)).ToList();
+		if (buildingsToAttempt != null) {
+			this.buildingsToAttempt = buildingsToAttempt.SelectMany(list => list).ToList();
+		}
 	}
 
 	private void AddBuildings(int count, System.Func<Building> supplier) {

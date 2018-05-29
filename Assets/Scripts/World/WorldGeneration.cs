@@ -21,18 +21,11 @@ public class WorldGeneration : MonoBehaviour {
 		
 		SaveGame.currentGame.time = new WorldTime();
 		SaveGame.currentGame.events = new EventQueue();
-		SaveGame.currentGame.groups = DefaultGroups();
 		SaveGame.currentGame.map = new Map();
 		yield return StartCoroutine(SaveGame.currentGame.map.MakeMap(display));
 		SaveGame.currentGame.quests = new QuestManager();	
 		SaveGame.currentGame.stats = new Statistics();
 		SaveGame.currentGame.crime = new Crime();
 		SceneManager.LoadScene("game");
-	}
-
-	private Dictionary<string, Group> DefaultGroups() {
-		Dictionary<string, Group> result = new Dictionary<string, Group>();
-		result.Add(Group.LAW_ENFORCEMENT, new Group(Group.LAW_ENFORCEMENT));
-		return result;
 	}
 }

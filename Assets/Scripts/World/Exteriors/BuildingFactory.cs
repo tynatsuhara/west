@@ -2,11 +2,9 @@ using UnityEngine;
 
 public class BuildingFactory {
 
-    private TownLocation town;
     private NPCFactory npcFactory;
 
-    public BuildingFactory(TownLocation town, NPCFactory npcFactory) {
-        this.town = town;
+    public BuildingFactory(NPCFactory npcFactory) {
         this.npcFactory = npcFactory;
     }
 

@@ -70,7 +70,8 @@ public class CharacterCustomization : MonoBehaviour {
 								vox.Color = new Color32(JiggleByte(c.r, r), JiggleByte(c.g, r), JiggleByte(c.b, r), (byte)0);
 							} else if (vox.Value == 255) {
 								// guts
-								vox.Color = WorldBlood.instance.BloodColor();
+								if (WorldBlood.instance != null)
+									vox.Color = WorldBlood.instance.BloodColor();
 							} else if (volume == head || volume == body || volume == legs ||
 								(volume == arms && vox.Value <= 4) || (gunz.Contains(volume) && vox.Value <= 4)) {
 								vox.Color = skinColor;

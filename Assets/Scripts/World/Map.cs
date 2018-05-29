@@ -8,8 +8,7 @@ using System.Collections;
 public class Map {
 
 	public const int WORLD_COORD_SIZE = 100;
-	public const int MAX_LOCATION_AMOUNT = 30;
-	public const int MIN_LOCATION_AMOUNT = 15;
+	public const int MIN_LOCATION_AMOUNT = 20;
 	public const int MIN_DISTANCE_BETWEEN_LOCATIONS = 5;
 
 	// coordinates increase up and to the right
@@ -22,28 +21,41 @@ public class Map {
 		TownFactory tf = new TownFactory(this);
 
 		while (locations.Count < MIN_LOCATION_AMOUNT) {
-			locations.Clear();
+			SaveGame.currentGame.groups = DefaultGroups();
 
-			// spawn locations
+			locations.Clear();
 			List<TownLocation> ls = new List<TownLocation>();
-			for (int i = 0; i < MAX_LOCATION_AMOUNT; i++) {
-				display.text = "PLACING TOWN " + (i+1) + "/" + MAX_LOCATION_AMOUNT;
-				TownLocation l = tf.NewLargeTown();
-				for (int j = 0; j < 10 && TooClose(ls, l); j++) {
-					l = tf.NewLargeTown();
-				}
-				if (!TooClose(ls, l)) {
-					ls.Add(l);
-				}
-				yield return 0;
-			}
+			HashSet<string> gangs = new HashSet<string>();
+			
+			display.text = "PLACING GANG HIDEOUTS";
+			List<TownLocation> spawnedTowns = TrySpawnTowns(ls, Random.Range(5, 10), () => {
+				string gangName;
+				do {
+					gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
+				} while (gangs.Contains(gangName));
+				gangs.Add(gangName);
+				return tf.NewGangTown(gangName);
+			});
+			spawnedTowns.ForEach(t => {
+				t.discovered = true;
+				SaveGame.currentGame.groups.Add(t.controllingGroup, new Group(t.controllingGroup));
+			});
+			Debug.Log("spawned " + spawnedTowns.Count + " gang towns: " + spawnedTowns.Select(x => x.name).Aggregate((a, b) => a + ", " + b));
+
+			display.text = "PLACING TOWNS";
+			TrySpawnTowns(ls, Random.Range(10, 20), () => tf.NewLargeTown());
+			TrySpawnTowns(ls, Random.Range(10, 20), () => tf.NewSmallTown());
 
 			// connect locations together
+			// TODO: connect each thing to the closest town WHICH IS ALREADY PART OF THE GRAPH
+			//       this will allow us to skip pruning and guarantee the amount of towns
 			display.text = "BUILDING ROADS";
 			yield return 0;
 			var distances = ls.SelectMany(l1 => ls.Select(l2 => new {l1, l2, (l1.worldLocation.val - l2.worldLocation.val).magnitude}))
 					.OrderBy(x => x.magnitude)
 					.ToList();
+
+			// TODO: don't make all connections (infinite map)
 			foreach (var tuple in distances) {
 				if (tuple.l1 != tuple.l2 && tuple.l1.CanConnectTo(tuple.l2) && tuple.l2.CanConnectTo(tuple.l1)) {
 					tuple.l1.Connect(tuple.l2);
@@ -64,7 +76,7 @@ public class Map {
 					break;
 				yield return 0;				
 			}
-			
+
 			locations.Clear();
 			foreach (TownLocation l in graph) {
 				locations.Add(l.guid, l);
@@ -95,6 +107,30 @@ public class Map {
 		}
 		display.text = "LOADING " + ((TownLocation) locations[currentLocation]).name.ToUpper();
 		Debug.Log("Generated " + towns.Count + " towns, " + locations.Count + " locations total");
+	}
+
+	private Dictionary<string, Group> DefaultGroups() {
+		Dictionary<string, Group> result = new Dictionary<string, Group>();
+		result.Add(Group.LAW_ENFORCEMENT, new Group(Group.LAW_ENFORCEMENT));
+		result.Add(Group.PLAYERS, new Group(Group.PLAYERS));
+		return result;
+	}
+
+	// towns are added to ls if successfully spawned
+	// successfully spawned towns are returned
+	private List<TownLocation> TrySpawnTowns(List<TownLocation> ls, int amount, System.Func<TownLocation> townSupplier) {
+		List<TownLocation> successful = new List<TownLocation>();
+		for (int i = 0; i < amount; i++) {
+			TownLocation l = townSupplier();
+			for (int j = 0; j < 10 && TooClose(ls, l); j++) {
+				l = townSupplier();
+			}
+			if (!TooClose(ls, l)) {
+				ls.Add(l);
+				successful.Add(l);
+			}
+		}
+		return successful;
 	}
 
 	private bool TooClose(List<TownLocation> towns, Location newL) {
