@@ -11,8 +11,6 @@ public class TownLocation : Location {
 
 	public string controllingGroup;
 	public int availableConnections;
-
-	[System.NonSerializedAttribute]
 	private List<Building> buildingsToAttempt = new List<Building>();
 
 	public override string greeting {
