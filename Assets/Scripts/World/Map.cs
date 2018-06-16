@@ -7,151 +7,123 @@ using System.Collections;
 [System.Serializable]
 public class Map {
 
-	public const int WORLD_COORD_SIZE = 100;
-	public const int MIN_LOCATION_AMOUNT = 20;
-	public const int MIN_DISTANCE_BETWEEN_LOCATIONS = 5;
+	/*
+		Map generation strategy:
+		Generate concentric rings of towns for an ever-expanding map
+	 */
+	private const int MIN_DISTANCE_BETWEEN_LOCATIONS = 5;
+	private const int MAX_CONNECTING_DISTANCE = 15;
+	private const int TOWN_PLACEMENT_ATTEMPTS = 10;
+
+	private const int RING_SIZE = 5;  // the thiccness of each ring in the map
+	private const int RING_BUFFER = 2;  // how many rings out to spawn
+	private const float TOWNS_PER_SQUARE_UNIT = 1f / 25;  // TODO what is this val?
+
+	private int furthestRing = 1; // the furthest ring of towns which has been spawned (innermost ring is 1)
 
 	// coordinates increase up and to the right
 	public Dictionary<System.Guid, Location> locations = new Dictionary<System.Guid, Location>();
-	public List<System.Guid[]> railroads = new List<System.Guid[]>();	
+	private List<TownLocation> towns = new List<TownLocation>();
+
 	public System.Guid currentLocation;
 
+	// Infinite map (start with some towns pre-generated)
 	public IEnumerator MakeMap(Text display) {
-		locations = new Dictionary<System.Guid, Location>();	
+		TownLocation startTown = new TownFactory(this).NewLargeTown();
+		startTown.PlaceAt(0, 0);
+		towns.Add(startTown);
+		locations.Add(startTown.guid, startTown);
+		currentLocation = startTown.guid;
+		Generate(startTown);
+		yield return new WaitForEndOfFrame();
+	}
+
+	private int TownRing(TownLocation town) {
+		return (int) (town.worldLocation.val.magnitude / RING_SIZE) + 1;
+	}
+
+	private void PlaceTowns(int ring) {
+		if (ring <= furthestRing) {
+			return;
+		}
+		int townAmount = (int) ((Mathf.Pow(ring * RING_SIZE, 2) - Mathf.Pow((ring-1) * RING_SIZE, 2)) * Mathf.PI * TOWNS_PER_SQUARE_UNIT);
+		Debug.Log("ring " + ring + ": attempting to spawn " + townAmount + " towns");
+		int successful = Enumerable.Range(0, townAmount)
+								   .Where(x => TryPlaceNewTown(ring))
+								   .Count();
+		Debug.Log("successfully spawned " + successful + " towns");
+		furthestRing = ring;
+	}
+
+	private bool TryPlaceNewTown(int ring) {
+		TownLocation n = NewTown();
+		int i = 0;
+		do {
+			Vector2 pos = (Vector2) Random.insideUnitCircle.normalized * Random.Range(1f * ring-1, 1f * ring) * RING_SIZE;
+			n.PlaceAt(pos.x, pos.y);
+			Debug.Log("new pos " + pos);
+			i++;
+		} while (towns.Any(x => x.DistanceFrom(n) < MIN_DISTANCE_BETWEEN_LOCATIONS) && i < TOWN_PLACEMENT_ATTEMPTS);
+		if (i == TOWN_PLACEMENT_ATTEMPTS) {
+			return false;
+		}
+		towns.Add(n);
+		locations.Add(n.guid, n);
+		return true;
+	}
+
+	private void Generate(TownLocation town) {
+		if (town.generated) {
+			return;
+		}
+		Debug.Log("generating " + town.name);
+
+		int ring = TownRing(town);
+		for (int i = ring; i < ring + RING_BUFFER; i++) {  // expand the map if necessary
+			PlaceTowns(i + 1);
+		}
+
+		List<TownLocation> adj = towns.Where(x => !x.generated && x.CanConnectTo(town) && town.DistanceFrom(x) < MAX_CONNECTING_DISTANCE)
+								  	  .OrderBy(x => x.DistanceFrom(town))
+								      .ToList();
+		Debug.Log("found " + adj.Count + " adjacent towns to " + town.name);
+
+		for (int i = 0; i < Mathf.Min(adj.Count, town.availableConnections); i++) {
+			town.Connect(adj[i]);
+			adj[i].Connect(town);
+		}
+
+		town.Generate();
+		Debug.Log("generated " + town.name);
+	}
+
+	// Visiting a town ensures that all adjacent connected towns are generated
+	public void Visit(System.Guid id) {
+		foreach (System.Guid c in locations[id].connections) {
+			Location l = locations[c];
+			if (l is TownLocation) {
+				Generate(l as TownLocation);
+			}
+		}
+		Debug.Log("visited " + locations[id].name);
+	}
+
+	private TownLocation NewTown() {
 		TownFactory tf = new TownFactory(this);
-
-		while (locations.Count < MIN_LOCATION_AMOUNT) {
-			SaveGame.currentGame.groups = DefaultGroups();
-
-			locations.Clear();
-			List<TownLocation> ls = new List<TownLocation>();
-			HashSet<string> gangs = new HashSet<string>();
-			
-			display.text = "PLACING GANG HIDEOUTS";
-			List<TownLocation> spawnedTowns = TrySpawnTowns(ls, Random.Range(5, 10), () => {
-				string gangName;
-				do {
-					gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
-				} while (gangs.Contains(gangName));
-				gangs.Add(gangName);
-				return tf.NewGangTown(gangName);
-			});
-			spawnedTowns.ForEach(t => {
-				t.discovered = true;
-				SaveGame.currentGame.groups.Add(t.controllingGroup, new Group(t.controllingGroup));
-			});
-			Debug.Log("spawned " + spawnedTowns.Count + " gang towns: " + spawnedTowns.Select(x => x.name).Aggregate((a, b) => a + ", " + b));
-
-			display.text = "PLACING TOWNS";
-			TrySpawnTowns(ls, Random.Range(10, 20), () => tf.NewLargeTown());
-			TrySpawnTowns(ls, Random.Range(10, 20), () => tf.NewSmallTown());
-
-			// connect locations together
-			// TODO: connect each thing to the closest town WHICH IS ALREADY PART OF THE GRAPH
-			//       this will allow us to skip pruning and guarantee the amount of towns
-			display.text = "BUILDING ROADS";
-			yield return 0;
-			var distances = ls.SelectMany(l1 => ls.Select(l2 => new {l1, l2, (l1.worldLocation.val - l2.worldLocation.val).magnitude}))
-					.OrderBy(x => x.magnitude)
-					.ToList();
-
-			// TODO: don't make all connections (infinite map)
-			foreach (var tuple in distances) {
-				if (tuple.l1 != tuple.l2 && tuple.l1.CanConnectTo(tuple.l2) && tuple.l2.CanConnectTo(tuple.l1)) {
-					tuple.l1.Connect(tuple.l2);
-					tuple.l2.Connect(tuple.l1);
-				}
-			}
-
-			foreach (TownLocation l in ls)
-				locations.Add(l.guid, l);
-
-			// Find largest connected map
-			display.text = "PRUNING MAP";
-			yield return 0;
-			HashSet<Location> graph = null;
-			foreach (TownLocation l in locations.Values) {
-				graph = DFS(l);
-				if (graph.Count >= MIN_LOCATION_AMOUNT)
-					break;
-				yield return 0;				
-			}
-
-			locations.Clear();
-			foreach (TownLocation l in graph) {
-				locations.Add(l.guid, l);
-			}
+		int val = Random.Range(0, 10);
+		if (val < 2) {
+			string gangName;
+			do {
+				gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
+				Debug.Log("new gang name " + gangName);				
+			} while (SaveGame.currentGame.groups.ContainsKey(gangName));
+			SaveGame.currentGame.groups.Add(gangName, new Group(gangName));			
+			return tf.NewGangTown(gangName);
+		} else if (val < 6) {
+			return tf.NewLargeTown();
+		} else {
+			return tf.NewSmallTown();
 		}
-
-		// generate train paths
-		// int trainAmount = Random.Range(1, 4);
-		// for (int i = 0; i < trainAmount; i++) {
-		// 	// Random start location
-		// 	Debug.Log("starting to generate train");
-		// 	System.Guid start = locations[locations.Keys.ToArray()[Random.Range(0, locations.Count)]].guid;
-		// 	List<System.Guid[]> destinations = locations.Where(x => x.Key != start)
-		// 											    .Select(x => BestPathFrom(start, x.Key).ToArray())
-		// 											    .OrderBy(x => x.Length)
-		// 											    .ToList();
-		// 	railroads.Add(destinations[Random.Range(destinations.Count / 2, destinations.Count)]);
-		// 	Debug.Log("finished generating train");			
-		// }
-
-		List<System.Guid> towns = locations.Keys.ToList();
-		foreach (System.Guid g in towns) {
-			TownLocation town = (TownLocation) locations[g];
-			town.Generate();
-			display.text = "GENERATING TOWN " + town.name.ToUpper();
-			yield return 0;
-			currentLocation = g;
-		}
-		display.text = "LOADING " + ((TownLocation) locations[currentLocation]).name.ToUpper();
-		Debug.Log("Generated " + towns.Count + " towns, " + locations.Count + " locations total");
-	}
-
-	private Dictionary<string, Group> DefaultGroups() {
-		Dictionary<string, Group> result = new Dictionary<string, Group>();
-		result.Add(Group.LAW_ENFORCEMENT, new Group(Group.LAW_ENFORCEMENT));
-		result.Add(Group.PLAYERS, new Group(Group.PLAYERS));
-		return result;
-	}
-
-	// towns are added to ls if successfully spawned
-	// successfully spawned towns are returned
-	private List<TownLocation> TrySpawnTowns(List<TownLocation> ls, int amount, System.Func<TownLocation> townSupplier) {
-		List<TownLocation> successful = new List<TownLocation>();
-		for (int i = 0; i < amount; i++) {
-			TownLocation l = townSupplier();
-			for (int j = 0; j < 10 && TooClose(ls, l); j++) {
-				l = townSupplier();
-			}
-			if (!TooClose(ls, l)) {
-				ls.Add(l);
-				successful.Add(l);
-			}
-		}
-		return successful;
-	}
-
-	private bool TooClose(List<TownLocation> towns, Location newL) {
-		foreach (TownLocation l in towns) {
-			if (l.DistanceFrom(newL) < MIN_DISTANCE_BETWEEN_LOCATIONS) {
-				return true;				
-			}
-		}
-		return false;
-	}
-
-	private HashSet<Location> DFS(Location l, HashSet<Location> outGraph = null) {
-		if (outGraph == null)
-			outGraph = new HashSet<Location>();
-		outGraph.Add(l);
-		foreach (System.Guid l2 in l.connections) {
-			if (l2 == System.Guid.Empty || outGraph.Contains(locations[l2]))
-				continue;
-			DFS(locations[l2], outGraph);
-		}
-		return outGraph;
 	}
 
 	// Returns the list (excluding start), or null if there is no path

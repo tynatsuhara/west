@@ -14,7 +14,7 @@ public class VisualMapLocation : MonoBehaviour {
 	public void RefreshText(Location l) {
 		string str;
 		if (l.discovered) {
-			str = (l.icon.Length > 0 ? l.icon + "\n" : "") + l.name;
+			str = (l.icon.Length > 0 ? l.icon + "\n" : "") + l.name;		
 		} else if (questMarked) {
 			str = "?";
 		} else {

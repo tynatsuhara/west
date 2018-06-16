@@ -17,10 +17,8 @@ public class TownFactory {
         return new TownLocation(
             NameGen.TownName(),
             map, 
-            x: Random.Range(0, Map.WORLD_COORD_SIZE), 
-            y: Random.Range(0, Map.WORLD_COORD_SIZE), 
             icon: ICONS[Random.Range(0, ICONS.Length)],
-            additionalPossibleConnections: Random.Range(1, 6),
+            availableConnections: Random.Range(2, 6),
             buildingsToAttempt: new List<Building>[] {
                 b(Random.Range(5, 10), () => bf.NewHome()), 
                 b(Random.Range(0, 3), () => bf.NewSaloon()),
@@ -33,10 +31,8 @@ public class TownFactory {
         return new TownLocation(
             NameGen.TownName(),
             map, 
-            x: Random.Range(0, Map.WORLD_COORD_SIZE), 
-            y: Random.Range(0, Map.WORLD_COORD_SIZE), 
-            icon: "=",
-            additionalPossibleConnections: Random.Range(0, 2),
+            icon: "s",
+            availableConnections: Random.Range(1, 3),
             buildingsToAttempt: new List<Building>[] {
                 b(Random.Range(2, 7), () => bf.NewHome()), 
                 b(Random.Range(0, 1), () => bf.NewSaloon()),
@@ -49,11 +45,9 @@ public class TownFactory {
         return new TownLocation(
             gang + " Hideout",
             map, 
-            x: Random.Range(0, Map.WORLD_COORD_SIZE), 
-            y: Random.Range(0, Map.WORLD_COORD_SIZE), 
-            icon: "=",
+            icon: "H",
             controllingGroup: gang,
-            additionalPossibleConnections: Random.Range(1, 2),
+            availableConnections: Random.Range(1, 2),
             buildingsToAttempt: new List<Building>[] {
                 b(1, () => bf.NewGangHeadquarters(gang)),
                 b(Random.Range(1, 2), () => bf.NewGangBarracks(gang)),
@@ -70,8 +64,6 @@ public class TownFactory {
         return new TownLocation(
             "Wilderness",
             map, 
-            x: Random.Range(0, Map.WORLD_COORD_SIZE), 
-            y: Random.Range(0, Map.WORLD_COORD_SIZE),
             icon: "~",
             setConnections: new System.Guid[]{t1.guid, t2.guid}.ToList()
         );

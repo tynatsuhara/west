@@ -169,6 +169,7 @@ public class GameManager : MonoBehaviour {
 		if (!firstLoadSinceStartup) {
 			SaveGame.Save(false);
 		}
+		SaveGame.currentGame.map.Visit(guid);
 		SaveGame.currentGame.map.currentLocation = guid;
 		if (timeChange > 0) {
 			SimulateWorld(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeChange);

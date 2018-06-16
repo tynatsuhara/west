@@ -10,6 +10,7 @@ using World;
 public class TownLocation : Location {
 
 	public string controllingGroup;
+	public int availableConnections;
 
 	[System.NonSerializedAttribute]
 	private List<Building> buildingsToAttempt = new List<Building>();
@@ -27,30 +28,28 @@ public class TownLocation : Location {
 	public TownLocation(
 		string name,
 		Map map,
-		float x,
-		float y,
 		string icon,
 		string controllingGroup = Group.LAW_ENFORCEMENT,
 		List<System.Guid> setConnections = null,
-		int additionalPossibleConnections = 0,
+		int availableConnections = 0,
 		List<Building>[] buildingsToAttempt = null
 	) : base(map, true) {
 		this.name = name;
-		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));
 		this.icon = icon;
 		this.controllingGroup = controllingGroup;
+		this.availableConnections = availableConnections;
 
 		if (setConnections != null) {
 			connections.AddRange(setConnections);
-		}
-		
-		for (int i = 0; i < additionalPossibleConnections; i++) {
-			connections.Add(System.Guid.Empty);
 		}
 
 		if (buildingsToAttempt != null) {
 			this.buildingsToAttempt = buildingsToAttempt.SelectMany(list => list).ToList();
 		}
+	}
+
+	public void PlaceAt(float x, float y) {
+		this.worldLocation = new SerializableVector3(new Vector3(x, y, 0));		
 	}
 
 	private void AddBuildings(int count, System.Func<Building> supplier) {
@@ -62,17 +61,16 @@ public class TownLocation : Location {
 	}
 
 	public bool CanConnectTo(TownLocation l) {
-		return connections.Contains(System.Guid.Empty) 
-				&& l.connections.Contains(System.Guid.Empty)
-				&& !connections.Contains(l.guid)
-				&& !l.connections.Contains(l.guid);
+		return l != this && availableConnections > 0 && !connections.Contains(l.guid);
 	}
 
 	public void Connect(TownLocation l) {
-		connections[connections.IndexOf(System.Guid.Empty)] = l.guid;
+		connections.Add(l.guid);
+		availableConnections--;
 	}
 
 	// Build the street layout for a town
+	public bool generated = false;
 	public void Generate() {
 		List<int> exits = PlaceExits();
 		PlaceBuildingsAndRoads(exits);
@@ -87,6 +85,8 @@ public class TownLocation : Location {
 			SaveGame.currentGame.horses[hsd.guid] = hsd;
 			horses.Add(hsd.guid);
 		}
+		
+		generated = true;
 	}
 
 	private List<NPCData> PlaceNPCs() {
