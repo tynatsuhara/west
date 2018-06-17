@@ -96,6 +96,8 @@ public class Player : Character {
 		}
 
 		if ((p1 && Input.GetMouseButton(0)) || Input.GetKey("joystick " + id + " button 7")) {
+			/*
+			// This shoots at where the mouse is, but it's fucky
 			Ray ray = firstPersonCam.enabled ? new Ray(transform.position, firstPersonCam.transform.forward) : playerCamera.cam.ScreenPointToRay(playerUI.mousePos);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit) && 
@@ -108,6 +110,8 @@ public class Player : Character {
 			} else {
 				Shoot();
 			}
+			*/
+			Shoot();
 		} else if ((p1 && Input.GetMouseButtonDown(1)) || Input.GetKeyDown("joystick " + id + " button 6")) {
 			Melee();
 		// } else if (Input.GetKeyDown(KeyCode.Alpha3)) {      // TODO: ¿improve explosions?
@@ -229,7 +233,7 @@ public class Player : Character {
 		if (firstPersonCam.enabled) {
 			LoseLookTarget();
 			transform.RotateAround(transform.position, transform.up, Input.GetAxis("Mouse X") * 150f * Time.deltaTime);
-			firstPersonCam.transform.RotateAround(firstPersonCam.transform.position, transform.right, Input.GetAxis("Mouse Y") * -150f * Time.deltaTime);
+			// firstPersonCam.transform.RotateAround(firstPersonCam.transform.position, transform.right, Input.GetAxis("Mouse Y") * -150f * Time.deltaTime);
 		} else {
 			// Generate a plane that intersects the transform's position with an upwards normal.
 			Plane playerPlane = new Plane(Vector3.up, transform.position);
