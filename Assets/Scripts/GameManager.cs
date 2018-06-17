@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour {
 		bool isNewGame = newGame;
 		if (newGame) {
 			newGame = false;
-			float timeOfDay = Random.Range(8, 12) * WorldTime.HOUR +  // between 8AM-12PM
+			float timeOfDay = Random.Range(8, 12) * WorldTime.HOUR +  // between 8:00AM-11:59AM
 							  Random.Range(0, 60) * WorldTime.MINUTE;
 			SimulateWorld(SaveGame.currentGame.time.worldTime, SaveGame.currentGame.time.worldTime + timeOfDay);
 		}
@@ -55,7 +55,6 @@ public class GameManager : MonoBehaviour {
 		LoadLocation(SaveGame.currentGame.map.currentLocation, firstLoadSinceStartup:true);
 		players = SpawnPlayers(playersToSpawn);
 		SetTimeScale(1f);
-		VisualMap.instance.SpawnIcons();
 
 		StartCoroutine(SaveGame.currentGame.events.Tick());
 		StartCoroutine(CheckQuests());
@@ -67,6 +66,9 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void Update() {
+		if (players == null)  // to stop exceptions
+			return;
+
 		if (!paused) {
 			SaveGame.currentGame.time.worldTime += Time.deltaTime;
 			SaveGame.currentGame.stats.timePlayed += Time.deltaTime;

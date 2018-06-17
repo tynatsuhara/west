@@ -61,7 +61,6 @@ public class Map {
 		do {
 			Vector2 pos = (Vector2) Random.insideUnitCircle.normalized * Random.Range(1f * ring-1, 1f * ring) * RING_SIZE;
 			n.PlaceAt(pos.x, pos.y);
-			Debug.Log("new pos " + pos);
 			i++;
 		} while (towns.Any(x => x.DistanceFrom(n) < MIN_DISTANCE_BETWEEN_LOCATIONS) && i < TOWN_PLACEMENT_ATTEMPTS);
 		if (i == TOWN_PLACEMENT_ATTEMPTS) {
@@ -84,7 +83,7 @@ public class Map {
 		}
 
 		List<TownLocation> adj = towns.Where(x => !x.generated && x.CanConnectTo(town) && town.DistanceFrom(x) < MAX_CONNECTING_DISTANCE)
-								  	  .OrderBy(x => x.DistanceFrom(town))
+								  	  .OrderBy(x => x.connections.Count)
 								      .ToList();
 		Debug.Log("found " + adj.Count + " adjacent towns to " + town.name);
 

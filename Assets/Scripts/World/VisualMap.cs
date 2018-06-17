@@ -6,9 +6,11 @@ using System.Linq;
 public class VisualMap : MonoBehaviour {
 
 	public static VisualMap instance;
-	public GameObject iconPrefab;
+	public VisualMapLocation iconPrefab;
 	private Dictionary<System.Guid, VisualMapLocation> icons = new Dictionary<System.Guid, VisualMapLocation>();
 	private Camera cam;
+
+	public float scale = 1f / 30;	
 
 	public bool active {
 		get { return cam.enabled; }
@@ -22,30 +24,27 @@ public class VisualMap : MonoBehaviour {
 		cam = GetComponentInChildren<Camera>();
 	}
 
+	// spawns icons for any locations not already on the map
 	public void SpawnIcons() {
+		Debug.Log("iconprefab == null: " + (iconPrefab == null));
 		Map m = SaveGame.currentGame.map;
-		float scale = 1f/Map.WORLD_COORD_SIZE;
-		Vector3 offset = new Vector3(transform.localScale.x, 0, transform.localScale.z) * iconPrefab.transform.parent.localScale.x / 2f;	
-		foreach (var kv in m.locations.Where(x => x.Value.onMap)) {
-			GameObject newIcon = Instantiate(iconPrefab.gameObject, transform.position, iconPrefab.transform.rotation) as GameObject;
-			newIcon.transform.SetParent(iconPrefab.transform.parent);
+		foreach (var kv in m.locations.Where(x => x.Value.onMap && !icons.ContainsKey(x.Key))) {
+			GameObject newIcon = Instantiate(iconPrefab.gameObject, 
+											 iconPrefab.transform.position, 
+											 iconPrefab.transform.rotation, 
+											 iconPrefab.transform.parent);
 			newIcon.name = kv.Value.name;
-			newIcon.transform.localPosition = kv.Value.worldLocation.val * scale;
-			newIcon.transform.position -= offset;
-
-			VisualMapLocation vml = newIcon.GetComponent<VisualMapLocation>();
-			vml.RefreshText(kv.Value);
-			icons.Add(kv.Key, vml);
+			icons.Add(kv.Key, newIcon.GetComponent<VisualMapLocation>());
 		}
-		Destroy(iconPrefab);
 	}
 
 	public void Refresh() {
-		if (iconPrefab != null) {  // we haven't spawned the icons yet
-			return;
-		}
+		SpawnIcons();
+		Vector3 centerOffset = Map.CurrentLocation().worldLocation.val;
 		foreach (var kv in icons) {
 			Location l = Map.Location(kv.Key);
+
+			kv.Value.transform.localPosition = iconPrefab.transform.localPosition + (l.worldLocation.val - centerOffset) * scale;
 			kv.Value.RefreshText(l);
 			kv.Value.RefreshBirdsEyeView(l);
 		}

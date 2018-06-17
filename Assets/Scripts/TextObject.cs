@@ -52,6 +52,8 @@ public class TextObject : MonoBehaviour {
 	}
 
 	private void AdjustScale() {
+		if (GameManager.players == null)  // to stop exceptions
+			return;
 		if (!ui) {
 			foreach (Player p in GameManager.players) {
 				if (p.firstPersonCam.enabled) {
@@ -65,6 +67,8 @@ public class TextObject : MonoBehaviour {
 	}
 
 	void LateUpdate() {
+		if (GameManager.players == null)  // to stop exceptions
+			return;
 		string s = wordQueue.Count > 0 ? ParseString(wordQueue[0]) : "";
 		if (ui) {
 			if (!frozen) {

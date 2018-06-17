@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class VisualMapLocation : MonoBehaviour {
 
@@ -15,7 +16,7 @@ public class VisualMapLocation : MonoBehaviour {
 		string str;
 		if (l.discovered) {
 			str = (l.icon.Length > 0 ? l.icon + "\n" : "") + l.name;		
-		} else if (questMarked) {
+		} else if (questMarked || l.connections.Any(x => Map.Location(x).discovered)) {
 			str = "?";
 		} else {
 			str = "";

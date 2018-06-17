@@ -47,7 +47,7 @@ public class TownFactory {
             map, 
             icon: "H",
             controllingGroup: gang,
-            availableConnections: Random.Range(1, 2),
+            availableConnections: Random.Range(1, 3),
             buildingsToAttempt: new List<Building>[] {
                 b(1, () => bf.NewGangHeadquarters(gang)),
                 b(Random.Range(1, 2), () => bf.NewGangBarracks(gang)),
