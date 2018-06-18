@@ -44,6 +44,7 @@ public abstract class Weapon : MonoBehaviour {
 
 	public void RaycastShoot(Vector3 source, Vector3 direction) {
 		source.y = Mathf.Min(source.y, 1.2f);
+		Debug.DrawLine(source, source + direction * range, Color.red, 1f);
 		RaycastHit[] hits = Physics.RaycastAll(source, direction, range)
 			.Where(h => h.transform.root != transform.root)
 			.OrderBy(h => h.distance)

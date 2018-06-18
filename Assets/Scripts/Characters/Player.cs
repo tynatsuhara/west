@@ -69,6 +69,12 @@ public class Player : Character {
 			}
 		}
 
+		// space - jump
+		// TODO: what button on controller?
+		if (Input.GetKey(KeyCode.Space) && Mathf.Abs(rb.velocity.y) < .001f) {
+			Jump();
+		}
+
 		// E - Interact
 		if ((p1 && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown("joystick " + id + " button 1")) {
 			Teleporter teleporter = GameObject.FindObjectsOfType<Teleporter>()

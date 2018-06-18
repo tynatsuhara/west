@@ -51,6 +51,8 @@ public abstract class Character : LivingThing, Damageable {
 	private List<List<byte[]>> voxelBlobs;
 
 	public float moveSpeed;
+	public float jumpForce;
+	public float jumpGravityDelay;
 	public float rotationSpeed;
 	public Vector3 lastMoveDirection;
 
@@ -135,6 +137,16 @@ public abstract class Character : LivingThing, Damageable {
 			Quaternion targetRotation = Quaternion.LookRotation(vec);
 			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 		}
+	}
+
+	public void Jump() {
+		StartCoroutine(JumpCoroutine());
+	}
+	private IEnumerator JumpCoroutine() {
+		rb.useGravity = false;
+		rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Force);
+		yield return new WaitForSeconds(jumpGravityDelay);
+		rb.useGravity = true;
 	}
 
 	public bool lastDamageNonlethal;
@@ -611,7 +623,7 @@ public abstract class Character : LivingThing, Damageable {
 		if (!float.IsNaN(data.health))
 			health = data.health;
 		if (data.ridingHorse)
-			GameManager.spawnedHorses.Where(x => x.SaveData().guid == data.mountGuid).First().Interact(this);
+			GameManager.spawnedHorses.Where(x => x.SaveData().guid == data.mountGuid).First().Mount(this);
 		outfit = data.outfit;
 		skinColor = data.skinColor;
 		hairColor = data.hairColor;

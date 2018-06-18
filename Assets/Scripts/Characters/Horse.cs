@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Collections;
 
-public class Horse : LivingThing, Interactable, Damageable {
+public class Horse : LivingThing, Damageable {
 
 	private HorseSaveData data;
 	private Character rider;
+	private bool canRide = true;
 
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
 	public GameObject saddle;
 	public bool tamed;
 	public float jumpForce;
+	public float fallingVelocityTrigger;
+	public float canRideResetTime;
 	public PicaVoxel.Exploder exploder;
 
 	public void Start() {
@@ -20,10 +23,17 @@ public class Horse : LivingThing, Interactable, Damageable {
 		SetName();	
 	}
 
-	// Ride
-	public void Interact(Character character) {
-		if (!isAlive || rider != null)
+	void OnTriggerEnter(Collider collider) {
+		if (!isAlive || rider != null || !canRide)
 			return;
+		Character c = collider.transform.root.GetComponent<Character>();
+		if (c == null)
+			return;
+		if (c.GetComponent<Rigidbody>().velocity.y < fallingVelocityTrigger)
+			Mount(c);
+	}	
+
+	public void Mount(Character character) {
 		character.MountHorse(this);
 		rider = character;
 		SetName();
@@ -33,12 +43,17 @@ public class Horse : LivingThing, Interactable, Damageable {
 			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentTown().guid, "Horse Theft", 10);			
 		}
 	}
-	public void Uninteract(Character character) {}
 
 	public void Dismount() {
 		rider = null;
 		GetComponent<WalkCycle>().StandStill();
 		SetName();
+		canRide = false;
+		StartCoroutine(ResetCanRide());
+	}
+	private IEnumerator ResetCanRide() {
+		yield return new WaitForSeconds(canRideResetTime);
+		canRide = true;
 	}
 
 	private void SetName() {
