@@ -106,6 +106,7 @@
      <Compile Include="Assets\Scripts\Characters\Groups\Group.cs" />
      <Compile Include="Assets\Scripts\Characters\Groups\ReputationWithGroup.cs" />
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />
+     <Compile Include="Assets\Scripts\Characters\Jumper.cs" />
      <Compile Include="Assets\Scripts\Characters\LivingThing.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCFollowTask.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCKillTask.cs" />

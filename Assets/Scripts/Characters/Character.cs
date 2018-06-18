@@ -51,8 +51,6 @@ public abstract class Character : LivingThing, Damageable {
 	private List<List<byte[]>> voxelBlobs;
 
 	public float moveSpeed;
-	public float jumpForce;
-	public float jumpGravityDelay;
 	public float rotationSpeed;
 	public Vector3 lastMoveDirection;
 
@@ -137,16 +135,6 @@ public abstract class Character : LivingThing, Damageable {
 			Quaternion targetRotation = Quaternion.LookRotation(vec);
 			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 		}
-	}
-
-	public void Jump() {
-		StartCoroutine(JumpCoroutine());
-	}
-	private IEnumerator JumpCoroutine() {
-		rb.useGravity = false;
-		rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Force);
-		yield return new WaitForSeconds(jumpGravityDelay);
-		rb.useGravity = true;
 	}
 
 	public bool lastDamageNonlethal;
@@ -371,7 +359,7 @@ public abstract class Character : LivingThing, Damageable {
 		mount.Dismount();
 		transform.parent = null;
 		LevelBuilder.instance.permanent.Remove(mount.transform);		
-		transform.Translate((Random.Range(0, 2) == 0 ? 1 : -1) * transform.right * .5f);
+		transform.Translate((Random.Range(0, 2) == 0 ? 1 : -1) * mount.transform.right * .7f);
 		walk.StandStill(true);
 	}
 	private void SetMount(Horse h, bool isMounted) {

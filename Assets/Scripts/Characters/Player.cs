@@ -71,8 +71,9 @@ public class Player : Character {
 
 		// space - jump
 		// TODO: what button on controller?
-		if (Input.GetKey(KeyCode.Space) && Mathf.Abs(rb.velocity.y) < .001f) {
-			Jump();
+		if (Input.GetKey(KeyCode.Space) && Mathf.Abs(transform.root.GetComponent<Rigidbody>().velocity.y) < .001f) {
+			// character or horse jump
+			transform.root.GetComponent<Jumper>().Jump();
 		}
 
 		// E - Interact
@@ -242,7 +243,7 @@ public class Player : Character {
 			// firstPersonCam.transform.RotateAround(firstPersonCam.transform.position, transform.right, Input.GetAxis("Mouse Y") * -150f * Time.deltaTime);
 		} else {
 			// Generate a plane that intersects the transform's position with an upwards normal.
-			Plane playerPlane = new Plane(Vector3.up, transform.position);
+			Plane playerPlane = new Plane(Vector3.up, transform.position - Vector3.up * .2f);
 			Ray ray = playerCamera.cam.ScreenPointToRay(playerUI.mousePos);
 			float hitdist = 0f;
 			// If the ray is parallel to the plane, Raycast will return false.
