@@ -121,7 +121,11 @@ public class Player : Character {
 				Shoot();
 			}
 			*/
+			bool neededReload = currentGun.NeedsToReload();
 			Shoot();
+			if (!neededReload && currentGun.NeedsToReload()) {
+				speech.Say("[RELOAD]", color: "grey");
+			}
 		} else if ((p1 && Input.GetMouseButtonDown(1)) || Input.GetKeyDown("joystick " + id + " button 6")) {
 			Melee();
 		// } else if (Input.GetKeyDown(KeyCode.Alpha3)) {      // TODO: ¿improve explosions?
@@ -129,6 +133,8 @@ public class Player : Character {
 		}
 
 		if ((p1 && Input.GetKeyDown(KeyCode.R)) || Input.GetKeyDown("joystick " + id + " button 0")) {
+			Reload();
+		} else if (currentGun != null && currentGun.NeedsToReload() && ((p1 && Input.GetMouseButtonDown(0)) || Input.GetKeyDown("joystick " + id + " button 7"))) {
 			Reload();
 		}
 
