@@ -31,7 +31,7 @@ public class Horse : LivingThing, Damageable {
 		if (!isAlive || rider != null || !canRide)
 			return;
 		Character c = collider.transform.root.GetComponent<Character>();
-		if (c == null)
+		if (c == null || !c.isAlive)
 			return;
 		if (c.GetComponent<Rigidbody>().velocity.y < fallingVelocityTrigger 
 				|| Mathf.Abs(c.transform.position.y - transform.position.y - 1) < .1)  // if the player ends up on top w/o falling
