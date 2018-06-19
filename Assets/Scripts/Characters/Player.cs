@@ -121,7 +121,7 @@ public class Player : Character {
 				Shoot();
 			}
 			*/
-			bool neededReload = currentGun.NeedsToReload();
+			bool neededReload = currentGun != null && currentGun.NeedsToReload();
 			Shoot();
 			if (!neededReload && currentGun.NeedsToReload()) {
 				speech.Say("[RELOAD]", color: "grey");
