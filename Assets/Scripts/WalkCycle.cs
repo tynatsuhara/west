@@ -68,40 +68,12 @@ public class WalkCycle : MonoBehaviour {
 		}
 	}
 
-	private static PicaVoxel.Voxel? dirtVoxel;
 	protected void KickUpDirt() {
 		if (!isWalking)
 			return;
-		
-		if (dirtVoxel == null) {
-			List<byte> bytes = new List<byte>(new byte[2]);
-			bytes[0] = (byte)PicaVoxel.VoxelState.Active;
-			bytes.AddRange(new byte[] { 157, 140, 94, 0 });
-			dirtVoxel = new PicaVoxel.Voxel(bytes.ToArray());
-		}
-
 		Floor f = LevelBuilder.instance.FloorAt(transform.position);
-		if (f != null && f.kickUpDirt) {
-			PicaVoxel.Voxel v = dirtVoxel.Value;
-			v.Color = f.dirtColor == Color.white ? GetBiomeTint() : f.dirtColor;
-			int dirts = Random.Range(1, 4);	
-			for (int i = 0; i < dirts; i++) {
-				Vector3 pos = transform.root.position;
-				pos.y = 0;
-				pos += transform.forward * .1f + Random.insideUnitSphere * .45f;
-				pos.y = Mathf.Max(pos.y, .04f);
-
-				Vector3 dir = transform.up * .25f + Random.insideUnitSphere * .5f;
-				PicaVoxel.VoxelParticleSystem.Instance.SpawnSingle(pos, v, .1f, dir, Random.Range(.3f, .6f));
-			}
-		}
-	}
-	private Color32 GetBiomeTint() {
-		Color32 c = (Color32)LevelBuilder.instance.mat.GetColor("_Tint");
-		int diff = -16;
-		c.r = (byte)Mathf.Clamp(c.r + diff, 0, 255);
-		c.g = (byte)Mathf.Clamp(c.g + diff, 0, 255);
-		c.b = (byte)Mathf.Clamp(c.b + diff, 0, 255);
-		return c;
+		if (f == null)
+			return;
+		f.KickUpDirtWalking(transform.root.position + transform.forward * .1f);
 	}
 }

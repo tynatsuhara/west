@@ -26,7 +26,6 @@ public class VisualMap : MonoBehaviour {
 
 	// spawns icons for any locations not already on the map
 	public void SpawnIcons() {
-		Debug.Log("iconprefab == null: " + (iconPrefab == null));
 		Map m = SaveGame.currentGame.map;
 		foreach (var kv in m.locations.Where(x => x.Value.onMap && !icons.ContainsKey(x.Key))) {
 			GameObject newIcon = Instantiate(iconPrefab.gameObject, 

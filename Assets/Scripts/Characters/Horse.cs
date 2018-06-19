@@ -29,11 +29,14 @@ public class Horse : LivingThing, Damageable {
 		Character c = collider.transform.root.GetComponent<Character>();
 		if (c == null)
 			return;
-		if (c.GetComponent<Rigidbody>().velocity.y < fallingVelocityTrigger)
+		if (c.GetComponent<Rigidbody>().velocity.y < fallingVelocityTrigger 
+				|| Mathf.Abs(c.transform.position.y - transform.position.y - 1) < .1)  // if the player ends up on top w/o falling
 			Mount(c);
 	}	
 
 	public void Mount(Character character) {
+		if (!isAlive || rider != null || !canRide)
+			return;
 		character.MountHorse(this);
 		rider = character;
 		SetName();
@@ -94,7 +97,10 @@ public class Horse : LivingThing, Damageable {
 		int jumpsNeeded = Random.Range(4, 8);
 		for (int i = 0; i < jumpsNeeded; i++) {
 			yield return new WaitForSeconds(Random.Range(.2f, .7f));
-			Jump();
+			// buck the rider off
+			Jumper j = GetComponent<Jumper>();
+			Vector3 force = Random.insideUnitSphere * j.jumpForce.y * .4f;
+			j.Jump(new Vector3(force.x, Random.Range(.6f, 1f) * j.jumpForce.y, force.z));
 			yield return new WaitForSeconds(.1f);			
 			if (rider != null && Random.Range(0, 6) == 0) {
 				rider.Dismount();
@@ -112,12 +118,6 @@ public class Horse : LivingThing, Damageable {
 		tamed = true;
 		data.owner = owner;
 		saddle.SetActive(tamed);	
-	}
-
-	public void Jump() {
-		Vector3 force = Random.insideUnitSphere * jumpForce * .2f;
-		force.y = jumpForce * Random.Range(.8f, 1.3f);
-		GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
 	}
 
 	private void Color() {

@@ -123,6 +123,7 @@
      <Compile Include="Assets\Scripts\Door.cs" />
      <Compile Include="Assets\Scripts\Explosive.cs" />
      <Compile Include="Assets\Scripts\Floor.cs" />
+     <Compile Include="Assets\Scripts\FloorEffects.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
      <Compile Include="Assets\Scripts\Inventory.cs" />

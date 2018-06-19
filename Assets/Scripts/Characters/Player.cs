@@ -71,9 +71,12 @@ public class Player : Character {
 
 		// space - jump
 		// TODO: what button on controller?
-		if (Input.GetKey(KeyCode.Space) && Mathf.Abs(transform.root.GetComponent<Rigidbody>().velocity.y) < .001f) {
+		if (Input.GetKey(KeyCode.Space)) {
 			// character or horse jump
-			transform.root.GetComponent<Jumper>().Jump();
+			Jumper jumper = transform.root.GetComponent<Jumper>();
+			if (!jumper.isJumping) {
+				jumper.Jump();
+			}
 		}
 
 		// E - Interact
