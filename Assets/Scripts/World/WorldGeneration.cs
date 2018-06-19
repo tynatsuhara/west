@@ -13,12 +13,7 @@ public class WorldGeneration : MonoBehaviour {
 		StartCoroutine(GenerateWorld());
 	}
 	
-	private IEnumerator GenerateWorld() {
-		// Random.InitState(5);  // TODO: make seed work
-		// Debug.Log(Random.Range(0, 10));
-		// Debug.Log(Random.Range(0, 10));
-		// Debug.Log(Random.Range(0, 10));
-		
+	private IEnumerator GenerateWorld() {		
 		SaveGame.currentGame.time = new WorldTime();
 		SaveGame.currentGame.events = new EventQueue();
 		SaveGame.currentGame.map = new Map();
