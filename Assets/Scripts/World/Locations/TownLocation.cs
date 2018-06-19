@@ -304,9 +304,9 @@ public class TownLocation : Location {
 				} else if (valX == 0 || valX == width - 1 || valY == 0 || valY == height - 1 || AdjacentToBuilding(current)) {  // don't travel right on edges
 					gScoreTentative += 2f;
 				} else if (ground.type == GroundTile.GroundType.TRAIL) {
-					gScoreTentative += .1f;
+					// gScoreTentative += .1f;
 				} else {
-					gScoreTentative += Random.Range(.5f, 1f);
+					gScoreTentative += Random.Range(.75f, 1f);
 				}
 
 				if (gScoreTentative >= gScore[neighbor])

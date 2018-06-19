@@ -5,6 +5,7 @@ public class NPCFactory {
     public NPCData MakeNormie() {
         NPCData npc = new NPCData(NPCData.NPCType.NORMIE, UnityEngine.Random.Range(0, 2) == 0);
 
+        // TODO: allocate schedule dynamically when the game starts?
         // Schedule schedule = new Schedule()
         //     .AddBlock(WorldTime.HOUR * 8, new NPCNoOpTask(home.guid, home.RandomUnoccupiedTile()))
         //     .AddBlock(WorldTime.HOUR * 10, new NPCNoOpTask(work.guid, work.RandomUnoccupiedTile()))
@@ -14,17 +15,17 @@ public class NPCFactory {
         return npc;
     }
 
-    public NPCData MakeGoon(string group) {
+    public NPCData MakeGoon(string gang) {
         NPCData npc = new NPCData(NPCData.NPCType.GOON, Random.Range(0, 2) == 0);
         npc.outfit = "default";
-        npc.groups.Add(group);
+        npc.groups.Add(gang);
         return npc;
     }
 
-    public NPCData MakeGangLeader(string group) {
+    public NPCData MakeGangLeader(string gang) {
         NPCData npc = new NPCData(NPCData.NPCType.GANG_LEADER, Random.Range(0, 2) == 0);
         npc.outfit = "default";
-        npc.groups.Add(group);
+        npc.groups.Add(gang);
         return npc;
     }
 

@@ -21,8 +21,8 @@ public class TownFactory {
             availableConnections: Random.Range(2, 6),
             buildingsToAttempt: new List<Building>[] {
                 b(Random.Range(5, 10), () => bf.NewHome()), 
-                b(Random.Range(0, 3), () => bf.NewSaloon()),
-                b(Random.Range(1, 2), () => bf.NewSheriffsOffice())
+                b(Random.Range(1, 3), () => bf.NewSaloon()),
+                b(Random.Range(1, 3), () => bf.NewSheriffsOffice())
             }
         );
     }
@@ -32,11 +32,11 @@ public class TownFactory {
             NameGen.TownName(),
             map, 
             icon: "s",
-            availableConnections: Random.Range(1, 3),
+            availableConnections: Random.Range(2, 4),
             buildingsToAttempt: new List<Building>[] {
                 b(Random.Range(2, 7), () => bf.NewHome()), 
-                b(Random.Range(0, 1), () => bf.NewSaloon()),
-                b(Random.Range(0, 1), () => bf.NewSheriffsOffice())
+                b(Random.Range(0, 2), () => bf.NewSaloon()),
+                b(Random.Range(0, 2), () => bf.NewSheriffsOffice())
             }
         );
     }
@@ -50,9 +50,9 @@ public class TownFactory {
             availableConnections: Random.Range(1, 3),
             buildingsToAttempt: new List<Building>[] {
                 b(1, () => bf.NewGangHeadquarters(gang)),
-                b(Random.Range(1, 2), () => bf.NewGangBarracks(gang)),
-                b(Random.Range(0, 2), () => bf.NewHome()), 
-                b(Random.Range(0, 1), () => bf.NewSaloon())
+                b(Random.Range(1, 3), () => bf.NewGangBarracks(gang)),
+                b(Random.Range(0, 4), () => bf.NewHome()), 
+                b(Random.Range(0, 2), () => bf.NewSaloon())
             }
         );
     }   

@@ -17,7 +17,7 @@ public class Map {
 
 	private const int RING_SIZE = 5;  // the thiccness of each ring in the map
 	private const int RING_BUFFER = 2;  // how many rings out to spawn
-	private const float TOWNS_PER_SQUARE_UNIT = 1f / 25;  // TODO what is this val?
+	private const float TOWNS_PER_SQUARE_UNIT = 1f / 15;  // TODO what is this val?
 
 	private int furthestRing = 1; // the furthest ring of towns which has been spawned (innermost ring is 1)
 
@@ -86,14 +86,14 @@ public class Map {
 								  	  .OrderBy(x => x.connections.Count)
 								      .ToList();
 		Debug.Log("found " + adj.Count + " adjacent towns to " + town.name);
-
-		for (int i = 0; i < Mathf.Min(adj.Count, town.availableConnections); i++) {
+		int connectionAmount = Mathf.Min(adj.Count, town.availableConnections);
+		for (int i = 0; i < connectionAmount; i++) {
 			town.Connect(adj[i]);
 			adj[i].Connect(town);
 		}
 
 		town.Generate();
-		Debug.Log("generated " + town.name);
+		Debug.Log("generated " + town.name + " with " + connectionAmount + " connections");
 	}
 
 	// Visiting a town ensures that all adjacent connected towns are generated
@@ -104,7 +104,6 @@ public class Map {
 				Generate(l as TownLocation);
 			}
 		}
-		Debug.Log("visited " + locations[id].name);
 	}
 
 	private TownLocation NewTown() {
