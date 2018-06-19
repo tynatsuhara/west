@@ -105,7 +105,9 @@ public class Player : Character {
 			DropBag();
 		}
 
-		if ((p1 && Input.GetMouseButton(0)) || Input.GetKey("joystick " + id + " button 7")) {
+		if (currentGun == null) {
+			// do nothing
+		} else if ((p1 && Input.GetMouseButton(0)) || Input.GetKey("joystick " + id + " button 7")) {
 			/*
 			// This shoots at where the mouse is, but it's fucky
 			Ray ray = firstPersonCam.enabled ? new Ray(transform.position, firstPersonCam.transform.forward) : playerCamera.cam.ScreenPointToRay(playerUI.mousePos);
@@ -121,7 +123,7 @@ public class Player : Character {
 				Shoot();
 			}
 			*/
-			bool neededReload = currentGun != null && currentGun.NeedsToReload();
+			bool neededReload = currentGun.NeedsToReload();
 			Shoot();
 			if (!neededReload && currentGun.NeedsToReload()) {
 				speech.Say("[RELOAD]", color: "grey");
