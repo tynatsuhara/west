@@ -82,7 +82,7 @@ public class Player : Character {
 		// E - Interact
 		if ((p1 && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown("joystick " + id + " button 1")) {
 			Teleporter teleporter = GameObject.FindObjectsOfType<Teleporter>()
-					.Where(x => x.CollidingWith(this))
+					.Where(x => x.CollidingWith(this) && (!ridingHorse || x.permitHorses))
 					.OrderBy(x => Vector3.Distance(x.transform.position, transform.position))
 					.FirstOrDefault();
 			if (teleporter != null) {

@@ -17,6 +17,10 @@ public class Horse : LivingThing, Damageable {
 	public float canRideResetTime;
 	public PicaVoxel.Exploder exploder;
 
+	public void Awake() {
+		StartCoroutine(DelayCanRide());		
+	}
+
 	public void Start() {
 		bodyParts.Add(GetComponent<PicaVoxel.Volume>());
 		separateBodyParts.AddRange(bodyParts);
@@ -51,10 +55,10 @@ public class Horse : LivingThing, Damageable {
 		rider = null;
 		GetComponent<WalkCycle>().StandStill();
 		SetName();
-		canRide = false;
-		StartCoroutine(ResetCanRide());
+		StartCoroutine(DelayCanRide());
 	}
-	private IEnumerator ResetCanRide() {
+	private IEnumerator DelayCanRide() {
+		canRide = false;
 		yield return new WaitForSeconds(canRideResetTime);
 		canRide = true;
 	}

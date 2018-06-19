@@ -8,6 +8,7 @@ public class Teleporter : MonoBehaviour {
 	public System.Guid toId;
 	public string destination;
 	public TeleporterData otherSide;
+	public bool permitHorses;
 	public float radius {
 		get { return GetComponent<SphereCollider>().radius; }
 	}
@@ -98,6 +99,7 @@ public class Teleporter : MonoBehaviour {
 		destination = Map.Location(toId).name;
 		otherSide = SaveGame.currentGame.map.locations[toId].teleporters
 				.Where(x => x.toId == currentLoc /* && x.tag == td.tag */).First();
+		permitHorses = td.permitHorses;
 	}
 
 	private IEnumerator Delay() {
@@ -113,12 +115,14 @@ public class Teleporter : MonoBehaviour {
 		public SerializableVector3 position;
 		public string tag;
 		public bool connectRoad;
+		public bool permitHorses;
 
-		public TeleporterData(System.Guid toId, Vector3 position, string tag = "", bool connectRoad = true) {
+		public TeleporterData(System.Guid toId, Vector3 position, string tag = "", bool connectRoad = true, bool permitHorses = true) {
 			this.toId = toId;
 			this.position = new SerializableVector3(position);
 			this.tag = tag;
 			this.connectRoad = connectRoad;
+			this.permitHorses = permitHorses;
 		}
 	}
 }

@@ -68,7 +68,7 @@ public class Building {
         map.locations[town.guid].connections.Add(guid);
 
         // add teleporters
-        doors.Add(new Teleporter.TeleporterData(interior.guid, Vector3.one, "front door"));
+        doors.Add(new Teleporter.TeleporterData(interior.guid, Vector3.one, "front door", permitHorses: false));
     }
 
 
