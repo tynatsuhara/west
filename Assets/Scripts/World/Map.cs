@@ -46,17 +46,17 @@ public class Map {
 		if (ring <= furthestRing) {
 			return;
 		}
+		TownFactory tf = new TownFactory(this);		
 		int townAmount = (int) ((Mathf.Pow(ring * RING_SIZE, 2) - Mathf.Pow((ring-1) * RING_SIZE, 2)) * Mathf.PI * TOWNS_PER_SQUARE_UNIT);
 		Debug.Log("ring " + ring + ": attempting to spawn " + townAmount + " towns");
 		int successful = Enumerable.Range(0, townAmount)
-								   .Where(x => TryPlaceNewTown(ring))
+								   .Where(x => TryPlaceNewTown(tf.NewRandomTown(), ring))
 								   .Count();
 		Debug.Log("successfully spawned " + successful + " towns");
 		furthestRing = ring;
 	}
 
-	private bool TryPlaceNewTown(int ring) {
-		TownLocation n = NewTown();
+	private bool TryPlaceNewTown(TownLocation n, int ring) {
 		int i = 0;
 		do {
 			Vector2 pos = (Vector2) Random.insideUnitCircle.normalized * Random.Range(1f * ring-1, 1f * ring) * RING_SIZE;
@@ -103,24 +103,6 @@ public class Map {
 			if (l is TownLocation) {
 				Generate(l as TownLocation);
 			}
-		}
-	}
-
-	private TownLocation NewTown() {
-		TownFactory tf = new TownFactory(this);
-		int val = Random.Range(0, 10);
-		if (val < 2) {
-			string gangName;
-			do {
-				gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
-				Debug.Log("new gang name " + gangName);				
-			} while (SaveGame.currentGame.groups.ContainsKey(gangName));
-			SaveGame.currentGame.groups.Add(gangName, new Group(gangName));			
-			return tf.NewGangTown(gangName);
-		} else if (val < 6) {
-			return tf.NewLargeTown();
-		} else {
-			return tf.NewSmallTown();
 		}
 	}
 

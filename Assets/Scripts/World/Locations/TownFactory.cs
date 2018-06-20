@@ -8,9 +8,45 @@ public class TownFactory {
     private BuildingFactory bf;
 	public readonly string[] ICONS = new string[]{"{", "}", "[", "]", "> <", "*", "@", ">", "<"};    
 
+    private List<System.Func<TownLocation>> townSuppliers = new List<System.Func<TownLocation>>();
+    private List<float> townWeights = new List<float>();
+    private float weightSum;
+
     public TownFactory(Map map) {
         this.map = map;
         this.bf = new BuildingFactory(new NPCFactory());
+
+        Weight(2, () => {
+            string gangName;
+			do {
+				gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
+				Debug.Log("new gang name " + gangName);				
+			} while (SaveGame.currentGame.groups.ContainsKey(gangName));
+			SaveGame.currentGame.groups.Add(gangName, new Group(gangName));			
+			return NewGangTown(gangName);
+        });
+        Weight(6, () => NewLargeTown());
+        Weight(4, () => NewSmallTown());
+    }
+
+    private void Weight(float weight, System.Func<TownLocation> func) {
+        townSuppliers.Add(func);
+        townWeights.Add(weight);
+        weightSum += weight;
+    }
+
+    // Returns a town using the defined weights above
+    public TownLocation NewRandomTown() {
+        float val = Random.Range(0, weightSum);
+        float run = 0;
+		for (int i = 0; i < townSuppliers.Count; i++) {
+            run += townWeights[i];
+            if (val < run) {
+                return townSuppliers[i]();
+            }
+        }
+        Debug.Log("something fucked up :o");
+        return null;
     }
 
     public TownLocation NewLargeTown() {
