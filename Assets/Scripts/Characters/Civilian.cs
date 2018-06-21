@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+	TODO get rid of this
+ */
 public class Civilian : NPC {
 
 	public bool hasGun;  // can enter attacking states

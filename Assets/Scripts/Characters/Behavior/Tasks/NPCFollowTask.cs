@@ -29,4 +29,9 @@ public class NPCFollowTask : NPCTask {
     public override float GetTimeLeft() {
         return WorldTime.MINUTE;
     }
+
+    public override void Execute(NPC self) {
+        Character targetChar = GameManager.instance.GetCharacter(target);
+		self.GoToPosition(targetChar.transform.position, distance);        
+    }
 }

@@ -25,7 +25,7 @@ public class NPC : Character, Interactable {
 
 	public override void Start() {
 		// StartCoroutine(UpdateEvidenceInSight(.5f));
-		// StartCoroutine(UpdateEquippedPlayersInSight(.1f));
+		// StartCoroutine(UpdateEquippedPlayersInSight(.3f));
 
 		base.Start();
 	}
@@ -40,14 +40,6 @@ public class NPC : Character, Interactable {
 		Rotate();
 		agent.speed = CalculateSpeed();
 
-		timeOnCurrentTask += Time.deltaTime;
-
-		NPCTask newTask = data.GetTask();
-		if (newTask != task) {
-			timeOnCurrentTask = 0;
-			task = newTask;
-		}
-
 		ExecuteTask();
 	}
 
@@ -57,6 +49,12 @@ public class NPC : Character, Interactable {
 
 	private Teleporter taskTeleporter;
 	private void ExecuteTask() {
+		timeOnCurrentTask += Time.deltaTime;
+		NPCTask newTask = data.GetTask();
+		if (newTask != task) {
+			timeOnCurrentTask = 0;
+			task = newTask;
+		}
 		if (task == null) {
 			return;
 		}
@@ -65,10 +63,7 @@ public class NPC : Character, Interactable {
 			GoToTeleporter(taskLocation);
 			return;
 		}
-		
-		if (task is NPCFollowTask) {
-			ExecuteTask(task as NPCFollowTask);
-		}
+		task.Execute(this);
 	}
 
 	private void GoToTeleporter(System.Guid taskLocation) {
@@ -89,11 +84,7 @@ public class NPC : Character, Interactable {
 		}
 	}
 
-	private void ExecuteTask(NPCFollowTask followTask) {
-		GoToPosition(followTask.GetLocation().position, followTask.distance);
-	}
-
-	private void GoToPosition(Vector3 pos, float dist = 0) {
+	public void GoToPosition(Vector3 pos, float dist = 0) {
 		agent.destination = pos;
 		agent.stoppingDistance = dist;
 	}
@@ -155,10 +146,18 @@ public class NPC : Character, Interactable {
 		}
 	}
 
+	public void Alert(Stimulus s, Vector3 location) {
+		(data.taskSources[NPCData.DYNAMIC_AI] as DynamicBehavior).React(s, location);
+	}
+
+	public Weapon CurrentWeapon() {
+		// TODO get the most useful weapon for the current situation
+		return currentGun;
+	}
 
 	// TODO: rewrite this shit so it isn't garbage
 
-	public bool seesEvidence;
+	/*public bool seesEvidence;
 	public Vector3? evidencePoint;
 	public IEnumerator UpdateEvidenceInSight(float timeStep) {
 		while (isAlive) {
@@ -230,7 +229,7 @@ public class NPC : Character, Interactable {
 				playerScript = pc;
 		}
 		return playerScript;
-	}
+	}*/
 
 	public bool ClearShot(GameObject target, float dist = 20f) {
 		RaycastHit hit;
@@ -239,8 +238,6 @@ public class NPC : Character, Interactable {
 
 		return false;
 	}
-
-	public override void Alert(Reaction importance, Vector3 position) {}
 
 	/*
 	 * When a character is spawned, they're put at the location of the teleporter.

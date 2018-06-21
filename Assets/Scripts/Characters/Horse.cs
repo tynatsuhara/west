@@ -47,7 +47,8 @@ public class Horse : LivingThing, Damageable {
 		if (!tamed) {
 			StartCoroutine(Tame());
 		} else if (character.guid != data.owner) {
-			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentTown().guid, "Horse Theft", 10);			
+			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentTown().guid, "Horse Theft", 10);
+			GameManager.instance.AlertInRange(Stimulus.HORSE_THEFT, transform.position, 5f, visual: transform.root.gameObject);					
 		}
 	}
 

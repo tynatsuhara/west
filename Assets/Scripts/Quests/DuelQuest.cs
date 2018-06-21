@@ -7,6 +7,7 @@ public class DuelQuest : Quest, NPCTaskSource {
 	private GoToTask centerOfRoad;
 	private GoToTask sevenPaces;
 	private KillTask killTask;
+	private string taskSourceId;
 
 	private Task playerLastReturnedTask;
 
@@ -17,7 +18,8 @@ public class DuelQuest : Quest, NPCTaskSource {
 		sevenPaces = new GoToTask(l.guid, l.RandomUnoccupiedTile(), true, "Walk seven paces");
 		killTask = new KillTask(duelingOpponent);
 		title = "Duel " + SaveGame.currentGame.savedCharacters[duelingOpponent].name;
-		SaveGame.currentGame.savedCharacters[duelingOpponent].taskSources.Add(this);
+		taskSourceId = "" + GetHashCode();
+		SaveGame.currentGame.savedCharacters[duelingOpponent].taskSources.Add(taskSourceId, this);
 	}
 
 	public override Task UpdateQuest() {
@@ -28,7 +30,7 @@ public class DuelQuest : Quest, NPCTaskSource {
 
 		playerLastReturnedTask = CurrentQuestTask();
 		if (playerLastReturnedTask == null) {  // quest is over
-			SaveGame.currentGame.savedCharacters[duelingOpponent].taskSources.Remove(this);			
+			SaveGame.currentGame.savedCharacters[duelingOpponent].taskSources.Remove(taskSourceId);			
 		}
 		return playerLastReturnedTask;
 	}
@@ -50,7 +52,7 @@ public class DuelQuest : Quest, NPCTaskSource {
 			return null;
 		}
 		if (playerLastReturnedTask == killTask) {
-			return new NPCKillTask();
+			return new NPCKillTask(GameManager.players[0].guid);
 		}
 		return null;
 	}

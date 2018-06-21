@@ -20,4 +20,6 @@ public class NPCNoOpTask : NPCTask {
     public override float GetTimeLeft() {
         return 1f;
     }
+
+    public override void Execute(NPC self) {}
 }

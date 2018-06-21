@@ -44,7 +44,7 @@ public abstract class Weapon : MonoBehaviour {
 
 	public void RaycastShoot(Vector3 source, Vector3 direction) {
 		source.y = Mathf.Min(source.y, 1.2f);
-		Debug.DrawLine(source, source + direction * range, Color.red, 1f);
+		Debug.DrawLine(source, source + direction * range, Color.red, 1f, true);
 		RaycastHit[] hits = Physics.RaycastAll(source, direction, range)
 			.Where(h => h.transform.root != transform.root)
 			.OrderBy(h => h.distance)
@@ -60,6 +60,7 @@ public abstract class Weapon : MonoBehaviour {
 				hitMarker = c != null && c.isAlive && (!(c is Player) || GameManager.instance.friendlyFireEnabled);
 			}
 			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, owner);
+			GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 5f, visual: hits[i].transform.root.gameObject);			
 		}
 		if (hitMarker && isPlayer) {
 			player.playerUI.HitMarker();
@@ -105,8 +106,7 @@ public abstract class Weapon : MonoBehaviour {
 				d.Damage(rhits[0].collider.transform.root.position, owner.transform.forward, 1f, owner, type);
 				if (rhits[0].collider.GetComponentInParent<LivingThing>() != null)
 					MeleeHitPlayerCallback();
-				GameManager.instance.AlertInRange(Character.Reaction.AGGRO, 
-						transform.position, 5f, visual: transform.root.gameObject);
+				GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 5f, visual: rhits[0].transform.root.gameObject);
 				hits.Add(d);
 			}
 			if (hits.Count == maxEnemiesMelee)

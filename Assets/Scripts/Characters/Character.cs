@@ -6,10 +6,6 @@ using System.Collections.Generic;
 public abstract class Character : LivingThing, Damageable {
 
 	// Ranked in order of ascending priority
-	public enum Reaction : int {
-		SUSPICIOUS,
-		AGGRO
-	};
 	public LayerMask sightLayers;
 	public TextObject speech;
 	
@@ -99,9 +95,6 @@ public abstract class Character : LivingThing, Damageable {
 		}
 	}
 
-	public abstract void Alert(Reaction importance, Vector3 position);
-	public void Alert() {}
-
 	public void KnockBack(float force) {
 		rb.AddForce(force * -transform.forward, ForceMode.Impulse);
 	}
@@ -148,9 +141,6 @@ public abstract class Character : LivingThing, Damageable {
 		if (isPlayer && (attacker is Player) && !GameManager.instance.friendlyFireEnabled)
 			damage = 0f;
 
-		if (isAlive && !isPlayer)
-			Alert(Reaction.AGGRO, location - angle.normalized);
-
 		if (isAlive)
 			Bleed(location - Vector3.up * (Random.Range(0, 3) == 1 ? .5f : 0f), Random.Range(1, 10), angle);
 
@@ -158,9 +148,11 @@ public abstract class Character : LivingThing, Damageable {
 		bool wasAlive = isAlive;  // save it beforehand
 
 		health = Mathf.Max(0, health - damage);
-		if (!isAlive && wasAlive) {
+		if (!isAlive && wasAlive)
 			Die(location, angle, attacker, type);
-		}
+
+		if (isAlive && !isPlayer)
+			(this as NPC).Alert(Stimulus.ATTACKED, location - angle.normalized);
 
 		// regular knockback
 		if (!isPlayer || !isAlive) {
@@ -187,7 +179,7 @@ public abstract class Character : LivingThing, Damageable {
 		if (ridingHorse) {
 			Dismount();
 		}
-		GameManager.instance.AlertInRange(Reaction.AGGRO, transform.position, 2f);
+		GameManager.instance.AlertInRange(Stimulus.MURDER, transform.position, 2f, visual: transform.root.gameObject);
 		InteractCancel();
 		SetDeathPhysics();
 		walk.StandStill();		
@@ -257,6 +249,7 @@ public abstract class Character : LivingThing, Damageable {
 
 	public void DrawWeapon() {
 		SetWeaponDrawn(true);
+		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 5f, visual: transform.root.gameObject);		
 	}
 
 	public void HideWeapon() {
@@ -450,15 +443,20 @@ public abstract class Character : LivingThing, Damageable {
 		float angle = Vector3.Dot(Vector3.Normalize(transform.position - targetPos), transform.forward);
 		float angleDegrees = 90 + Mathf.Asin(angle) * Mathf.Rad2Deg;
 		if (angleDegrees > fov / 2f) {
+			// Debug.Log(target.name + " is outside FOV for " + name);
 			return false;
 		}
 
-		RaycastHit[] hits;		
-		hits = Physics.RaycastAll(transform.position, target.transform.position - transform.position, viewDist, sightLayers)
+		Debug.DrawLine(transform.position, target.transform.position, Color.blue, 2f, true);
+		RaycastHit[] hits = Physics.RaycastAll(transform.position, target.transform.position - transform.position, viewDist, sightLayers)
 					  .Where(x => x.transform.root != transform.root)
-					  .OrderBy(x => (x.point - transform.position).magnitude).ToArray();
+					  .OrderBy(x => (x.point - transform.position).magnitude)
+					  .ToArray();
 		if (hits.Length > 0) {
+			// Debug.Log(name + " sees " + string.Join(", ", hits.Select(x => x.transform.root.name + " (" + x.transform.name + ")").ToArray()));
 			return hits[0].collider.transform.root == target.transform.root;
+		} else {
+			// Debug.Log(name + " can't see anything");
 		}
 
 		return false;

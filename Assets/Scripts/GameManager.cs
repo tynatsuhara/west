@@ -193,20 +193,18 @@ public class GameManager : MonoBehaviour {
 	// Alerts all characters to the given range to an event with the given
 	// severity and range. If visual is nonnull, the character must have line
 	// of sight to the visual to be alerted.
-	public void AlertInRange(Character.Reaction importance, Vector3 location, float range, GameObject visual = null) {
-		foreach (Character c in spawnedNPCs.Where(x => x.isAlive)) {
-			if ((c.transform.position - location).magnitude < range) {
-				if (visual != null && !c.CanSee(visual))
-					continue;
-				c.Alert(importance, location);
-			}
+	public void AlertInRange(Stimulus s, Vector3 location, float range, GameObject visual = null) {
+		foreach (NPC c in spawnedNPCs.Where(x => x.isAlive && (x.transform.position - location).magnitude < range)) {
+			if (visual != null && !c.CanSee(visual, viewDist: range))
+				continue;
+			c.Alert(s, location);
 		}
 	}
 
 	// Return all characters in the given range from the given point, ordered by increasing distance
 	public List<Character> CharactersWithinDistance(Vector3 from, float range) {
 		List<Character> ret = new List<Character>();
-		foreach (Character c in spawnedNPCs) {
+		foreach (Character c in allCharacters) {
 			if ((c.transform.position - from).magnitude < range) {
 				ret.Add(c);
 			}

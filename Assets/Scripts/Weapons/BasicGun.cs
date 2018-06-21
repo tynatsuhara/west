@@ -36,9 +36,9 @@ public class BasicGun : Weapon {
 		
 		PlayerEffects(shakePower, shakeLength);
 
-		if (!silenced && isPlayer) {
-			GameManager.instance.AlertInRange(Character.Reaction.AGGRO, 
-				transform.position, 15f, visual: (silenced ? transform.parent.gameObject : null));
+		if (isPlayer) {
+			GameObject v = silenced ? transform.parent.gameObject : null;
+			GameManager.instance.AlertInRange(Stimulus.SHOOTING, transform.position, 15f, visual: v);
 		}
 		return true;
 	}

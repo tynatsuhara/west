@@ -1,20 +1,20 @@
+using UnityEngine;
 using System;
+using System.Linq;
 
 [System.Serializable]
 public class NPCKillTask : NPCTask {
 
     private System.Guid target;
-
-    // constructor to kill players
-    public NPCKillTask() {
-    }
+    private bool isTargetPlayer;
 
     public NPCKillTask(System.Guid target) {
         this.target = target;
+        isTargetPlayer = GameManager.players.Select(x => x.guid).Contains(target);
     }
 
     public override Task.TaskDestination GetLocation() {
-        if (target == System.Guid.Empty) {
+        if (isTargetPlayer) {
             return new Task.TaskDestination(Map.CurrentLocation().guid, SaveGame.currentGame.savedPlayers[0].position.val, "");
         } else {
             NPCData c = SaveGame.currentGame.savedCharacters[target];
@@ -24,11 +24,24 @@ public class NPCKillTask : NPCTask {
     
     // Lower bound on time left for a task -- If this is <= 0, the task is done.
     public override float GetTimeLeft() {
-        if (target == System.Guid.Empty) {
+        if (isTargetPlayer) {
             return SaveGame.currentGame.savedPlayers[0].health > 0 ? WorldTime.MINUTE : 0;
         } else {
             return SaveGame.currentGame.savedCharacters[target].health > 0 ? WorldTime.MINUTE : 0;
         }
+    }
+
+    public override void Execute(NPC self) {
+        self.DrawWeapon();
+        float range = self.CurrentWeapon().range * .75f;
+        Character targetChar = GameManager.instance.GetCharacter(target);
+        if (self.CanSee(targetChar.gameObject, viewDist: range)) {
+            self.LookAt(targetChar.transform);
+            if (self.CanSee(targetChar.gameObject, fov: 5f, viewDist: range)) {
+                self.Shoot();
+            }
+        }
+		self.GoToPosition(targetChar.transform.position, range);
     }
 
     public override void Simulate(NPCData sim) {

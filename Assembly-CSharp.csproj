@@ -94,6 +94,14 @@
      <Compile Include="Assets\Scripts\C4.cs" />
      <Compile Include="Assets\Scripts\CharacterCustomization.cs" />
      <Compile Include="Assets\Scripts\CharacterOptionsManager.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\CriminalBehavior.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\DynamicBehavior.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\NPCTaskSource.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\Schedule.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCFollowTask.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCKillTask.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCNoOpTask.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCTask.cs" />
      <Compile Include="Assets\Scripts\Characters\Character.cs" />
      <Compile Include="Assets\Scripts\Characters\CharacterData.cs" />
      <Compile Include="Assets\Scripts\Characters\CharacterIndicator.cs" />
@@ -108,12 +116,6 @@
      <Compile Include="Assets\Scripts\Characters\Horse.cs" />
      <Compile Include="Assets\Scripts\Characters\Jumper.cs" />
      <Compile Include="Assets\Scripts\Characters\LivingThing.cs" />
-     <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCFollowTask.cs" />
-     <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCKillTask.cs" />
-     <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCNoOpTask.cs" />
-     <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCTask.cs" />
-     <Compile Include="Assets\Scripts\Characters\NPC Tasks\NPCTaskSource.cs" />
-     <Compile Include="Assets\Scripts\Characters\NPC Tasks\Schedule.cs" />
      <Compile Include="Assets\Scripts\Characters\NPC.cs" />
      <Compile Include="Assets\Scripts\Characters\NPCData.cs" />
      <Compile Include="Assets\Scripts\Characters\NPCFactory.cs" />

@@ -268,10 +268,8 @@ public class Player : Character {
 		if (!speech.currentlyDisplaying) {
 			speech.SayRandom(Speech.PLAYER_SHOUT, showFlash: true, color:"yellow");
 		}
-		GameManager.instance.AlertInRange(Reaction.AGGRO, transform.position, 4f);
+		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 4f);
 	}
-
-	public override void Alert(Reaction importance, Vector3 position) {}
 
 
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////

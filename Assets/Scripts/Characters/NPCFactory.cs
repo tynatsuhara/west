@@ -11,7 +11,7 @@ public class NPCFactory {
         //     .AddBlock(WorldTime.HOUR * 10, new NPCNoOpTask(work.guid, work.RandomUnoccupiedTile()))
         //     .AddBlock(WorldTime.HOUR * 6, new NPCNoOpTask(home.guid, home.RandomUnoccupiedTile()));
         // npc.taskSources.Add(schedule);
-
+        npc.taskSources[NPCData.DYNAMIC_AI] = new CriminalBehavior(npc.guid);
         return npc;
     }
 
@@ -19,6 +19,7 @@ public class NPCFactory {
         NPCData npc = new NPCData(NPCData.NPCType.GOON, Random.Range(0, 2) == 0);
         npc.outfit = "default";
         npc.groups.Add(gang);
+        npc.taskSources[NPCData.DYNAMIC_AI] = new CriminalBehavior(npc.guid);
         return npc;
     }
 
@@ -26,6 +27,7 @@ public class NPCFactory {
         NPCData npc = new NPCData(NPCData.NPCType.GANG_LEADER, Random.Range(0, 2) == 0);
         npc.outfit = "default";
         npc.groups.Add(gang);
+        npc.taskSources[NPCData.DYNAMIC_AI] = new CriminalBehavior(npc.guid);
         return npc;
     }
 
@@ -33,6 +35,7 @@ public class NPCFactory {
         NPCData npc = new NPCData(NPCData.NPCType.SHERIFF, Random.Range(0, 2) == 0);
         npc.outfit = "cop1";
         npc.groups.Add(Group.LAW_ENFORCEMENT);
+        npc.taskSources[NPCData.DYNAMIC_AI] = new CriminalBehavior(npc.guid);
         return npc;
     }
 
@@ -40,6 +43,7 @@ public class NPCFactory {
         NPCData npc = new NPCData(NPCData.NPCType.US_MARSHAL, Random.Range(0, 2) == 0);
         npc.outfit = "cop1";
         npc.groups.Add(Group.LAW_ENFORCEMENT);
+        npc.taskSources[NPCData.DYNAMIC_AI] = new CriminalBehavior(npc.guid);
         return npc;
     }
 }

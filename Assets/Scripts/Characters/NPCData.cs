@@ -20,7 +20,11 @@ public class NPCData : CharacterData {
     public string name;
     public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
     public SortedList<int, Dialogue> dialogues = new SortedList<int, Dialogue>(new DuplicateKeyComparer<int>());
-    public List<NPCTaskSource> taskSources = new List<NPCTaskSource>();
+
+    // task sources
+    public const string SCHEDULE = "schedule";
+    public const string DYNAMIC_AI = "dynamic_ai";
+    public Dictionary<string, NPCTaskSource> taskSources = new Dictionary<string, NPCTaskSource>();
 
     public NPCData(NPCType type, bool female = false) {
         this.type = type;
@@ -46,7 +50,9 @@ public class NPCData : CharacterData {
 
     public NPCTask GetTask(float time = -1) {
         time = time == -1 ? SaveGame.currentGame.time.worldTime : time;
-        List<NPCTask> tasks = taskSources.Select(x => x.GetTask(guid, time)).Where(x => x != null).ToList();
+        List<NPCTask> tasks = taskSources.Values.Select(x => x.GetTask(guid, time))
+                                                .Where(x => x != null && x.GetTimeLeft() > 0)
+                                                .ToList();
         if (tasks.Count == 0) {
             return null;
         }
