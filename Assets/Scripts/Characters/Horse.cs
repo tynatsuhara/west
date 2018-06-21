@@ -82,6 +82,7 @@ public class Horse : LivingThing, Damageable {
 		health -= damage;
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
+		GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 5f, visual: transform.root.gameObject);
 		if (wasAlive && !isAlive) {
 			if (attacker is Player) {
 				SaveGame.currentGame.stats.animalsKilled++;
