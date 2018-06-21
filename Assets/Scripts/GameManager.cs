@@ -78,11 +78,13 @@ public class GameManager : MonoBehaviour {
 		if (players.All(x => !x.isAlive)) {
 			if (!SaveGame.currentGame.gameOver) {
 				SaveGame.currentGame.gameOver = true;
-				SaveGame.DeleteSave(SaveGame.currentGame.saveId);
+				// SaveGame.DeleteSave(SaveGame.currentGame.saveId);
 				GameUI.instance.ShowEndScreen();
 				gameEndTime = Time.time;
-			} else if (Input.anyKeyDown && Time.time - gameEndTime >= 2.5f) {
-				SceneManager.LoadScene("main menu");
+			} else if (Input.anyKeyDown && Time.time - gameEndTime >= 2f) {
+				// SceneManager.LoadScene("main menu");
+				SaveGame.LoadLastSave();
+				SceneManager.LoadScene("game");
 			}
 		} else {
 			bool esc = Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 9");
