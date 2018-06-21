@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour {
 			SaveGame.currentGame.stats.timePlayed += Time.deltaTime;
 		}
 
-		// WIN!
+		// LOSE!
 		if (players.All(x => !x.isAlive)) {
 			if (!SaveGame.currentGame.gameOver) {
 				SaveGame.currentGame.gameOver = true;

@@ -22,6 +22,7 @@ public class CriminalBehavior : DynamicBehavior {
                 case Stimulus.ATTACKED:
                 case Stimulus.MURDER:
                     // TODO: how do we not create a new task each time?
+                    // TODO: check groups, don't just kill with reckless abandon
                     NPCTask task = new NPCKillTask(GameManager.players[0].guid);
                     if (task.GetTimeLeft() <= 0) {
                         break;
