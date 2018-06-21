@@ -118,7 +118,6 @@ public abstract class Character : LivingThing, Damageable {
 	protected void Rotate() {
 		if (lookTarget != null) {
 			lookPosition = lookTarget.position;
-			hasLookTarget = true;
 		}
 		if (hasLookTarget) {
 			lookPosition.y = transform.position.y;
@@ -179,7 +178,7 @@ public abstract class Character : LivingThing, Damageable {
 		if (ridingHorse) {
 			Dismount();
 		}
-		GameManager.instance.AlertInRange(Stimulus.MURDER, transform.position, 2f, visual: transform.root.gameObject);
+		GameManager.instance.AlertInRange(Stimulus.MURDER, transform.position, 10f, visual: transform.root.gameObject);
 		InteractCancel();
 		SetDeathPhysics();
 		walk.StandStill();		
@@ -198,7 +197,7 @@ public abstract class Character : LivingThing, Damageable {
 			speech.SayRandom(Speech.DEATH_QUOTES, showFlash: true);
 		}
 
-		if (!(this is Player) && (attacker is Player)) {
+		if (!(this is Player) && (attacker is Player) && !lastDamageNonlethal) {
 			SaveGame.currentGame.stats.peopleKilled++;
 		}
 		if (attacker != null) {
