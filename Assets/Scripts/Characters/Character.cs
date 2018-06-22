@@ -129,10 +129,8 @@ public abstract class Character : LivingThing, Damageable {
 		}
 	}
 
-	public bool lastDamageNonlethal;
 	public virtual bool Damage(Vector3 location, Vector3 angle, float damage, Character attacker = null, DamageType type = DamageType.BULLET) {
 		bool isPlayer = this is Player;
-		lastDamageNonlethal = type == DamageType.NONLETHAL;
 
 		if (!weaponDrawn)
 			damage *= 2f;
@@ -197,7 +195,7 @@ public abstract class Character : LivingThing, Damageable {
 			speech.SayRandom(Speech.DEATH_QUOTES, showFlash: true);
 		}
 
-		if (!(this is Player) && (attacker is Player) && !lastDamageNonlethal) {
+		if (!(this is Player) && (attacker is Player) && type != DamageType.NONLETHAL) {
 			SaveGame.currentGame.stats.peopleKilled++;
 		}
 		if (attacker != null) {
