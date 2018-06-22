@@ -118,6 +118,7 @@ public abstract class Character : LivingThing, Damageable {
 	protected void Rotate() {
 		if (lookTarget != null) {
 			lookPosition = lookTarget.position;
+			hasLookTarget = true;  // so we can drag a look target in the inspector
 		}
 		if (hasLookTarget) {
 			lookPosition.y = transform.position.y;
@@ -246,7 +247,7 @@ public abstract class Character : LivingThing, Damageable {
 
 	public void DrawWeapon() {
 		SetWeaponDrawn(true);
-		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 5f, visual: transform.root.gameObject);		
+		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 10f, visual: transform.root.gameObject);		
 	}
 
 	public void HideWeapon() {

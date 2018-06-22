@@ -37,8 +37,9 @@ public class NPC : Character, Interactable {
 		characterIndicator.UpdateDialogueIndicator(data.dialogues.Count > 0 ? data.dialogues.Values[0] : null);
 		LegAnimation();
 		walking = agent.enabled && agent.velocity != Vector3.zero;
-		Rotate();
 		agent.speed = CalculateSpeed();
+		// agent.updateRotation = true;
+		Rotate();
 
 		ExecuteTask();
 	}
