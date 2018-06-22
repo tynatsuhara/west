@@ -48,7 +48,7 @@ public class Horse : LivingThing, Damageable {
 			StartCoroutine(Tame());
 		} else if (character.guid != data.owner) {
 			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentTown().guid, "Horse Theft", 10);
-			GameManager.instance.AlertInRange(Stimulus.HORSE_THEFT, transform.position, 10f, visual: transform.root.gameObject);					
+			GameManager.instance.AlertInRange(Stimulus.HORSE_THEFT, transform.position, 10f, visual: transform.root.gameObject, alerter: character);					
 		}
 	}
 
@@ -82,9 +82,9 @@ public class Horse : LivingThing, Damageable {
 		health -= damage;
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
-		GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: transform.root.gameObject);
+		GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: transform.root.gameObject, alerter: attacker);
 		if (wasAlive && !isAlive) {
-			if (attacker is Player) {
+			if (attacker is Player && type != DamageType.NONLETHAL) {
 				SaveGame.currentGame.stats.animalsKilled++;
 			}
 			if (attacker != null) {

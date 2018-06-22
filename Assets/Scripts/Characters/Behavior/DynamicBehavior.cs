@@ -7,8 +7,8 @@ using System.Collections.Generic;
 [System.Serializable]
 public abstract class DynamicBehavior : NPCTaskSource {
 
-    private System.Guid self;
-    protected SortedList<Stimulus, SerializableVector3> stimuli = new SortedList<Stimulus, SerializableVector3>(new DuplicateKeyComparer<Stimulus>());
+    protected System.Guid self;
+    protected SortedList<Stimulus, NPCTask> stimuli = new SortedList<Stimulus, NPCTask>(new DuplicateKeyComparer<Stimulus>());
 
     public DynamicBehavior(System.Guid self) {
         this.self = self;
@@ -16,9 +16,8 @@ public abstract class DynamicBehavior : NPCTaskSource {
 
     public abstract NPCTask GetTask(System.Guid character, float time);
 
-    public virtual void React(Stimulus s, Vector3 location) {
+    public virtual void React(Stimulus s, Vector3 location, Character alerter) {
         GameManager.instance.GetCharacter(self).speech.Say("I am reacting to a " + s + " event");
-        stimuli.Add(s, new SerializableVector3(location));
     }
 
     protected void NextStimulus() {

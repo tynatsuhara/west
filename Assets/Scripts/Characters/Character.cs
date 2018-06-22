@@ -150,7 +150,7 @@ public abstract class Character : LivingThing, Damageable {
 			Die(location, angle, attacker, type);
 
 		if (isAlive && !isPlayer)
-			(this as NPC).Alert(Stimulus.ATTACKED, location - angle.normalized);
+			(this as NPC).Alert(Stimulus.ATTACKED, location - angle.normalized, attacker);
 
 		// regular knockback
 		if (!isPlayer || !isAlive) {
@@ -177,7 +177,7 @@ public abstract class Character : LivingThing, Damageable {
 		if (ridingHorse) {
 			Dismount();
 		}
-		GameManager.instance.AlertInRange(Stimulus.MURDER, transform.position, 10f, visual: transform.root.gameObject);
+		GameManager.instance.AlertInRange(Stimulus.MURDER, transform.position, 10f, visual: transform.root.gameObject, alerter: attacker);
 		InteractCancel();
 		SetDeathPhysics();
 		walk.StandStill();		
@@ -247,7 +247,7 @@ public abstract class Character : LivingThing, Damageable {
 
 	public void DrawWeapon() {
 		SetWeaponDrawn(true);
-		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 10f, visual: transform.root.gameObject);		
+		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 10f, visual: transform.root.gameObject, alerter: this);		
 	}
 
 	public void HideWeapon() {

@@ -195,23 +195,19 @@ public class GameManager : MonoBehaviour {
 	// Alerts all characters to the given range to an event with the given
 	// severity and range. If visual is nonnull, the character must have line
 	// of sight to the visual to be alerted.
-	public void AlertInRange(Stimulus s, Vector3 location, float range, GameObject visual = null) {
+	public void AlertInRange(Stimulus s, Vector3 location, float range, GameObject visual = null, Character alerter = null) {
 		foreach (NPC c in spawnedNPCs.Where(x => x.isAlive && (x.transform.position - location).magnitude < range)) {
 			if (visual != null && !c.CanSee(visual, viewDist: range))
 				continue;
-			c.Alert(s, location);
+			c.Alert(s, location, alerter);
 		}
 	}
 
 	// Return all characters in the given range from the given point, ordered by increasing distance
 	public List<Character> CharactersWithinDistance(Vector3 from, float range) {
-		List<Character> ret = new List<Character>();
-		foreach (Character c in allCharacters) {
-			if ((c.transform.position - from).magnitude < range) {
-				ret.Add(c);
-			}
-		}
-		return ret.OrderBy(c => (c.transform.position - from).magnitude).ToList();
+		return allCharacters.Where(c => (c.transform.position - from).magnitude < range)
+							.OrderBy(c => (c.transform.position - from).magnitude)
+							.ToList();
 	}
 
 	// Call this to indicate it is no longer a stealth-possible mission,

@@ -147,8 +147,9 @@ public class NPC : Character, Interactable {
 		}
 	}
 
-	public void Alert(Stimulus s, Vector3 location) {
-		(data.taskSources[NPCData.DYNAMIC_AI] as DynamicBehavior).React(s, location);
+	// alerter - the character who triggered the alert (e.g. an attacker for an ATTACK stimulus)
+	public void Alert(Stimulus s, Vector3 location, Character alerter) {
+		(data.taskSources[NPCData.DYNAMIC_AI] as DynamicBehavior).React(s, location, alerter);
 	}
 
 	public Weapon CurrentWeapon() {

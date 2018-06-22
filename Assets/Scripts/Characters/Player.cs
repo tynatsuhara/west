@@ -268,7 +268,7 @@ public class Player : Character {
 		if (!speech.currentlyDisplaying) {
 			speech.SayRandom(Speech.PLAYER_SHOUT, showFlash: true, color:"yellow");
 		}
-		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 4f);
+		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 4f, alerter: this);
 	}
 
 

@@ -38,7 +38,7 @@ public class BasicGun : Weapon {
 
 		if (isPlayer) {
 			GameObject v = silenced ? transform.parent.gameObject : null;
-			GameManager.instance.AlertInRange(Stimulus.SHOOTING, transform.position, 15f, visual: v);
+			GameManager.instance.AlertInRange(Stimulus.SHOOTING, transform.position, 15f, visual: v, alerter: owner);
 		}
 		return true;
 	}

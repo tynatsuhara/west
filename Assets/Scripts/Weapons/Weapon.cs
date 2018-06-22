@@ -60,7 +60,7 @@ public abstract class Weapon : MonoBehaviour {
 				hitMarker = c != null && c.isAlive && (!(c is Player) || GameManager.instance.friendlyFireEnabled);
 			}
 			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, owner);
-			GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: hits[i].transform.root.gameObject);			
+			GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: hits[i].transform.root.gameObject, alerter: owner);			
 		}
 		if (hitMarker && isPlayer) {
 			player.playerUI.HitMarker();
@@ -106,7 +106,7 @@ public abstract class Weapon : MonoBehaviour {
 				d.Damage(rhits[0].collider.transform.root.position, owner.transform.forward, 1f, owner, type);
 				if (rhits[0].collider.GetComponentInParent<LivingThing>() != null)
 					MeleeHitPlayerCallback();
-				GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: rhits[0].transform.root.gameObject);
+				GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: rhits[0].transform.root.gameObject, alerter: owner);
 				hits.Add(d);
 			}
 			if (hits.Count == maxEnemiesMelee)
