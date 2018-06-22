@@ -37,7 +37,7 @@ public class NPCKillTask : NPCTask {
         Character targetChar = GameManager.instance.GetCharacter(target);
         if (self.CanSee(targetChar.gameObject, viewDist: range)) {
             self.LookAt(targetChar.transform);
-            if (self.CanSee(targetChar.gameObject, fov: 5f, viewDist: range)) {
+            if (self.CanSee(targetChar.gameObject, fov: 10f, viewDist: range)) {
                 self.Shoot();
             }
         }
