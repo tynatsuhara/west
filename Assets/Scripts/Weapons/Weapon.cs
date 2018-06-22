@@ -11,6 +11,9 @@ public abstract class Weapon : MonoBehaviour {
 	public Vector3 inPlayerPos;
 	public Collider droppedCollider;
 
+	public GameObject projectilePrefab;
+	public Vector3 projectileSpawnOffset;
+
 	public Character owner;	
 	public PicaVoxel.Volume volume;	
 	public GunAnimation anim;
@@ -41,6 +44,16 @@ public abstract class Weapon : MonoBehaviour {
 	// Used for saving/loading game
 	abstract public System.Object SaveData();
 	abstract public void LoadSaveData(System.Object saveData);
+
+	public void ProjectileShoot() {
+		Vector3 pos = owner.transform.TransformPoint(projectileSpawnOffset);
+		Projectile projectile = Instantiate(projectilePrefab, pos, Quaternion.identity).GetComponent<Projectile>();
+		projectile.transform.RotateAround(projectile.transform.position, Vector3.up, owner.transform.eulerAngles.y/2);
+		projectile.damage = damage;
+		projectile.range = range;
+		projectile.shooter = owner;
+		projectile.shooterIsPlayer = isPlayer;
+	}	
 
 	public void RaycastShoot(Vector3 source, Vector3 direction) {
 		source.y = Mathf.Min(source.y, 1.2f);

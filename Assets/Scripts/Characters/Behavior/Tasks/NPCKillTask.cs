@@ -33,11 +33,14 @@ public class NPCKillTask : NPCTask {
 
     public override void Execute(NPC self) {
         self.DrawWeapon();
-        float range = self.CurrentWeapon().range * .75f;
+        Weapon w = self.CurrentWeapon();
+        float range = w.range * .75f;
         Character targetChar = GameManager.instance.GetCharacter(target);
         if (self.CanSee(targetChar.gameObject, viewDist: range)) {
             self.LookAt(targetChar.transform);
-            if (self.CanSee(targetChar.gameObject, fov: 10f, viewDist: range)) {
+            if (w.NeedsToReload()) {
+                w.Reload();
+            } else if (self.CanSee(targetChar.gameObject, fov: 10f, viewDist: range)) {
                 self.Shoot();
             }
         }

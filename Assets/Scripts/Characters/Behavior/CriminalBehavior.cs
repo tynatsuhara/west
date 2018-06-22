@@ -7,7 +7,7 @@ public class CriminalBehavior : DynamicBehavior {
     public CriminalBehavior(System.Guid self) : base(self) {}
 
     public override void React(Stimulus s, Vector3 location, Character alerter) {   
-        base.React(s, location, alerter);
+        // base.React(s, location, alerter);
         switch (s) {
             case Stimulus.GUN_DRAWN:
             case Stimulus.SHOOTING:
@@ -26,16 +26,5 @@ public class CriminalBehavior : DynamicBehavior {
             default:
                 break;
         }
-    } 
-
-    public override NPCTask GetTask(System.Guid character, float time) {
-        while (stimuli.Count > 0) {
-            NPCTask task = stimuli.First().Value;
-            if (task.GetTimeLeft() > 0) {
-                return task;
-            }
-            NextStimulus();
-        }
-        return null;
     }
 }

@@ -38,7 +38,6 @@ public class NPC : Character, Interactable {
 		LegAnimation();
 		walking = agent.enabled && agent.velocity != Vector3.zero;
 		agent.speed = CalculateSpeed();
-		// agent.updateRotation = true;
 		Rotate();
 
 		ExecuteTask();

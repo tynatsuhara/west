@@ -23,6 +23,8 @@ public class BasicGun : Weapon {
 			return false;
 		
 		RaycastShoot(transform.parent.position, target - transform.parent.position);
+		// ProjectileShoot();
+
 		// SetFrame before Play to avoid delay
 		volume.SetFrame(ANIM_START_FRAME);
 		anim.Shoot();
