@@ -290,5 +290,8 @@ public class Player : Character {
 
 	[System.Serializable]
 	public class PlayerSaveData : CharacterData {
+		public PlayerSaveData() {
+			groups.Add(Group.PLAYERS);
+		}
 	}
 }

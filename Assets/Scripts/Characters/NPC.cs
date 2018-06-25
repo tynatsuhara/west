@@ -23,20 +23,13 @@ public class NPC : Character, Interactable {
 		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 	}
 
-	public override void Start() {
-		// StartCoroutine(UpdateEvidenceInSight(.5f));
-		// StartCoroutine(UpdateEquippedPlayersInSight(.3f));
-
-		base.Start();
-	}
-
 	void Update() {
 		if (!isAlive || GameManager.paused)
 			return;
 
 		characterIndicator.UpdateDialogueIndicator(data.dialogues.Count > 0 ? data.dialogues.Values[0] : null);
+		walking = agent.enabled && agent.velocity.magnitude > .1f;
 		LegAnimation();
-		walking = agent.enabled && agent.velocity != Vector3.zero;
 		agent.speed = CalculateSpeed();
 		Rotate();
 
@@ -99,16 +92,10 @@ public class NPC : Character, Interactable {
 	}
 
 	private void LegAnimation() {
-		Vector3 velocity = agent.velocity;
-		velocity.y = 0f;
-		if (velocity == Vector3.zero) {
-			if (walk.isWalking) {
-				walk.StandStill();
-			}
-		} else if (velocity.magnitude > 0f) {
-			if (!walk.isWalking) {
-				walk.StartWalk();
-			}
+		if (!walking && walk.isWalking) {
+			walk.StandStill(true);
+		} else if (walking && !walk.isWalking) {
+			walk.StartWalk();
 		}
 	}
 	

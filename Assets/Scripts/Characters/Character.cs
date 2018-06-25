@@ -93,10 +93,56 @@ public abstract class Character : LivingThing, Damageable {
 				vols[i].SetBytes(voxelBlobs[i]);
 			}
 		}
+
+		StartCoroutine(AlertStuff());
 	}
 
-	public void KnockBack(float force) {
-		rb.AddForce(force * -transform.forward, ForceMode.Impulse);
+	private IEnumerator AlertStuff() {
+		while (true) {
+			if (isAlive) {
+				GameManager.instance.AlertInRange(Stimulus.JUST_CHILLIN, transform.position, 10f, visual: transform.root.gameObject, alerter: this);				
+			}
+			if (isAlive && weaponDrawn) {
+				GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 10f, visual: transform.root.gameObject, alerter: this);
+			} else if (!isAlive) {
+				GameManager.instance.AlertInRange(Stimulus.DEAD_BODY, transform.position, 10f, visual: transform.root.gameObject);
+			}
+			yield return new WaitForSeconds(.5f);
+		}
+	}
+
+	// is C a friend?
+	// returns true if they share groups or have a rep >= rep
+	public bool IsFriendsWith(Character c, float rep = (float) Reputation.Rank.LIKE) {
+		if (c.groups.Intersect(groups).Count() > 0) {
+			return true;
+		}
+		foreach (string g1 in groups) {
+			Group g = SaveGame.currentGame.groups[g1];
+			foreach (string g2 in c.groups) {
+				if (g.GetReputationWith(g2).CurrentRep() >= rep) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	// is C an enemy?
+	// returns false if they share groups, or true if c has a rep <= rep
+	public bool IsEnemiesWith(Character c, float rep = (float) Reputation.Rank.HATE) {
+		if (c.groups.Intersect(groups).Count() > 0) {
+			return false;
+		}
+		foreach (string g1 in groups) {
+			Group g = SaveGame.currentGame.groups[g1];
+			foreach (string g2 in c.groups) {
+				if (g.GetReputationWith(g2).CurrentRep() <= rep) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public void LookAt(Transform target) {
@@ -153,7 +199,7 @@ public abstract class Character : LivingThing, Damageable {
 			(this as NPC).Alert(Stimulus.ATTACKED, location - angle.normalized, attacker);
 
 		// regular knockback
-		if (!isPlayer || !isAlive) {
+		// if (!isPlayer || !isAlive) {
 			float forceVal = Random.Range(500, 900);
 			if ((wasAlive && !isAlive) || type == DamageType.MELEE || type == DamageType.SLICE) {
 				forceVal *= 1.5f;
@@ -164,7 +210,7 @@ public abstract class Character : LivingThing, Damageable {
 									? transform.position + Vector3.up * Random.Range(-.4f, .3f)  // make the head fly
 									: exploder.transform.position, ForceMode.Impulse);
 			}
-		}
+		// }
 
 		return !wasAlive;
 	}
@@ -177,7 +223,7 @@ public abstract class Character : LivingThing, Damageable {
 		if (ridingHorse) {
 			Dismount();
 		}
-		GameManager.instance.AlertInRange(Stimulus.MURDER, transform.position, 10f, visual: transform.root.gameObject, alerter: attacker);
+		GameManager.instance.AlertInRange(Stimulus.MURDER, transform.position, 10f, visual: transform.root.gameObject, alerter: attacker);		
 		InteractCancel();
 		SetDeathPhysics();
 		walk.StandStill();		
@@ -247,7 +293,6 @@ public abstract class Character : LivingThing, Damageable {
 
 	public void DrawWeapon() {
 		SetWeaponDrawn(true);
-		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 10f, visual: transform.root.gameObject, alerter: this);		
 	}
 
 	public void HideWeapon() {

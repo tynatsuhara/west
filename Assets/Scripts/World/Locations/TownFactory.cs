@@ -16,15 +16,7 @@ public class TownFactory {
         this.map = map;
         this.bf = new BuildingFactory(new NPCFactory());
 
-        Weight(2, () => {
-            string gangName;
-			do {
-				gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
-				Debug.Log("new gang name " + gangName);				
-			} while (SaveGame.currentGame.groups.ContainsKey(gangName));
-			SaveGame.currentGame.groups.Add(gangName, new Group(gangName));			
-			return NewGangTown(gangName);
-        });
+        Weight(2, () => NewGangTown());
         Weight(6, () => NewLargeTown());
         Weight(4, () => NewSmallTown());
     }
@@ -77,16 +69,28 @@ public class TownFactory {
         );
     }
 
-    public TownLocation NewGangTown(string gang) {
+    public TownLocation NewGangTown(string gangName = null) {
+        if (gangName == null) {
+            do {
+                gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
+                Debug.Log("new gang name " + gangName);				
+            } while (SaveGame.currentGame.groups.ContainsKey(gangName));
+            Group gang = new Group(gangName);
+            SaveGame.currentGame.groups.Add(gangName, gang);
+            Group cops = SaveGame.currentGame.groups[Group.LAW_ENFORCEMENT];
+            gang.SetReputationWith(Group.LAW_ENFORCEMENT, new Reputation((float) Reputation.Rank.ENEMIES));
+            cops.SetReputationWith(gangName, new Reputation((float) Reputation.Rank.HATE));
+        }
+
         return new TownLocation(
-            gang + " Hideout",
+            gangName + " Hideout",
             map, 
             icon: "H",
-            controllingGroup: gang,
+            controllingGroup: gangName,
             availableConnections: Random.Range(1, 3),
             buildingsToAttempt: new List<Building>[] {
-                b(1, () => bf.NewGangHeadquarters(gang)),
-                b(Random.Range(1, 3), () => bf.NewGangBarracks(gang)),
+                b(1, () => bf.NewGangHeadquarters(gangName)),
+                b(Random.Range(1, 3), () => bf.NewGangBarracks(gangName)),
                 b(Random.Range(0, 4), () => bf.NewHome()), 
                 b(Random.Range(0, 2), () => bf.NewSaloon())
             }

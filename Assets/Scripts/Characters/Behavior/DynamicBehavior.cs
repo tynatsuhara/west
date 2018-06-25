@@ -20,13 +20,20 @@ public abstract class DynamicBehavior : NPCTaskSource {
     }
 
     public NPCTask GetTask(System.Guid character, float time) {
+        Character c = GameManager.instance.GetCharacter(self);
+        if (c == null)
+            return null;
+
         while (stimuli.Count > 0) {
-            NPCTask task = stimuli.First().Value;
+            NPCTask task = stimuli[0];
+            // TODO: getTimeLeft may be fucked            
             if (task.GetTimeLeft() > 0) {
                 return task;
             }
             stimuli.RemoveAt(0);
         }
+        c.HideWeapon();
+        c.LoseLookTarget();
         return null;
     }
 }
@@ -39,5 +46,6 @@ public enum Stimulus {
     VIOLENCE,
     HORSE_THEFT,
     SHOOTING,
-    GUN_DRAWN
+    GUN_DRAWN,
+    JUST_CHILLIN
 }

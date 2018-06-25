@@ -133,6 +133,9 @@ public class DevConsole : MonoBehaviour {
 			case "blood":
 				WorldBlood.bloodMultiplier = float.Parse(args[0]);
 				break;
+			case "group":
+				group(args);
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
@@ -304,6 +307,21 @@ public class DevConsole : MonoBehaviour {
 				.ToArray()
 		);
 		textLog.Add(characters);
+	}
+
+	private void group(string[] args) {
+		try {
+			switch (args[0]) {
+				case "add":
+					SaveGame.currentGame.savedPlayers.ToList().ForEach(x => x.groups.Add(args[1]));
+					break;
+				case "leave":
+					SaveGame.currentGame.savedPlayers.ToList().ForEach(x => x.groups.Remove(args[1]));
+					break;
+			}
+		} catch (System.Exception e) {
+			textLog.Add("error: group expects arguments <add|leave> <group_name>");
+		}
 	}
 
 

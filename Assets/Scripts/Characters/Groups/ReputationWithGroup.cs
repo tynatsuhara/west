@@ -1,6 +1,7 @@
 [System.Serializable]
-public class ReputationWithGroup {
+public class Reputation {
 
+    [System.Serializable]    
     public enum Rank {
         LOVE = 10,
         LIKE = 6,
@@ -12,11 +13,11 @@ public class ReputationWithGroup {
 
     private float reputation = 0;
 
-    public bool CurrentRep() {
-        return Rank.NO_OPINION < Rank.HATE;
+    public float CurrentRep() {
+        return reputation;
     }
 
-    public ReputationWithGroup(float reputation = 0) {
+    public Reputation(float reputation = 0) {
         this.reputation = reputation;
     }
 

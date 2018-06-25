@@ -99,6 +99,7 @@
      <Compile Include="Assets\Scripts\Characters\Behavior\NPCTaskSource.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Schedule.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCFollowTask.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCInvestigateTask.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCKillTask.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCNoOpTask.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCTask.cs" />

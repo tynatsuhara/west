@@ -30,6 +30,14 @@
 		"OH IT'S LIT"
 	};
 
+	public static readonly string[] CRIMINAL_SEES_WEAPON_DRAWN = {
+		"WATCH YOURSELF",
+		"HEY NOW",
+		"YOU DON'T WANT TO DO THAT",
+		"YOU JUST BROUGHT PISS TO A SHIT FIGHT",
+		"DROP YOUR WEAPON"
+	};
+
 	public static readonly string[] CIVILIAN_ALERTED = {
 		"OH SHIT",
 		"JESUS FUCK",

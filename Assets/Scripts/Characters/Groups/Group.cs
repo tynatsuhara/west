@@ -10,7 +10,7 @@ public class Group {
     private Dictionary<System.Guid, bool> members = new Dictionary<System.Guid, bool>();  // maps char -> leader?
 
     // how do we feel about other groups?
-    private Dictionary<string, ReputationWithGroup> groupReputations = new Dictionary<string, ReputationWithGroup>();
+    private Dictionary<string, Reputation> groupReputations = new Dictionary<string, Reputation>();
 
     public Group(string name) {
         this.name = name;
@@ -21,14 +21,14 @@ public class Group {
         members[c.guid] = leader;
     }
 
-    public ReputationWithGroup GetReputationWith(string groupName) {
+    public Reputation GetReputationWith(string groupName) {
         if (!groupReputations.ContainsKey(groupName)) {
-            groupReputations.Add(groupName, new ReputationWithGroup());
+            groupReputations.Add(groupName, new Reputation());
         }
         return groupReputations[groupName];
     }
 
-    public void SetReputationWith(string groupName, ReputationWithGroup reputation) {
+    public void SetReputationWith(string groupName, Reputation reputation) {
         groupReputations[groupName] = reputation;
     }
 

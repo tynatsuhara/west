@@ -197,7 +197,7 @@ public class GameManager : MonoBehaviour {
 	// of sight to the visual to be alerted.
 	public void AlertInRange(Stimulus s, Vector3 location, float range, GameObject visual = null, Character alerter = null) {
 		foreach (NPC c in spawnedNPCs.Where(x => x.isAlive && (x.transform.position - location).magnitude < range)) {
-			if (visual != null && !c.CanSee(visual, viewDist: range))
+			if ((visual != null && !c.CanSee(visual, viewDist: range)) || alerter == c)
 				continue;
 			c.Alert(s, location, alerter);
 		}
@@ -284,6 +284,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public Character GetCharacter(System.Guid guid) {
+		if (spawnedNPCs == null || players == null)
+			return null;
 		return allCharacters.Where(x => x.guid == guid).FirstOrDefault();
 	}
 
