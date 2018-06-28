@@ -17,7 +17,7 @@ public class QuestManager {
 		List<Task.TaskDestination> destinations = new List<Task.TaskDestination>();
 		List<string> messages = new List<string>();
 
-		foreach (Quest q in quests.Values.Where(x => !x.complete)) {
+		foreach (Quest q in quests.Values.Where(x => !x.complete && !x.failed)) {
 			Task task = q.UpdateQuest();
 			if (q.failed) {
 				Debug.Log("quest failed: " + q.title);
