@@ -7,10 +7,10 @@ public class Player : Character {
 
 	// fields assigned by GameManager when spawned
 	public int id;
+	public PlayerSaveData data;
 	public PlayerCamera playerCamera;
 	public Camera firstPersonCam;
 	public PlayerUI playerUI;
-
 
 	public override void Start() {
 		name = "Player " + id;
@@ -19,10 +19,13 @@ public class Player : Character {
 	}
 
 	void Update() {
+		data.health = health;
 		playerUI.UpdateHealth(health, healthMax);
 		
 		if (!isAlive || GameManager.paused)
 			return;
+
+		HeartBeat();			
 
 		if (!playerUI.IsDialogueShowing()) {
 			GetInput();
@@ -275,11 +278,11 @@ public class Player : Character {
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 
 	public PlayerSaveData SaveData() {
-		PlayerSaveData data = (PlayerSaveData) base.SaveData(SaveGame.currentGame.savedPlayers[id - 1]);
-		return data;
+		return base.SaveData(this.data) as PlayerSaveData;
 	}
 
 	public void LoadSaveData(PlayerSaveData psd) {
+		data = psd;
 		base.LoadSaveData(psd);
 		CharacterOptionsManager.instance.SetOutfit(id, psd.outfit);
 		CharacterOptionsManager.instance.SetSkinColor(id, psd.skinColor);

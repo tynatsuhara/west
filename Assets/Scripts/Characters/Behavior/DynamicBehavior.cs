@@ -25,8 +25,7 @@ public abstract class DynamicBehavior : NPCTaskSource {
             return null;
 
         while (stimuli.Count > 0) {
-            NPCTask task = stimuli[0];
-            // TODO: getTimeLeft may be fucked            
+            NPCTask task = stimuli.First().Value;
             if (task.GetTimeLeft() > 0) {
                 return task;
             }

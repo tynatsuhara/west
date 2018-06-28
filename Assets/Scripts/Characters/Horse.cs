@@ -27,6 +27,15 @@ public class Horse : LivingThing, Damageable {
 		SetName();	
 	}
 
+	void Update() {
+		data.health = health;	
+
+		if (!isAlive || GameManager.paused)
+			return;
+
+		HeartBeat();
+	}
+
 	void OnTriggerEnter(Collider collider) {
 		if (!isAlive || rider != null || !canRide)
 			return;
@@ -80,6 +89,7 @@ public class Horse : LivingThing, Damageable {
 		if (isAlive)
 			Bleed(exploder.transform.position, Random.Range(1, 10), angle);
 		health -= damage;
+		RegenDelay(damage);
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
 		GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: transform.root.gameObject, alerter: attacker);

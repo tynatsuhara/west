@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// TODO: make this a separate component?
 public abstract class LivingThing : MonoBehaviour {
 
 	public bool isAlive {
@@ -10,8 +11,24 @@ public abstract class LivingThing : MonoBehaviour {
 	}
 	public float healthMax;
 	public float health;
+	public float healthRegenRate;  // gain 1 health every healthRegenRate seconds
+
+	protected float regenDelay;  // time, in real seconds, before the character heals 1 hp
 	protected List<PicaVoxel.Volume> bodyParts = new List<PicaVoxel.Volume>();          // all body parts which can bleed/be damaged
 	protected List<PicaVoxel.Volume> separateBodyParts = new List<PicaVoxel.Volume>();  // parts which are considered separate entities (eg decapitation)
+
+	public virtual void Start() {
+		regenDelay = healthRegenRate;  // TODO: should we bother saving this?
+	}
+
+	// needs to be called every update tick to keep regenerating health
+	public void HeartBeat() {
+		regenDelay -= Time.deltaTime;
+		if (regenDelay <= 0) {
+			health = Mathf.Min(health + 1, healthMax);
+			regenDelay += healthRegenRate;
+		}
+	}
 
 	protected IEnumerator FallOver(float force) {
 		GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
@@ -31,6 +48,11 @@ public abstract class LivingThing : MonoBehaviour {
 				yield return new WaitForSeconds(.5f);
 			}
 		}
+	}
+
+	// reset health regen
+	public void RegenDelay(float damage) {
+		regenDelay = Mathf.Max(regenDelay, damage * healthRegenRate);
 	}
 
 	public void DamageEffects(PicaVoxel.Exploder exploder, Vector3 angle, DamageType type) {

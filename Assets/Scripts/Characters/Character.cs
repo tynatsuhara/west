@@ -75,7 +75,8 @@ public abstract class Character : LivingThing, Damageable {
 	public System.Guid killedBy;
 	public List<string> groups = new List<string>();
 
-	public virtual void Start() {
+	public override void Start() {
+		base.Start();
 		rb = GetComponent<Rigidbody>();
 		separateBodyParts.Add(body);
 		bodyParts.Add(body);
@@ -180,10 +181,13 @@ public abstract class Character : LivingThing, Damageable {
 		bool isPlayer = this is Player;
 
 		if (!weaponDrawn)
-			damage *= 2f;
+			damage *= 2f;  // double damage on stealth kills (TODO: perk that makes this higher)
 
-		if (isPlayer && (attacker is Player) && !GameManager.instance.friendlyFireEnabled)
+		if (isPlayer && (attacker is Player) && !GameManager.instance.friendlyFireEnabled) {
 			damage = 0f;
+		} else {
+			RegenDelay(damage);
+		}
 
 		if (isAlive)
 			Bleed(location - Vector3.up * (Random.Range(0, 3) == 1 ? .5f : 0f), Random.Range(1, 10), angle);
