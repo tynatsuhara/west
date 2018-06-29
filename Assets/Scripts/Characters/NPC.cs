@@ -19,17 +19,16 @@ public class NPC : Character, Interactable {
 	protected UnityEngine.AI.NavMeshAgent agent;
 	protected List<Character> enemies = new List<Character>();
 
-	public void Awake() {
+	public override void Awake() {
+		base.Awake();
 		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 	}
 
 	void Update() {
-		data.health = health;	
+		data.health = lt.health;	
 
 		if (!isAlive || GameManager.paused)
 			return;
-
-		HeartBeat();		
 
 		characterIndicator.UpdateDialogueIndicator(data.dialogues.Count > 0 ? data.dialogues.Values[0] : null);
 		walking = agent.enabled && agent.velocity.magnitude > .1f;

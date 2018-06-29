@@ -19,13 +19,11 @@ public class Player : Character {
 	}
 
 	void Update() {
-		data.health = health;
-		playerUI.UpdateHealth(health, healthMax);
+		data.health = lt.health;
+		playerUI.UpdateHealth(lt.health, lt.healthMax);
 		
 		if (!isAlive || GameManager.paused)
 			return;
-
-		HeartBeat();			
 
 		if (!playerUI.IsDialogueShowing()) {
 			GetInput();

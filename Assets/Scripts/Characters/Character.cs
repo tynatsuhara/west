@@ -3,13 +3,15 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Character : LivingThing, Damageable {
+public abstract class Character : MonoBehaviour, Damageable {
 
 	// Ranked in order of ascending priority
 	public LayerMask sightLayers;
 	public TextObject speech;
 	
 	protected Rigidbody rb;
+	protected LivingThing lt;
+
 	public System.Guid guid;  // null the first time a unique character is spawned
 	protected bool firstSetup {
 		get { return guid == System.Guid.Empty; }
@@ -23,6 +25,10 @@ public abstract class Character : LivingThing, Damageable {
 	public Bag bag;
 	public bool hasBag {
 		get { return bag != null; }
+	}
+
+	public bool isAlive {
+		get { return GetComponent<LivingThing>().health > 0; }
 	}
 
 	// customization stuff
@@ -75,12 +81,15 @@ public abstract class Character : LivingThing, Damageable {
 	public System.Guid killedBy;
 	public List<string> groups = new List<string>();
 
-	public override void Start() {
-		base.Start();
+	public virtual void Awake() {
 		rb = GetComponent<Rigidbody>();
-		separateBodyParts.Add(body);
-		bodyParts.Add(body);
-		bodyParts.Add(head);
+		lt = GetComponent<LivingThing>();
+	}
+
+	public virtual void Start() {
+		lt.separateBodyParts.Add(body);
+		lt.bodyParts.Add(body);
+		lt.bodyParts.Add(head);
 
 		Accessory[] accs = new Accessory[] {		
 			CharacterOptionsManager.instance.hairstyles[hairStyle],
@@ -186,16 +195,16 @@ public abstract class Character : LivingThing, Damageable {
 		if (isPlayer && (attacker is Player) && !GameManager.instance.friendlyFireEnabled) {
 			damage = 0f;
 		} else {
-			RegenDelay(damage);
+			lt.RegenDelay(damage);
 		}
 
 		if (isAlive)
-			Bleed(location - Vector3.up * (Random.Range(0, 3) == 1 ? .5f : 0f), Random.Range(1, 10), angle);
+			lt.Bleed(location - Vector3.up * (Random.Range(0, 3) == 1 ? .5f : 0f), Random.Range(1, 10), angle);
 
 		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) + new Vector3(0, Random.Range(-.7f, .3f), 0);			
 		bool wasAlive = isAlive;  // save it beforehand
 
-		health = Mathf.Max(0, health - damage);
+		lt.health = Mathf.Max(0, lt.health - damage);
 		if (!isAlive && wasAlive)
 			Die(location, angle, attacker, type);
 
@@ -208,7 +217,7 @@ public abstract class Character : LivingThing, Damageable {
 			if ((wasAlive && !isAlive) || type == DamageType.MELEE || type == DamageType.SLICE) {
 				forceVal *= 1.5f;
 			}
-			foreach (PicaVoxel.Volume vol in separateBodyParts) {
+			foreach (PicaVoxel.Volume vol in lt.separateBodyParts) {
 				Rigidbody body = vol.GetComponentInParent<Rigidbody>();
 				body.AddForceAtPosition(forceVal * angle.normalized, type == DamageType.SLICE 
 									? transform.position + Vector3.up * Random.Range(-.4f, .3f)  // make the head fly
@@ -239,7 +248,7 @@ public abstract class Character : LivingThing, Damageable {
 		if (type == DamageType.SLICE && Random.Range(0, 2) == 0) {
 			Decapitate();
 		}
-		DamageEffects(exploder, angle, type);
+		lt.DamageEffects(exploder, angle, type);
 
 		UnMarkForQuest();
 		if (Random.Range(0, 2) == 0) {
@@ -259,7 +268,7 @@ public abstract class Character : LivingThing, Damageable {
 			}
 		}
 
-		StartCoroutine(FallOver(400));
+		lt.FallOver(400);
 		// Invoke("RemoveBody", 60f);
 	}
 
@@ -277,7 +286,7 @@ public abstract class Character : LivingThing, Damageable {
 		head.transform.parent = null;
 		Rigidbody b = head.gameObject.AddComponent<Rigidbody>() as Rigidbody;
 		b.mass = rb.mass;
-		separateBodyParts.Add(head);
+		lt.separateBodyParts.Add(head);
 	}
 
 	public void RemoveBody() {
@@ -531,7 +540,7 @@ public abstract class Character : LivingThing, Damageable {
 
 		List<Rigidbody> rbs = new List<Rigidbody>();
 		foreach (Character c in draggableChars) {
-			rbs.AddRange(c.separateBodyParts.Select(x => x.GetComponentInParent<Rigidbody>()));
+			rbs.AddRange(c.lt.separateBodyParts.Select(x => x.GetComponentInParent<Rigidbody>()));
 		}
 
 		float grabRange = 1.5f;
@@ -617,7 +626,7 @@ public abstract class Character : LivingThing, Damageable {
 			guns.Length < 1 || guns[0] == null ? null : guns[0].GetComponent<Weapon>().SaveData(),
 			guns.Length < 2 || guns[1] == null ? null : guns[1].GetComponent<Weapon>().SaveData(),
 		};
-		data.health = health;
+		data.health = lt.health;
 		data.ridingHorse = ridingHorse;
 		data.mountGuid = ridingHorse ? mount.GetComponent<Horse>().SaveData().guid : System.Guid.Empty;
 		data.outfit = outfit;
@@ -654,7 +663,9 @@ public abstract class Character : LivingThing, Damageable {
 		if (data.isWeaponDrawn)
 			DrawWeapon();
 		if (!float.IsNaN(data.health))
-			health = data.health;
+			lt.health = data.health;
+		if (!float.IsNaN(data.healthMax))
+			lt.healthMax = data.healthMax;
 		if (data.ridingHorse)
 			GameManager.spawnedHorses.Where(x => x.SaveData().guid == data.mountGuid).First().Mount(this);
 		outfit = data.outfit;

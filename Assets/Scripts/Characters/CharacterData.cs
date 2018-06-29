@@ -9,7 +9,10 @@ public class CharacterData {
     public List<List<byte[]>> voxelBlobs;
     public SerializableVector3 position;
     public Inventory inv = new Inventory();
+    // TODO: make health assigned by NPCFactory for NPCs
     public float health = float.NaN;
+    public float healthMax = float.NaN;
+    // TODO: put all weapons in one array
     public byte weaponId = 1;   // default main: ak47
     public byte sidearmId = 1;  // default sidearm: revolver
     public byte equippedWeapon = 0;  // start wielding primary

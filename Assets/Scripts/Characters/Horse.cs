@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Collections;
 
-public class Horse : LivingThing, Damageable {
+public class Horse : MonoBehaviour, Damageable {
 
 	private HorseSaveData data;
 	private Character rider;
 	private bool canRide = true;
+	private LivingThing lt;
 
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
@@ -18,26 +19,25 @@ public class Horse : LivingThing, Damageable {
 	public PicaVoxel.Exploder exploder;
 
 	public void Awake() {
+		lt = GetComponent<LivingThing>();
 		StartCoroutine(DelayCanRide());		
 	}
 
 	public void Start() {
-		bodyParts.Add(GetComponent<PicaVoxel.Volume>());
-		separateBodyParts.AddRange(bodyParts);
+		lt.bodyParts.Add(GetComponent<PicaVoxel.Volume>());
+		lt.separateBodyParts.Add(GetComponent<PicaVoxel.Volume>());
 		SetName();	
 	}
 
 	void Update() {
-		data.health = health;	
+		data.health = lt.health;	
 
-		if (!isAlive || GameManager.paused)
+		if (!lt.isAlive || GameManager.paused)
 			return;
-
-		HeartBeat();
 	}
 
 	void OnTriggerEnter(Collider collider) {
-		if (!isAlive || rider != null || !canRide)
+		if (!lt.isAlive || rider != null || !canRide)
 			return;
 		Character c = collider.transform.root.GetComponent<Character>();
 		if (c == null || !c.isAlive)
@@ -48,7 +48,7 @@ public class Horse : LivingThing, Damageable {
 	}	
 
 	public void Mount(Character character) {
-		if (!isAlive || rider != null || !canRide)
+		if (!lt.isAlive || rider != null || !canRide)
 			return;
 		character.MountHorse(this);
 		rider = character;
@@ -84,16 +84,16 @@ public class Horse : LivingThing, Damageable {
 	}
 
 	public bool Damage(Vector3 location, Vector3 angle, float damage, Character attacker = null, DamageType type = DamageType.BULLET) {
-		bool wasAlive = isAlive;
+		bool wasAlive = lt.isAlive;
 		exploder.transform.position = location + angle * Random.Range(-.1f, .15f) - Vector3.up * Random.Range(.2f, .6f);
-		if (isAlive)
-			Bleed(exploder.transform.position, Random.Range(1, 10), angle);
-		health -= damage;
-		RegenDelay(damage);
+		if (lt.isAlive)
+			lt.Bleed(exploder.transform.position, Random.Range(1, 10), angle);
+		lt.health -= damage;
+		lt.RegenDelay(damage);
 		float forceVal = Random.Range(500, 900);
 		GetComponent<Rigidbody>().AddForceAtPosition(forceVal * angle.normalized, exploder.transform.position, ForceMode.Impulse);
 		GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: transform.root.gameObject, alerter: attacker);
-		if (wasAlive && !isAlive) {
+		if (wasAlive && !lt.isAlive) {
 			if (attacker is Player && type != DamageType.NONLETHAL) {
 				SaveGame.currentGame.stats.animalsKilled++;
 			}
@@ -103,8 +103,8 @@ public class Horse : LivingThing, Damageable {
 			if (rider != null) {
 				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder
 			}
-			DamageEffects(exploder, angle, type);
-			StartCoroutine(FallOver(800));
+			lt.DamageEffects(exploder, angle, type);
+			lt.FallOver(800);
 		}
 		return false;
 	}
@@ -187,7 +187,7 @@ public class Horse : LivingThing, Damageable {
 		data.location = new SerializableVector3(transform.position);
 		data.eulerAngles = new SerializableVector3(transform.eulerAngles);
 		data.tamed = tamed;
-		data.health = health;
+		data.health = lt.health;
 		return data;
 	}
 
@@ -198,9 +198,12 @@ public class Horse : LivingThing, Damageable {
 		if (data.tamed)
 			SetTamed(data.owner);
 		saddle.SetActive(tamed);
-		health = hsd.health;
-		if (!isAlive)
-			StartCoroutine(FallOver(800));
+		if (!float.IsNaN(data.health))
+			lt.health = data.health;
+		if (!float.IsNaN(data.healthMax))
+			lt.healthMax = data.healthMax;
+		if (!lt.isAlive)
+			lt.FallOver(800);
 		Color();
 		if (data.bytes != null)
 			GetComponent<PicaVoxel.Volume>().SetBytes(data.bytes);
@@ -210,7 +213,6 @@ public class Horse : LivingThing, Damageable {
 	public class HorseSaveData {
 		public HorseSaveData(GameObject horsePrefab, System.Guid owner) {
 			Horse h = horsePrefab.GetComponent<Horse>();
-			health = h.healthMax;
 			bodyColor = Random.Range(0, h.bodyColor.Length);
 			maneColor = Random.Range(0, h.maneColor.Length);
 			speckled = Random.Range(0, 5) == 0;
@@ -222,7 +224,8 @@ public class Horse : LivingThing, Damageable {
 
 		public System.Guid guid = System.Guid.NewGuid();
 		public List<byte[]> bytes;
-		public float health;
+		public float health = float.NaN;
+		public float healthMax = float.NaN;
 		public int bodyColor;
 		public int maneColor;
 		public bool speckled;
