@@ -75,13 +75,15 @@ public class TownFactory {
                 gangName = NameGen.GangName(NameGen.CharacterFirstName(), NameGen.CharacterLastName());
                 Debug.Log("new gang name " + gangName);				
             } while (SaveGame.currentGame.groups.ContainsKey(gangName));
-            Group gang = new Group(gangName);
-            SaveGame.currentGame.groups.Add(gangName, gang);
+            Group newGang = new Group(gangName);
+            SaveGame.currentGame.groups.Add(gangName, newGang);
             Group cops = SaveGame.currentGame.groups[Group.LAW_ENFORCEMENT];
-            gang.SetReputationWith(Group.LAW_ENFORCEMENT, new Reputation((float) Reputation.Rank.ENEMIES));
+            newGang.SetReputationWith(Group.LAW_ENFORCEMENT, new Reputation((float) Reputation.Rank.ENEMIES));
             cops.SetReputationWith(gangName, new Reputation((float) Reputation.Rank.HATE));
         }
 
+        Group gang = SaveGame.currentGame.groups[gangName];
+        
         return new TownLocation(
             gangName + " Hideout",
             map, 
@@ -89,8 +91,8 @@ public class TownFactory {
             controllingGroup: gangName,
             availableConnections: Random.Range(1, 3),
             buildingsToAttempt: new List<Building>[] {
-                b(1, () => bf.NewGangHeadquarters(gangName)),
-                b(Random.Range(1, 3), () => bf.NewGangBarracks(gangName)),
+                b(1, () => bf.NewGangHeadquarters(gang)),
+                b(Random.Range(1, 3), () => bf.NewGangBarracks(gang)),
                 b(Random.Range(0, 4), () => bf.NewHome()), 
                 b(Random.Range(0, 2), () => bf.NewSaloon())
             }

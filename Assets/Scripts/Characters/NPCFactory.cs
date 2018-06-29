@@ -15,18 +15,18 @@ public class NPCFactory {
         return npc;
     }
 
-    public NPCData MakeGoon(string gang) {
+    public NPCData MakeGoon(Group gang) {
         NPCData npc = new NPCData(NPCData.NPCType.GOON, Random.Range(0, 2) == 0);
         npc.outfit = "default";
-        npc.groups.Add(gang);
+        gang.Add(npc, false);
         npc.taskSources[NPCData.DYNAMIC_AI] = new CriminalBehavior(npc.guid);
         return npc;
     }
 
-    public NPCData MakeGangLeader(string gang) {
+    public NPCData MakeGangLeader(Group gang) {
         NPCData npc = new NPCData(NPCData.NPCType.GANG_LEADER, Random.Range(0, 2) == 0);
         npc.outfit = "default";
-        npc.groups.Add(gang);
+        gang.Add(npc, true);
         npc.taskSources[NPCData.DYNAMIC_AI] = new CriminalBehavior(npc.guid);
         return npc;
     }

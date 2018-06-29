@@ -21,13 +21,13 @@ public class BuildingFactory {
                 .AddNPCs((() => npcFactory.MakeNormie()), 2);
     }
 
-    public Building NewGangBarracks(string gang) {
+    public Building NewGangBarracks(Group gang) {
         return new Building(Building.BuildingType.HOME, "Gang Barracks")
                 .AddHousingSlot(NPCData.NPCType.GOON, Random.Range(10, 20))
                 .AddNPCs((() => npcFactory.MakeGoon(gang)), 2);                
     }
 
-    public Building NewGangHeadquarters(string gang) {
+    public Building NewGangHeadquarters(Group gang) {
         return new Building(Building.BuildingType.HOME, "Gang Headquarters")
                 .AddHousingSlot(NPCData.NPCType.GOON, Random.Range(15, 30))
                 .AddHousingSlot(NPCData.NPCType.GANG_LEADER, Random.Range(3, 6))

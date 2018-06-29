@@ -16,7 +16,7 @@ public class Group {
         this.name = name;
     }
 
-    public void Add(Character c, bool leader) {
+    public void Add(CharacterData c, bool leader) {
         c.groups.Add(name);
         members[c.guid] = leader;
     }
