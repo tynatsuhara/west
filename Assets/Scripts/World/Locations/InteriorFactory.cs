@@ -2,6 +2,7 @@ public class InteriorFactory {
 
     private Map map;
     private TownLocation town;
+	private AsciiData ascii = new AsciiData();
 
     public InteriorFactory(Map map, TownLocation town) {
         this.map = map;
@@ -9,19 +10,8 @@ public class InteriorFactory {
     }
 
     public InteriorLocation InteriorFor(Building.BuildingType type) {
-        Room room1 = new Room(
-			"      #//T/#",
-			"      #////#",
-			"//####/////#",
-			"///////#####"
-		);
-
-		Room room2 = new Room(
-			"///////////#",
-			"///////////#",
-			"///////////#",
-			"############"
-		);
+        Room room1 = new Room(ascii.Get("room1"));
+		Room room2 = new Room(ascii.Get("room2"));
 		
 		InteriorBuilder builder = new InteriorBuilder(room1);
 
@@ -39,13 +29,7 @@ public class InteriorFactory {
 	}
 
 	private InteriorLocation InteriorForSaloon() {
-		Room mainRoom = new Room(
-			"#$$$$$$$$$$#",
-			"#----------#",
-			"#//////////#",
-			"#//////////#",
-			"#++++++++++#"
-		);
+		Room mainRoom = new Room(ascii.Get("saloon"));
 
 		/* TODO: possible other rooms:
 			- bathroom

@@ -19,7 +19,7 @@ public class Room {
 
     private Grid<List<TileElement>> tiles;
 
-    public Room(params string[] grid) {
+    public Room(Grid<char> grid) {
         PlaceSquares(grid);
     }
 
@@ -91,12 +91,12 @@ public class Room {
         tiles.ForEach(stack => stack.ForEach(x => x.Rotate()));
     }
 
-    private void PlaceSquares(string[] grid) {
-        tiles = new Grid<List<TileElement>>(grid[0].Length, grid.Length);
+    private void PlaceSquares(Grid<char> grid) {
+        tiles = new Grid<List<TileElement>>(grid.width, grid.height);
         // separate empty from non-empty spaces with walls
         for (int x = 0; x < tiles.width; x++) {
             for (int y = 0; y < tiles.height; y++) {
-                char ch = grid[tiles.height-y-1][x];
+                char ch = grid.Get(x, y);
                 TileElement sq = new FloorTile(ch);
                 tiles.Get(x, y, () => new List<TileElement>()).Add(sq);
             }
