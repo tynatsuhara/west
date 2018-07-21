@@ -17,13 +17,9 @@ public class Room {
         get { return tiles.height; }
     }
 
-    public readonly char charKey;
-    public readonly char floor;
     private Grid<List<TileElement>> tiles;
 
-    public Room(char charKey, char floor, params string[] grid) {
-        this.charKey = charKey;
-        this.floor = floor;
+    public Room(params string[] grid) {
         PlaceSquares(grid);
     }
 

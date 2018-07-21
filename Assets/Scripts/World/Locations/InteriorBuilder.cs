@@ -6,26 +6,17 @@ using World;
 
 public class InteriorBuilder {
 
-    private Dictionary<char, Room> rooms = new Dictionary<char, Room>();
+    private List<Room> rooms = new List<Room>();
     private Grid<Room> grid;
 
     public InteriorBuilder(Room root) {
-        rooms.Add(root.charKey, root);
+        rooms.Add(root);
         grid = new Grid<Room>(root.width, root.height);
         for (int x = 0; x < grid.width; x++) {
             for (int y = 0; y < grid.height; y++) {
                 grid.Set(x, y, root.Occupied(x, y) ? root : null);
             }
         }
-    }
-
-    // rooms should be attached in order of importance (building out from the root room)
-    // todo: additional parameters? (optional, etc)
-    public InteriorBuilder Attach(string on, Room room) {
-        if (!TryAttachRoom(room, on)) {
-            Debug.Log("failed to attach room");
-        }
-        return this;
     }
 
     public InteriorLocation Build(Map parent, System.Guid outside, string name) {
@@ -62,7 +53,17 @@ public class InteriorBuilder {
     //     return this;
     // }
 
-    private bool TryAttachRoom(Room room, string on) {
+    public class RoomAttachResult {
+        public Room room;
+        public FindResult f1;
+        public FindResult f2;
+        public string on;
+        public bool placeOtherAbove;
+    }
+
+    // rooms should be attached in order of importance (building out from the root room)
+    // returns attach metadata or null if there is no possible attachment
+    public RoomAttachResult FindAttachPoint(Room room, string on) {
         int initialRotation = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < initialRotation; i++) {
             room.Rotate();
@@ -92,8 +93,15 @@ public class InteriorBuilder {
                     for (int f = 0; f < 3; f += 2) {
                         foreach (FindResult f1 in sides[f]) {
                             foreach (FindResult f2 in sides[f+1]) {
-                                if (Merge(f1, f2, room, on, checkAbove)) {
-                                    return true;
+                                if (CanMerge(f1, f2, room, on, checkAbove)) {
+                                    // return true;
+                                    RoomAttachResult rar = new RoomAttachResult();
+                                    rar.room = room;
+                                    rar.f1 = f1;
+                                    rar.f2 = f2;
+                                    rar.on = on;
+                                    rar.placeOtherAbove = checkAbove;
+                                    return rar;
                                 }
                             }
                         }
@@ -107,10 +115,10 @@ public class InteriorBuilder {
             room.Rotate();
         }
 
-        return false;
+        return null;
     }
 
-    public List<FindResult> Find(string on) {
+    private List<FindResult> Find(string on) {
         List<FindResult> result = new List<FindResult>();
         for (int x = 0; x < grid.width; x++) {
             for (int y = 0; y < grid.height; y++) {
@@ -129,18 +137,20 @@ public class InteriorBuilder {
     }
 
     private bool Matches(int x, int y, string match) {
-        for (int i = 0; i < match.Length; i++) {
-            Room rm = grid.Get(x + i, y);
-            if ((rm == null && match[i] != ' ') || (rm != null && rm.CharAt(x + i, y) != match[i])) {
-                return false;
+        for (int r = 0; r < match.Length; r++) {
+            string row = match;
+            for (int i = 0; i < row.Length; i++) {
+                Room rm = grid.Get(x + i, y);
+                if ((rm == null && row[i] != ' ') || (rm != null && rm.CharAt(x + i, y) != row[i])) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
-    private bool Merge(FindResult thisPos, FindResult otherPos, Room other, string on, bool placeOtherAbove) {
-        int minX = 0, maxX = 0, minY = 0, maxY = 0;
+    private bool CanMerge(FindResult thisPos, FindResult otherPos, Room other, string on, bool placeOtherAbove) {
         int shift = placeOtherAbove ? 1 : -1;
 
         // the coordinates in this grid for placing other
@@ -152,17 +162,47 @@ public class InteriorBuilder {
             for (int x = 0; x < other.width; x++) {
                 int overlapX = bottomLeftX + x;
                 bool outsideX = overlapX < 0 || overlapX >= grid.width;
-                minX = Mathf.Min(minX, overlapX);
-                maxX = Mathf.Max(maxX, overlapX);
 
                 int overlapY = bottomLeftY + y;
                 bool outsideY = overlapY < 0 || overlapY >= grid.height;
-                minY = Mathf.Min(minY, overlapY);
-                maxY = Mathf.Max(maxY, overlapY);
                 
                 if (!outsideX && !outsideY && other.Occupied(x, y) && grid.Get(overlapX, overlapY) != null) {
                     return false;
                 }
+            }
+        }
+
+        return true;
+    }
+
+    public void AttachRoom(RoomAttachResult roomAttachResult, string thisReplacement, string otherReplacement) {
+        if (thisReplacement.Length != roomAttachResult.on.Length || thisReplacement.Length != roomAttachResult.on.Length) {
+            throw new UnityException("okay what the fuck");
+        }
+
+        FindResult thisPos = roomAttachResult.f1;
+        FindResult otherPos = roomAttachResult.f2;
+        Room other = roomAttachResult.room;
+        string on = roomAttachResult.on;
+        bool placeOtherAbove = roomAttachResult.placeOtherAbove;
+
+        int minX = 0, maxX = 0, minY = 0, maxY = 0;
+        int shift = placeOtherAbove ? 1 : -1;
+
+        // the coordinates in this grid for placing other
+        int bottomLeftX = thisPos.x - otherPos.x;
+        int bottomLeftY = thisPos.y - otherPos.y + shift;
+
+        // find all min/max values
+        for (int y = 0; y < other.height; y++) {
+            for (int x = 0; x < other.width; x++) {
+                int overlapX = bottomLeftX + x;
+                minX = Mathf.Min(minX, overlapX);
+                maxX = Mathf.Max(maxX, overlapX);
+
+                int overlapY = bottomLeftY + y;
+                minY = Mathf.Min(minY, overlapY);
+                maxY = Mathf.Max(maxY, overlapY);
             }
         }
 
@@ -177,7 +217,7 @@ public class InteriorBuilder {
 
         grid = grid.Expanded(topPad, bottomPad, leftPad, rightPad);
 
-        foreach (Room movedRoom in rooms.Values) {
+        foreach (Room movedRoom in rooms) {
             movedRoom.IncrementOffset(leftPad, bottomPad);
         }
 
@@ -192,15 +232,13 @@ public class InteriorBuilder {
 
         other.IncrementOffset(bottomLeftX, bottomLeftY);
 
-        MakeDoorway(bottomLeftX + otherPos.x, bottomLeftY + otherPos.y, on, !placeOtherAbove);
-        MakeDoorway(leftPad + thisPos.x, bottomPad + thisPos.y, on, placeOtherAbove);
+        MakeDoorway(bottomLeftX + otherPos.x, bottomLeftY + otherPos.y, on, !placeOtherAbove, otherReplacement);
+        MakeDoorway(leftPad + thisPos.x, bottomPad + thisPos.y, on, placeOtherAbove, thisReplacement);
 
-        rooms.Add(other.charKey, other);
-
-        return true;
+        rooms.Add(other);
     }
 
-    public void MakeDoorway(int x, int y, string door, bool removeTopDoor) {
+    private void MakeDoorway(int x, int y, string door, bool removeTopDoor, string replacement) {
         for (int i = 0; i < door.Length; i++) {
             Room rm = grid.Get(x + i, y);
             if (rm != null) {
@@ -209,9 +247,9 @@ public class InteriorBuilder {
                         .ToList()
                         .ForEach(el => {
                             if (removeTopDoor) {
-                                (el as FloorTile).RemoveWallTop(rm.floor);
+                                (el as FloorTile).RemoveWallTop(replacement[i]);
                             } else {
-                                (el as FloorTile).RemoveWallBottom(rm.floor);
+                                (el as FloorTile).RemoveWallBottom(replacement[i]);
                             }
                         });
             }
@@ -220,7 +258,7 @@ public class InteriorBuilder {
 
     // rotate clockwise
     private void Rotate() {
-        foreach (Room room in rooms.Values) {
+        foreach (Room room in rooms) {
             room.RotatePlaced(grid.width);
         }
         grid = grid.RotatedClockwise();
@@ -237,7 +275,7 @@ public class InteriorBuilder {
     }
 
     public class FindResult {
-        public int x, y;
+        public int x, y;  // represents the bottom left of the overlap
         public bool spaceAbove, spaceBelow;
 
         public FindResult(int x, int y, bool spaceAbove, bool spaceBelow) {

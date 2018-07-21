@@ -186,6 +186,7 @@
      <Compile Include="Assets\Scripts\World\Exteriors\BuildingFactory.cs" />
      <Compile Include="Assets\Scripts\World\Grid.cs" />
      <Compile Include="Assets\Scripts\World\LevelBuilder.cs" />
+     <Compile Include="Assets\Scripts\World\Locations\AsciiData.cs" />
      <Compile Include="Assets\Scripts\World\Locations\Benchmarking.cs" />
      <Compile Include="Assets\Scripts\World\Locations\InteriorBuilder.cs" />
      <Compile Include="Assets\Scripts\World\Locations\InteriorFactory.cs" />
@@ -214,6 +215,7 @@
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\NoiseEffectShaderRGB.shader" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\_DepthOfField\SeparableWeightedBlurDof34.shader" />
+     <None Include="Assets\Resources\roomdata.txt" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\ShowAlphaChannel.shader" />
      <None Include="Assets\Characters\voxel_values.txt" />
      <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\SunShaftsComposite.shader" />

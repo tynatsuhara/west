@@ -9,23 +9,53 @@ public class InteriorFactory {
     }
 
     public InteriorLocation InteriorFor(Building.BuildingType type) {
-        Room room1 = new Room('a', '/',
+        Room room1 = new Room(
 			"      #//T/#",
 			"      #////#",
 			"//####/////#",
 			"///////#####"
 		);
 
-		Room room2 = new Room('b', '/',
+		Room room2 = new Room(
 			"///////////#",
 			"///////////#",
 			"///////////#",
 			"############"
 		);
 		
-		return new InteriorBuilder(room1)
-				.Attach("##", room2)
-				.AddTeleporter('T', town.guid, "front door")
-				.Build(map, town.guid, "SOME BUILDING");
+		InteriorBuilder builder = new InteriorBuilder(room1);
+
+		var attachData = builder.FindAttachPoint(room2, "##");
+		if (attachData != null) {
+			builder.AttachRoom(attachData, "//", "//");
+		}
+
+		return builder.AddTeleporter('T', town.guid, "front door")
+					  .Build(map, town.guid, "SOME BUILDING");
     }
+
+	private InteriorLocation InteriorForHome() {
+		return null;
+	}
+
+	private InteriorLocation InteriorForSaloon() {
+		Room mainRoom = new Room(
+			"#$$$$$$$$$$#",
+			"#----------#",
+			"#//////////#",
+			"#//////////#",
+			"#++++++++++#"
+		);
+
+		/* TODO: possible other rooms:
+			- bathroom
+			- stairwell up/down to barkeep's living quarters
+			- stairwell down to storage cellar 
+			- poker room
+			- additional seating
+			- several random layouts
+		*/
+
+		return null;		
+	}
 }

@@ -7,6 +7,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public static LevelBuilder instance;
 	public Camera townRenderCam;
+
 	public GameObject floorPrefab;
 	public GameObject trailPrefab;
 	public GameObject wallPrefab;
@@ -18,10 +19,11 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject horsePrefab;
 	public GameObject teleporterPrefab;
 	public GameObject destinationMarkerPrefab;
-	public Material mat;
-	public Color32[] biomeColors;
-	public GameObject[] buildingPrefabs;
 	public GameObject npcPrefab;
+	public GameObject[] buildingPrefabs;
+
+	public Material mat;
+	public Color32[] biomeColors;  // TODO: make biomes more detailed than this
 
 	public List<Transform> permanent;  // everything that shouldn't be deleted for loading a new location
 
