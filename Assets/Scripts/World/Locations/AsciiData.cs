@@ -8,7 +8,10 @@ public class AsciiData {
     private Dictionary<string, Grid<char>> data = new Dictionary<string, Grid<char>>();
 
     public AsciiData() {
-        TextAsset asset = Resources.Load("roomdata") as TextAsset;
+        Resources.LoadAll("layouts").Select(x => x as TextAsset).ToList().ForEach(x => LoadFile(x));
+    }
+
+    private void LoadFile(TextAsset asset) {
         string[] lines = asset.text.Split('\n');
 
         /*  Assumes a well-formatted data file
@@ -38,6 +41,9 @@ public class AsciiData {
                 for (int x = 0; x < row.Length; x++) {
                     g.Set(x, y, row[x]);
                 }
+            }
+            if (data.ContainsKey(title)) {
+                throw new UnityException("duplicate ascii key " + title);
             }
             data.Add(title, g);
         }
