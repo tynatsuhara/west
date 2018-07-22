@@ -12,6 +12,20 @@ public class Grid<T> {
     private Dictionary<int, Dictionary<int, T>> grid = new Dictionary<int, Dictionary<int, T>>();
     public readonly int width, height;
 
+    public Grid(T singleton) {
+        this.width = 1;
+        this.height = 1;
+        Set(0, 0, singleton);
+    }
+
+    public Grid(T[] row) {
+        this.width = row.Length;
+        this.height = 1;
+        for (int i = 0; i < row.Length; i++) {
+            Set(i, 0, row[i]);
+        }
+    }
+
     // If supplier is not null, fills each value in the grid using the supplier
     public Grid(int width, int height, Func<T> supplier = null) {
         this.width = width;
@@ -104,6 +118,10 @@ public class Grid<T> {
         Grid<T> newGrid = new Grid<T>(height, width);
         ForEach((val, x, y) => newGrid.Set(y, width-x-1, val));
         return newGrid;
+    }
+
+    public Grid<T> ShallowCopy() {
+        return Expanded(0, 0, 0, 0);
     }
 
     // returns an expanded grid with the given padding
