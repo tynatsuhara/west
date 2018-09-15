@@ -15,10 +15,13 @@ public class InteriorFactory {
 		
 		InteriorBuilder builder = new InteriorBuilder(room1);
 
-		var attachData = builder.FindAttachPoint(room2, "##");
+		/*var attachData = builder.FindAttachPoint(room2, "##");
 		if (attachData != null) {
 			builder.AttachRoom(attachData, "//", "//");
-		}
+		}*/
+
+		builder.TryAttachRoom(ascii.Get("door"), room2, ascii.Get("door"), ascii.Get("doorrep"));
+		builder.TryPlaceElement(ascii.Get("bed"));
 
 		return builder.AddTeleporter('T', town.guid, "front door")
 					  .Build(map, town.guid, "SOME BUILDING");

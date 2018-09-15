@@ -8,8 +8,10 @@ public class InteriorBuilder {
 
     private List<Room> rooms = new List<Room>();
     private Grid<Room> grid;
+    private Room root;
 
     public InteriorBuilder(Room root) {
+        this.root = root;
         rooms.Add(root);
         grid = new Grid<Room>(root.width, root.height);
         for (int x = 0; x < grid.width; x++) {
@@ -33,9 +35,51 @@ public class InteriorBuilder {
         return tiles;
     }
 
+    public bool TryPlaceElement(Grid<char> g) {
+        for (int i = 0; i < 4; i++) {
+            List<FindResult> findResults = Find(g);
+            if (findResults.Count > 0) {
+                // TODO callback
+                FindResult fr = findResults.First();
+                fr.room.WriteASCII(g, fr.x, fr.y);
+                return true;
+            }
+            Rotate();
+        }
+        return false;
+    }
+
+    // private void PlaceGrid(Grid<char> g, FindResult fr) {
+    //     for (int x = 0; x < g.width; x++) {
+    //         for (int y = 0; y < g.height; y++) {
+    //             int realX = x + fr.x;
+    //             int realY = y + fr.y;
+                
+    //             Room r = grid.Set(realX, realY);
+    //             if (g.Get(x, y) != ' ' && r != null && r.Occupied(realX, realY)) {
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    // }
+
+    // private bool CanPlaceGrid(Grid<char> g, FindResult fr) {
+    //     for (int x = 0; x < g.width; x++) {
+    //         for (int y = 0; y < g.height; y++) {
+    //             int realX = x + fr.x;
+    //             int realY = y + fr.y;
+    //             Room r = grid.Get(realX, realY);
+    //             if (g.Get(x, y) != ' ' && r != null && r.Occupied(realX, realY)) {
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
+
     private List<Teleporter.TeleporterData> teleporters = new List<Teleporter.TeleporterData>();
     public InteriorBuilder AddTeleporter(char gridIcon, System.Guid town, string tag) {
-        FindResult fr = Find("" + gridIcon).First();
+        FindResult fr = Find(new Grid<char>(gridIcon)).First();
         Vector3 pos = new Vector3((fr.x + .5f) * LevelBuilder.TILE_SIZE, 1f, (fr.y + .5f) * LevelBuilder.TILE_SIZE);
         teleporters.Add(new Teleporter.TeleporterData(town, pos, tag));
         return this;
@@ -57,13 +101,35 @@ public class InteriorBuilder {
         public Room room;
         public FindResult f1;
         public FindResult f2;
-        public string on;
         public bool placeOtherAbove;
     }
 
     // rooms should be attached in order of importance (building out from the root room)
+    // returns whether or not the room successfully attached
+    // both doors should have the attach point at the TOP of the grid
+    public bool TryAttachRoom(Grid<char> thisDoor, Room newRoom, Grid<char> newRoomDoor, Grid<char> replacement) {
+        if (thisDoor.width != replacement.width || thisDoor.width != replacement.width 
+                || thisDoor.height != 1 || newRoomDoor.height != 1 || replacement.height != 1) {  // todo: make doors > 1 tall
+            throw new UnityException("illegal grid dimensions");
+        }
+        RoomAttachResult rar = FindAttachPoint(newRoom, newRoomDoor);
+        if (rar == null) {
+            return false;
+        }
+        AttachRoom(rar, replacement);
+        return true;
+    }
+
+    // Rotation should be [0, 3]
+    public void SetRotation(int rotation) {
+        while (root.rotation != rotation) {
+            Rotate();
+        }
+    }
+
     // returns attach metadata or null if there is no possible attachment
-    public RoomAttachResult FindAttachPoint(Room room, string on) {
+    public RoomAttachResult FindAttachPoint(Room room, Grid<char> door) {
+
         int initialRotation = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < initialRotation; i++) {
             room.Rotate();
@@ -71,13 +137,13 @@ public class InteriorBuilder {
 
         for (int i = 0; i < 2; i++) {
             // get all "on" strings in the other grid with space above/below them
-            List<FindResult> thatDoors = room.Find(on);
+            List<FindResult> thatDoors = room.Find(door);
             List<FindResult> thatSpaceAboveDoors = thatDoors.Where(x => x.spaceAbove).OrderBy(x => Random.Range(0f, 1f)).ToList();
             List<FindResult> thatSpaceBelowDoors = thatDoors.Where(x => x.spaceBelow).OrderBy(x => Random.Range(0f, 1f)).ToList();
             
             if (thatSpaceAboveDoors.Count + thatSpaceBelowDoors.Count > 0) {
                 for (int j = 0; j < 4; j++) {
-                    List<FindResult> thisDoors = Find(on);
+                    List<FindResult> thisDoors = Find(door);
                     List<FindResult> spaceAboveDoors = thisDoors.Where(x => x.spaceAbove).OrderBy(x => Random.Range(0f, 1f)).ToList();
                     List<FindResult> spaceBelowDoors = thisDoors.Where(x => x.spaceBelow).OrderBy(x => Random.Range(0f, 1f)).ToList();
 
@@ -93,13 +159,12 @@ public class InteriorBuilder {
                     for (int f = 0; f < 3; f += 2) {
                         foreach (FindResult f1 in sides[f]) {
                             foreach (FindResult f2 in sides[f+1]) {
-                                if (CanMerge(f1, f2, room, on, checkAbove)) {
+                                if (CanMerge(f1, f2, room, checkAbove)) {
                                     // return true;
                                     RoomAttachResult rar = new RoomAttachResult();
                                     rar.room = room;
                                     rar.f1 = f1;
                                     rar.f2 = f2;
-                                    rar.on = on;
                                     rar.placeOtherAbove = checkAbove;
                                     return rar;
                                 }
@@ -118,39 +183,15 @@ public class InteriorBuilder {
         return null;
     }
 
-    private List<FindResult> Find(string on) {
-        List<FindResult> result = new List<FindResult>();
-        for (int x = 0; x < grid.width; x++) {
-            for (int y = 0; y < grid.height; y++) {
-                if (Matches(x, y, on)) {
-                    bool spaceAbove = y == grid.height-1 || EmptyX(x, y+1, on.Length);
-                    bool spaceBelow = y == 0 || EmptyX(x, y-1, on.Length);
-                    result.Add(new FindResult(x, y, spaceAbove, spaceBelow));
-                }
-            }
-        }
-        return result;
-    }
-
-    private bool EmptyX(int x, int y, int count) {
-        return Enumerable.Range(x, count).All(xi => grid.Get(xi, y) == null);
-    }
-
-    private bool Matches(int x, int y, string match) {
-        for (int r = 0; r < match.Length; r++) {
-            string row = match;
-            for (int i = 0; i < row.Length; i++) {
-                Room rm = grid.Get(x + i, y);
-                if ((rm == null && row[i] != ' ') || (rm != null && rm.CharAt(x + i, y) != row[i])) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    // Returns a list of possible placement results in a randomized order 
+    private List<FindResult> Find(Grid<char> g) {
+        return rooms.OrderBy(n => Random.Range(0f, 1f))
+                    .SelectMany(x => x.Find(g).OrderBy(n => Random.Range(0f, 1f)))
+                    .ToList();
     }
 
     // Merge and resize the grid (will always be a rectangle, no different-length rows)
-    private bool CanMerge(FindResult thisPos, FindResult otherPos, Room other, string on, bool placeOtherAbove) {
+    private bool CanMerge(FindResult thisPos, FindResult otherPos, Room other, bool placeOtherAbove) {
         int shift = placeOtherAbove ? 1 : -1;
 
         // the coordinates in this grid for placing other
@@ -175,15 +216,10 @@ public class InteriorBuilder {
         return true;
     }
 
-    public void AttachRoom(RoomAttachResult roomAttachResult, string thisReplacement, string otherReplacement) {
-        if (thisReplacement.Length != roomAttachResult.on.Length || thisReplacement.Length != roomAttachResult.on.Length) {
-            throw new UnityException("okay what the fuck");
-        }
-
+    public void AttachRoom(RoomAttachResult roomAttachResult, Grid<char> replacement) {
         FindResult thisPos = roomAttachResult.f1;
         FindResult otherPos = roomAttachResult.f2;
         Room other = roomAttachResult.room;
-        string on = roomAttachResult.on;
         bool placeOtherAbove = roomAttachResult.placeOtherAbove;
 
         int minX = 0, maxX = 0, minY = 0, maxY = 0;
@@ -232,24 +268,44 @@ public class InteriorBuilder {
 
         other.IncrementOffset(bottomLeftX, bottomLeftY);
 
-        MakeDoorway(bottomLeftX + otherPos.x, bottomLeftY + otherPos.y, on, !placeOtherAbove, otherReplacement);
-        MakeDoorway(leftPad + thisPos.x, bottomPad + thisPos.y, on, placeOtherAbove, thisReplacement);
+        MakeDoorway(bottomLeftX + otherPos.x, bottomLeftY + otherPos.y, !placeOtherAbove, replacement);
+        MakeDoorway(leftPad + thisPos.x, bottomPad + thisPos.y, placeOtherAbove, replacement);
 
         rooms.Add(other);
     }
 
-    private void MakeDoorway(int x, int y, string door, bool removeTopDoor, string replacement) {
-        for (int i = 0; i < door.Length; i++) {
+    // Occupies each entry in the grid (except for where there are spaces in g)
+    private void OccupySpace(int x, int y, Grid<char> g) {
+        for (int x_ = 0; x_ < g.width; x_++) {
+            for (int y_ = 0; y_ < g.height; y_++) {
+                Room rm = grid.Get(x + x_, y + y_);
+                if (g.Get(x_, y_) != ' ' && rm != null) {
+                    rm.TileElementsAt(x + x_, y + y_)
+                            .Where(el => el is FloorTile)
+                            .Select(el => el as FloorTile)
+                            .ToList()
+                            .ForEach(floorTile => {
+                                floorTile.occupied = true;
+                            });
+                }
+            }
+        }
+    }
+
+    private void MakeDoorway(int x, int y, bool removeTopDoor, Grid<char> replacement) {
+        for (int i = 0; i < replacement.width; i++) {
             Room rm = grid.Get(x + i, y);
             if (rm != null) {
                 rm.TileElementsAt(x + i, y)
                         .Where(el => el is FloorTile)
+                        .Select(el => el as FloorTile)
                         .ToList()
-                        .ForEach(el => {
+                        .ForEach(floorTile => {
+                            floorTile.occupied = true;
                             if (removeTopDoor) {
-                                (el as FloorTile).RemoveWallTop(replacement[i]);
+                                floorTile.wallTop = false;
                             } else {
-                                (el as FloorTile).RemoveWallBottom(replacement[i]);
+                                floorTile.wallBottom = false;
                             }
                         });
             }
@@ -275,10 +331,12 @@ public class InteriorBuilder {
     }
 
     public class FindResult {
-        public int x, y;  // represents the bottom left of the overlap
+        public Room room;
+        public int x, y;  // represents the bottom left of the overlap in interior space
         public bool spaceAbove, spaceBelow;
 
-        public FindResult(int x, int y, bool spaceAbove, bool spaceBelow) {
+        public FindResult(Room room, int x, int y, bool spaceAbove, bool spaceBelow) {
+            this.room = room;
             this.x = x;
             this.y = y;
             this.spaceAbove = spaceAbove;

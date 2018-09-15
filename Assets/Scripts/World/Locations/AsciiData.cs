@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using System.Linq;
 
@@ -8,7 +7,8 @@ public class AsciiData {
     private Dictionary<string, Grid<char>> data = new Dictionary<string, Grid<char>>();
 
     public AsciiData() {
-        Resources.LoadAll("layouts").Select(x => x as TextAsset).ToList().ForEach(x => LoadFile(x));
+        Resources.LoadAll("layouts").ToList().ForEach(x => LoadFile(x as TextAsset));
+        // Debug.Log("ascii objects = " + string.Join(",", data.Keys.ToArray()));
     }
 
     private void LoadFile(TextAsset asset) {
@@ -25,7 +25,7 @@ public class AsciiData {
         breaks.Add(lines.Length);
 
         for (int i = 0; i < breaks.Count - 1; i++) {
-            string title = lines[breaks[i]].Remove(0, 1).Trim();
+            string[] titles = lines[breaks[i]].Remove(0, 1).Trim().Split(',').Select(x => x.Trim()).ToArray();
             List<string> body = lines.Take(breaks[i+1])
                                      .Skip(breaks[i] + 1)
                                      .Select(x => x.TrimEnd())
@@ -42,14 +42,16 @@ public class AsciiData {
                     g.Set(x, y, row[x]);
                 }
             }
-            if (data.ContainsKey(title)) {
-                throw new UnityException("duplicate ascii key " + title);
+            foreach (string key in titles) {
+                if (data.ContainsKey(key)) {
+                    throw new UnityException("duplicate ascii key " + key);
+                }
+                data.Add(key, g);
             }
-            data.Add(title, g);
         }
     }
 
     public Grid<char> Get(string title) {
-        return data[title];
+        return data[title].ShallowCopy();
     }
 }

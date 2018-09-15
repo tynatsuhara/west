@@ -4,7 +4,6 @@ namespace World {
     [System.Serializable]
     public abstract class TileElement {
         public bool occupied;
-        public char ch = 'X';
 
         // rotate clockwise
         public virtual void Rotate() {

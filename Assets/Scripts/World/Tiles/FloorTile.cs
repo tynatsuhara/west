@@ -7,10 +7,7 @@ namespace World {
     public class FloorTile : GroundTile {
         public bool wallRight, wallBottom, wallLeft, wallTop;
 
-        // TODO: get rid of ch???
-        public FloorTile(char ch) : base(GroundType.FLOOR) {
-            this.ch = ch;
-        }
+        public FloorTile() : base(GroundType.FLOOR) {}
 
         public override void Rotate() {
             bool oldRight = wallRight;
@@ -18,15 +15,6 @@ namespace World {
             wallTop = wallLeft;
             wallLeft = wallBottom;
             wallBottom = oldRight;
-        }
-
-        public void RemoveWallTop(char newFloor) {
-            ch = newFloor;
-            wallTop = false;
-        }
-        public void RemoveWallBottom(char newFloor) {
-            ch = newFloor;
-            wallBottom = false;
         }
 
         public override void Spawn(LevelBuilder lb, Location location, int x, int y) {
