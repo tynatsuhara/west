@@ -29,6 +29,10 @@ public class Room {
     public List<TileElement> TileElementsAt(int x, int y) {
         return tiles.Get(x - xOffset, y - yOffset);
     }
+
+    public void AddTileElementAt(int x, int y, TileElement element) {
+        tiles.Get(x - xOffset, y - yOffset, () => new List<TileElement>()).Add(element);
+    }
     
     public char CharAt(int x, int y) {
         if (TileElementsAt(x, y) == null) {

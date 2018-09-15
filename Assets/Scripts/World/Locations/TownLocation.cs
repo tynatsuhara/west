@@ -485,7 +485,7 @@ public class TownLocation : Location {
 		int cactiAmount = Random.Range(2, 8);
 		for (int i = 0; i < cactiAmount; i++) {
 			Vector2 xy = RandomUnoccupiedXY(excludeTrails: true);
-			tiles.Get((int)xy.x, (int)xy.y).Add(new Cactus());
+			tiles.Get((int)xy.x, (int)xy.y).Add(new EntityTile(LevelBuilder.PrefabKey.CACTUS, 1f, 1f));
 		}
 	}
 }

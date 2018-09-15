@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// NEW TODO: Clean this all up
+
 namespace WorldGameObject {
     public class Headstone : MonoBehaviour {
         private World.Headstone data;

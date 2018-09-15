@@ -35,13 +35,15 @@ public class InteriorBuilder {
         return tiles;
     }
 
-    public bool TryPlaceElement(Grid<char> g) {
+    public bool TryPlaceElement(Grid<char> g, TileElement element = null) {
         for (int i = 0; i < 4; i++) {
             List<FindResult> findResults = Find(g);
             if (findResults.Count > 0) {
-                // TODO callback
                 FindResult fr = findResults.First();
                 fr.room.WriteASCII(g, fr.x, fr.y);
+                if (element != null) {
+                    grid.Get(fr.x, fr.y).AddTileElementAt(fr.x, fr.y, element);
+                }
                 return true;
             }
             Rotate();

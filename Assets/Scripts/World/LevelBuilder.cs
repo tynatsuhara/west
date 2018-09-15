@@ -22,6 +22,18 @@ public class LevelBuilder : MonoBehaviour {
 	public GameObject npcPrefab;
 	public GameObject[] buildingPrefabs;
 
+	[System.Serializable]
+	public enum PrefabKey {
+		CACTUS
+	}
+	[System.Serializable]
+	public struct PrefabKeyValue {
+		public PrefabKey key;
+		public GameObject value;
+	}
+	public PrefabKeyValue[] prefabs;
+	private Dictionary<PrefabKey, GameObject> prefabMap;
+
 	public Material mat;
 	public Color32[] biomeColors;  // TODO: make biomes more detailed than this
 
@@ -35,6 +47,7 @@ public class LevelBuilder : MonoBehaviour {
 
 	public void Awake() {
 		instance = this;
+		prefabMap = prefabs.ToDictionary(kv => kv.key, kv => kv.value);
 	}
 
 	public void LoadLocation(System.Guid guid, bool firstLoadSinceStartup) {
@@ -101,6 +114,10 @@ public class LevelBuilder : MonoBehaviour {
 				pc.transform.root.position = GameManager.instance.loadReposition;
 			}
 		}
+	}
+
+	public Object GetPrefab(PrefabKey key) {
+		return prefabMap[key];
 	}
 
 	// floor tiles are stored in cache for fast lookup
