@@ -28,7 +28,7 @@ namespace World {
                 lb.GetPrefab(prefabKey), 
                 new Vector3(
                     x * LevelBuilder.TILE_SIZE + xSpawnOffset, 
-                    -.2f,                                               // TODO: should we change this? also, variable z-height?
+                    0f,                                               // TODO: should we change this? also, variable z-height?
                     y * LevelBuilder.TILE_SIZE + ySpawnOffset
                 ), 
                 Quaternion.identity
