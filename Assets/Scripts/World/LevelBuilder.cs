@@ -24,7 +24,8 @@ public class LevelBuilder : MonoBehaviour {
 
 	[System.Serializable]
 	public enum PrefabKey {
-		CACTUS
+		CACTUS,
+		BED
 	}
 	[System.Serializable]
 	public struct PrefabKeyValue {

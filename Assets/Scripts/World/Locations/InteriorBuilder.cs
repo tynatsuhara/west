@@ -43,6 +43,9 @@ public class InteriorBuilder {
                 fr.room.WriteASCII(g, fr.x, fr.y);
                 if (element != null) {
                     grid.Get(fr.x, fr.y).AddTileElementAt(fr.x, fr.y, element);
+                    for (int j = 0; j < i; j++) {
+                        element.Rotate();
+                    }
                 }
                 return true;
             }
@@ -114,7 +117,7 @@ public class InteriorBuilder {
                 || thisDoor.height != 1 || newRoomDoor.height != 1 || replacement.height != 1) {  // todo: make doors > 1 tall
             throw new UnityException("illegal grid dimensions");
         }
-        RoomAttachResult rar = FindAttachPoint(newRoom, newRoomDoor);
+        RoomAttachResult rar = FindAttachPoint(thisDoor, newRoom, newRoomDoor);
         if (rar == null) {
             return false;
         }
@@ -130,7 +133,7 @@ public class InteriorBuilder {
     }
 
     // returns attach metadata or null if there is no possible attachment
-    public RoomAttachResult FindAttachPoint(Room room, Grid<char> door) {
+    public RoomAttachResult FindAttachPoint(Grid<char> thisDoor, Room room, Grid<char> newRoomDoor) {
 
         int initialRotation = UnityEngine.Random.Range(0, 4);
         for (int i = 0; i < initialRotation; i++) {
@@ -139,13 +142,13 @@ public class InteriorBuilder {
 
         for (int i = 0; i < 2; i++) {
             // get all "on" strings in the other grid with space above/below them
-            List<FindResult> thatDoors = room.Find(door);
+            List<FindResult> thatDoors = room.Find(newRoomDoor);
             List<FindResult> thatSpaceAboveDoors = thatDoors.Where(x => x.spaceAbove).OrderBy(x => Random.Range(0f, 1f)).ToList();
             List<FindResult> thatSpaceBelowDoors = thatDoors.Where(x => x.spaceBelow).OrderBy(x => Random.Range(0f, 1f)).ToList();
             
             if (thatSpaceAboveDoors.Count + thatSpaceBelowDoors.Count > 0) {
                 for (int j = 0; j < 4; j++) {
-                    List<FindResult> thisDoors = Find(door);
+                    List<FindResult> thisDoors = Find(thisDoor);
                     List<FindResult> spaceAboveDoors = thisDoors.Where(x => x.spaceAbove).OrderBy(x => Random.Range(0f, 1f)).ToList();
                     List<FindResult> spaceBelowDoors = thisDoors.Where(x => x.spaceBelow).OrderBy(x => Random.Range(0f, 1f)).ToList();
 
@@ -185,10 +188,10 @@ public class InteriorBuilder {
         return null;
     }
 
-    // Returns a list of possible placement results in a randomized order 
+    // Returns a list of possible placement results in a randomized order for the current rotation
     private List<FindResult> Find(Grid<char> g) {
-        return rooms.OrderBy(n => Random.Range(0f, 1f))
-                    .SelectMany(x => x.Find(g).OrderBy(n => Random.Range(0f, 1f)))
+        return rooms.SelectMany(x => x.Find(g))
+                    .OrderBy(n => Random.Range(0f, 1f))
                     .ToList();
     }
 

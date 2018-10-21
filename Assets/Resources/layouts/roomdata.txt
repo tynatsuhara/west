@@ -1,24 +1,33 @@
-> room1
+> basic_room_0
       #////#
       #////#
 //####/////#
 /T/////#####
 
-> door, window
+> basic_room_1
+######
+#////#
+#////#
+#T//T#
+
+> basic_room_door
 ##
 
-> bed
-##
-//
-
-> doorrep
+> door_replacement
 ||
 
-> room2
-///////////#
-///////////#
-///////////#
-############
+> bedroom_0
+bbbbbb
+b////b
+b////b
+bbbbbb
+
+> bedroom_door
+bb
+
+> bed
+bb
+//
 
 > saloon
 #$$$$$$$$$$#

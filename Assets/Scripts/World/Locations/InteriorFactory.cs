@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class InteriorFactory {
 
     private Map map;
@@ -9,25 +11,32 @@ public class InteriorFactory {
         this.town = town;
     }
 
+	// key -> ascii shorthand
+	private Grid<char> _(string key) {
+		return ascii.Get(key);
+	}
+
     public InteriorLocation InteriorFor(Building.BuildingType type) {
-        Room room1 = new Room(ascii.Get("room1"));
-		Room room2 = new Room(ascii.Get("room2"));
-		
-		InteriorBuilder builder = new InteriorBuilder(room1);
-
-		builder.TryAttachRoom(ascii.Get("door"), room2, ascii.Get("door"), ascii.Get("doorrep"));
-		// builder.TryPlaceElement(ascii.Get("bed"), new World.EntityTile(0, 0));
-
-		return builder.AddTeleporter('T', town.guid, "front door")
-					  .Build(map, town.guid, "SOME BUILDING");
+		return InteriorForHome();
     }
 
 	private InteriorLocation InteriorForHome() {
-		return null;
+		Room livingRoom = new Room(_("basic_room_" + Random.Range(0, 2)));
+		Room bedroom = new Room(_("bedroom_0"));
+		
+		InteriorBuilder builder = new InteriorBuilder(livingRoom);
+
+		bool attachedRoom = builder.TryAttachRoom(_("basic_room_door"), bedroom, _("bedroom_door"), _("door_replacement"));
+		Debug.Log("attached room? " + attachedRoom);
+		bool placedBed = builder.TryPlaceElement(_("bed"), new World.EntityTile(LevelBuilder.PrefabKey.BED));
+		Debug.Log("placed bed? " + placedBed);
+
+		return builder.AddTeleporter('T', town.guid, "front door")
+					  .Build(map, town.guid, "SOME BUILDING");
 	}
 
 	private InteriorLocation InteriorForSaloon() {
-		Room mainRoom = new Room(ascii.Get("saloon"));
+		Room mainRoom = new Room(_("saloon"));
 
 		/* TODO: possible other rooms:
 			- bathroom

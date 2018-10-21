@@ -11,7 +11,7 @@ public class Cactus : MonoBehaviour, Damageable {
     private MetaData data;
 
     public void Start() {
-        data = GetComponent<EntityTileMetaData>().GetMetaData("cactus", () => new MetaData());
+        data = GetComponent<EntityTileMetaData>().GetOrCreate("cactus", () => new MetaData());
         LoadSaveData();
     }
 

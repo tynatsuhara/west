@@ -20,12 +20,7 @@ namespace World {
         }
     
         public override void Rotate() {
-            float temp = xSpawnOffset;
-            xSpawnOffset = ySpawnOffset;
-            ySpawnOffset = temp;
-
-            // TODO: rotate prefab?
-            rotation += 90;
+            rotation = (rotation + 90) % 360;
         }
 
         public override void Spawn(LevelBuilder lb, Location location, int x, int y) {
@@ -33,11 +28,15 @@ namespace World {
                 lb.GetPrefab(prefabKey), 
                 new Vector3(
                     x * LevelBuilder.TILE_SIZE + xSpawnOffset, 
-                    -.2f,                                               // TODO: variable z-height?
+                    -.2f,                                               // TODO: should we change this? also, variable z-height?
                     y * LevelBuilder.TILE_SIZE + ySpawnOffset
                 ), 
-                Quaternion.Euler(Vector3.up * rotation)
+                Quaternion.identity
             ) as GameObject;
+
+            // rotate around the middle of the bottom left tile
+            Vector3 axis = new Vector3(x + .5f, 0, y + .5f) * LevelBuilder.TILE_SIZE;
+            tile.transform.RotateAround(axis, Vector3.up, rotation);
 
             foreach (var metaData in tile.GetComponentsInChildren<EntityTileMetaData>()) {
                 metaData.SetEntityTileCache(metaDataCache);

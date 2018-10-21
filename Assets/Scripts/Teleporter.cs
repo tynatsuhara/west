@@ -7,7 +7,7 @@ public class Teleporter : MonoBehaviour {
 
 	public System.Guid toId;
 	public string destination;
-	public TeleporterData otherSide;
+	public TeleporterData otherSide;  // TODO: make this optional (one-way teleporters)
 	public bool permitHorses;
 	public float radius {
 		get { return GetComponent<SphereCollider>().radius; }
