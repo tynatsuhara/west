@@ -17,7 +17,11 @@ public class InteriorFactory {
 	}
 
     public InteriorLocation InteriorFor(Building.BuildingType type) {
-		return InteriorForHome();
+		switch (type) {
+			case Building.BuildingType.HOME: return InteriorForHome();
+			case Building.BuildingType.SALOON: return InteriorForSaloon();
+		}
+		throw new UnityException("no interior factory method for " + type);
     }
 
 	private InteriorLocation InteriorForHome() {
@@ -37,6 +41,7 @@ public class InteriorFactory {
 
 	private InteriorLocation InteriorForSaloon() {
 		Room mainRoom = new Room(_("saloon"));
+		InteriorBuilder builder = new InteriorBuilder(mainRoom);
 
 		/* TODO: possible other rooms:
 			- bathroom
@@ -47,6 +52,7 @@ public class InteriorFactory {
 			- several random layouts
 		*/
 
-		return null;		
+		return builder.AddTeleporter('T', town.guid, "front door")
+					  .Build(map, town.guid, "SOME SALOON");;		
 	}
 }
