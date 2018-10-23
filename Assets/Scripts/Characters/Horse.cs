@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.AI;
 
 public class Horse : MonoBehaviour, Damageable {
 
@@ -42,10 +43,14 @@ public class Horse : MonoBehaviour, Damageable {
 		Character c = collider.transform.root.GetComponent<Character>();
 		if (c == null || !c.isAlive)
 			return;
-		if (c.GetComponent<Rigidbody>().velocity.y < fallingVelocityTrigger 
-				|| Mathf.Abs(c.transform.position.y - transform.position.y - 1) < .1)  // if the player ends up on top w/o falling
+		if (c.GetComponent<Rigidbody>().velocity.y < fallingVelocityTrigger && c.transform.position.y > 1.2) {
+			Debug.Log("Landed on horse! Velocity = " + c.GetComponent<Rigidbody>().velocity.y);
 			Mount(c);
-	}	
+		} else if (Mathf.Abs(c.transform.position.y - transform.position.y - 1) < .1) {  // if the player ends up on top w/o falling
+			Debug.Log("On top of horse! Y diff = " + Mathf.Abs(c.transform.position.y - transform.position.y - 1));
+			Mount(c);
+		}
+	}
 
 	public void Mount(Character character) {
 		if (!lt.isAlive || rider != null || !canRide)
@@ -53,6 +58,8 @@ public class Horse : MonoBehaviour, Damageable {
 		character.MountHorse(this);
 		rider = character;
 		SetName();
+		GetComponent<NavMeshAgent>().enabled = false;
+		GetComponent<NavMeshObstacle>().enabled = true;
 		if (!tamed) {
 			StartCoroutine(Tame());
 		} else if (character.guid != data.owner) {
@@ -65,6 +72,9 @@ public class Horse : MonoBehaviour, Damageable {
 		rider = null;
 		GetComponent<WalkCycle>().StandStill();
 		SetName();
+		GetComponent<NavMeshAgent>().enabled = true;
+		GetComponent<NavMeshAgent>().SetDestination(new Vector3(Random.Range(0, 30), 0, Random.Range(0, 30)));
+		GetComponent<NavMeshObstacle>().enabled = false;
 		StartCoroutine(DelayCanRide());
 	}
 	private IEnumerator DelayCanRide() {
@@ -180,7 +190,6 @@ public class Horse : MonoBehaviour, Damageable {
 			firstFrame = false;
 		}
 	}
-
 
 	public HorseSaveData SaveData() {
 		data.bytes = GetComponent<PicaVoxel.Volume>().GetBytes();
