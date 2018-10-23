@@ -400,7 +400,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 		SetMount(h, true);
 		LevelBuilder.instance.permanent.Add(h.transform);
 		transform.parent = h.transform;		
-		transform.localPosition = new Vector3(0f, .82f, .2f);  // horseback position
+		transform.localPosition = new Vector3(0f, .82f, -.2f);  // horseback position
 		walk.Sit();
 	}
 	public void Dismount() {
