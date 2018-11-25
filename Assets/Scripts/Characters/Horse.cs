@@ -9,6 +9,7 @@ public class Horse : MonoBehaviour, Damageable {
 	private Character rider;
 	private bool canRide = true;
 	private LivingThing lt;
+	private bool walking;
 
 	public Color32[] bodyColor;
 	public Color32[] maneColor;
@@ -18,6 +19,13 @@ public class Horse : MonoBehaviour, Damageable {
 	public float fallingVelocityTrigger;
 	public float canRideResetTime;
 	public PicaVoxel.Exploder exploder;
+
+	[System.Serializable]
+	public enum HorseState {
+		CHILLIN,          // staying in the same general area, moving around every once in a while
+		RIDDEN,           // character is mounted
+		FOLLOWING_OWNER
+	}
 
 	public void Awake() {
 		lt = GetComponent<LivingThing>();
@@ -35,6 +43,33 @@ public class Horse : MonoBehaviour, Damageable {
 
 		if (!lt.isAlive || GameManager.paused)
 			return;
+
+		switch (data.state) {
+			case HorseState.CHILLIN:
+				// to-do: wander around
+				break;
+			case HorseState.FOLLOWING_OWNER:
+				Character owner = GameManager.instance.GetCharacter(data.owner);
+				NavMeshAgent agent = GetComponent<NavMeshAgent>();
+				if (agent.isActiveAndEnabled) {
+					agent.SetDestination(owner.transform.position);
+					agent.stoppingDistance = 3f;
+				}
+				break;
+			case HorseState.RIDDEN:
+				break;
+		}
+
+		if (data.state != HorseState.RIDDEN) {
+			NavMeshAgent agent = GetComponent<NavMeshAgent>();
+			walking = agent.enabled && agent.velocity.magnitude > .1f;
+			WalkCycle walk = GetComponent<WalkCycle>();
+			if (walking && !walk.isWalking) {
+				walk.StartWalk();
+			} else if (!walking && walk.isWalking) {
+				walk.StandStill(false);
+			}
+		}
 	}
 
 	void OnTriggerEnter(Collider collider) {
@@ -44,10 +79,10 @@ public class Horse : MonoBehaviour, Damageable {
 		if (c == null || !c.isAlive)
 			return;
 		if (c.GetComponent<Rigidbody>().velocity.y < fallingVelocityTrigger && c.transform.position.y > 1.2) {
-			Debug.Log("Landed on horse! Velocity = " + c.GetComponent<Rigidbody>().velocity.y);
+			// Debug.Log("Landed on horse! Velocity = " + c.GetComponent<Rigidbody>().velocity.y);
 			Mount(c);
 		} else if (Mathf.Abs(c.transform.position.y - transform.position.y - 1) < .1) {  // if the player ends up on top w/o falling
-			Debug.Log("On top of horse! Y diff = " + Mathf.Abs(c.transform.position.y - transform.position.y - 1));
+			// Debug.Log("On top of horse! Y diff = " + Mathf.Abs(c.transform.position.y - transform.position.y - 1));
 			Mount(c);
 		}
 	}
@@ -57,25 +92,31 @@ public class Horse : MonoBehaviour, Damageable {
 			return;
 		character.MountHorse(this);
 		rider = character;
+		data.state = HorseState.RIDDEN;
 		SetName();
 		GetComponent<NavMeshAgent>().enabled = false;
 		GetComponent<NavMeshObstacle>().enabled = true;
 		if (!tamed) {
 			StartCoroutine(Tame());
-		} else if (character.guid != data.owner) {
+		} else if (character.guid != data.owner && !data.stolen) {
+			data.stolen = true;
 			SaveGame.currentGame.crime.Commit(character.guid, Map.CurrentTown().guid, "Horse Theft", 10);
 			GameManager.instance.AlertInRange(Stimulus.HORSE_THEFT, transform.position, 10f, visual: transform.root.gameObject, alerter: character);					
 		}
+	}
+
+	public void Call() {
+		data.state = HorseState.FOLLOWING_OWNER;
 	}
 
 	public void Dismount() {
 		rider = null;
 		GetComponent<WalkCycle>().StandStill();
 		SetName();
-		GetComponent<NavMeshAgent>().enabled = true;
-		GetComponent<NavMeshAgent>().SetDestination(new Vector3(Random.Range(0, 30), 0, Random.Range(0, 30)));
 		GetComponent<NavMeshObstacle>().enabled = false;
+		GetComponent<NavMeshAgent>().enabled = true;
 		StartCoroutine(DelayCanRide());
+		data.state = HorseState.CHILLIN;
 	}
 	private IEnumerator DelayCanRide() {
 		canRide = false;
@@ -84,9 +125,9 @@ public class Horse : MonoBehaviour, Damageable {
 	}
 
 	private void SetName() {
-		if (rider != null) {
-			name = rider.name + "'s Horse";
-		} else if (tamed) {
+		if (data.owner != System.Guid.Empty) {
+			name = SaveGame.GetCharacterData(data.owner).name + "'s Horse";
+		} else if (tamed) {  // TODO: Is this case ever going to happen?
 			name = "Horse";
 		} else {
 			name = "Wild Horse";
@@ -142,8 +183,8 @@ public class Horse : MonoBehaviour, Damageable {
 
 	private void SetTamed(System.Guid owner) {
 		tamed = true;
+		saddle.SetActive(true);	
 		data.owner = owner;
-		saddle.SetActive(tamed);	
 	}
 
 	private void Color() {
@@ -239,8 +280,10 @@ public class Horse : MonoBehaviour, Damageable {
 		public int maneColor;
 		public bool speckled;
 		public bool tamed;
-		public System.Guid owner;
+		public bool stolen;
+		public System.Guid owner = System.Guid.Empty;
 		public SerializableVector3 location = new SerializableVector3(Vector3.zero);
 		public SerializableVector3 eulerAngles = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
+		public HorseState state = HorseState.CHILLIN;
 	}
 }

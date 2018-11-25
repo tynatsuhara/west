@@ -159,6 +159,10 @@ public class Player : Character {
 		} else if (Input.GetKeyDown(KeyCode.F9)) {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
+
+		if (Input.GetKeyDown(KeyCode.H) && mount != null && !ridingHorse) {
+			mount.Call();
+		}
 	}
 
 	private void InitFirstPersonCamera() {
@@ -228,7 +232,7 @@ public class Player : Character {
 		if (ridingHorse) {
 			if (x != 0 || z != 0) {
 				Quaternion rider = transform.rotation;
-				Quaternion q = Quaternion.LookRotation(mount.transform.position - mountFaceDir);
+				Quaternion q = Quaternion.LookRotation(-mount.transform.position + mountFaceDir);
 				mount.transform.rotation = Quaternion.Lerp(mount.transform.rotation, q, .1f);
 				if (firstPersonCam.enabled) {
 					transform.rotation = rider;
@@ -293,6 +297,7 @@ public class Player : Character {
 	public class PlayerSaveData : CharacterData {
 		public PlayerSaveData() {
 			groups.Add(Group.PLAYERS);
+			name = "Player";
 		}
 	}
 }

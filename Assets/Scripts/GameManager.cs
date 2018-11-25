@@ -283,6 +283,7 @@ public class GameManager : MonoBehaviour {
 		Debug.Log(category + " + $" + dollarAmount.ToString("#,##0"));
 	}
 
+	// Returns the Character component of a spawned NPC or player, or null if they're not in the scene
 	public Character GetCharacter(System.Guid guid) {
 		if (spawnedNPCs == null || players == null)
 			return null;

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class CharacterData {
     public System.Guid guid = System.Guid.NewGuid();
+    public string name;
     public List<List<byte[]>> voxelBlobs;
     public SerializableVector3 position;
     public Inventory inv = new Inventory();

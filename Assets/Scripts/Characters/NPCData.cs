@@ -17,7 +17,6 @@ public class NPCData : CharacterData {
 
     public System.Guid location;
     public NPCType type;
-    public string name;
     public SerializableVector3 rotation = new SerializableVector3(new Vector3(0, Random.Range(0, 360), 0));
     public SortedList<int, Dialogue> dialogues = new SortedList<int, Dialogue>(new DuplicateKeyComparer<int>());
 

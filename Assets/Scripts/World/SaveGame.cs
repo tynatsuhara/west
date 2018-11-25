@@ -101,4 +101,11 @@ public class SaveGame {
 			}
 		}
 	}
+
+	public static CharacterData GetCharacterData(System.Guid guid) {
+		if (currentGame.savedCharacters.ContainsKey(guid)) {
+			return currentGame.savedCharacters[guid];
+		}
+		return currentGame.savedPlayers.Where(p => p.guid == guid).FirstOrDefault();
+	}
 }

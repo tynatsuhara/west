@@ -31,9 +31,9 @@ public class InteriorFactory {
 		InteriorBuilder builder = new InteriorBuilder(livingRoom);
 
 		bool attachedRoom = builder.TryAttachRoom(_("basic_room_door"), bedroom, _("bedroom_door"), _("door_replacement"));
-		Debug.Log("attached room? " + attachedRoom);
+		// Debug.Log("attached room? " + attachedRoom);
 		bool placedBed = builder.TryPlaceElement(_("bed"), new World.EntityTile(LevelBuilder.PrefabKey.BED));
-		Debug.Log("placed bed? " + placedBed);
+		// Debug.Log("placed bed? " + placedBed);
 
 		return builder.AddTeleporter('T', town.guid, "front door")
 					  .Build(map, town.guid, "SOME BUILDING");
