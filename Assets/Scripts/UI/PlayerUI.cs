@@ -21,12 +21,11 @@ public class PlayerUI : MonoBehaviour {
 
 	void Start() {
 		lastMousePos = mousePos = player.id == 1 
-				? Input.mousePosition
+				? new Vector3(player.playerCamera.cam.pixelWidth/2f, player.playerCamera.cam.pixelHeight/2f)
 				: player.playerCamera.cam.WorldToScreenPoint(player.transform.position);
 	}
 
 	void Update() {
-		UpdateCursor();
 		Cursor.visible = false;
 
 		UpdateQuestMarkers();
@@ -35,6 +34,11 @@ public class PlayerUI : MonoBehaviour {
 		if (esc && dialogueDisplay.IsShowing()) {
 			HideDialogue();
 		}
+	}
+
+	void LateUpdate() {
+		MouseCursorMove();
+		UpdateCursor();
 	}
 
 	private List<OffScreenMarker> questMarkers = new List<OffScreenMarker>();
@@ -70,11 +74,11 @@ public class PlayerUI : MonoBehaviour {
 		}
 	}
 
+	public float stickyCursorDistance = 5f;
+	public float stickyCursorLerpRate = .3f;
+	public Vector3 stickyCursorNPCOffset;
+
 	private void UpdateCursor() {
-		if (player.id == 1) {
-			mousePos += Input.mousePosition - lastMousePos;
-			lastMousePos = Input.mousePosition;
-		}
 		if (player.firstPersonCam.enabled) {
 			Vector3 pos = new Vector3(player.firstPersonCam.pixelWidth / 2f, player.firstPersonCam.pixelHeight / 2f, 0);
 			pos = player.firstPersonCam.ScreenToWorldPoint(pos);
@@ -82,17 +86,32 @@ public class PlayerUI : MonoBehaviour {
 			cursor.transform.localPosition = pos;
 			Cursor.lockState = CursorLockMode.Locked;
 		} else {
+			Vector3? targetPos = GameManager.spawnedNPCs
+					.Select(npc => player.playerCamera.cam.WorldToScreenPoint(npc.transform.position + stickyCursorNPCOffset))
+					.Where(npcPos => Vector3.Distance(mousePos, npcPos) < stickyCursorDistance)
+					.OrderBy(npcPos => Vector3.Distance(mousePos, npcPos))
+					.Cast<Vector3?>()
+					.FirstOrDefault();
+			if (targetPos != null) {
+				Debug.Log("mouse dist " + targetPos.Value);
+				mousePos = Vector3.Lerp(mousePos, targetPos.Value, stickyCursorLerpRate);
+			}
 			cursor.transform.position = player.playerCamera.cam.ScreenToWorldPoint(mousePos);
-			Cursor.lockState = CursorLockMode.None;			
+			Cursor.lockState = CursorLockMode.None;
 		}
 	}
 
+	public void MouseCursorMove() {
+		if (player.id == 1) {  // only player 1 can use mouse, otherwise JoystickCursorMove is called
+			mousePos += Input.mousePosition - lastMousePos;
+			lastMousePos = Input.mousePosition;
+		}
+	}
+
+	// TODO: How should joystick cursor actually behave? ATM it is locked 
+	// within range of the player and pulls back to the center if they release
 	public void JoystickCursorMove(float dx, float dy) {
-		if (player.firstPersonCam.enabled) {
-			
-		} else {
-			if (dx == 0 && dy == 0)
-				return;
+		if (!player.firstPersonCam.enabled && dx != 0 && dy != 0) {
 			// TODO: make this distance configurable in settings
 			float mouseDist = 180f;
 			Vector3 playerPos = player.playerCamera.cam.WorldToScreenPoint(player.transform.position);
