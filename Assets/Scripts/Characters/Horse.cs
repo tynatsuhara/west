@@ -53,7 +53,7 @@ public class Horse : MonoBehaviour, Damageable {
 				NavMeshAgent agent = GetComponent<NavMeshAgent>();
 				if (agent.isActiveAndEnabled) {
 					agent.SetDestination(owner.transform.position);
-					agent.stoppingDistance = 3f;
+					agent.stoppingDistance = 5f;
 				}
 				break;
 			case HorseState.RIDDEN:
