@@ -29,7 +29,7 @@ public class Horse : MonoBehaviour, Damageable {
 
 	public void Awake() {
 		lt = GetComponent<LivingThing>();
-		StartCoroutine(DelayCanRide());		
+		// StartCoroutine(DelayCanRide());	// Should this be here?	
 	}
 
 	public void Start() {
@@ -88,8 +88,10 @@ public class Horse : MonoBehaviour, Damageable {
 	}
 
 	public void Mount(Character character) {
+		Debug.Log("m1");
 		if (!lt.isAlive || rider != null || !canRide)
 			return;
+		Debug.Log("m2");
 		character.MountHorse(this);
 		rider = character;
 		data.state = HorseState.RIDDEN;
@@ -230,6 +232,10 @@ public class Horse : MonoBehaviour, Damageable {
 			frame.UpdateChunks(true);
 			firstFrame = false;
 		}
+	}
+
+	public System.Guid GetGuid() {
+		return data.guid;
 	}
 
 	public HorseSaveData SaveData() {

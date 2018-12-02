@@ -628,7 +628,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 		};
 		data.health = lt.health;
 		data.ridingHorse = ridingHorse;
-		data.mountGuid = ridingHorse ? mount.GetComponent<Horse>().SaveData().guid : System.Guid.Empty;
+		data.mountGuid = ridingHorse ? mount.GetComponent<Horse>().GetGuid() : System.Guid.Empty;
 		data.outfit = outfit;
 		data.skinColor = skinColor;
 		data.hairColor = hairColor;
@@ -667,7 +667,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 		if (!float.IsNaN(data.healthMax))
 			lt.healthMax = data.healthMax;
 		if (data.ridingHorse)
-			GameManager.spawnedHorses.Where(x => x.SaveData().guid == data.mountGuid).First().Mount(this);
+			GameManager.spawnedHorses.Where(x => x.GetGuid() == data.mountGuid).First().Mount(this);
 		outfit = data.outfit;
 		skinColor = data.skinColor;
 		hairColor = data.hairColor;
