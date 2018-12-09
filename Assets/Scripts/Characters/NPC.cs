@@ -102,7 +102,7 @@ public class NPC : Character, Interactable {
 	}
 	
 	private Player playerInteractingWith;
-	public void Interact(Character character) {
+	public void Interact(Character character, string action) {
 		if (!isAlive)
 			return;
 
@@ -117,6 +117,19 @@ public class NPC : Character, Interactable {
 		// }
 	}
 	public void Uninteract(Character character) {}
+
+	public InteractAction[] GetActions(Character character) {
+		if (!isAlive) {
+			return new InteractAction[] {
+				new InteractAction("Drag", (transform.position - character.transform.position).magnitude < 2f && character.CanSee(gameObject))
+			};
+		} else if (data.dialogues.Count > 0) {
+			return new InteractAction[] {
+				new InteractAction("Talk", (transform.position - character.transform.position).magnitude < 2f && character.CanSee(gameObject))
+			};
+		}
+		return new InteractAction[0];
+	}
 
 	public void CancelDialogue() {
 		playerInteractingWith = null;
@@ -262,6 +275,11 @@ public class NPC : Character, Interactable {
 			}
 		}
 	}
+
+	protected override Interactable GetInteractable() {
+		return null;
+	}
+
 
 	///////////////////// SAVE STATE FUNCTIONS /////////////////////
 

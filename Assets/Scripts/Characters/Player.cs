@@ -92,7 +92,7 @@ public class Player : Character {
 				Dismount();
 			} else {
 				bool drag = draggedBody || DragBody();
-				if (!drag) {
+				if (draggedBody != null) {
 					Interact();
 				}
 			}
@@ -163,6 +163,11 @@ public class Player : Character {
 		if (Input.GetKeyDown(KeyCode.H) && mount != null && !ridingHorse) {
 			mount.Call();
 		}
+	}
+
+	public bool IsInteractButtonDown() {
+		bool p1 = id == 1;
+		return (p1 && Input.GetKey(KeyCode.E)) || Input.GetKey("joystick " + id + " button 1");
 	}
 
 	private void InitFirstPersonCamera() {
@@ -274,6 +279,10 @@ public class Player : Character {
 			speech.SayRandom(Speech.PLAYER_SHOUT, showFlash: true, color:"yellow");
 		}
 		GameManager.instance.AlertInRange(Stimulus.GUN_DRAWN, transform.position, 4f, alerter: this);
+	}
+
+	protected override Interactable GetInteractable() {
+		return playerUI.highlightedInteractable;
 	}
 
 

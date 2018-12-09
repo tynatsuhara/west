@@ -15,7 +15,13 @@ public class Door : MonoBehaviour, Interactable, Powerable {
 		text = GetComponentInChildren<TextObject>();
 	}
 
-	public void Interact(Character character) {		
+	public InteractAction[] GetActions(Character character) {
+		return new InteractAction[] {
+			new InteractAction(open ? "Close" : "Open", (transform.position - character.transform.position).magnitude < 2f && character.CanSee(gameObject))
+		};
+	}
+
+	public void Interact(Character character, string action) {		
 		if (key != Inventory.Item.NONE)
 			key_ = (int)key;
 		

@@ -47,7 +47,7 @@ public class VaultDoor : MonoBehaviour, Interactable, Powerable {
 		}
 	}
 
-	public void Interact(Character character) {
+	public void Interact(Character character, string action) {
 		if (!character.inventory.Has(Inventory.Item.THERMITE))
 			return;
 
@@ -56,6 +56,12 @@ public class VaultDoor : MonoBehaviour, Interactable, Powerable {
 	}
 
 	public void Uninteract(Character character) {}
+
+	public InteractAction[] GetActions(Character character) {
+		return new InteractAction[] {
+			new InteractAction("Open", (transform.position - character.transform.position).magnitude < 2f && character.CanSee(gameObject))
+		};
+	}
 
 	public void Power() {
 		Invoke("Open", 2f);

@@ -360,27 +360,16 @@ public abstract class Character : MonoBehaviour, Damageable {
 		}
 	}
 
+	// TODO: Should this just live in Player?
 	protected Interactable currentInteractScript;
+	private InteractAction interactAction;
 	public void Interact() {
-		if (currentInteractScript != null) {
-			currentInteractScript.Interact(this);
-			return;
+		if (currentInteractScript == null) {
+			currentInteractScript = GetInteractable();
 		}
-
-		float interactDist = 1.8f;
-		float interactStep = .1f;
-		// look straight forward, then downwards if you don't see anything
-		for (float i = 0; i < interactDist - interactStep * 5; i += interactStep) {
-			RaycastHit hit;
-			if (Physics.Raycast(transform.position, 
-								(transform.forward * (interactDist - i) - transform.up * i), 
-								out hit, (1 + i * .7f), sightLayers)) {
-				currentInteractScript = hit.collider.GetComponentInParent<Interactable>();
-				if (currentInteractScript != null) {
-					currentInteractScript.Interact(this);
-					return;
-				}
-			}
+		interactAction = currentInteractScript.GetActions(this).First();  // TODO: Select based on different controls?
+		if (currentInteractScript != null) {
+			currentInteractScript.Interact(this, interactAction.action);
 		}
 	}
 	public void InteractCancel() {
@@ -389,6 +378,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 			currentInteractScript = null;
 		}
 	}
+	protected abstract Interactable GetInteractable();
 
 	public bool ridingHorse;
 	public Horse mount;

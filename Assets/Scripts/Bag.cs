@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Bag : MonoBehaviour, Interactable {
 
@@ -15,7 +15,13 @@ public class Bag : MonoBehaviour, Interactable {
 		GetComponent<Rigidbody>().mass = (1 - speedMultiplier) * 180 + 5;
 	}
 
-	public void Interact(Character character) {
+	public InteractAction[] GetActions(Character character) {
+		return new InteractAction[] {
+			new InteractAction("Pick up", (transform.position - character.transform.position).magnitude < 2f && character.CanSee(gameObject))
+		};
+	}
+
+	public void Interact(Character character, string action) {
 		if (character.hasBag || (holder != null && holder.isAlive))
 			return;
 

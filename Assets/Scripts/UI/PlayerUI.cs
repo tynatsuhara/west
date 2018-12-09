@@ -13,6 +13,9 @@ public class PlayerUI : MonoBehaviour {
 	public Text healthText;
 	public OffScreenMarker questMarkerPrefab;
 
+	public Text interactMenu;
+	public Interactable highlightedInteractable;
+
 	public Transform cursor;
 	private Vector3 lastMousePos;
 	public Vector3 mousePos;
@@ -93,11 +96,36 @@ public class PlayerUI : MonoBehaviour {
 					.Cast<Vector3?>()
 					.FirstOrDefault();
 			if (targetPos != null) {
-				Debug.Log("mouse dist " + targetPos.Value);
+				// Debug.Log("mouse dist " + targetPos.Value);
 				mousePos = Vector3.Lerp(mousePos, targetPos.Value, stickyCursorLerpRate);
 			}
 			cursor.transform.position = player.playerCamera.cam.ScreenToWorldPoint(mousePos);
 			Cursor.lockState = CursorLockMode.None;
+
+			// If they are interacting and move their mouse away, don't quit the interaction
+			// (best example case is when dragging)
+			if (player.IsInteractButtonDown() && interactMenu.text.Length > 0) {
+				return;
+			}
+
+			// Get the hovered-over interactable and show menu
+			RaycastHit[] interactables = Physics.RaycastAll(player.playerCamera.cam.ScreenPointToRay(mousePos))
+					.Where(x => x.collider.GetComponentInParent<Interactable>() != null)
+					.OrderBy(x => x.distance)
+					.ToArray();
+			interactMenu.text = "";
+			highlightedInteractable = null;
+			foreach (RaycastHit hit in interactables) {
+				Interactable interactable = hit.collider.GetComponentInParent<Interactable>();
+				InteractAction[] actions = interactable.GetActions(player);
+				// TODO: Support displaying multiple interaction types
+				if (actions.Length > 0) {
+					interactMenu.text = "[E] " + actions.First().action;
+					interactMenu.material = actions.First().enabled ? GameUI.instance.textWhite : GameUI.instance.textGrey;
+					highlightedInteractable = interactable;
+					break;
+				}
+			}
 		}
 	}
 
