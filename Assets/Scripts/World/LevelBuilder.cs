@@ -72,8 +72,8 @@ public class LevelBuilder : MonoBehaviour {
 		SpawnTileElements();
 		SpawnAtmospherics();
 		SpawnWallsHackily();
-		SpawnNPCs();
 		SpawnHorses(firstLoadSinceStartup);
+		SpawnNPCs();
 		GroupFloor();
 		SpawnTeleporters();
 		ShowGreeting();

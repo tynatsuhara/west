@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -273,10 +274,10 @@ public abstract class Character : MonoBehaviour, Damageable {
 	}
 
 	protected void SetDeathPhysics() {
-		UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+		NavMeshAgent agent = GetComponent<NavMeshAgent>();
 		if (agent != null)
 			agent.enabled = false;
-		UnityEngine.AI.NavMeshObstacle obstacle = GetComponent<UnityEngine.AI.NavMeshObstacle>();
+		NavMeshObstacle obstacle = GetComponent<NavMeshObstacle>();
 		if (obstacle != null)
 			obstacle.enabled = true;
 		GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
@@ -381,7 +382,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 	protected abstract Interactable GetInteractable();
 
 	public bool ridingHorse;
-	public Horse mount;
+	public Horse mount;  // represents the mount that the character owns and will call (should only be null if they have no horse)
 	public void MountHorse(Horse h) {
 		if (ridingHorse)
 			return;
@@ -409,6 +410,9 @@ public abstract class Character : MonoBehaviour, Damageable {
 				Physics.IgnoreCollision(horseCollider, myCollider, isMounted);
 		GetComponent<Rigidbody>().isKinematic = isMounted;
 		ridingHorse = isMounted;
+		NavMeshAgent agent = GetComponent<NavMeshAgent>();
+		if (agent != null)
+			agent.enabled = !isMounted;
 	}
 
 	public void SpawnGuns() {
@@ -514,6 +518,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 	}
 
 	// returns true if you grab someone
+	// TODO change dragging to be an interaction
 	public bool DragBody() {
 		if (draggedBody != null)
 			return false;
@@ -618,7 +623,7 @@ public abstract class Character : MonoBehaviour, Damageable {
 		};
 		data.health = lt.health;
 		data.ridingHorse = ridingHorse;
-		data.mountGuid = ridingHorse ? mount.GetComponent<Horse>().GetGuid() : System.Guid.Empty;
+		data.mountGuid = mount != null ? mount.GetComponent<Horse>().GetGuid() : System.Guid.Empty;
 		data.outfit = outfit;
 		data.skinColor = skinColor;
 		data.hairColor = hairColor;
@@ -656,8 +661,10 @@ public abstract class Character : MonoBehaviour, Damageable {
 			lt.health = data.health;
 		if (!float.IsNaN(data.healthMax))
 			lt.healthMax = data.healthMax;
+		if (data.mountGuid != System.Guid.Empty)
+			mount = GameManager.spawnedHorses.Where(x => x.GetGuid() == data.mountGuid).First();
 		if (data.ridingHorse)
-			GameManager.spawnedHorses.Where(x => x.GetGuid() == data.mountGuid).First().Mount(this);
+			mount.Mount(this);
 		outfit = data.outfit;
 		skinColor = data.skinColor;
 		hairColor = data.hairColor;

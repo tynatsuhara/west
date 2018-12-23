@@ -16,13 +16,10 @@ public class NPC : Character, Interactable {
 
 	private float timeOnCurrentTask;
 
-	protected UnityEngine.AI.NavMeshAgent agent;
-	protected List<Character> enemies = new List<Character>();
-
-	public override void Awake() {
-		base.Awake();
-		agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+	protected UnityEngine.AI.NavMeshAgent agent {
+		get { return transform.root.GetComponent<UnityEngine.AI.NavMeshAgent>(); }
 	}
+	protected List<Character> enemies = new List<Character>();
 
 	void Update() {
 		data.health = lt.health;	
@@ -71,7 +68,7 @@ public class NPC : Character, Interactable {
 		if (taskTeleporter == null || taskTeleporter.toId != nextStop) {
 			taskTeleporter = GameObject.FindObjectsOfType<Teleporter>().Where(x => x.toId == nextStop).First();
 		}
-		GoToPosition(taskTeleporter.transform.position);
+		GoToPosition(taskTeleporter.transform.position, horseUsage: taskTeleporter.permitHorses ? HorseUsage.IF_POSSIBLE : HorseUsage.NONE);
 		if (Vector3.Distance(taskTeleporter.transform.position, transform.position) < 3f) {
 			// taskTeleporter.Teleport(this);  // maybe?
 			data.InitiateTravel(nextStop);
@@ -80,9 +77,30 @@ public class NPC : Character, Interactable {
 		}
 	}
 
-	public void GoToPosition(Vector3 pos, float dist = 0) {
-		agent.destination = pos;
-		agent.stoppingDistance = dist;
+	public enum HorseUsage {
+		NONE,        // Don't ride horse (interiors)
+		OPTIONAL,    // Ride horse if it is more convenient (distance threshold)
+		IF_POSSIBLE  // If they have a horse, ride it (teleporters to other locations)
+	}
+	private float DISTANCE_FROM_HORSE_TO_MOUNT = 2.5f;
+	private float DISTANCE_FROM_TARGET_TO_GET_HORSE = 20f;
+
+	public void GoToPosition(Vector3 pos, float dist = 0, HorseUsage horseUsage = HorseUsage.OPTIONAL) {
+		if (!ridingHorse && mount != null && (horseUsage == HorseUsage.IF_POSSIBLE || (horseUsage == HorseUsage.OPTIONAL && (transform.position - pos).magnitude >= DISTANCE_FROM_TARGET_TO_GET_HORSE))) {
+			if ((mount.transform.position - transform.position).magnitude < DISTANCE_FROM_HORSE_TO_MOUNT) {
+				mount.Mount(this);
+			} else {
+				mount.Call();
+				agent.destination = mount.transform.position;
+				agent.stoppingDistance = 0;
+			}
+		} else {
+			agent.destination = pos;
+			agent.stoppingDistance = dist;	
+			if (!hasLookTarget) {
+				LookAt(mount.transform.position + mount.transform.forward);
+			}
+		}
 	}
 
 	public override void Die(Vector3 location, Vector3 angle, Character attacker = null, DamageType type = DamageType.MELEE) {

@@ -78,7 +78,13 @@ public class TownLocation : Location {
 		// temp horse spawning
 		int horseAmount = townNPCs.Count + Random.Range(1, 3);
 		for (int i = 0; i < horseAmount; i++) {
-			Horse.HorseSaveData hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, i < townNPCs.Count ? townNPCs[i].guid : System.Guid.Empty);
+			Horse.HorseSaveData hsd;
+			if (i < townNPCs.Count) {
+				hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, townNPCs[i].guid);
+				townNPCs[i].mountGuid = hsd.guid;
+			} else {
+				hsd = new Horse.HorseSaveData(LevelBuilder.instance.horsePrefab, System.Guid.Empty);
+			}
 			hsd.location = new SerializableVector3(RandomUnoccupiedTile());
 			SaveGame.currentGame.horses[hsd.guid] = hsd;
 			horses.Add(hsd.guid);

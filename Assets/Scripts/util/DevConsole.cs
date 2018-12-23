@@ -136,6 +136,9 @@ public class DevConsole : MonoBehaviour {
 			case "group":
 				group(args);
 				break;
+			case "setdest":
+				setdest(args);
+				break;
 			default:
 				textLog.Add("unrecognized command: " + command);
 				break;
@@ -279,6 +282,23 @@ public class DevConsole : MonoBehaviour {
 		}
 	}
 
+	// takes 3 args -- character name, x coord, z coord
+	private void setdest(string[] args) {
+		try {
+			NPCData npc = NPCByName(args[0]);
+			if (args.Length == 1) {
+				(npc.taskSources[NPCData.DEBUG_TASKS] as DebugTaskSource).SetTask(null);				
+			} else {
+				Vector3 pos = new Vector3(float.Parse(args[1]), 0, float.Parse(args[2]));
+				NPCTask task = new NPCNoOpTask(Map.CurrentLocation().guid, pos);
+				task.priority = int.MaxValue;
+				(npc.taskSources[NPCData.DEBUG_TASKS] as DebugTaskSource).SetTask(task);
+			}
+		} catch (System.Exception e) {
+			textLog.Add("error: setdest expects 1 local npc name and optional x/z coords");
+		}
+	}
+
 	private void fpcam() {
 		GameManager.players[0].SwitchCamera(!GameManager.players[0].firstPersonCam.enabled);
 	}
@@ -324,10 +344,11 @@ public class DevConsole : MonoBehaviour {
 		}
 	}
 
-
 	private NPCData NPCByName(string name) {
-		return SaveGame.currentGame.savedCharacters.Values
+		NPCData[] npcs = SaveGame.currentGame.savedCharacters.Values
 				.Where(x => x.name.Equals(name, System.StringComparison.InvariantCultureIgnoreCase))
-				.First();
+				.ToArray();
+		Debug.Log("found " + npcs.Length + " NPCs named " + name);
+		return npcs.First();
 	}
 }

@@ -95,6 +95,7 @@
      <Compile Include="Assets\Scripts\CharacterCustomization.cs" />
      <Compile Include="Assets\Scripts\CharacterOptionsManager.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\CriminalBehavior.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\DebugTaskSource.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\DynamicBehavior.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\NPCTaskSource.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Schedule.cs" />

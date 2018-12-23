@@ -23,12 +23,14 @@ public class NPCData : CharacterData {
     // task sources
     public const string SCHEDULE = "schedule";
     public const string DYNAMIC_AI = "dynamic_ai";
+    public const string DEBUG_TASKS = "debug_tasks";
     public Dictionary<string, NPCTaskSource> taskSources = new Dictionary<string, NPCTaskSource>();
 
     public NPCData(NPCType type, bool female = false) {
         this.type = type;
         this.female = female;
         name = NameGen.CharacterFirstName(female) + " " + NameGen.CharacterLastName();
+        this.taskSources.Add(DEBUG_TASKS, new DebugTaskSource());
     }
 
 	// background - true if the player is in a loaded location (aka exclude simulating that location)

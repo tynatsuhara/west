@@ -7,6 +7,10 @@ public class NPCNoOpTask : NPCTask {
     private System.Guid location;
     private SerializableVector3 pos;
 
+    // Do nothing in place
+    public NPCNoOpTask() {}
+
+    // Do nothing at this place
     public NPCNoOpTask(System.Guid location, Vector3 position) {
         this.location = location;
         pos = new SerializableVector3(position);
@@ -21,5 +25,9 @@ public class NPCNoOpTask : NPCTask {
         return 1f;
     }
 
-    public override void Execute(NPC self) {}
+    public override void Execute(NPC self) {
+        if (pos != null) {
+            self.GoToPosition(pos.val);
+        }
+    }
 }

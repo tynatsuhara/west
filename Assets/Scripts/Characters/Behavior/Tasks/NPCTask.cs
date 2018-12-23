@@ -14,6 +14,7 @@ using System;
     Task Options
     Scheduled time and duration
     Task priority:
+        0. Debug behavior
         1. Dynamic behavior (only in loaded location, not in simulation)
         2. Quest behavior
         3. Daily schedule
@@ -24,6 +25,8 @@ using System;
 [System.Serializable]
 public abstract class NPCTask {
     public int priority;
+    // used for making the character go to the right location (and position, when simulated).
+    // non-simulated position direction must be specified in Execute()
     public abstract Task.TaskDestination GetLocation();
     
     // Lower bound on time left for a task -- If this is <= 0, the task is done.

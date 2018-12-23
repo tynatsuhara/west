@@ -120,7 +120,7 @@ public class PlayerUI : MonoBehaviour {
 				InteractAction[] actions = interactable.GetActions(player);
 				// TODO: Support displaying multiple interaction types
 				if (actions.Length > 0) {
-					interactMenu.text = "[E] " + actions.First().action;
+					interactMenu.text = hit.transform.name + "\n[E] " + actions.First().action;
 					interactMenu.material = actions.First().enabled ? GameUI.instance.textWhite : GameUI.instance.textGrey;
 					highlightedInteractable = interactable;
 					break;

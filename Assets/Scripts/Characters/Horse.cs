@@ -88,16 +88,16 @@ public class Horse : MonoBehaviour, Damageable {
 	}
 
 	public void Mount(Character character) {
-		Debug.Log("m1");
 		if (!lt.isAlive || rider != null || !canRide)
 			return;
-		Debug.Log("m2");
 		character.MountHorse(this);
 		rider = character;
 		data.state = HorseState.RIDDEN;
 		SetName();
-		GetComponent<NavMeshAgent>().enabled = false;
-		GetComponent<NavMeshObstacle>().enabled = true;
+		if (character.GetComponent<NavMeshAgent>() == null) {  // only disable agent if it's a controllable character
+			GetComponent<NavMeshAgent>().enabled = false;
+			GetComponent<NavMeshObstacle>().enabled = true;
+		}
 		if (!tamed) {
 			StartCoroutine(Tame());
 		} else if (character.guid != data.owner && !data.stolen) {
