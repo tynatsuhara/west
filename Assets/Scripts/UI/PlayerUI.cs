@@ -90,6 +90,7 @@ public class PlayerUI : MonoBehaviour {
 			Cursor.lockState = CursorLockMode.Locked;
 		} else {
 			Vector3? targetPos = GameManager.spawnedNPCs
+					.Where(npc => npc.isAlive)
 					.Select(npc => player.playerCamera.cam.WorldToScreenPoint(npc.transform.position + stickyCursorNPCOffset))
 					.Where(npcPos => Vector3.Distance(mousePos, npcPos) < stickyCursorDistance)
 					.OrderBy(npcPos => Vector3.Distance(mousePos, npcPos))

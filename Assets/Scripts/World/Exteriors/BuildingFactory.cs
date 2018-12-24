@@ -10,7 +10,7 @@ public class BuildingFactory {
 
     public Building NewHome() {
 		// eventually building will have more parameters for unique exteriors
-        return new  Building(Building.BuildingType.HOME, "Home")
+        return new Building(Building.BuildingType.HOME, "Home")
                 .AddHousingSlot(NPCData.NPCType.NORMIE, Random.Range(2, 5))
                 .AddNPCs((() => npcFactory.MakeNormie()), 2);
     }

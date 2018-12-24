@@ -149,6 +149,7 @@ public class Player : Character {
 
 		playerUI.JoystickCursorMove(Input.GetAxis("RSX" + id), Input.GetAxis("RSY" + id));
 
+		// temporary self damaging
 		if (Input.GetKeyDown(KeyCode.Alpha0)) {
 			Damage(transform.position, Random.insideUnitCircle, 1);
 		}
