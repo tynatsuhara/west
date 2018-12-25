@@ -64,7 +64,9 @@ public abstract class Weapon : MonoBehaviour {
 			.ToArray();
 		bool keepGoing = true;
 		bool hitMarker = false;
+		Vector3 stopPos = source + direction * range;
 		for (int i = 0; i < hits.Length && keepGoing; i++) {
+			stopPos = hits[i].point;
 			Damageable damageScript = hits[i].transform.GetComponentInParent<Damageable>();
 			if (damageScript == null)
 				break;
@@ -75,6 +77,7 @@ public abstract class Weapon : MonoBehaviour {
 			keepGoing = damageScript.Damage(hits[i].point, direction.normalized, damage, owner);
 			GameManager.instance.AlertInRange(Stimulus.VIOLENCE, transform.position, 10f, visual: hits[i].transform.root.gameObject, alerter: owner);			
 		}
+		BulletTrails.instance.RenderShot(source + direction.normalized * 1f, stopPos);
 		if (hitMarker && isPlayer) {
 			player.playerUI.HitMarker();
 		}

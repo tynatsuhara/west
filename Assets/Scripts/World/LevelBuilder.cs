@@ -64,6 +64,7 @@ public class LevelBuilder : MonoBehaviour {
 		loadedLocation = Map.Location(guid);
 
 		mat.SetColor("_Tint", biomeColors[loadedLocation.biomeColor]);
+		BulletTrails.instance.ClearAll();
 		WorldBlood.instance.NewBloodTexture(loadedLocation.width, loadedLocation.height);
 		floorTiles = new PicaVoxel.Volume[loadedLocation.width, loadedLocation.height];
 		teleporters = new List<Teleporter>();

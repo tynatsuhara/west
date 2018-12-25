@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour {
 
 	void Start() {
 		if (SaveGame.currentGame == null) {  // started this scene in editor
-			SaveGame.LoadLastSave();
+			SceneManager.LoadScene("main menu");
+			return;
 		}
 
 		// needs to happen in start so that instances are set up

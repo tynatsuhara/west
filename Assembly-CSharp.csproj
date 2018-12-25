@@ -166,6 +166,7 @@
      <Compile Include="Assets\Scripts\WalkCycle.cs" />
      <Compile Include="Assets\Scripts\Wall.cs" />
      <Compile Include="Assets\Scripts\Weapons\BasicGun.cs" />
+     <Compile Include="Assets\Scripts\Weapons\BulletTrails.cs" />
      <Compile Include="Assets\Scripts\Weapons\DualPistol.cs" />
      <Compile Include="Assets\Scripts\Weapons\GunAnimation.cs" />
      <Compile Include="Assets\Scripts\Weapons\MeleeWeapon.cs" />

@@ -156,6 +156,8 @@ public class Horse : MonoBehaviour, Damageable {
 			if (rider != null) {
 				rider.Dismount();  // dismount first so that character doesn't get damaged by exploder
 			}
+			GetComponent<NavMeshAgent>().enabled = false;
+			GetComponent<NavMeshObstacle>().enabled = true;
 			lt.DamageEffects(exploder, angle, type);
 			lt.FallOver(800);
 		}
