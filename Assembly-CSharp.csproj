@@ -94,10 +94,12 @@
      <Compile Include="Assets\Scripts\C4.cs" />
      <Compile Include="Assets\Scripts\CharacterCustomization.cs" />
      <Compile Include="Assets\Scripts\CharacterOptionsManager.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\CopBehavior.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\CriminalBehavior.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\DebugTaskSource.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\DynamicBehavior.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\NPCTaskSource.cs" />
+     <Compile Include="Assets\Scripts\Characters\Behavior\NormieBehavior.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Schedule.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCFollowTask.cs" />
      <Compile Include="Assets\Scripts\Characters\Behavior\Tasks\NPCInvestigateTask.cs" />
